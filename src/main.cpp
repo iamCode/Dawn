@@ -1,4 +1,4 @@
-/**	    Dawn - a 2D RPG game
+/**                    Dawn - 2D roleplaying game
     Copyright (C) 2009  Tobias Eliasson (arnestig@users.sourceforge.net)
 
     This program is free software: you can redistribute it and/or modify
