@@ -37,6 +37,8 @@
 
 #include "GLFT_Font.h"
 
+#include <cstring>
+
 // static members
 FT_Library FTLibraryContainer::library_;
 FTLibraryContainer GLFT_Font::library_;
