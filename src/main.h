@@ -16,7 +16,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
+
+#ifndef NO_WINDOWS
+    #include <windows.h>
+#endif
+
 #include <vector>
 #include <math.h>
 

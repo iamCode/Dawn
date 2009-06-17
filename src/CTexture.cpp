@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CTexture.h"
-#include <SDL\SDL_image.h>
+#include <SDL/SDL_image.h>
 
 
 void CTexture::LoadIMG(char *file, int texture_index) {
