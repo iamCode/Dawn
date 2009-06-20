@@ -120,10 +120,8 @@ int CTexture::LoadTextureMap(char *file, bool try_load_collision_box) {
 
     // resize our texture vector so all our texture-ID's can fit in there ;)
     /**
-    HÄR HAR VI PROBLEM. Crashar om jag försöker allokera dynamiskt!
-    Verkar räcka att lägga på det tal man vill ha + 1... Skall kolla upp detta.
-    Skulle gärna lösa detta med en push_back, vore snyggast enligt min mening..
-    Vi får se, har inte tittat på det direkt, får göra det senare.
+    Needs to replace the reserve-call here with some other *better* function.
+    I think texture.reserve(highest_texture+1) would do, but not sure...
     **/
     texture.reserve(200/**highest_texture+1**/);
     if (!try_load_collision_box) {
