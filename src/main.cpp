@@ -85,17 +85,18 @@ void DrawScene() {
         lastframe=thisframe;
     }
 
-    GLFT_Font fnt("data/verdana.ttf", 12);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    fnt.drawText(world_x, world_y, "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
-    glDisable(GL_BLEND);
 
     if (Editor.enabled) {
         Editor.DrawEditor();
     } else {
         GUI.DrawInterface();
     }
+
+    GLFT_Font fnt("data/verdana.ttf", 12);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    fnt.drawText(world_x, world_y, "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
+    glDisable(GL_BLEND);
 
     //glColor4f(1.0f,1.0f,1.0f,0.6f);			// Full Brightness, 50% Alpha ( NEW )
 
