@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CEditor.h"
+#include "GLFT_Font.h"
 
 void CEditor::inc_tilepos() {
     switch (current_object) {
@@ -144,10 +145,18 @@ void CEditor::HandleKeys() {
         }
     }
 
-    if (keys[SDLK_DOWN]) { world_y += 3; }
-    if (keys[SDLK_UP]) { world_y -= 3; }
-    if (keys[SDLK_LEFT]) { world_x -= 3; }
-    if (keys[SDLK_RIGHT]) { world_x += 3; }
+    // the arrow-keys. if an object is selected, we move it around. else move around in our zone.
+    if (objectedit_selected >= 0) {
+        if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_pos++; }
+        if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_pos--; }
+        if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_pos--; }
+        if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_pos++; }
+    } else {
+        if (keys[SDLK_DOWN]) { world_y += 3; }
+        if (keys[SDLK_UP]) { world_y -= 3; }
+        if (keys[SDLK_LEFT]) { world_x -= 3; }
+        if (keys[SDLK_RIGHT]) { world_x += 3; }
+    }
 
     if (keys[SDLK_DELETE] && !KP_delete_environment) {
         KP_delete_environment = true;
@@ -200,8 +209,16 @@ void CEditor::HandleKeys() {
         KP_toggle_editor = false;
     }
 
-    if (keys['.']) {
-        zone1.EnvironmentMap[objectedit_selected].transparency -= 0.01f;
+    if (keys['.']) {  // increase the amount of transparency of the object.
+        if (zone1.EnvironmentMap[objectedit_selected].transparency > 0.0f) {
+            zone1.EnvironmentMap[objectedit_selected].transparency -= 0.01f;
+        }
+    }
+
+    if (keys[',']) { // decrease the amount of transparency of the object.
+        if (zone1.EnvironmentMap[objectedit_selected].transparency < 1.0f) {
+            zone1.EnvironmentMap[objectedit_selected].transparency += 0.01f;
+        }
     }
 
     if (keys[SDLK_F1] && !KP_toggle_tileset) {
@@ -224,7 +241,6 @@ void CEditor::HandleKeys() {
 };
 
 void CEditor::DrawEditor() {
-    glEnable(GL_BLEND);
     if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
         switch (current_object) {
             case 1:
@@ -237,50 +253,52 @@ void CEditor::DrawEditor() {
         }
     }
 
-    glBindTexture( GL_TEXTURE_2D, interfacetexture.texture[0].texture);
-    glBegin( GL_QUADS );
+    glEnable(GL_BLEND);
+
+    glBindTexture(GL_TEXTURE_2D, interfacetexture.texture[0].texture);
+    glBegin(GL_QUADS);
         //Top-left vertex (corner)
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x, world_y, 0.0f );
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x, world_y, 0.0f);
         //Bottom-left vertex (corner)
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+RES_X, world_y, 0.0f );
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+RES_X, world_y, 0.0f);
         //Bottom-right vertex (corner)
-        glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+RES_X, world_y+100, 0.0f );
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+RES_X, world_y+100, 0.0f);
         //Top-right vertex (corner)
-        glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x, world_y+100, 0.0f );
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x, world_y+100, 0.0f);
     glEnd();
 
-    glBindTexture( GL_TEXTURE_2D, interfacetexture.texture[1].texture);
-    glBegin( GL_QUADS );
+    glBindTexture(GL_TEXTURE_2D, interfacetexture.texture[1].texture);
+    glBegin(GL_QUADS);
         //Top-left vertex (corner)
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-5, world_y+5, 0.0f );
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-5, world_y+5, 0.0f);
         //Bottom-left vertex (corner)
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)+45, world_y+5, 0.0f );
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+(RES_X/2)+45, world_y+5, 0.0f);
         //Bottom-right vertex (corner)
-        glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)+45, world_y+55, 0.0f );
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+(RES_X/2)+45, world_y+55, 0.0f);
         //Top-right vertex (corner)
-        glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-5, world_y+55, 0.0f );
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-5, world_y+55, 0.0f);
     glEnd();
 
-    glBegin( GL_LINES );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f(mouseX-20+world_x, mouseY+world_y, 0.0f );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f(mouseX+20+world_x, mouseY+world_y, 0.0f );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f(mouseX+world_x, mouseY+20+world_y, 0.0f );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f(mouseX+world_x, mouseY-20+world_y, 0.0f );
+    glBegin(GL_LINES);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(mouseX-20+world_x, mouseY+world_y, 0.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(mouseX+20+world_x, mouseY+world_y, 0.0f);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(mouseX+world_x, mouseY+20+world_y, 0.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(mouseX+world_x, mouseY-20+world_y, 0.0f);
     glEnd();
 
     switch (current_object) {
         case 0:
             for (tilepos=1;tilepos<=zone1.ZoneTiles.NumberOfTextures;tilepos++) {
-                glBindTexture( GL_TEXTURE_2D, zone1.ZoneTiles.texture[tilepos].texture);
-                glBegin( GL_QUADS );
+                glBindTexture(GL_TEXTURE_2D, zone1.ZoneTiles.texture[tilepos].texture);
+                glBegin(GL_QUADS);
                     //Top-left vertex (corner)
-                    glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-left vertex (corner)
-                    glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-right vertex (corner)
-                    glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                     //Top-right vertex (corner)
-                    glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                 glEnd();
             }
 
@@ -288,30 +306,30 @@ void CEditor::DrawEditor() {
 
         case 1:
             for (tilepos=1;tilepos<=zone1.ZoneEnvironment.NumberOfTextures; tilepos++) {
-                glBindTexture( GL_TEXTURE_2D, zone1.ZoneEnvironment.texture[tilepos].texture);
-                glBegin( GL_QUADS );
+                glBindTexture(GL_TEXTURE_2D, zone1.ZoneEnvironment.texture[tilepos].texture);
+                glBegin(GL_QUADS);
                     //Top-left vertex (corner)
-                    glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-left vertex (corner)
-                    glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-right vertex (corner)
-                    glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                     //Top-right vertex (corner)
-                    glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                 glEnd();
             }
 
             for (unsigned int x = 0; x < zone1.CollisionMap.size(); x++) {
-                glBindTexture( GL_TEXTURE_2D, interfacetexture.texture[1].texture);
-                glBegin( GL_QUADS );
+                glBindTexture(GL_TEXTURE_2D, interfacetexture.texture[1].texture);
+                glBegin(GL_QUADS);
                     //Top-left vertex (corner)
-                    glTexCoord2f( 0.0f, 0.0f ); glVertex3f(zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.y, 0.0f );
+                    glTexCoord2f(0.0f, 0.0f); glVertex3f(zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.y, 0.0f);
                     //Bottom-left vertex (corner)
-                    glTexCoord2f( 1.0f, 0.0f ); glVertex3f(zone1.CollisionMap[x].CR.x+zone1.CollisionMap[x].CR.w, zone1.CollisionMap[x].CR.y, 0.0f );
+                    glTexCoord2f(1.0f, 0.0f); glVertex3f(zone1.CollisionMap[x].CR.x+zone1.CollisionMap[x].CR.w, zone1.CollisionMap[x].CR.y, 0.0f);
                     //Bottom-right vertex (corner)
-                    glTexCoord2f( 1.0f, 1.0f ); glVertex3f(zone1.CollisionMap[x].CR.x+zone1.CollisionMap[x].CR.w, zone1.CollisionMap[x].CR.y+zone1.CollisionMap[x].CR.h, 0.0f );
+                    glTexCoord2f(1.0f, 1.0f); glVertex3f(zone1.CollisionMap[x].CR.x+zone1.CollisionMap[x].CR.w, zone1.CollisionMap[x].CR.y+zone1.CollisionMap[x].CR.h, 0.0f);
                     //Top-right vertex (corner)
-                    glTexCoord2f( 0.0f, 1.0f ); glVertex3f(zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.y+zone1.CollisionMap[x].CR.h, 0.0f );
+                    glTexCoord2f(0.0f, 1.0f); glVertex3f(zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.y+zone1.CollisionMap[x].CR.h, 0.0f);
                 glEnd();
             }
 
@@ -319,16 +337,16 @@ void CEditor::DrawEditor() {
 
         case 2:
             for (tilepos=1;tilepos<=zone1.ZoneShadow.NumberOfTextures; tilepos++) {
-                glBindTexture( GL_TEXTURE_2D, zone1.ZoneShadow.texture[tilepos].texture);
-                glBegin( GL_QUADS );
+                glBindTexture(GL_TEXTURE_2D, zone1.ZoneShadow.texture[tilepos].texture);
+                glBegin(GL_QUADS);
                     //Top-left vertex (corner)
-                    glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-left vertex (corner)
-                    glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f );
+                    glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+10, 0.0f);
                     //Bottom-right vertex (corner)
-                    glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-10+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                     //Top-right vertex (corner)
-                    glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f );
+                    glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), world_y+50, 0.0f);
                 glEnd();
             }
 
@@ -350,27 +368,39 @@ void CEditor::LoadTextures() {
 }
 
 void CEditor::DrawEditFrame(CTexture *edit_object, int object_id) {
-    glBindTexture( GL_TEXTURE_2D, interfacetexture.texture[3].texture);
-        glBegin( GL_QUADS );
-            //Top-left vertex (corner)
-            glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+50, world_y+(RES_Y/2), 0.0f );
-            //Bottom-left vertex (corner)
-            glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+interfacetexture.texture[3].width, world_y+(RES_Y/2), 0.0f );
-            //Bottom-right vertex (corner)
-            glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+interfacetexture.texture[3].width, world_y+(RES_Y/2)+interfacetexture.texture[3].height, 0.0f );
-            //Top-right vertex (corner)
-            glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+50, world_y+(RES_Y/2)+interfacetexture.texture[3].height, 0.0f );
-        glEnd();
+    glEnable(GL_BLEND);
+    // draws a white quad as our editframe
+    glBindTexture(GL_TEXTURE_2D, interfacetexture.texture[3].texture);
+    glBegin(GL_QUADS);
+        //Top-left vertex (corner)
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+50, world_y+(RES_Y/2), 0.0f);
+        //Bottom-left vertex (corner)
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+400, world_y+(RES_Y/2), 0.0f);
+        //Bottom-right vertex (corner)
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+400, world_y+(RES_Y/2)+200, 0.0f);
+        //Top-right vertex (corner)
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+50, world_y+(RES_Y/2)+200, 0.0f);
+    glEnd();
 
-        glBindTexture( GL_TEXTURE_2D, edit_object->texture[object_id].texture);
-        glBegin( GL_QUADS );
-            //Top-left vertex (corner)
-            glTexCoord2f( 0.0f, 0.0f ); glVertex3f(world_x+55, world_y+(RES_Y/2), 0.0f );
-            //Bottom-left vertex (corner)
-            glTexCoord2f( 1.0f, 0.0f ); glVertex3f(world_x+55+edit_object->texture[object_id].width, world_y+(RES_Y/2), 0.0f );
-            //Bottom-right vertex (corner)
-            glTexCoord2f( 1.0f, 1.0f ); glVertex3f(world_x+55+edit_object->texture[object_id].width, world_y+(RES_Y/2)+edit_object->texture[object_id].height, 0.0f );
-            //Top-right vertex (corner)
-            glTexCoord2f( 0.0f, 1.0f ); glVertex3f(world_x+55, world_y+(RES_Y/2)+edit_object->texture[object_id].height, 0.0f );
-        glEnd();
+    // draws the object we are editing
+    glBindTexture(GL_TEXTURE_2D, edit_object->texture[object_id].texture);
+    glBegin(GL_QUADS);
+        //Top-left vertex (corner)
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(world_x+55, world_y+(RES_Y/2)+5, 0.0f);
+        //Bottom-left vertex (corner)
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(world_x+55+edit_object->texture[object_id].width, world_y+(RES_Y/2)+5, 0.0f);
+        //Bottom-right vertex (corner)
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(world_x+55+edit_object->texture[object_id].width, world_y+(RES_Y/2)+edit_object->texture[object_id].height+5, 0.0f);
+        //Top-right vertex (corner)
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+55, world_y+(RES_Y/2)+edit_object->texture[object_id].height+5, 0.0f);
+    glEnd();
+
+    glColor4f(0.0f,0.0f,0.0f,1.0f);
+    GLFT_Font fnt("data/verdana.ttf", 10);
+
+    fnt.drawText(world_x+50, world_y+(RES_Y/2)+150, "Use arrow-keys to move object.");
+    fnt.drawText(world_x+50, world_y+(RES_Y/2)+170, "[ , ]  Decrease transparency");
+    fnt.drawText(world_x+50, world_y+(RES_Y/2)+185, "[ . ]  Increase transparency");
+    glDisable(GL_BLEND);
+    glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
