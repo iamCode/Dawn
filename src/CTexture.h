@@ -37,7 +37,7 @@ class CTexture {
 
     int LoadTextureMap(char *file, bool try_load_collision_box = false);
     void LoadIMG(char *file, int texture_index);
-    void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f);
+    void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f);
     int NumberOfTextures;
 
     private:

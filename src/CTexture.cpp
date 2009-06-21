@@ -79,9 +79,9 @@ void CTexture::LoadIMG(char *file, int texture_index) {
 }
 
 
-void CTexture::DrawTexture(int x, int y, int draw_id, float transparency) {
+void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue) {
     glEnable(GL_BLEND);
-    glColor4f(1.0f,1.0f,1.0f,transparency);			// Full Brightness, 50% Alpha ( NEW )
+    glColor4f(red,green, blue,transparency);			// Full Brightness, 50% Alpha ( NEW )
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		// Blending Function For Translucency Based On Source Alpha Value ( NEW )
     glBindTexture( GL_TEXTURE_2D, texture[draw_id].texture);
     glBegin( GL_QUADS );
