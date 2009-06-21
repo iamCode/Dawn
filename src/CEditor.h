@@ -37,7 +37,7 @@ class CEditor {
     private:
     void inc_tilepos();
     void dec_tilepos();
-    void DrawEditFrame(CTexture *edit_object, int object_id);
+    void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
 
     int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
     bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset;
