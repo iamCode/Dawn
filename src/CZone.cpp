@@ -20,8 +20,6 @@ void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
-    // depending on what transparency, color setting and such we have been using, we reset the color+transparency here.
-    glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
 void CZone::LoadZone(char *file) {
@@ -71,7 +69,7 @@ int CZone::LoadEnvironment(char *file) {
     FILE *fp;
     char buf[255];
     int texture_id = 0, x_pos = 0, y_pos = 0;
-    float transparency, red, green, blue;
+    float transparency, red, green, blue, x_scale, y_scale;
 
     // open the texturemap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
@@ -83,8 +81,8 @@ int CZone::LoadEnvironment(char *file) {
     while(!feof(fp)) {
         fgets(buf, 255, fp);
         if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-            sscanf(buf,"%d %d %d %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue);
-            EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue));
+            sscanf(buf,"%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
+            EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale));
             count++;
         }
     }
@@ -96,7 +94,7 @@ int CZone::LoadShadow(char *file) {
     FILE *fp;
     char buf[255];
     int texture_id = 0, x_pos = 0, y_pos = 0;
-    float transparency, red, green, blue;
+    float transparency, red, green, blue, x_scale, y_scale;
 
     // open the shadowmap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
@@ -108,9 +106,9 @@ int CZone::LoadShadow(char *file) {
     while(!feof(fp)) {
         fgets(buf, 255, fp);
         if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-            sscanf(buf, "%d %d %d %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue);
+            sscanf(buf, "%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
             // the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
-            ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
+            ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale));
             count++;
         }
     }
@@ -152,13 +150,13 @@ void CZone::DrawTiles() {
 
 void CZone::DrawEnvironment() {
     for (unsigned int x=0;x<EnvironmentMap.size();x++) {
-        ZoneEnvironment.DrawTexture(EnvironmentMap[x].x_pos,EnvironmentMap[x].y_pos,EnvironmentMap[x].id, EnvironmentMap[x].transparency, EnvironmentMap[x].red, EnvironmentMap[x].green, EnvironmentMap[x].blue);
+        ZoneEnvironment.DrawTexture(EnvironmentMap[x].x_pos,EnvironmentMap[x].y_pos,EnvironmentMap[x].id, EnvironmentMap[x].transparency, EnvironmentMap[x].red, EnvironmentMap[x].green, EnvironmentMap[x].blue, EnvironmentMap[x].x_scale, EnvironmentMap[x].y_scale);
     }
 }
 
 void CZone::DrawShadows() {
     for (unsigned int x=0;x<ShadowMap.size();x++) {
-        ZoneShadow.DrawTexture(ShadowMap[x].x_pos,ShadowMap[x].y_pos,ShadowMap[x].id, ShadowMap[x].transparency, ShadowMap[x].red, ShadowMap[x].green, ShadowMap[x].blue);
+        ZoneShadow.DrawTexture(ShadowMap[x].x_pos,ShadowMap[x].y_pos,ShadowMap[x].id, ShadowMap[x].transparency, ShadowMap[x].red, ShadowMap[x].green, ShadowMap[x].blue, ShadowMap[x].x_scale, ShadowMap[x].y_scale);
     }
 }
 
@@ -168,15 +166,6 @@ int CZone::LocateTile(int x, int y) {
             if ((TileMap[t].y_pos+ZoneTiles.texture[TileMap[t].id].height > y) && (TileMap[t].y_pos < y)) {
                 return t;
             }
-        }
-    }
-    return -1;
-}
-
-int CZone::LocateTexture(int x, int y) {
-    for (unsigned int t=0;t<TileMap.size();t++) {
-        if ((TileMap[t].x_pos == x) && (TileMap[t].y_pos == y)) {
-            return TileMap[t].id;
         }
     }
     return -1;
@@ -199,7 +188,7 @@ void CZone::AddEnvironment(int x_pos, int y_pos, int texture) {
     // x and y cords and devide and substract the height and width of the image so we place the texture
     // in the middle of the cursor.
     // IF the environmenttexture has an collision_box we also push that info into the collisionvector.
-    EnvironmentMap.push_back(sEnvironmentMap(x_pos-(ZoneEnvironment.texture[texture].width/2),y_pos-(ZoneEnvironment.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
+    EnvironmentMap.push_back(sEnvironmentMap(x_pos-(ZoneEnvironment.texture[texture].width/2),y_pos-(ZoneEnvironment.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
     if (ZoneEnvironment.texture[texture].contains_collision_box == true) {
         CollisionMap.push_back(sCollisionMap(x_pos-(ZoneEnvironment.texture[texture].width/2)+ZoneEnvironment.texture[texture].collision_box.x,y_pos-(ZoneEnvironment.texture[texture].height/2)+ZoneEnvironment.texture[texture].collision_box.y,ZoneEnvironment.texture[texture].collision_box.h,ZoneEnvironment.texture[texture].collision_box.w));
     }
@@ -207,7 +196,7 @@ void CZone::AddEnvironment(int x_pos, int y_pos, int texture) {
 
 void CZone::AddShadow(int x_pos, int y_pos, int texture) {
     // the old shadowmap here, keeping it a while... ShadowMap.push_back(sShadowMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
-    ShadowMap.push_back(sEnvironmentMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
+    ShadowMap.push_back(sEnvironmentMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 

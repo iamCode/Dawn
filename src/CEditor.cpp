@@ -51,7 +51,6 @@ void CEditor::dec_tilepos() {
 
 int CEditor::SaveZone() {
     FILE *fp;
-    int x_pos, y_pos;
     // open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
     if ((fp=fopen("data/zone1.tilemap", "w")) == NULL) {
         printf("ERROR opening file zone1.tilemap\n\n");
@@ -59,12 +58,8 @@ int CEditor::SaveZone() {
     }
     fprintf(fp,"#x-pos y-pos tile-id");
 
-    for (int x=-25;x<=25;x++) {
-        for (int y=-25;y<=25;y++) {
-            x_pos = x*64;
-            y_pos = y*64;
-            fprintf(fp,"\n%d %d %d",x_pos,y_pos,zone1.LocateTexture(x_pos,y_pos));
-        }
+    for (unsigned int x=0; x<zone1.TileMap.size();x++) {
+        fprintf(fp,"\n%d %d %d",zone1.TileMap[x].x_pos,zone1.TileMap[x].y_pos,zone1.TileMap[x].id);
     }
 
     fclose(fp);
@@ -75,11 +70,11 @@ int CEditor::SaveZone() {
         printf("ERROR opening file zone1.environmentmap\n\n");
         return -1;
     }
-    fprintf(fp,"#x-pos y-pos tile-id transparency red green blue");
+    fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
 
 
     for (unsigned int x=0;x<zone1.EnvironmentMap.size();x++) {
-        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f",zone1.EnvironmentMap[x].x_pos,zone1.EnvironmentMap[x].y_pos, zone1.EnvironmentMap[x].id, zone1.EnvironmentMap[x].transparency,zone1.EnvironmentMap[x].red,zone1.EnvironmentMap[x].green,zone1.EnvironmentMap[x].blue);
+        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zone1.EnvironmentMap[x].x_pos,zone1.EnvironmentMap[x].y_pos, zone1.EnvironmentMap[x].id, zone1.EnvironmentMap[x].transparency,zone1.EnvironmentMap[x].red,zone1.EnvironmentMap[x].green,zone1.EnvironmentMap[x].blue, zone1.EnvironmentMap[x].x_scale, zone1.EnvironmentMap[x].y_scale);
     }
     fclose(fp);
     ////////////////////////////////////////////////////////////////////////
@@ -90,10 +85,10 @@ int CEditor::SaveZone() {
         printf("ERROR opening file zone1.shadowmap\n\n");
         return -1;
     }
-    fprintf(fp,"#x-pos y-pos tile-id transparency red green blue");
+    fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
 
     for (unsigned int x=0;x<zone1.ShadowMap.size();x++) {
-        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f",zone1.ShadowMap[x].x_pos,zone1.ShadowMap[x].y_pos, zone1.ShadowMap[x].id, zone1.ShadowMap[x].transparency, zone1.ShadowMap[x].red, zone1.ShadowMap[x].green, zone1.ShadowMap[x].blue);
+        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zone1.ShadowMap[x].x_pos,zone1.ShadowMap[x].y_pos, zone1.ShadowMap[x].id, zone1.ShadowMap[x].transparency, zone1.ShadowMap[x].red, zone1.ShadowMap[x].green, zone1.ShadowMap[x].blue, zone1.ShadowMap[x].x_scale, zone1.ShadowMap[x].y_scale);
     }
     fclose(fp);
     /////////////////////////////////////////////////////////
@@ -145,21 +140,36 @@ void CEditor::HandleKeys() {
         }
     }
 
-    // the arrow-keys. if an object is selected, we move it around. else move around in our zone.
+    // the arrow-keys. if an object is selected, we move it around. if Left shift is pushed, we scale the object..
+    // else we move around in our zone.
 
     if (objectedit_selected >= 0) {
         switch (current_object) {
             case 1: // environment
-                if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_pos++; }
-                if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_pos--; }
-                if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_pos--; }
-                if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_pos++; }
+                if (keys[SDLK_LSHIFT]) {
+                    if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_scale += 0.01f; }
+                    if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_scale -= 0.01f; }
+                    if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_scale -= 0.01f; }
+                    if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_scale += 0.01f; }
+                } else {
+                    if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_pos++; }
+                    if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_pos--; }
+                    if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_pos--; }
+                    if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_pos++; }
+                }
                 break;
             case 2: // shadows
-                if (keys[SDLK_DOWN]) { zone1.ShadowMap[objectedit_selected].y_pos++; }
-                if (keys[SDLK_UP]) { zone1.ShadowMap[objectedit_selected].y_pos--; }
-                if (keys[SDLK_LEFT]) { zone1.ShadowMap[objectedit_selected].x_pos--; }
-                if (keys[SDLK_RIGHT]) { zone1.ShadowMap[objectedit_selected].x_pos++; }
+                if (keys[SDLK_LSHIFT]) {
+                    if (keys[SDLK_DOWN]) { zone1.ShadowMap[objectedit_selected].y_scale += 0.01f; }
+                    if (keys[SDLK_UP]) { zone1.ShadowMap[objectedit_selected].y_scale -= 0.01f; }
+                    if (keys[SDLK_LEFT]) { zone1.ShadowMap[objectedit_selected].x_scale -= 0.01f; }
+                    if (keys[SDLK_RIGHT]) { zone1.ShadowMap[objectedit_selected].x_scale += 0.01f; }
+                } else {
+                    if (keys[SDLK_DOWN]) { zone1.ShadowMap[objectedit_selected].y_pos++; }
+                    if (keys[SDLK_UP]) { zone1.ShadowMap[objectedit_selected].y_pos--; }
+                    if (keys[SDLK_LEFT]) { zone1.ShadowMap[objectedit_selected].x_pos--; }
+                    if (keys[SDLK_RIGHT]) { zone1.ShadowMap[objectedit_selected].x_pos++; }
+                }
                 break;
             case 3: // collisionboxes
                 break;
@@ -417,6 +427,7 @@ void CEditor::DrawEditor() {
 
     GLFT_Font fnt("data/verdana.ttf", 9);
 
+    // display our general help text for the editor.
     glColor4f(1.0f,1.0f,0.13f,1.0f); // set yellow as font color
     fnt.drawText(world_x+10, world_y+RES_Y-90, "[ Scoll Up/Down ]  Select previous/next object");
     fnt.drawText(world_x+10, world_y+RES_Y-80, "[ F1 ]  Next set of objects");
@@ -425,6 +436,17 @@ void CEditor::DrawEditor() {
     fnt.drawText(world_x+10, world_y+RES_Y-50, "[ S ]  Saves the changes into zone1-files");
     fnt.drawText(world_x+10, world_y+RES_Y-40, "[ O ]  Load a different zone (not yet implemented)");
     fnt.drawText(world_x+10, world_y+RES_Y-30, "[ L ]  Exit the editor");
+
+    // if we have a selected object, display specific help text for it
+    if (objectedit_selected >= 0) {
+        glColor4f(0.5f,1.0f,0.5f,1.0f);
+        fnt.drawText(world_x+500, world_y+RES_Y-90, "[ UP, DOWN, LEFT, RIGHT ]  Move the object");
+        fnt.drawText(world_x+500, world_y+RES_Y-80, "[ Left Shift + UP, DOWN, LEFT, RIGHT ]  Change scale of object");
+        fnt.drawText(world_x+500, world_y+RES_Y-70, "[ . ]  Increase transparency");
+        fnt.drawText(world_x+500, world_y+RES_Y-60, "[ , ]  Decrease transparency");
+        fnt.drawText(world_x+500, world_y+RES_Y-50, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
+        fnt.drawText(world_x+500, world_y+RES_Y-40, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
+    }
 
     glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
 
@@ -527,8 +549,9 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
     glEnd();
 
 
-
-    // set the color, transparency and then draws the object we are editing
+    // set the color, transparency, scale and then draws the object we are editing
+    glPushMatrix();
+    glScalef(editobject->x_scale,editobject->y_scale,1.0f);
     glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
     glBindTexture(GL_TEXTURE_2D, texture->texture[editobject->id].texture);
     glBegin(GL_QUADS);
@@ -541,15 +564,19 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
         //Top-right vertex (corner)
         glTexCoord2f(0.0f, 1.0f); glVertex3f(world_x+55, world_y+(RES_Y/2)+texture->texture[editobject->id].height+5, 0.0f);
     glEnd();
+    glPopMatrix();
 
     glColor4f(0.0f,0.0f,0.0f,1.0f);
     GLFT_Font fnt("data/verdana.ttf", 10);
 
-    fnt.drawText(world_x+55, world_y+(RES_Y/2)+130, "Trans: %.2f, Red: %.2f, Green: %.2f, Blue: %.2f", editobject->transparency, editobject->red, editobject->green, editobject->blue);
+    fnt.drawText(world_x+242, world_y+(RES_Y/2)+10, "Transparency: %.2f",editobject->transparency);
+    fnt.drawText(world_x+319, world_y+(RES_Y/2)+22, "Red: %.2f",editobject->red);
+    fnt.drawText(world_x+300, world_y+(RES_Y/2)+34, "Green: %.2f",editobject->green);
+    fnt.drawText(world_x+312, world_y+(RES_Y/2)+46, "Blue: %.2f",editobject->blue);
+    fnt.drawText(world_x+287, world_y+(RES_Y/2)+58, "Scale X: %.2f",editobject->x_scale);
+    fnt.drawText(world_x+287, world_y+(RES_Y/2)+70, "Scale Y: %.2f",editobject->y_scale);
 
-    fnt.drawText(world_x+55, world_y+(RES_Y/2)+150, "Use arrow-keys to move object.");
-    fnt.drawText(world_x+55, world_y+(RES_Y/2)+170, "[ , ]  Decrease transparency");
-    fnt.drawText(world_x+55, world_y+(RES_Y/2)+185, "[ . ]  Increase transparency");
     glDisable(GL_BLEND);
     glColor4f(1.0f,1.0f,1.0f,1.0f);
+    glScalef(1.0f,1.0f,1.0f);
 }

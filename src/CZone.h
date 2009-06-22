@@ -28,9 +28,9 @@ struct sTileMap {
 
 struct sEnvironmentMap {
     int x_pos, y_pos, id;
-    float transparency, red, green, blue;
-    sEnvironmentMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue) {
-        x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue;
+    float transparency, red, green, blue, x_scale, y_scale;
+    sEnvironmentMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale) {
+        x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue; x_scale = _x_scale; y_scale = _y_scale;
     };
 };
 
@@ -41,9 +41,9 @@ struct sCollisionMap {
 
 struct sShadowMap {
     int x_pos, y_pos, id;
-    float transparency, red, green, blue;
-    sShadowMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue) {
-        x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue;
+    float transparency, red, green, blue, x_scale, y_scale;
+    sShadowMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale) {
+        x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue; x_scale = _x_scale; y_scale = _y_scale;
     };
 };
 
@@ -63,15 +63,15 @@ class CZone {
     int LoadCollisions(char *file);
 
     int LocateTile(int x, int y);
-    int LocateTexture(int x, int y);
     int LocateShadow(int x, int y);
+    int LocateEnvironment(int x, int y);
 
     void ChangeTile(int iId, int texture);
     void AddEnvironment(int x_pos, int y_pos, int texture);
     void AddShadow(int x_pos, int y_pos, int texture);
     int DeleteEnvironment(int x, int y);
     int DeleteShadow(int x, int y);
-    int LocateEnvironment(int x, int y);
+
     void DeleteTile(int iId);
 
     std::vector<sTileMap> TileMap;

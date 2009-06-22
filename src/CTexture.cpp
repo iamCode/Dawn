@@ -79,9 +79,11 @@ void CTexture::LoadIMG(char *file, int texture_index) {
 }
 
 
-void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue) {
+void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue, float x_scale, float y_scale) {
     glEnable(GL_BLEND);
     glColor4f(red,green, blue,transparency);			// Full Brightness, 50% Alpha ( NEW )
+    glPushMatrix();
+    glScalef(x_scale,y_scale,1.0f);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		// Blending Function For Translucency Based On Source Alpha Value ( NEW )
     glBindTexture( GL_TEXTURE_2D, texture[draw_id].texture);
     glBegin( GL_QUADS );
@@ -94,7 +96,12 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
         //Top-right vertex (corner)
         glTexCoord2f( 0.0f, 1.0f ); glVertex3f( x, y+texture[draw_id].height, 0.0f );
     glEnd();
+    glPopMatrix();
     glDisable(GL_BLEND);
+
+    // depending on what transparency, color setting and such we have been using, we reset the color+transparency here.
+    // think the color and transparency should work in the pushmatrix() popmatrix() aswell.
+    glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
 int CTexture::LoadTextureMap(char *file, bool try_load_collision_box) {
