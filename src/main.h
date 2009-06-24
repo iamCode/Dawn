@@ -41,9 +41,11 @@
 #include "CInterface.h"
 #include "CCharacter.h"
 #include "CEditor.h"
+#include "CMessage.h"
 
 int RES_X = 1024,RES_Y = 768, RES_BPP = 32;
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
 CZone zone1;
+CMessage message;
