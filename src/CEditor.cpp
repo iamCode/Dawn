@@ -393,7 +393,16 @@ void CEditor::HandleKeys() {
         KP_toggle_tileset = false;
     }
 
-    if (keys[SDLK_s]) { SaveZone(); }
+    if (keys[SDLK_s] && !KP_save_zone) {
+        KP_save_zone = true;
+        SaveZone();
+        message.AddText(RES_X/2, (RES_Y/2)-50, 1.0f, 0.625f, 0.71f, 1.0f, 15, 3.0f, "Zone saved ...");
+    }
+
+    if (!keys[SDLK_s]) {
+        KP_save_zone = false;
+    }
+
 };
 
 void CEditor::DrawEditor() {

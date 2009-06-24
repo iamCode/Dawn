@@ -18,10 +18,12 @@
 #define __C_EDITOR_
 
 #include "CZone.h"
+#include "CMessage.h"
 #include "CTexture.h"
 #include <stdio.h>
 
 extern int world_x, world_y, mouseX, mouseY, RES_X, RES_Y, done;
+extern CMessage message;
 extern CZone zone1;
 
 class CEditor {
@@ -40,7 +42,7 @@ class CEditor {
     void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
 
     int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-    bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset;
+    bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone;
 
     CTexture interfacetexture;
 };
