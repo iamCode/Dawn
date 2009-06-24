@@ -65,12 +65,15 @@ class CZone {
     int LocateTile(int x, int y);
     int LocateShadow(int x, int y);
     int LocateEnvironment(int x, int y);
+    int LocateCollisionbox(int x, int y);
 
     void ChangeTile(int iId, int texture);
     void AddEnvironment(int x_pos, int y_pos, int texture);
     void AddShadow(int x_pos, int y_pos, int texture);
+    void AddCollisionbox(int x_pos, int y_pos);
     int DeleteEnvironment(int x, int y);
     int DeleteShadow(int x, int y);
+    int DeleteCollisionbox(int x, int y);
 
     void DeleteTile(int iId);
 

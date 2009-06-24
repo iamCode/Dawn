@@ -199,6 +199,9 @@ void CZone::AddShadow(int x_pos, int y_pos, int texture) {
     ShadowMap.push_back(sEnvironmentMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
 }
 
+void CZone::AddCollisionbox(int x_pos, int y_pos) {
+    CollisionMap.push_back(sCollisionMap(x_pos,y_pos,100,100));
+}
 
 int CZone::DeleteEnvironment(int x, int y) {
     for (unsigned int t=0;t<EnvironmentMap.size();t++) {
@@ -244,4 +247,28 @@ int CZone::DeleteShadow(int x, int y) {
         }
     }
     return 1;
+}
+
+int CZone::LocateCollisionbox(int x, int y) {
+    for (unsigned int t=0;t<CollisionMap.size();t++) {
+        if ((CollisionMap[t].CR.x+CollisionMap[t].CR.w > x) && (CollisionMap[t].CR.x < x)) {
+            if ((CollisionMap[t].CR.y+CollisionMap[t].CR.h > y) && (CollisionMap[t].CR.y < y)) {
+                return t;
+            }
+        }
+    }
+    return -1;
+}
+
+
+int CZone::DeleteCollisionbox(int x, int y) {
+    for (unsigned int t=0;t<CollisionMap.size();t++) {
+        if ((CollisionMap[t].CR.x+CollisionMap[t].CR.w > x) && (CollisionMap[t].CR.x < x)) {
+            if ((CollisionMap[t].CR.y+CollisionMap[t].CR.h > y) && (CollisionMap[t].CR.y < y)) {
+                CollisionMap.erase(CollisionMap.begin()+t);
+                return 0;
+            }
+        }
+    }
+    return -1;
 }
