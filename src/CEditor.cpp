@@ -92,6 +92,19 @@ int CEditor::SaveZone() {
     }
     fclose(fp);
     /////////////////////////////////////////////////////////
+
+    // open the collisionmap-file, so we can save our shadow...
+    if ((fp=fopen("data/zone1.collisionmap", "w")) == NULL) {
+        printf("ERROR opening file zone1.collisionmap\n\n");
+        return -1;
+    }
+    fprintf(fp,"#x y h w");
+
+    for (unsigned int x=0;x<zone1.CollisionMap.size();x++) {
+        fprintf(fp,"\n%d %d %d %d",zone1.CollisionMap[x].CR.x,zone1.CollisionMap[x].CR.y, zone1.CollisionMap[x].CR.h, zone1.CollisionMap[x].CR.w);
+    }
+    fclose(fp);
+    /////////////////////////////////////////////////////////
     return 0;
 };
 
@@ -108,7 +121,6 @@ void CEditor::HandleKeys() {
             if (event.key.keysym.sym == SDLK_SPACE) { }
         }
 
-        // scroll to choose a higher/lower tile
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             switch (event.button.button) {
                 case 1: // mouse button 1, see if we can select an object being pointed at.
@@ -120,6 +132,7 @@ void CEditor::HandleKeys() {
                     objectedit_selected = zone1.LocateShadow(world_x+mouseX,world_y+mouseY);
                     break;
                     case 3: // collisionboxes
+                    objectedit_selected = zone1.LocateCollisionbox(world_x+mouseX,world_y+mouseY);
                     break;
                 }
                 break;
@@ -172,6 +185,17 @@ void CEditor::HandleKeys() {
                 }
                 break;
             case 3: // collisionboxes
+                if (keys[SDLK_LSHIFT]) {
+                    if (keys[SDLK_DOWN]) { zone1.CollisionMap[objectedit_selected].CR.h += 1; }
+                    if (keys[SDLK_UP]) { zone1.CollisionMap[objectedit_selected].CR.h -= 1; }
+                    if (keys[SDLK_LEFT]) { zone1.CollisionMap[objectedit_selected].CR.w -= 1; }
+                    if (keys[SDLK_RIGHT]) { zone1.CollisionMap[objectedit_selected].CR.w += 1; }
+                } else {
+                    if (keys[SDLK_DOWN]) { zone1.CollisionMap[objectedit_selected].CR.y++; }
+                    if (keys[SDLK_UP]) { zone1.CollisionMap[objectedit_selected].CR.y--; }
+                    if (keys[SDLK_LEFT]) { zone1.CollisionMap[objectedit_selected].CR.x--; }
+                    if (keys[SDLK_RIGHT]) { zone1.CollisionMap[objectedit_selected].CR.x++; }
+                }
                 break;
         }
     } else {
@@ -194,6 +218,7 @@ void CEditor::HandleKeys() {
                 zone1.DeleteShadow(world_x+mouseX,world_y+mouseY);
                 break;
             case 3: // collisionboxes
+                zone1.DeleteCollisionbox(world_x+mouseX,world_y+mouseY);
                 break;
         }
     }
@@ -203,6 +228,7 @@ void CEditor::HandleKeys() {
     }
 
     if (keys[SDLK_KP_ENTER] && !KP_add_environment) {
+        objectedit_selected = -1;
         KP_add_environment = true;
         switch (current_object) {
             case 0: // tiles
@@ -215,6 +241,7 @@ void CEditor::HandleKeys() {
                 zone1.AddShadow(world_x+mouseX,world_y+mouseY,current_tilepos);
                 break;
             case 3: // collisionboxes
+                zone1.AddCollisionbox(world_x+mouseX,world_y+mouseY);
                 break;
         }
     }
@@ -224,6 +251,9 @@ void CEditor::HandleKeys() {
     }
 
     if (keys[SDLK_l] && !KP_toggle_editor) {
+        current_tilepos = 1;
+        tilepos_offset = 0;
+        objectedit_selected = -1;
         enabled = false;
         KP_toggle_editor = true;
     }
@@ -350,8 +380,9 @@ void CEditor::HandleKeys() {
         current_tilepos = 1;
         tilepos_offset = 0;
         objectedit_selected = -1;
+
         KP_toggle_tileset = true;
-        if (current_object < 2) {
+        if (current_object < 3) {
             current_object++;
         } else {
             current_object = 0;
@@ -366,11 +397,14 @@ void CEditor::HandleKeys() {
 };
 
 void CEditor::DrawEditor() {
-    if (current_object > 0) {
-        // we have selected to work with something else than tiles,
-        // therefore we are also displaying the collisionboxes for the editor.
-        // this needs to be drawn before the editor-frame, otherwise it overlaps the frame.
+    if (current_object == 3) {
+        // we have selected to work with collisionboxes, draw them.
         for (unsigned int x = 0; x < zone1.CollisionMap.size(); x++) {
+            if (objectedit_selected == (signed int)x) { // if we have a selected collisionbox, draw it a little brighter than the others.
+                glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+            } else {
+                glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
+            }
             glBindTexture(GL_TEXTURE_2D, interfacetexture.texture[1].texture);
             glBegin(GL_QUADS);
                 //Top-left vertex (corner)
@@ -382,6 +416,7 @@ void CEditor::DrawEditor() {
                 //Top-right vertex (corner)
                 glTexCoord2f(0.0f, 1.0f); glVertex3f(zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.y+zone1.CollisionMap[x].CR.h, 0.0f);
             glEnd();
+            glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
     }
 
