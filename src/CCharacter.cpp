@@ -46,44 +46,44 @@ int CCharacter::CollisionCheck(int direction) {
     switch (direction) {
         case 1:
         // check upper left corner
-        if (CheckForCollision(x_pos,y_pos-1) == 1) {
+        if (CheckForCollision(x_pos+1,y_pos+40) == 1) {
             return 1;
         }
         // check upper right corner
-        if (CheckForCollision(x_pos+40,y_pos+40) == 1) {
+        if (CheckForCollision(x_pos+39,y_pos+40) == 1) {
             return 1;
         }
         break;
 
         case 3:
         // check upper right corner
-        if (CheckForCollision(x_pos+41,y_pos) == 1) {
+        if (CheckForCollision(x_pos+40,y_pos+39) == 1) {
             return 1;
         }
         // check lower right corner
-        if (CheckForCollision(x_pos+41,y_pos+40) == 1) {
+        if (CheckForCollision(x_pos+40,y_pos+1) == 1) {
             return 1;
         }
         break;
 
         case 5:
         // check lower left corner
-        if (CheckForCollision(x_pos,y_pos-1) == 1) {
+        if (CheckForCollision(x_pos+1,y_pos+1) == 1) {
             return 1;
         }
         // check lower right corner
-        if (CheckForCollision(x_pos+40,y_pos-1) == 1) {
+        if (CheckForCollision(x_pos+39,y_pos) == 1) {
             return 1;
         }
         break;
 
         case 7:
         // check upper left corner
-        if (CheckForCollision(x_pos-1,y_pos) == 1) {
+        if (CheckForCollision(x_pos,y_pos+39) == 1) {
             return 1;
         }
         // check lower left corner
-        if (CheckForCollision(x_pos-1,y_pos+40) == 1) {
+        if (CheckForCollision(x_pos,y_pos) == 1) {
             return 1;
         }
         break;
