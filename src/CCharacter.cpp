@@ -21,9 +21,11 @@
 #include "CDrawingHelpers.h"
 
 void CCharacter::Draw() {
-    DrawingHelpers::mapTextureToRect( texture.texture[1].texture,
-                                      x_pos, texture.texture[1].width,
-                                      y_pos, texture.texture[1].height );
+    glEnable(GL_BLEND);
+    last_direction_texture = GetDirectionTexture();
+    DrawingHelpers::mapTextureToRect( texture.texture[last_direction_texture].texture,
+                                      x_pos, texture.texture[last_direction_texture].width,
+                                      y_pos, texture.texture[last_direction_texture].height );
 };
 
 int CCharacter::CheckForCollision(int x_pos, int y_pos) {
@@ -95,6 +97,7 @@ void CCharacter::MoveUp() {
     if (CollisionCheck(1) == 0) {
         world_y++;
         y_pos++;
+        current_texture = 1;
     }
 };
 
@@ -102,6 +105,7 @@ void CCharacter::MoveDown() {
     if (CollisionCheck(5) == 0) {
         world_y--;
         y_pos--;
+        current_texture = 5;
     }
 };
 
@@ -109,6 +113,7 @@ void CCharacter::MoveLeft() {
     if (CollisionCheck(7) == 0) {
         world_x--;
         x_pos--;
+        current_texture = 7;
     }
 };
 
@@ -116,5 +121,40 @@ void CCharacter::MoveRight() {
     if (CollisionCheck(3) == 0) {
         world_x++;
         x_pos++;
+        current_texture = 3;
     }
 };
+
+int CCharacter::GetDirectionTexture() {
+    keys = SDL_GetKeyState(NULL);
+
+    if (keys[SDLK_UP]) {
+        if (keys[SDLK_LEFT]) {
+            return 8;
+        } else if (keys[SDLK_RIGHT]) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    if (keys[SDLK_DOWN]) {
+        if (keys[SDLK_LEFT]) {
+            return 6;
+        } else if (keys[SDLK_RIGHT]) {
+            return 4;
+        } else {
+            return 5;
+        }
+    }
+
+    if (keys[SDLK_LEFT]) {
+        return 7;
+    }
+
+    if (keys[SDLK_RIGHT]) {
+        return 3;
+    }
+
+    return last_direction_texture;
+}

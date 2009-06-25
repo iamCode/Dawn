@@ -36,12 +36,15 @@ class CCharacter {
     void MoveDown();
     void MoveLeft();
     void MoveRight();
-    void Init(int x, int y) { x_pos = x; y_pos = y; }
+    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; }
     void Draw();
     int CollisionCheck(int direction);
     CTexture texture;
 
     private:
+    Uint8 *keys;
+    int GetDirectionTexture();
+    int current_texture, last_direction_texture;
     int CheckForCollision(int x, int y);
 
 };
