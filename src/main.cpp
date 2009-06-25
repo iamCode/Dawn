@@ -33,8 +33,6 @@ float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
 void DrawScene() {
-    glEnable(GL_TEXTURE_2D);
-
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glLoadIdentity();
@@ -87,7 +85,7 @@ int main(int argc, char *argv[]) {
 
     screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
     if ( screen == NULL ) {
-        printf("Unable to set 640x480 video: %s\n", SDL_GetError());
+        printf("Unable to set resolution %dx%d video: %s\n", RES_X,RES_Y,SDL_GetError());
         exit(1);
     }
 
@@ -110,8 +108,15 @@ int main(int argc, char *argv[]) {
 
     zone1.LoadZone("data/zone1");
 
-    character.texture.texture.reserve(2);
-    character.texture.LoadIMG("data/tile.tga",1);
+    character.texture.texture.reserve(10);
+    character.texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
+    character.texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
+    character.texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
+    character.texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
+    character.texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
+    character.texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
+    character.texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
+    character.texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
     character.Init((RES_X/2),(RES_Y/2));
 
     Editor.LoadTextures();
