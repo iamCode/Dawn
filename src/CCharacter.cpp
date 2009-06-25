@@ -1,5 +1,7 @@
-/**                    Dawn - 2D roleplaying game
-    Copyright (C) 2009  Tobias Eliasson (arnestig@users.sourceforge.net)
+/**
+    Copyright (C) 2009  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,12 +21,12 @@
 #include "CDrawingHelpers.h"
 
 void CCharacter::Draw() {
-    DrawingHelpers::mapTextureToRect( texture.texture[1].texture, 
+    DrawingHelpers::mapTextureToRect( texture.texture[1].texture,
                                       x_pos, texture.texture[1].width,
                                       y_pos, texture.texture[1].height );
 };
 
-int LocateTilex(int x_pos, int y_pos) {
+int CCharacter::CheckForCollision(int x_pos, int y_pos) {
     for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
         if ((zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w >= x_pos) && (zone1.CollisionMap[t].CR.x <= x_pos)) {
             if ((zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h >= y_pos) && (zone1.CollisionMap[t].CR.y <= y_pos)) {
@@ -44,44 +46,44 @@ int CCharacter::CollisionCheck(int direction) {
     switch (direction) {
         case 1:
         // check upper left corner
-        if (LocateTilex(x_pos,y_pos-1) == 1) {
+        if (CheckForCollision(x_pos,y_pos-1) == 1) {
             return 1;
         }
         // check upper right corner
-        if (LocateTilex(x_pos+40,y_pos-1) == 1) {
+        if (CheckForCollision(x_pos+40,y_pos+40) == 1) {
             return 1;
         }
         break;
 
         case 3:
         // check upper right corner
-        if (LocateTilex(x_pos+41,y_pos) == 1) {
+        if (CheckForCollision(x_pos+41,y_pos) == 1) {
             return 1;
         }
         // check lower right corner
-        if (LocateTilex(x_pos+41,y_pos+40) == 1) {
+        if (CheckForCollision(x_pos+41,y_pos+40) == 1) {
             return 1;
         }
         break;
 
         case 5:
         // check lower left corner
-        if (LocateTilex(x_pos,y_pos+41) == 1) {
+        if (CheckForCollision(x_pos,y_pos-1) == 1) {
             return 1;
         }
         // check lower right corner
-        if (LocateTilex(x_pos+40,y_pos+41) == 1) {
+        if (CheckForCollision(x_pos+40,y_pos-1) == 1) {
             return 1;
         }
         break;
 
         case 7:
         // check upper left corner
-        if (LocateTilex(x_pos-1,y_pos) == 1) {
+        if (CheckForCollision(x_pos-1,y_pos) == 1) {
             return 1;
         }
         // check lower left corner
-        if (LocateTilex(x_pos-1,y_pos+40) == 1) {
+        if (CheckForCollision(x_pos-1,y_pos+40) == 1) {
             return 1;
         }
         break;
