@@ -56,14 +56,14 @@ void CTexture::LoadIMG(char *file, int texture_index) {
 
         // invert the image
         char *surfaceBytes = static_cast<char*>(surface->pixels);
-        for ( size_t curX=0; curX < surface->w; ++curX )
+        for ( size_t curX=0; curX < static_cast<size_t>(surface->w); ++curX )
         {
-            for ( size_t curY=0; curY < surface->h/2; ++curY )
+            for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY )
             {
                 size_t inverseY = (surface->h - curY - 1);
                 size_t curData = (curY * surface->pitch) + curX * nOfColors;
                 size_t yInverseData = (inverseY * surface->pitch) + curX * nOfColors;
-                for ( size_t curByte=0; curByte < nOfColors; ++curByte )
+                for ( size_t curByte=0; curByte < static_cast<size_t>(nOfColors); ++curByte )
                 {
                     char tmp = surfaceBytes[yInverseData+curByte];
                     surfaceBytes[yInverseData+curByte] = surfaceBytes[curData+curByte];
