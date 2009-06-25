@@ -20,9 +20,10 @@
 #include "GLFT_Font.h"
 #include <SDL/SDL.h>
 
+#include <string>
 
 struct sBook {
-    char *string;
+    std::string string;
     float red, green, blue, transparency;
     float lifetime;
     int decayrate;
@@ -30,7 +31,7 @@ struct sBook {
     float lastframe, thisframe;
     float startdecaylastframe, startdecaythisframe;
 
-    sBook (char *_text, int _x_pos, int _y_pos, float _red, float _green, float _blue, float _transparency, int _decayrate, float _lifetime) {
+    sBook (std::string _text, int _x_pos, int _y_pos, float _red, float _green, float _blue, float _transparency, int _decayrate, float _lifetime) {
         string = _text; x_pos = _x_pos; y_pos = _y_pos; red = _red; green = _green; blue = _blue; transparency = _transparency; decayrate = _decayrate; lifetime = _lifetime; thisframe = 0.0f; lastframe = 0.0f; startdecaylastframe = 0.0f; startdecaythisframe = 0.0f;
     };
 };

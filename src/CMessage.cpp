@@ -49,16 +49,16 @@ void CMessage::DrawAll() {
 };
 
 void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, char *text, ...) {
-    char *buffer;
+    char buffer[1024];
     std::va_list args;
 
     // writing our text and arguments to the buffer
     va_start(args, text);
-    vsprintf(buffer,text,args);
+    vsnprintf(buffer,1024,text,args);
     va_end(args);
 
     // push everything to our vector.
-    MessageBook.push_back(sBook(buffer, x, y, red, green, blue, transparency, decayrate, lifetime));
+    MessageBook.push_back(sBook(std::string(buffer), x, y, red, green, blue, transparency, decayrate, lifetime));
 };
 
 void CMessage::DeleteDecayed() {
