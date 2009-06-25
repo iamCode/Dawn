@@ -1,5 +1,7 @@
-/**                    Dawn - 2D roleplaying game
-    Copyright (C) 2009  Tobias Eliasson (arnestig@users.sourceforge.net)
+/**
+    Copyright (C) 2009  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,7 +67,7 @@ void CTexture::LoadIMG(char *file, int texture_index) {
                 {
                     char tmp = surfaceBytes[yInverseData+curByte];
                     surfaceBytes[yInverseData+curByte] = surfaceBytes[curData+curByte];
-                    surfaceBytes[curData+curByte] = tmp; 
+                    surfaceBytes[curData+curByte] = tmp;
                 }
             }
         }

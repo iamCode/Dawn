@@ -1,5 +1,7 @@
-/**                    Dawn - 2D roleplaying game
-    Copyright (C) 2009  Tobias Eliasson (arnestig@users.sourceforge.net)
+/**
+    Copyright (C) 2009  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -507,7 +509,7 @@ void CEditor::DrawEditor() {
             break;
 
         case 2:
-            // draw all available shadows in edit frame 
+            // draw all available shadows in edit frame
             for (tilepos=1;tilepos<=zone1.ZoneShadow.NumberOfTextures; tilepos++) {
 
                 DrawingHelpers::mapTextureToRect( zone1.ZoneShadow.texture[tilepos].texture,
@@ -543,11 +545,11 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
     glPushMatrix();
     glScalef(editobject->x_scale,editobject->y_scale,1.0f);
     glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
-    
+
     DrawingHelpers::mapTextureToRect( texture->texture[editobject->id].texture,
                                       world_x+55, texture->texture[editobject->id].width,
                                       world_y+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
-    
+
     glPopMatrix();
 
     glColor4f(0.0f,0.0f,0.0f,1.0f);
