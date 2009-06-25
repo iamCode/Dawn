@@ -16,14 +16,12 @@
 
 #include "CCharacter.h"
 
+#include "CDrawingHelpers.h"
+
 void CCharacter::Draw() {
-    glBindTexture( GL_TEXTURE_2D, texture.texture[1].texture);
-    glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f(x_pos, y_pos, 0.0f );
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f(x_pos+texture.texture[1].width, y_pos, 0.0f );
-        glTexCoord2f( 1.0f, 1.0f ); glVertex3f(x_pos+texture.texture[1].width, y_pos+texture.texture[1].height, 0.0f );
-        glTexCoord2f( 0.0f, 1.0f ); glVertex3f(x_pos, y_pos+texture.texture[1].height, 0.0f );
-    glEnd();
+    DrawingHelpers::mapTextureToRect( texture.texture[1].texture, 
+                                      x_pos, texture.texture[1].width,
+                                      y_pos, texture.texture[1].height );
 };
 
 int LocateTilex(int x_pos, int y_pos) {
@@ -93,15 +91,15 @@ int CCharacter::CollisionCheck(int direction) {
 
 void CCharacter::MoveUp() {
     if (CollisionCheck(1) == 0) {
-        world_y--;
-        y_pos--;
+        world_y++;
+        y_pos++;
     }
 };
 
 void CCharacter::MoveDown() {
     if (CollisionCheck(5) == 0) {
-        world_y++;
-        y_pos++;
+        world_y--;
+        y_pos--;
     }
 };
 

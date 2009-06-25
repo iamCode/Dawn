@@ -198,10 +198,10 @@ void GLFT_Font::open(const std::string& filename, unsigned int size)
         // generate the character's display list
         glNewList(listBase_ + ch, GL_COMPILE);
         glBegin(GL_QUADS);
-        glTexCoord2f(texX1,texY1);  glVertex2i(0,0);
-        glTexCoord2f(texX2,texY1);  glVertex2i(widths_[ch],0);
-        glTexCoord2f(texX2,texY2);  glVertex2i(widths_[ch],height_);
-        glTexCoord2f(texX1,texY2);  glVertex2i(0,height_);
+        glTexCoord2f(texX1,texY2);  glVertex2i(0,0);
+        glTexCoord2f(texX2,texY2);  glVertex2i(widths_[ch],0);
+        glTexCoord2f(texX2,texY1);  glVertex2i(widths_[ch],height_);
+        glTexCoord2f(texX1,texY1);  glVertex2i(0,height_);
         glEnd();
         glTranslatef(widths_[ch],0,0);  // translate forward
         glEndList();

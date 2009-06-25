@@ -17,6 +17,7 @@
 #include "CTexture.h"
 #include <SDL/SDL_image.h>
 
+#include "CDrawingHelpers.h"
 
 void CTexture::LoadIMG(char *file, int texture_index) {
     if ((surface = IMG_Load(file))) {
@@ -49,6 +50,24 @@ void CTexture::LoadIMG(char *file, int texture_index) {
         } else {
             printf("warning: the image '%s' is not truecolor..  this will probably break\n", file);
             // this error should not go unhandled
+        }
+
+        // invert the image
+        char *surfaceBytes = static_cast<char*>(surface->pixels);
+        for ( size_t curX=0; curX < surface->w; ++curX )
+        {
+            for ( size_t curY=0; curY < surface->h/2; ++curY )
+            {
+                size_t inverseY = (surface->h - curY - 1);
+                size_t curData = (curY * surface->pitch) + curX * nOfColors;
+                size_t yInverseData = (inverseY * surface->pitch) + curX * nOfColors;
+                for ( size_t curByte=0; curByte < nOfColors; ++curByte )
+                {
+                    char tmp = surfaceBytes[yInverseData+curByte];
+                    surfaceBytes[yInverseData+curByte] = surfaceBytes[curData+curByte];
+                    surfaceBytes[curData+curByte] = tmp; 
+                }
+            }
         }
 
         // give us the size of the image's width and height and store it.
@@ -85,17 +104,9 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
     glPushMatrix();
     glScalef(x_scale,y_scale,1.0f);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		// Blending Function For Translucency Based On Source Alpha Value ( NEW )
-    glBindTexture( GL_TEXTURE_2D, texture[draw_id].texture);
-    glBegin( GL_QUADS );
-        //Top-left vertex (corner)
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f( x, y, 0.0f );
-        //Bottom-left vertex (corner)
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f( x+texture[draw_id].width, y, 0.0f );
-        //Bottom-right vertex (corner)
-        glTexCoord2f( 1.0f, 1.0f ); glVertex3f( x+texture[draw_id].width, y+texture[draw_id].height, 0.0f );
-        //Top-right vertex (corner)
-        glTexCoord2f( 0.0f, 1.0f ); glVertex3f( x, y+texture[draw_id].height, 0.0f );
-    glEnd();
+    DrawingHelpers::mapTextureToRect( texture[draw_id].texture,
+                                      x, texture[draw_id].width,
+                                      y, texture[draw_id].height );
     glPopMatrix();
     glDisable(GL_BLEND);
 
