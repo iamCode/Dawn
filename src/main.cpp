@@ -62,7 +62,9 @@ void DrawScene() {
     GLFT_Font fnt("data/verdana.ttf", 12);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    fnt.drawText(world_x, world_y+RES_Y - fnt.getHeight(), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
+    // note: we need to cast fnt.getHeight to int since otherwise the whole expression would be an unsigned int
+    //       causing overflow and not drawing the font if it gets negative
+    fnt.drawText(world_x, world_y+RES_Y - static_cast<int>(fnt.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
 
     message.DrawAll();
     message.DeleteDecayed();
@@ -81,7 +83,7 @@ int main(int argc, char *argv[]) {
     }
     atexit(SDL_Quit);
 
-    screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL /*| SDL_FULLSCREEN*/);
+    screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
     if ( screen == NULL ) {
         printf("Unable to set 640x480 video: %s\n", SDL_GetError());
         exit(1);
