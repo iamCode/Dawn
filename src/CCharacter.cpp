@@ -21,7 +21,6 @@
 #include "CDrawingHelpers.h"
 
 void CCharacter::Draw() {
-    glEnable(GL_BLEND);
     last_direction_texture = GetDirectionTexture();
     DrawingHelpers::mapTextureToRect( texture.texture[last_direction_texture].texture,
                                       x_pos, texture.texture[last_direction_texture].width,

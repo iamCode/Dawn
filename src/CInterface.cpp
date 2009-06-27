@@ -27,8 +27,6 @@ void CInterface::LoadTextures() {
 };
 
 void CInterface::DrawInterface() {
-    glEnable(GL_BLEND);
-
     // background at bottom of screen, black and nicely blended.
     DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
                                       world_x, RES_X,
@@ -38,6 +36,4 @@ void CInterface::DrawInterface() {
     DrawingHelpers::mapTextureToRect( interfacetextures.texture[1].texture,
                                       world_x, interfacetextures.texture[1].width,
                                       world_y, interfacetextures.texture[1].height );
-
-    glDisable(GL_BLEND);
 }

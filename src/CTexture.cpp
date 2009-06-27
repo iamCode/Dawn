@@ -101,16 +101,13 @@ void CTexture::LoadIMG(char *file, int texture_index) {
 
 
 void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue, float x_scale, float y_scale) {
-    glEnable(GL_BLEND);
     glColor4f(red,green, blue,transparency);			// Full Brightness, 50% Alpha ( NEW )
     glPushMatrix();
     glScalef(x_scale,y_scale,1.0f);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		// Blending Function For Translucency Based On Source Alpha Value ( NEW )
     DrawingHelpers::mapTextureToRect( texture[draw_id].texture,
                                       x, texture[draw_id].width,
                                       y, texture[draw_id].height );
     glPopMatrix();
-    glDisable(GL_BLEND);
 
     // depending on what transparency, color setting and such we have been using, we reset the color+transparency here.
     // think the color and transparency should work in the pushmatrix() popmatrix() aswell.

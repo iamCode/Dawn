@@ -439,7 +439,6 @@ void CEditor::DrawEditor() {
         }
     }
 
-    glEnable(GL_BLEND);
     // quad on the top, baseframe for the object-selection.
     DrawingHelpers::mapTextureToRect( interfacetexture.texture[0].texture,
                                       world_x, RES_X,
@@ -517,12 +516,7 @@ void CEditor::DrawEditor() {
                                                   world_y+RES_Y-60, 40 );
             }
             break;
-
-        case 3:
-            break;
-
     }
-    glDisable(GL_BLEND);
 };
 
 void CEditor::LoadTextures() {
@@ -534,7 +528,6 @@ void CEditor::LoadTextures() {
 }
 
 void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id) {
-    glEnable(GL_BLEND);
     // draws a white quad as our editframe
     DrawingHelpers::mapTextureToRect( interfacetexture.texture[3].texture,
                                       world_x+50, 350,
@@ -563,7 +556,6 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
     fnt.drawText(world_x+287, world_y+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
     fnt.drawText(world_x+287, world_y+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
 
-    glDisable(GL_BLEND);
     glColor4f(1.0f,1.0f,1.0f,1.0f);
     glScalef(1.0f,1.0f,1.0f);
 }

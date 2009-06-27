@@ -39,8 +39,6 @@
 
 void CMessage::DrawAll() {
     GLFT_Font fnt("data/verdana.ttf", 12);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     for (unsigned int book = 0; book < MessageBook.size(); book++) {
         if (MessageBook[book].lifetime > 0.0) { // if we have a lifetime, we need to wait until we start decaying the message.
@@ -62,7 +60,6 @@ void CMessage::DrawAll() {
         glColor4f(MessageBook[book].red,MessageBook[book].green,MessageBook[book].blue,MessageBook[book].transparency);
         fnt.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
     }
-    glDisable(GL_BLEND);
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
 
