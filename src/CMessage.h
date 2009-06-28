@@ -40,12 +40,14 @@ struct sBook {
 
 class CMessage {
     public:
+    void initFonts();
     void AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, char *text, ...);
     void DrawAll();
     void DeleteDecayed();
 
     private:
     std::vector<sBook> MessageBook;
+    GLFT_Font messageFont;
 };
 
 #endif

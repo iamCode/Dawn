@@ -32,6 +32,8 @@ class CEditor {
     public:
     CEditor() { enabled = false; tilepos_offset = 0; tilepos = 1; current_tilepos = 1; current_object = 0; objectedit_selected = -1; };
 
+    void initFonts();
+
     bool enabled, KP_toggle_editor;
     void DrawEditor();
     int SaveZone();
@@ -47,6 +49,8 @@ class CEditor {
     bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone;
 
     CTexture interfacetexture;
+    GLFT_Font objectDescriptionFont;
+    GLFT_Font keybindingFont;
 };
 
 #endif

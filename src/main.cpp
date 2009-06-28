@@ -32,6 +32,8 @@ extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
+GLFT_Font fpsFont;
+
 void DrawScene() {
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -59,11 +61,9 @@ void DrawScene() {
         GUI.DrawInterface();
     }
 
-    GLFT_Font fnt("data/verdana.ttf", 12);
-
-    // note: we need to cast fnt.getHeight to int since otherwise the whole expression would be an unsigned int
+    // note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
     //       causing overflow and not drawing the font if it gets negative
-    fnt.drawText(world_x, world_y+RES_Y - static_cast<int>(fnt.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
+    fpsFont.drawText(world_x, world_y+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
 
     message.DrawAll();
     message.DeleteDecayed();
@@ -119,6 +119,11 @@ int main(int argc, char *argv[]) {
 
     Editor.LoadTextures();
     GUI.LoadTextures();
+    
+    // initialize fonts where needed
+    fpsFont.open("data/verdana.ttf", 12);
+    message.initFonts();
+    Editor.initFonts();
 
     SDL_ShowCursor(0);
 

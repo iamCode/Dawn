@@ -37,9 +37,12 @@
 
 #include "CMessage.h"
 
-void CMessage::DrawAll() {
-    GLFT_Font fnt("data/verdana.ttf", 12);
+void CMessage::initFonts()
+{
+    messageFont.open("data/verdana.ttf", 12);
+}
 
+void CMessage::DrawAll() {
     for (unsigned int book = 0; book < MessageBook.size(); book++) {
         if (MessageBook[book].lifetime > 0.0) { // if we have a lifetime, we need to wait until we start decaying the message.
             MessageBook[book].startdecaythisframe = SDL_GetTicks();
@@ -58,7 +61,7 @@ void CMessage::DrawAll() {
         }
         // set the color + transparency then draw the text.
         glColor4f(MessageBook[book].red,MessageBook[book].green,MessageBook[book].blue,MessageBook[book].transparency);
-        fnt.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
+        messageFont.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
     }
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
