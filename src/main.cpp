@@ -32,6 +32,8 @@ extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
+GLFT_Font fpsFont;
+
 // **** Global Settings ****
 // Thought: I think this should be expanded so that there is an
 // actual game settings class
@@ -45,12 +47,12 @@ static bool HandleCommandLineAurguments(int argc, char** argv) {
         std::string currentarg(argv[i]);
 	if(currentarg == "-f" || currentarg == "--fullscreen") {
             fullscreenenabled = true;
-            shouldExit = 0;
+            shouldExit = false;
         } else if(currentarg == "-h" || currentarg == "--help") {
             printf("Dawn-RPG Startup Parameters\n\n");
             printf(" -f, --fullscreen         Run Dawn in fullscreen mode\n");
             printf(" -h, --help               Show this help screen\n");
-            shouldExit = 1;
+            shouldExit = true;
         }
     }
     return shouldExit;
@@ -83,11 +85,9 @@ void DrawScene() {
         GUI.DrawInterface();
     }
 
-    GLFT_Font fnt("data/verdana.ttf", 12);
-
-    // note: we need to cast fnt.getHeight to int since otherwise the whole expression would be an unsigned int
+    // note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
     //       causing overflow and not drawing the font if it gets negative
-    fnt.drawText(world_x, world_y+RES_Y - static_cast<int>(fnt.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
+    fpsFont.drawText(world_x, world_y+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
 
     message.DrawAll();
     message.DeleteDecayed();
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
     done = HandleCommandLineAurguments(argc, argv);
 
     // Skip the init steps if true was set as a result of the command line parameters
-    if(done == 0) {
+    if(!done) {
 
         if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0) { // start up SDL
             printf("Unable to init SDL: %s\n", SDL_GetError());
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         }
         atexit(SDL_Quit);
 
-        if(fullscreenenabled == true)
+        if(fullscreenenabled)
     	    screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
         else
             screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
@@ -152,6 +152,11 @@ int main(int argc, char *argv[]) {
 
         Editor.LoadTextures();
         GUI.LoadTextures();
+
+        // initialize fonts where needed
+        fpsFont.open("data/verdana.ttf", 12);
+        message.initFonts();
+        Editor.initFonts();
 
         SDL_ShowCursor(0);
     }
