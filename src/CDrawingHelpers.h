@@ -25,7 +25,18 @@ namespace DrawingHelpers
 {
     inline void mapTextureToRect( GLuint texture, int left, int width, int bottom, int height )
     {
-        glBindTexture( GL_TEXTURE_2D, texture);
+        // don't rebind texture if it is already bound
+        // (this may save a lot of performance, if the texture is not scaled)
+        GLuint boundTexture;
+        int paramValue;
+        glGetIntegerv( GL_TEXTURE_BINDING_2D, &paramValue );
+        boundTexture = static_cast<GLuint>(paramValue);    
+        
+        if ( boundTexture != texture )
+        {
+            glBindTexture( GL_TEXTURE_2D, texture);
+        }
+        
         glBegin( GL_QUADS );
         // Bottom-left vertex (corner)
         glTexCoord2f( 0.0f, 0.0f ); glVertex3f( left, bottom, 0.0f );
