@@ -22,6 +22,7 @@
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 #include "CTexture.h"
 #include "CZone.h"
+#include "CDirection.h"
 #include <SDL/SDL.h> // SDL
 
 extern int RES_X,RES_Y,world_x,world_y;
@@ -36,16 +37,20 @@ class CCharacter {
     void MoveDown();
     void MoveLeft();
     void MoveRight();
-    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; }
+    void Move();
+    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; remainingMovePoints = 0; }
     void Draw();
-    int CollisionCheck(int direction);
+    int CollisionCheck(Direction direction);
+    void giveMovePoints( uint32_t movePoints );
     CTexture texture;
-
+    
     private:
     Uint8 *keys;
+    Direction GetDirection();
     int GetDirectionTexture();
     int current_texture, last_direction_texture;
     int CheckForCollision(int x, int y);
+    uint32_t remainingMovePoints;
 
 };
 

@@ -161,9 +161,17 @@ int main(int argc, char *argv[]) {
         SDL_ShowCursor(0);
     }
 
+    Uint32 lastTicks = SDL_GetTicks();
+    Uint32 curTicks  = lastTicks;
+    Uint32 ticksDiff = 0;
+    
     while(done == 0) {
         if (Editor.enabled) {
             Editor.HandleKeys();
+
+            lastTicks = SDL_GetTicks();
+            curTicks  = lastTicks;
+            ticksDiff = 0;
         } else {
             SDL_Event event;
 
@@ -183,10 +191,16 @@ int main(int argc, char *argv[]) {
 
             keys = SDL_GetKeyState(NULL);
 
-            if (keys[SDLK_DOWN]) { character.MoveDown(); }
-            if (keys[SDLK_UP]) { character.MoveUp(); }
-            if (keys[SDLK_LEFT]) { character.MoveLeft(); }
-            if (keys[SDLK_RIGHT]) { character.MoveRight(); }
+            curTicks  = SDL_GetTicks();
+            ticksDiff = curTicks - lastTicks;
+            lastTicks = curTicks;
+
+            character.giveMovePoints( ticksDiff );
+            character.Move();
+            //if (keys[SDLK_DOWN]) { character.MoveDown(); }
+            //if (keys[SDLK_UP]) { character.MoveUp(); }
+            //if (keys[SDLK_LEFT]) { character.MoveLeft(); }
+            //if (keys[SDLK_RIGHT]) { character.MoveRight(); }
 
              if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
                 Editor.enabled = true;

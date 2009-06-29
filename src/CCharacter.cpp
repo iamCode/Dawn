@@ -38,14 +38,10 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos) {
     return 0;
 }
 
-int CCharacter::CollisionCheck(int direction) {
-    /** directions:
-      8-1-2
-      7-X-3
-      6-5-4 **/
+int CCharacter::CollisionCheck(Direction direction) {
 
     switch (direction) {
-        case 1:
+        case N:
         // check upper left corner
         if (CheckForCollision(x_pos+1,y_pos+40) == 1) {
             return 1;
@@ -56,7 +52,7 @@ int CCharacter::CollisionCheck(int direction) {
         }
         break;
 
-        case 3:
+        case E:
         // check upper right corner
         if (CheckForCollision(x_pos+40,y_pos+39) == 1) {
             return 1;
@@ -67,7 +63,7 @@ int CCharacter::CollisionCheck(int direction) {
         }
         break;
 
-        case 5:
+        case S:
         // check lower left corner
         if (CheckForCollision(x_pos+1,y_pos+1) == 1) {
             return 1;
@@ -78,7 +74,7 @@ int CCharacter::CollisionCheck(int direction) {
         }
         break;
 
-        case 7:
+        case W:
         // check upper left corner
         if (CheckForCollision(x_pos,y_pos+39) == 1) {
             return 1;
@@ -93,7 +89,7 @@ int CCharacter::CollisionCheck(int direction) {
 };
 
 void CCharacter::MoveUp() {
-    if (CollisionCheck(1) == 0) {
+    if (CollisionCheck(N) == 0) {
         world_y++;
         y_pos++;
         current_texture = 1;
@@ -101,7 +97,7 @@ void CCharacter::MoveUp() {
 };
 
 void CCharacter::MoveDown() {
-    if (CollisionCheck(5) == 0) {
+    if (CollisionCheck(S) == 0) {
         world_y--;
         y_pos--;
         current_texture = 5;
@@ -109,7 +105,7 @@ void CCharacter::MoveDown() {
 };
 
 void CCharacter::MoveLeft() {
-    if (CollisionCheck(7) == 0) {
+    if (CollisionCheck(W) == 0) {
         world_x--;
         x_pos--;
         current_texture = 7;
@@ -117,43 +113,100 @@ void CCharacter::MoveLeft() {
 };
 
 void CCharacter::MoveRight() {
-    if (CollisionCheck(3) == 0) {
+    if (CollisionCheck(E) == 0) {
         world_x++;
         x_pos++;
         current_texture = 3;
     }
 };
 
-int CCharacter::GetDirectionTexture() {
+void CCharacter::Move()
+{
+    int movePerStep = 10; // moves one step per movePerStep ms
+    Direction direction = GetDirection();
+    while ( remainingMovePoints > movePerStep )
+    {
+        remainingMovePoints -= movePerStep;
+
+        switch( direction )
+        {
+            case NW:
+                MoveLeft();
+                MoveUp();
+            break;
+            case N:
+                MoveUp();
+            break;
+            case NE:
+                MoveRight();
+                MoveUp();
+            break;
+            case W:
+                MoveLeft();
+            break;
+            case E:
+                MoveRight();
+            break;
+            case SW:
+                MoveLeft();
+                MoveDown();
+            break;
+            case S:
+                MoveDown();
+            break;
+            case SE:
+                MoveRight();
+                MoveDown();
+            break;
+            default:
+            break;
+        }
+    }
+}
+
+void CCharacter::giveMovePoints( uint32_t movePoints )
+{
+    remainingMovePoints += movePoints;
+}
+
+Direction CCharacter::GetDirection()
+{
     keys = SDL_GetKeyState(NULL);
 
     if (keys[SDLK_UP]) {
         if (keys[SDLK_LEFT]) {
-            return 8;
+            return NW;
         } else if (keys[SDLK_RIGHT]) {
-            return 2;
+            return NE;
         } else {
-            return 1;
+            return N;
         }
     }
 
     if (keys[SDLK_DOWN]) {
         if (keys[SDLK_LEFT]) {
-            return 6;
+            return SW;
         } else if (keys[SDLK_RIGHT]) {
-            return 4;
+            return SE;
         } else {
-            return 5;
+            return S;
         }
     }
 
     if (keys[SDLK_LEFT]) {
-        return 7;
+        return W;
     }
 
     if (keys[SDLK_RIGHT]) {
-        return 3;
+        return E;
     }
 
-    return last_direction_texture;
+    return STOP; 
+}
+
+int CCharacter::GetDirectionTexture() {
+    int direction = GetDirection();
+    if ( direction == STOP )
+        return last_direction_texture;
+    return static_cast<int>(direction);
 }
