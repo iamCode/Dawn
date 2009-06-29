@@ -21,6 +21,11 @@
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 
+extern int world_x;
+extern int world_y;
+extern int RES_X;
+extern int RES_Y;
+
 namespace DrawingHelpers
 {
     inline void mapTextureToRect( GLuint texture, int left, int width, int bottom, int height )
@@ -47,6 +52,18 @@ namespace DrawingHelpers
         // Top-left vertex (corner)
         glTexCoord2f( 0.0f, 1.0f ); glVertex3f( left, bottom + height, 0.0f );
         glEnd();
+    }
+
+    inline bool isRectOnScreen( int left, int width, int bottom, int height )
+    {
+        if (    left >= (world_x + RES_X)           // object right of screen
+             || bottom >= (world_y + RES_Y)         // object above screen
+             || (left + width) <= world_x           // object left of screen
+             || (bottom + height) <= world_y )      // object below screen
+        {
+            return false;
+        }
+        return true;
     }
 }
 

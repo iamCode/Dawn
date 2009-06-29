@@ -103,6 +103,13 @@ void CTexture::LoadIMG(char *file, int texture_index) {
 void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue, float x_scale, float y_scale) {
     glColor4f(red,green, blue,transparency);			// Full Brightness, 50% Alpha ( NEW )
 
+    // if the texture is not on the screen, we need to do nothing
+    if ( ! DrawingHelpers::isRectOnScreen( x, texture[draw_id].width * x_scale,
+                                           y, texture[draw_id].height * y_scale ) )
+    {
+        return;
+    }
+
     // note: scaling together with texture binding (in mapTextureToRect)
     //       takes a lot of time so do it only if necessary)
     bool needToScale = (x_scale != 1.0f || y_scale != 1.0f);
