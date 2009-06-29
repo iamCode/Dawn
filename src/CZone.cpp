@@ -88,6 +88,7 @@ int CZone::LoadEnvironment(char *file) {
             count++;
         }
     }
+
     fclose(fp);
     return 0;
 }
@@ -114,6 +115,7 @@ int CZone::LoadShadow(char *file) {
             count++;
         }
     }
+
     fclose(fp);
     return 0;
 }
@@ -138,6 +140,8 @@ int CZone::LoadMap(char *file) {
             count++;
         }
     }
+
+    std::sort(TileMap.begin(), TileMap.end()); // sort our vector based on texture, less calls to glBindTexture() = more performance.
 
     fclose(fp);
     return 0;

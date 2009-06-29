@@ -22,10 +22,20 @@
 #include "CTexture.h"
 #include <vector>
 #include <stdio.h>
+#include <algorithm>
+#include "CDrawingHelpers.h"
 
 struct sTileMap {
     int x_pos, y_pos, id;
     sTileMap(int _x, int _y, int _tex_id) { x_pos = _x; y_pos = _y; id = _tex_id; };
+
+    bool operator<(const sTileMap& tile1) const { // instead of using a predicate in our sort call.
+        return id < tile1.id;
+    };
+};
+
+struct sortbytile {
+
 };
 
 struct sEnvironmentMap {
@@ -33,6 +43,10 @@ struct sEnvironmentMap {
     float transparency, red, green, blue, x_scale, y_scale;
     sEnvironmentMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale) {
         x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue; x_scale = _x_scale; y_scale = _y_scale;
+    };
+
+    bool operator<(const sEnvironmentMap& environment1) const { // instead of using a predicate in our sort call.
+        return id < environment1.id;
     };
 };
 
@@ -47,6 +61,10 @@ struct sShadowMap {
     sShadowMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale) {
         x_pos = _x; y_pos = _y; id = _tex_id; transparency = _tp; red = _red; green = _green; blue = _blue; x_scale = _x_scale; y_scale = _y_scale;
     };
+
+        bool operator<(const sShadowMap& shadow1) const { // instead of using a predicate in our sort call.
+        return id < shadow1.id;
+    };
 };
 
 class CZone {
@@ -54,6 +72,7 @@ class CZone {
     void DrawTiles();
     void DrawEnvironment();
     void DrawShadows();
+
 
     public:
     void DrawZone();
