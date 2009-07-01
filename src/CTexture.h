@@ -22,6 +22,7 @@
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 #include <SDL/SDL.h> // SDL
 
+#include <iostream>
 #include <vector>
 
 struct sTexture {

@@ -23,6 +23,7 @@
 #include "CMessage.h"
 #include "CTexture.h"
 #include <stdio.h>
+#include <iostream>
 
 extern int world_x, world_y, mouseX, mouseY, RES_X, RES_Y, done;
 extern CMessage message;

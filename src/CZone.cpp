@@ -52,7 +52,7 @@ int CZone::LoadCollisions(char *file) {
 
     // open the texturemap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
-        printf("ERROR opening file %s\n\n", file);
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
 
@@ -75,7 +75,7 @@ int CZone::LoadEnvironment(char *file) {
 
     // open the texturemap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
-        printf("ERROR opening file %s\n\n", file);
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
 
@@ -101,7 +101,7 @@ int CZone::LoadShadow(char *file) {
 
     // open the shadowmap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
-        printf("ERROR opening file %s\n\n", file);
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
 
@@ -127,7 +127,7 @@ int CZone::LoadMap(char *file) {
 
     // open the texturemap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
-        printf("ERROR opening file %s\n\n", file);
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
 

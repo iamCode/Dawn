@@ -25,12 +25,13 @@ void CTexture::LoadIMG(char *file, int texture_index) {
     if ((surface = IMG_Load(file))) {
         // Check that the image's width is a power of 2
         if ((surface->w & (surface->w - 1)) != 0) {
-            printf("Warning: the width of image '%s' is not a power of 2\n",file);
+            std::cout << "Warning: the width of image " << file <<
+            " is not a power of 2" << std::endl;
         }
-
         // Also check if the height is a power of 2
         if ((surface->h & (surface->h - 1)) != 0) {
-            printf("Warning: the height of image '%s' is not a power of 2\n",file);
+            std::cout << "Warning: the height of image " << file <<
+            " is not a power of 2" << std::endl;
         }
 
         // get the number of channels in the SDL surface
@@ -50,7 +51,8 @@ void CTexture::LoadIMG(char *file, int texture_index) {
                 texture_format = GL_BGR;
             }
         } else {
-            printf("warning: the image '%s' is not truecolor..  this will probably break\n", file);
+            std::cout << "warning: the image " << file <<
+            " is not truecolor..  this will probably break" << std::endl;
             // this error should not go unhandled
         }
 
@@ -89,7 +91,7 @@ void CTexture::LoadIMG(char *file, int texture_index) {
         // Edit the texture object's image data using the information SDL_Surface gives us
         glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
     } else {
-        printf("SDL could not load %s: %s\n", file,SDL_GetError());
+        std::cout << "SDL could not load " << file << ": " << SDL_GetError() << std::endl;
         SDL_Quit();
     }
 
@@ -139,7 +141,8 @@ int CTexture::LoadTextureMap(char *file, bool try_load_collision_box) {
 
     // open the texturemap-file, if not give us an error in stdout.txt.
     if ((fp=fopen(file, "r")) == NULL) {
-        printf("ERROR opening file %s\n\n", file);
+        std::cout << "ERROR opening file " << file
+        << std::endl << std::endl;
         return -1;
     }
 

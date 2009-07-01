@@ -63,7 +63,7 @@ int CEditor::SaveZone() {
     FILE *fp;
     // open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
     if ((fp=fopen("data/zone1.tilemap", "w")) == NULL) {
-        printf("ERROR opening file zone1.tilemap\n\n");
+        std::cout << "ERROR opening file zone1.tilemap" << std::endl;
         return -1;
     }
     fprintf(fp,"#x-pos y-pos tile-id");
@@ -77,7 +77,8 @@ int CEditor::SaveZone() {
 
     // open the environmentmap-file, so we can write our trees and stuff...
     if ((fp=fopen("data/zone1.environmentmap", "w")) == NULL) {
-        printf("ERROR opening file zone1.environmentmap\n\n");
+        std::cout << "ERROR opening file zone1.environmentmap" <<
+        std::endl << std::endl;
         return -1;
     }
     fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
@@ -92,7 +93,8 @@ int CEditor::SaveZone() {
 
     // open the shadowmap-file, so we can save our shadow...
     if ((fp=fopen("data/zone1.shadowmap", "w")) == NULL) {
-        printf("ERROR opening file zone1.shadowmap\n\n");
+        std::cout << "ERROR opening file zone1.shadowmap" <<
+         std::endl << std::endl;
         return -1;
     }
     fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
@@ -105,7 +107,8 @@ int CEditor::SaveZone() {
 
     // open the collisionmap-file, so we can save our shadow...
     if ((fp=fopen("data/zone1.collisionmap", "w")) == NULL) {
-        printf("ERROR opening file zone1.collisionmap\n\n");
+        std::cout << "ERROR opening file zone1.collisionmap" <<
+        std::endl << std::endl;
         return -1;
     }
     fprintf(fp,"#x y h w");
