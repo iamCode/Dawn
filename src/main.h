@@ -18,9 +18,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
-#ifndef NO_WINDOWS
-    #include <windows.h>
+#ifdef _WIN32
+    #include <windows.h> // Nothing uses this, perhaps it could be removed?
 #endif
 
 #include <vector>

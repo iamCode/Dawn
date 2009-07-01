@@ -37,24 +37,44 @@ GLFT_Font fpsFont;
 // **** Global Settings ****
 // Thought: I think this should be expanded so that there is an
 // actual game settings class
-bool fullscreenenabled = false;
+bool fullscreenenabled = true;
 
 // Handle command line arguments, returns 1 if the game loop is
 // not supposed to run.
 static bool HandleCommandLineAurguments(int argc, char** argv) {
     bool shouldExit = 0;
-    for(int i = 1 ; i < argc ; ++i) {
+    std::string executable(argv[0]);
+
+    freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
+    for(int i=1 ; i < argc ; ++i) {
         std::string currentarg(argv[i]);
-	if(currentarg == "-f" || currentarg == "--fullscreen") {
+	    if(currentarg == "-f" || currentarg == "--fullscreen") {
             fullscreenenabled = true;
             shouldExit = false;
+        } else if(currentarg == "-w" || currentarg == "--window") {
+            fullscreenenabled = false;
+            shouldExit = false;
         } else if(currentarg == "-h" || currentarg == "--help") {
-            printf("Dawn-RPG Startup Parameters\n\n");
-            printf(" -f, --fullscreen         Run Dawn in fullscreen mode\n");
-            printf(" -h, --help               Show this help screen\n");
+            std::cout << "Dawn-RPG Startup Parameters" <<
+            std::endl << std::endl <<
+            " -f, --fullscreen         Run Dawn in fullscreen mode" <<
+            std::endl <<
+            " -w, --window             Run Dawn inside a window" <<
+            std::endl <<
+            " -h, --help               Show this help screen" <<
+            std::endl;
             shouldExit = true;
+        } else {
+            std::cout << std::endl <<"\"" << currentarg <<
+            "\" is not a recognised option" << std::endl << std::endl <<
+            "Please type \"" << executable <<
+            " -h\" for all available options" << std::endl <<
+            std::endl;
+            shouldExit = true;
+            break;
         }
     }
+    freopen( "stdio.txt", "wt", stdout ); // Redirect stdout back to the file
     return shouldExit;
 }
 
@@ -95,7 +115,7 @@ void DrawScene() {
     SDL_GL_SwapBuffers();
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     Uint8 *keys;
 
     done = HandleCommandLineAurguments(argc, argv);
@@ -104,18 +124,21 @@ int main(int argc, char *argv[]) {
     if(!done) {
 
         if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0) { // start up SDL
-            printf("Unable to init SDL: %s\n", SDL_GetError());
+            std::cout << "Unable to init SDL: " << SDL_GetError() << std::endl;
             exit(1);
         }
         atexit(SDL_Quit);
 
-        if(fullscreenenabled)
-    	    screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
-        else
+
+
+        if(fullscreenenabled == false)
             screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
+        else
+            screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
 
         if ( screen == NULL ) {
-            printf("Unable to set resolution %dx%d video: %s\n", RES_X,RES_Y,SDL_GetError());
+            std::cout << "Unable to set resolution " << RES_X <<
+            "x" << RES_Y << " video:" << SDL_GetError();
             exit(1);
         }
 
@@ -164,7 +187,7 @@ int main(int argc, char *argv[]) {
     Uint32 lastTicks = SDL_GetTicks();
     Uint32 curTicks  = lastTicks;
     Uint32 ticksDiff = 0;
-    
+
     while(done == 0) {
         if (Editor.enabled) {
             Editor.HandleKeys();
