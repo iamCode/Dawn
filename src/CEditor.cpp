@@ -30,19 +30,19 @@ void CEditor::initFonts()
 void CEditor::inc_tilepos() {
     switch (current_object) {
         case 0: // tiles
-            if (current_tilepos < zone1.ZoneTiles.NumberOfTextures) {
+            if (current_tilepos < zoneToEdit->ZoneTiles.NumberOfTextures) {
                 current_tilepos++;
                 tilepos_offset--;
             }
             break;
         case 1: // environment
-            if (current_tilepos < zone1.ZoneEnvironment.NumberOfTextures) {
+            if (current_tilepos < zoneToEdit->ZoneEnvironment.NumberOfTextures) {
                 current_tilepos++;
                 tilepos_offset--;
             }
             break;
         case 2: // shadows
-            if (current_tilepos < zone1.ZoneShadow.NumberOfTextures) {
+            if (current_tilepos < zoneToEdit->ZoneShadow.NumberOfTextures) {
                 current_tilepos++;
                 tilepos_offset--;
             }
@@ -68,8 +68,8 @@ int CEditor::SaveZone() {
     }
     fprintf(fp,"#x-pos y-pos tile-id");
 
-    for (unsigned int x=0; x<zone1.TileMap.size();x++) {
-        fprintf(fp,"\n%d %d %d",zone1.TileMap[x].x_pos,zone1.TileMap[x].y_pos,zone1.TileMap[x].id);
+    for (unsigned int x=0; x<zoneToEdit->TileMap.size();x++) {
+        fprintf(fp,"\n%d %d %d",zoneToEdit->TileMap[x].x_pos,zoneToEdit->TileMap[x].y_pos,zoneToEdit->TileMap[x].id);
     }
 
     fclose(fp);
@@ -84,8 +84,8 @@ int CEditor::SaveZone() {
     fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
 
 
-    for (unsigned int x=0;x<zone1.EnvironmentMap.size();x++) {
-        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zone1.EnvironmentMap[x].x_pos,zone1.EnvironmentMap[x].y_pos, zone1.EnvironmentMap[x].id, zone1.EnvironmentMap[x].transparency,zone1.EnvironmentMap[x].red,zone1.EnvironmentMap[x].green,zone1.EnvironmentMap[x].blue, zone1.EnvironmentMap[x].x_scale, zone1.EnvironmentMap[x].y_scale);
+    for (unsigned int x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
+        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].id, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale);
     }
     fclose(fp);
     ////////////////////////////////////////////////////////////////////////
@@ -99,8 +99,8 @@ int CEditor::SaveZone() {
     }
     fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
 
-    for (unsigned int x=0;x<zone1.ShadowMap.size();x++) {
-        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zone1.ShadowMap[x].x_pos,zone1.ShadowMap[x].y_pos, zone1.ShadowMap[x].id, zone1.ShadowMap[x].transparency, zone1.ShadowMap[x].red, zone1.ShadowMap[x].green, zone1.ShadowMap[x].blue, zone1.ShadowMap[x].x_scale, zone1.ShadowMap[x].y_scale);
+    for (unsigned int x=0;x<zoneToEdit->ShadowMap.size();x++) {
+        fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->ShadowMap[x].x_pos,zoneToEdit->ShadowMap[x].y_pos, zoneToEdit->ShadowMap[x].id, zoneToEdit->ShadowMap[x].transparency, zoneToEdit->ShadowMap[x].red, zoneToEdit->ShadowMap[x].green, zoneToEdit->ShadowMap[x].blue, zoneToEdit->ShadowMap[x].x_scale, zoneToEdit->ShadowMap[x].y_scale);
     }
     fclose(fp);
     /////////////////////////////////////////////////////////
@@ -113,13 +113,35 @@ int CEditor::SaveZone() {
     }
     fprintf(fp,"#x y h w");
 
-    for (unsigned int x=0;x<zone1.CollisionMap.size();x++) {
-        fprintf(fp,"\n%d %d %d %d",zone1.CollisionMap[x].CR.x,zone1.CollisionMap[x].CR.y, zone1.CollisionMap[x].CR.h, zone1.CollisionMap[x].CR.w);
+    for (unsigned int x=0;x<zoneToEdit->CollisionMap.size();x++) {
+        fprintf(fp,"\n%d %d %d %d",zoneToEdit->CollisionMap[x].CR.x,zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h, zoneToEdit->CollisionMap[x].CR.w);
     }
     fclose(fp);
     /////////////////////////////////////////////////////////
     return 0;
 };
+
+void CEditor::setEditZone( CZone *zoneToEdit_ )
+{
+    this->zoneToEdit = zoneToEdit_;
+}
+
+bool CEditor::isEnabled() const
+{
+    return enabled;
+}
+
+void CEditor::setEnabled( bool enabled_ )
+{
+    enabled = enabled_;
+
+    // ensure a correct zone has been set
+    if ( enabled && zoneToEdit == NULL )
+    {
+        std::cerr << "zone for editor not set" << std::endl;
+        abort(); 
+    }
+}
 
 void CEditor::HandleKeys() {
     Uint8 *keys;
@@ -139,13 +161,13 @@ void CEditor::HandleKeys() {
                 case 1: // mouse button 1, see if we can select an object being pointed at.
                 switch (current_object) {
                     case 1: // environment
-                    objectedit_selected = zone1.LocateEnvironment(world_x+mouseX,world_y+mouseY);
+                    objectedit_selected = zoneToEdit->LocateEnvironment(world_x+mouseX,world_y+mouseY);
                     break;
                     case 2: // shadows
-                    objectedit_selected = zone1.LocateShadow(world_x+mouseX,world_y+mouseY);
+                    objectedit_selected = zoneToEdit->LocateShadow(world_x+mouseX,world_y+mouseY);
                     break;
                     case 3: // collisionboxes
-                    objectedit_selected = zone1.LocateCollisionbox(world_x+mouseX,world_y+mouseY);
+                    objectedit_selected = zoneToEdit->LocateCollisionbox(world_x+mouseX,world_y+mouseY);
                     break;
                 }
                 break;
@@ -173,41 +195,41 @@ void CEditor::HandleKeys() {
         switch (current_object) {
             case 1: // environment
                 if (keys[SDLK_LSHIFT]) {
-                    if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_scale -= 0.01f; }
-                    if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_scale += 0.01f; }
-                    if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_scale -= 0.01f; }
-                    if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_scale += 0.01f; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->EnvironmentMap[objectedit_selected].y_scale -= 0.01f; }
+                    if (keys[SDLK_UP]) { zoneToEdit->EnvironmentMap[objectedit_selected].y_scale += 0.01f; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->EnvironmentMap[objectedit_selected].x_scale -= 0.01f; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->EnvironmentMap[objectedit_selected].x_scale += 0.01f; }
                 } else {
-                    if (keys[SDLK_DOWN]) { zone1.EnvironmentMap[objectedit_selected].y_pos--; }
-                    if (keys[SDLK_UP]) { zone1.EnvironmentMap[objectedit_selected].y_pos++; }
-                    if (keys[SDLK_LEFT]) { zone1.EnvironmentMap[objectedit_selected].x_pos--; }
-                    if (keys[SDLK_RIGHT]) { zone1.EnvironmentMap[objectedit_selected].x_pos++; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->EnvironmentMap[objectedit_selected].y_pos--; }
+                    if (keys[SDLK_UP]) { zoneToEdit->EnvironmentMap[objectedit_selected].y_pos++; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->EnvironmentMap[objectedit_selected].x_pos--; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->EnvironmentMap[objectedit_selected].x_pos++; }
                 }
                 break;
             case 2: // shadows
                 if (keys[SDLK_LSHIFT]) {
-                    if (keys[SDLK_DOWN]) { zone1.ShadowMap[objectedit_selected].y_scale -= 0.01f; }
-                    if (keys[SDLK_UP]) { zone1.ShadowMap[objectedit_selected].y_scale += 0.01f; }
-                    if (keys[SDLK_LEFT]) { zone1.ShadowMap[objectedit_selected].x_scale -= 0.01f; }
-                    if (keys[SDLK_RIGHT]) { zone1.ShadowMap[objectedit_selected].x_scale += 0.01f; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->ShadowMap[objectedit_selected].y_scale -= 0.01f; }
+                    if (keys[SDLK_UP]) { zoneToEdit->ShadowMap[objectedit_selected].y_scale += 0.01f; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->ShadowMap[objectedit_selected].x_scale -= 0.01f; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->ShadowMap[objectedit_selected].x_scale += 0.01f; }
                 } else {
-                    if (keys[SDLK_DOWN]) { zone1.ShadowMap[objectedit_selected].y_pos--; }
-                    if (keys[SDLK_UP]) { zone1.ShadowMap[objectedit_selected].y_pos++; }
-                    if (keys[SDLK_LEFT]) { zone1.ShadowMap[objectedit_selected].x_pos--; }
-                    if (keys[SDLK_RIGHT]) { zone1.ShadowMap[objectedit_selected].x_pos++; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->ShadowMap[objectedit_selected].y_pos--; }
+                    if (keys[SDLK_UP]) { zoneToEdit->ShadowMap[objectedit_selected].y_pos++; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->ShadowMap[objectedit_selected].x_pos--; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->ShadowMap[objectedit_selected].x_pos++; }
                 }
                 break;
             case 3: // collisionboxes
                 if (keys[SDLK_LSHIFT]) {
-                    if (keys[SDLK_DOWN]) { zone1.CollisionMap[objectedit_selected].CR.h -= 1; }
-                    if (keys[SDLK_UP]) { zone1.CollisionMap[objectedit_selected].CR.h += 1; }
-                    if (keys[SDLK_LEFT]) { zone1.CollisionMap[objectedit_selected].CR.w -= 1; }
-                    if (keys[SDLK_RIGHT]) { zone1.CollisionMap[objectedit_selected].CR.w += 1; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->CollisionMap[objectedit_selected].CR.h -= 1; }
+                    if (keys[SDLK_UP]) { zoneToEdit->CollisionMap[objectedit_selected].CR.h += 1; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->CollisionMap[objectedit_selected].CR.w -= 1; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->CollisionMap[objectedit_selected].CR.w += 1; }
                 } else {
-                    if (keys[SDLK_DOWN]) { zone1.CollisionMap[objectedit_selected].CR.y--; }
-                    if (keys[SDLK_UP]) { zone1.CollisionMap[objectedit_selected].CR.y++; }
-                    if (keys[SDLK_LEFT]) { zone1.CollisionMap[objectedit_selected].CR.x--; }
-                    if (keys[SDLK_RIGHT]) { zone1.CollisionMap[objectedit_selected].CR.x++; }
+                    if (keys[SDLK_DOWN]) { zoneToEdit->CollisionMap[objectedit_selected].CR.y--; }
+                    if (keys[SDLK_UP]) { zoneToEdit->CollisionMap[objectedit_selected].CR.y++; }
+                    if (keys[SDLK_LEFT]) { zoneToEdit->CollisionMap[objectedit_selected].CR.x--; }
+                    if (keys[SDLK_RIGHT]) { zoneToEdit->CollisionMap[objectedit_selected].CR.x++; }
                 }
                 break;
         }
@@ -222,16 +244,16 @@ void CEditor::HandleKeys() {
         KP_delete_environment = true;
         switch (current_object) {
             case 0: // tiles
-                zone1.DeleteTile(zone1.LocateTile(world_x+mouseX,world_y+mouseY));
+                zoneToEdit->DeleteTile(zoneToEdit->LocateTile(world_x+mouseX,world_y+mouseY));
                 break;
             case 1: // environment
-                zone1.DeleteEnvironment(world_x+mouseX,world_y+mouseY);
+                zoneToEdit->DeleteEnvironment(world_x+mouseX,world_y+mouseY);
                 break;
             case 2: // shadows
-                zone1.DeleteShadow(world_x+mouseX,world_y+mouseY);
+                zoneToEdit->DeleteShadow(world_x+mouseX,world_y+mouseY);
                 break;
             case 3: // collisionboxes
-                zone1.DeleteCollisionbox(world_x+mouseX,world_y+mouseY);
+                zoneToEdit->DeleteCollisionbox(world_x+mouseX,world_y+mouseY);
                 break;
         }
     }
@@ -245,16 +267,16 @@ void CEditor::HandleKeys() {
         KP_add_environment = true;
         switch (current_object) {
             case 0: // tiles
-                zone1.ChangeTile(zone1.LocateTile(world_x+mouseX,world_y+mouseY),current_tilepos);
+                zoneToEdit->ChangeTile(zoneToEdit->LocateTile(world_x+mouseX,world_y+mouseY),current_tilepos);
                 break;
             case 1: // environment
-                zone1.AddEnvironment(world_x+mouseX,world_y+mouseY,current_tilepos);
+                zoneToEdit->AddEnvironment(world_x+mouseX,world_y+mouseY,current_tilepos);
                 break;
             case 2: // shadows
-                zone1.AddShadow(world_x+mouseX,world_y+mouseY,current_tilepos);
+                zoneToEdit->AddShadow(world_x+mouseX,world_y+mouseY,current_tilepos);
                 break;
             case 3: // collisionboxes
-                zone1.AddCollisionbox(world_x+mouseX,world_y+mouseY);
+                zoneToEdit->AddCollisionbox(world_x+mouseX,world_y+mouseY);
                 break;
         }
     }
@@ -278,13 +300,13 @@ void CEditor::HandleKeys() {
     if (keys['.']) {  // increase the amount of transparency of the object.
         switch (current_object) {
             case 1: // environment
-                if (zone1.EnvironmentMap[objectedit_selected].transparency > 0.01f) {
-                    zone1.EnvironmentMap[objectedit_selected].transparency -= 0.01f;
+                if (zoneToEdit->EnvironmentMap[objectedit_selected].transparency > 0.01f) {
+                    zoneToEdit->EnvironmentMap[objectedit_selected].transparency -= 0.01f;
                 }
                 break;
             case 2: // shadows
-                if (zone1.ShadowMap[objectedit_selected].transparency > 0.01f) {
-                    zone1.ShadowMap[objectedit_selected].transparency -= 0.01f;
+                if (zoneToEdit->ShadowMap[objectedit_selected].transparency > 0.01f) {
+                    zoneToEdit->ShadowMap[objectedit_selected].transparency -= 0.01f;
                 }
                 break;
         }
@@ -293,13 +315,13 @@ void CEditor::HandleKeys() {
     if (keys[',']) { // decrease the amount of transparency of the object.
         switch (current_object) {
             case 1: // environment
-                if (zone1.EnvironmentMap[objectedit_selected].transparency < 0.99f) {
-                    zone1.EnvironmentMap[objectedit_selected].transparency += 0.01f;
+                if (zoneToEdit->EnvironmentMap[objectedit_selected].transparency < 0.99f) {
+                    zoneToEdit->EnvironmentMap[objectedit_selected].transparency += 0.01f;
                 }
                 break;
             case 2: // shadows
-                if (zone1.ShadowMap[objectedit_selected].transparency < 0.99f) {
-                    zone1.ShadowMap[objectedit_selected].transparency += 0.01f;
+                if (zoneToEdit->ShadowMap[objectedit_selected].transparency < 0.99f) {
+                    zoneToEdit->ShadowMap[objectedit_selected].transparency += 0.01f;
                 }
                 break;
         }
@@ -310,23 +332,23 @@ void CEditor::HandleKeys() {
         switch (current_object) {
             case 1:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.EnvironmentMap[objectedit_selected].red > 0.01f) {
-                        zone1.EnvironmentMap[objectedit_selected].red -= 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].red > 0.01f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].red -= 0.01f;
                     }
                 } else {
-                    if (zone1.EnvironmentMap[objectedit_selected].red < 1.0f) {
-                        zone1.EnvironmentMap[objectedit_selected].red += 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].red < 1.0f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].red += 0.01f;
                     }
                 }
                 break;
             case 2:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.ShadowMap[objectedit_selected].red > 0.01f) {
-                        zone1.ShadowMap[objectedit_selected].red -= 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].red > 0.01f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].red -= 0.01f;
                     }
                 } else {
-                    if (zone1.ShadowMap[objectedit_selected].red < 1.0f) {
-                        zone1.ShadowMap[objectedit_selected].red += 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].red < 1.0f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].red += 0.01f;
                     }
                 }
                 break;
@@ -338,23 +360,23 @@ void CEditor::HandleKeys() {
         switch (current_object) {
             case 1:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.EnvironmentMap[objectedit_selected].green > 0.01f) {
-                        zone1.EnvironmentMap[objectedit_selected].green -= 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].green > 0.01f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].green -= 0.01f;
                     }
                 } else {
-                    if (zone1.EnvironmentMap[objectedit_selected].green < 1.0f) {
-                        zone1.EnvironmentMap[objectedit_selected].green += 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].green < 1.0f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].green += 0.01f;
                     }
                 }
                 break;
             case 2:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.ShadowMap[objectedit_selected].green > 0.01f) {
-                        zone1.ShadowMap[objectedit_selected].green -= 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].green > 0.01f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].green -= 0.01f;
                     }
                 } else {
-                    if (zone1.ShadowMap[objectedit_selected].green < 1.0f) {
-                        zone1.ShadowMap[objectedit_selected].green += 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].green < 1.0f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].green += 0.01f;
                     }
                 }
                 break;
@@ -366,23 +388,23 @@ void CEditor::HandleKeys() {
         switch (current_object) {
             case 1:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.EnvironmentMap[objectedit_selected].blue > 0.01f) {
-                        zone1.EnvironmentMap[objectedit_selected].blue -= 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].blue > 0.01f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].blue -= 0.01f;
                     }
                 } else {
-                    if (zone1.EnvironmentMap[objectedit_selected].blue < 1.0f) {
-                        zone1.EnvironmentMap[objectedit_selected].blue += 0.01f;
+                    if (zoneToEdit->EnvironmentMap[objectedit_selected].blue < 1.0f) {
+                        zoneToEdit->EnvironmentMap[objectedit_selected].blue += 0.01f;
                     }
                 }
                 break;
             case 2:
                 if (keys[SDLK_LSHIFT]) {
-                    if (zone1.ShadowMap[objectedit_selected].blue > 0.01f) {
-                        zone1.ShadowMap[objectedit_selected].blue -= 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].blue > 0.01f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].blue -= 0.01f;
                     }
                 } else {
-                    if (zone1.ShadowMap[objectedit_selected].blue < 1.0f) {
-                        zone1.ShadowMap[objectedit_selected].blue += 0.01f;
+                    if (zoneToEdit->ShadowMap[objectedit_selected].blue < 1.0f) {
+                        zoneToEdit->ShadowMap[objectedit_selected].blue += 0.01f;
                     }
                 }
                 break;
@@ -421,7 +443,7 @@ void CEditor::HandleKeys() {
 void CEditor::DrawEditor() {
     if (current_object == 3) {
         // we have selected to work with collisionboxes, draw them.
-        for (unsigned int x = 0; x < zone1.CollisionMap.size(); x++) {
+        for (unsigned int x = 0; x < zoneToEdit->CollisionMap.size(); x++) {
             if (objectedit_selected == (signed int)x) { // if we have a selected collisionbox, draw it a little brighter than the others.
                 glColor4f(1.0f, 1.0f, 1.0f,1.0f);
             } else {
@@ -429,8 +451,8 @@ void CEditor::DrawEditor() {
             }
 
             DrawingHelpers::mapTextureToRect( interfacetexture.texture[1].texture,
-                                              zone1.CollisionMap[x].CR.x, zone1.CollisionMap[x].CR.w,
-                                              zone1.CollisionMap[x].CR.y, zone1.CollisionMap[x].CR.h );
+                                              zoneToEdit->CollisionMap[x].CR.x, zoneToEdit->CollisionMap[x].CR.w,
+                                              zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h );
             glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
     }
@@ -438,10 +460,10 @@ void CEditor::DrawEditor() {
     if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
         switch (current_object) {
             case 1:
-            DrawEditFrame(&zone1.EnvironmentMap[objectedit_selected], &zone1.ZoneEnvironment, objectedit_selected);
+            DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]), &(zoneToEdit->ZoneEnvironment), objectedit_selected);
             break;
             case 2:
-            DrawEditFrame(&zone1.ShadowMap[objectedit_selected], &zone1.ZoneShadow, objectedit_selected);
+            DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]), &(zoneToEdit->ZoneShadow), objectedit_selected);
             break;
             case 3:
             break;
@@ -497,9 +519,9 @@ void CEditor::DrawEditor() {
     switch (current_object) {
         case 0:
             // draw all tileset tiles in edit frame
-            for (tilepos=1;tilepos<=zone1.ZoneTiles.NumberOfTextures;tilepos++) {
+            for (tilepos=1;tilepos<=zoneToEdit->ZoneTiles.NumberOfTextures;tilepos++) {
 
-                DrawingHelpers::mapTextureToRect( zone1.ZoneTiles.texture[tilepos].texture,
+                DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos].texture,
                                                   world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
                                                   world_y+RES_Y-60, 40 );
             }
@@ -507,9 +529,9 @@ void CEditor::DrawEditor() {
 
         case 1:
             // draw all environment objects in edit frame
-            for (tilepos=1;tilepos<=zone1.ZoneEnvironment.NumberOfTextures; tilepos++) {
+            for (tilepos=1;tilepos<=zoneToEdit->ZoneEnvironment.NumberOfTextures; tilepos++) {
 
-                DrawingHelpers::mapTextureToRect( zone1.ZoneEnvironment.texture[tilepos].texture,
+                DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos].texture,
                                                   world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
                                                   world_y+RES_Y-60, 40 );
             }
@@ -517,9 +539,9 @@ void CEditor::DrawEditor() {
 
         case 2:
             // draw all available shadows in edit frame
-            for (tilepos=1;tilepos<=zone1.ZoneShadow.NumberOfTextures; tilepos++) {
+            for (tilepos=1;tilepos<=zoneToEdit->ZoneShadow.NumberOfTextures; tilepos++) {
 
-                DrawingHelpers::mapTextureToRect( zone1.ZoneShadow.texture[tilepos].texture,
+                DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos].texture,
                                                   world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
                                                   world_y+RES_Y-60, 40 );
             }

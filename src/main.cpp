@@ -99,7 +99,7 @@ void DrawScene() {
         lastframe=thisframe;
     }
 
-    if (Editor.enabled) {
+    if (Editor.isEnabled() ) {
         Editor.DrawEditor();
     } else {
         GUI.DrawInterface();
@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
     Uint32 ticksDiff = 0;
 
     while(done == 0) {
-        if (Editor.enabled) {
+        if (Editor.isEnabled()) {
             Editor.HandleKeys();
 
             lastTicks = SDL_GetTicks();
@@ -226,7 +226,8 @@ int main(int argc, char* argv[]) {
             //if (keys[SDLK_RIGHT]) { character.MoveRight(); }
 
              if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-                Editor.enabled = true;
+                Editor.setEditZone( &zone1 );
+                Editor.setEnabled( true );
                 Editor.KP_toggle_editor = true;
             }
 
