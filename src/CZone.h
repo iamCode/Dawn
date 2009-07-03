@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include "CDrawingHelpers.h"
+#include "CNPC.h"
 
 struct sTileMap {
     int x_pos, y_pos, id;
@@ -95,6 +96,8 @@ class CZone {
     CTexture ZoneTiles;
     CTexture ZoneEnvironment;
     CTexture ZoneShadow;
+
+    CNPC NPCs;
 };
 
 #endif

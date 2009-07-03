@@ -22,10 +22,12 @@ void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
+    NPCs.DrawNPCs();
+    NPCs.RespawnNPCs();
 }
 
 void CZone::LoadZone(char *file) {
-    char texturemap[32], textureenvironment[32], collisionmap[32], tilemap[32], environmentmap[32], textureshadow[32], shadowmap[32];
+    char texturemap[32], textureenvironment[32], collisionmap[32], tilemap[32], environmentmap[32], textureshadow[32], shadowmap[32], spawnpointmap[32];
 
     sprintf(texturemap,"%s.textures",file);
     sprintf(tilemap,"%s.tilemap",file);
@@ -34,6 +36,7 @@ void CZone::LoadZone(char *file) {
     sprintf(shadowmap,"%s.shadowmap",file);
     sprintf(textureshadow,"%s.textureshadow",file);
     sprintf(collisionmap,"%s.collisionmap",file);
+    sprintf(spawnpointmap,"%s.spawnpointmap",file);
 
     ZoneTiles.LoadTextureMap(texturemap);
     ZoneEnvironment.LoadTextureMap(textureenvironment,true);
@@ -43,6 +46,8 @@ void CZone::LoadZone(char *file) {
     LoadEnvironment(environmentmap);
     LoadShadow(shadowmap);
     LoadCollisions(collisionmap);
+    NPCs.LoadSpawnPoints(spawnpointmap);
+    NPCs.Init();
 }
 
 int CZone::LoadCollisions(char *file) {
