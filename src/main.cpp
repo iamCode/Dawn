@@ -225,7 +225,13 @@ int main(int argc, char* argv[]) {
             //if (keys[SDLK_LEFT]) { character.MoveLeft(); }
             //if (keys[SDLK_RIGHT]) { character.MoveRight(); }
 
-             if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
+            if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
+                for (unsigned int x=0; x<zone1.NPCs.NPC.size(); x++) {
+                    zone1.NPCs.NPC[x].alive = false;
+                }
+            }
+
+            if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
                 Editor.setEditZone( &zone1 );
                 Editor.setEnabled( true );
                 Editor.KP_toggle_editor = true;
