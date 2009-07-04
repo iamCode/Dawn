@@ -99,7 +99,6 @@ class CZone {
     CTexture ZoneShadow;
 
     std::vector <CNPC> NPC;
-    void RespawnNPCs();
     void DrawNPCs();
 };
 

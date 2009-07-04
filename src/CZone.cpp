@@ -22,8 +22,11 @@ void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
-    DrawNPCs();
-    RespawnNPCs();
+    for (unsigned int x=0; x<NPC.size(); x++) {
+        NPC[x].Respawn();
+        NPC[x].Draw();
+        NPC[x].Wander();
+    }
 }
 
 void CZone::LoadZone(char *file) {
@@ -305,31 +308,4 @@ int CZone::DeleteCollisionbox(int x, int y) {
         }
     }
     return -1;
-}
-
-
-void CZone::RespawnNPCs() {
-    for (unsigned int x=0; x<NPC.size(); x++) {
-        if (NPC[x].alive == false && NPC[x].do_respawn == true) {
-            NPC[x].thisframe_respawn = SDL_GetTicks();
-            if ((NPC[x].thisframe_respawn-NPC[x].lastframe_respawn) > 1000) {
-                NPC[x].time_to_respawn--;
-                NPC[x].lastframe_respawn = NPC[x].thisframe_respawn;
-                if (NPC[x].time_to_respawn == 0) {
-                    NPC[x].alive = true;
-                    NPC[x].x_pos = NPC[x].x_spawn_pos;
-                    NPC[x].y_pos = NPC[x].y_spawn_pos;
-                    NPC[x].time_to_respawn = NPC[x].respawn_rate;
-                }
-            }
-        }
-    }
-}
-
-void CZone::DrawNPCs() {
-    for (unsigned int x=0;x<NPC.size();x++) {
-        if (NPC[x].alive == true) {
-            NPC[x].texture.DrawTexture(NPC[x].x_pos,NPC[x].y_pos,NPC[x].current_frame);
-        }
-    }
 }
