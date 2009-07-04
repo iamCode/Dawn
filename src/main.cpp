@@ -173,6 +173,13 @@ int main(int argc, char* argv[]) {
         character.texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
         character.Init((RES_X/2),(RES_Y/2));
 
+
+        zone1.NPC[0].texture.texture.reserve(10);
+        zone1.NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
+        for (unsigned int x=0; x<zone1.NPC.size();x++) {
+            zone1.NPC[x].LoadMobInfo();
+        }
+
         Editor.LoadTextures();
         GUI.LoadTextures();
 
