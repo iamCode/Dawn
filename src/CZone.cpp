@@ -24,8 +24,6 @@ void CZone::DrawZone() {
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
     DrawNPCs();
     RespawnNPCs();
-    NPC[0].texture.texture.reserve(10);
-    NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
 }
 
 void CZone::LoadZone(char *file) {
