@@ -22,8 +22,10 @@ void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
-    NPCs.DrawNPCs();
-    NPCs.RespawnNPCs();
+    DrawNPCs();
+    RespawnNPCs();
+    NPC[0].texture.texture.reserve(10);
+    NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
 }
 
 void CZone::LoadZone(char *file) {
@@ -46,8 +48,7 @@ void CZone::LoadZone(char *file) {
     LoadEnvironment(environmentmap);
     LoadShadow(shadowmap);
     LoadCollisions(collisionmap);
-    NPCs.LoadSpawnPoints(spawnpointmap);
-    NPCs.Init();
+    LoadSpawnPoints(spawnpointmap);
 }
 
 int CZone::LoadCollisions(char *file) {
@@ -124,6 +125,30 @@ int CZone::LoadShadow(char *file) {
     fclose(fp);
     return 0;
 }
+
+int CZone::LoadSpawnPoints(char *file) {
+    FILE *fp;
+    char buf[255];
+    int NPC_id = 0, x_pos = 0, y_pos = 0, respawn_rate = 0, do_respawn = 0;
+
+    // open the zoneX.spawnpoints-file, if not give us an error in stdout.txt.
+    if ((fp=fopen(file, "r")) == NULL) {
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
+        return -1;
+    }
+
+    while(!feof(fp)) {
+        fgets(buf, 255, fp);
+        if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
+            sscanf(buf, "%d %d %d %d %d", &x_pos, &y_pos, &NPC_id, &respawn_rate, &do_respawn);
+            // the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
+            NPC.push_back(CNPC(x_pos,y_pos,NPC_id,respawn_rate, do_respawn));
+        }
+    }
+
+    fclose(fp);
+    return 0;
+};
 
 int CZone::LoadMap(char *file) {
     FILE *fp;
@@ -282,4 +307,31 @@ int CZone::DeleteCollisionbox(int x, int y) {
         }
     }
     return -1;
+}
+
+
+void CZone::RespawnNPCs() {
+    for (unsigned int x=0; x<NPC.size(); x++) {
+        if (NPC[x].alive == false && NPC[x].do_respawn == true) {
+            NPC[x].thisframe_respawn = SDL_GetTicks();
+            if ((NPC[x].thisframe_respawn-NPC[x].lastframe_respawn) > 1000) {
+                NPC[x].time_to_respawn--;
+                NPC[x].lastframe_respawn = NPC[x].thisframe_respawn;
+                if (NPC[x].time_to_respawn == 0) {
+                    NPC[x].alive = true;
+                    NPC[x].x_pos = NPC[x].x_spawn_pos;
+                    NPC[x].y_pos = NPC[x].y_spawn_pos;
+                    NPC[x].time_to_respawn = NPC[x].respawn_rate;
+                }
+            }
+        }
+    }
+}
+
+void CZone::DrawNPCs() {
+    for (unsigned int x=0;x<NPC.size();x++) {
+        if (NPC[x].alive == true) {
+            NPC[x].texture.DrawTexture(NPC[x].x_pos,NPC[x].y_pos,NPC[x].current_frame);
+        }
+    }
 }

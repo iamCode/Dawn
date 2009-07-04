@@ -24,18 +24,12 @@
 #include <vector>
 #include "CTexture.h"
 
-struct NPC_list {
-    int NPC_id;
-};
+class CNPC {
+    private:
 
-struct sNPCs {
-    int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, respawn_rate, time_to_respawn;
-    int current_frame;
-    bool do_respawn, alive;
-    CTexture texture;
-    float lastframe_respawn, thisframe_respawn;
+    public:
 
-    sNPCs ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _respawn_rate, int _do_respawn) {
+    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _respawn_rate, int _do_respawn) {
         x_pos = _x_spawn_pos; y_pos = _y_spawn_pos;
         x_spawn_pos = _x_spawn_pos; y_spawn_pos = _y_spawn_pos;
         NPC_id = _NPC_id, respawn_rate = _respawn_rate; do_respawn = _do_respawn;
@@ -44,19 +38,13 @@ struct sNPCs {
         current_frame = 1; // this will be altered later on to draw what animation frame we want to draw.
         lastframe_respawn = 0.0f; thisframe_respawn = 0.0f; // helps us count when to respawn the NPC.
     };
-};
 
-class CNPC {
-    private:
+    int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, respawn_rate, time_to_respawn;
+    int current_frame;
+    bool do_respawn, alive;
+    CTexture texture;
+    float lastframe_respawn, thisframe_respawn;
 
-
-    public:
-    int LoadSpawnPoints(char *file);
-    void RespawnNPCs();
-    void DrawNPCs();
-    void Init();
-
-    std::vector<sNPCs> NPC;
 };
 
 #endif

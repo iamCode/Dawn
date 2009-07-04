@@ -71,6 +71,7 @@ class CZone {
     int LoadEnvironment(char *file);
     int LoadShadow(char *file);
     int LoadCollisions(char *file);
+    int LoadSpawnPoints(char *file);
 
     int LocateTile(int x, int y);
     int LocateShadow(int x, int y);
@@ -97,7 +98,9 @@ class CZone {
     CTexture ZoneEnvironment;
     CTexture ZoneShadow;
 
-    CNPC NPCs;
+    std::vector <CNPC> NPC;
+    void RespawnNPCs();
+    void DrawNPCs();
 };
 
 #endif
