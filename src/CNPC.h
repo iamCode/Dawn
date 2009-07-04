@@ -24,34 +24,55 @@
 #include <vector>
 #include "CTexture.h"
 #include "CMessage.h"
+#include "CDirection.h"
 
-extern CMessage message;
 
 class CNPC {
     private:
 
+    uint32_t remainingMovePoints;
 
+    float wander_thisframe, wander_lastframe;
+    int wander_every_seconds, wander_points_left, wander_direction;
+    bool wandering;
 
     public:
 
-    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _respawn_rate, int _do_respawn) {
+    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn) {
         x_pos = _x_spawn_pos; y_pos = _y_spawn_pos;
         x_spawn_pos = _x_spawn_pos; y_spawn_pos = _y_spawn_pos;
-        NPC_id = _NPC_id, respawn_rate = _respawn_rate; do_respawn = _do_respawn;
-        time_to_respawn = _respawn_rate;
+        NPC_id = _NPC_id; do_respawn = _do_respawn;
+        seconds_to_respawn = _seconds_to_respawn;
         alive = true;
         current_frame = 1; // this will be altered later on to draw what animation frame we want to draw.
-        lastframe_respawn = 0.0f; thisframe_respawn = 0.0f; // helps us count when to respawn the NPC.
+        respawn_thisframe = 0.0f; respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
+        wander_thisframe = 0.0f; wander_lastframe = 0.0f; // helping us decide when the mob will wander.
+        wander_every_seconds = 1; // this mob wanders every 15 seconds.
+        wandering = false;
     };
 
     char name[32];
     int level;
 
-    int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, respawn_rate, time_to_respawn;
+    void Wander();
+    void MoveUp();
+    void MoveDown();
+    void MoveLeft();
+    void MoveRight();
+    void Move(int direction);
+    void Respawn();
+    void Draw();
+    int CollisionCheck(Direction direction);
+    int CheckForCollision(int x_pos, int y_pos);
+    void giveMovePoints( uint32_t movePoints );
+    void Die();
+
+    int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, seconds_to_respawn;
     int current_frame;
     bool do_respawn, alive;
     CTexture texture;
-    float lastframe_respawn, thisframe_respawn;
+    float respawn_thisframe, respawn_lastframe;
+
 
     int LoadMobInfo();
 };

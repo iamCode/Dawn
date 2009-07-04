@@ -60,3 +60,185 @@ int CNPC::LoadMobInfo() {
     fclose(fp);
     return 0;
 };
+
+int CNPC::CheckForCollision(int x_pos, int y_pos) {
+    /**for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
+        if ((zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w >= x_pos) && (zone1.CollisionMap[t].CR.x <= x_pos)) {
+            if ((zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h >= y_pos) && (zone1.CollisionMap[t].CR.y <= y_pos)) {
+                return 1;
+            }
+        }
+    }**/
+    return 0;
+}
+
+int CNPC::CollisionCheck(Direction direction) {
+    switch (direction) {
+        case N:
+        // check upper left corner
+        if (CheckForCollision(x_pos+1,y_pos+40) == 1) {
+            return 1;
+        }
+        // check upper right corner
+        if (CheckForCollision(x_pos+39,y_pos+40) == 1) {
+            return 1;
+        }
+        break;
+
+        case E:
+        // check upper right corner
+        if (CheckForCollision(x_pos+40,y_pos+39) == 1) {
+            return 1;
+        }
+        // check lower right corner
+        if (CheckForCollision(x_pos+40,y_pos+1) == 1) {
+            return 1;
+        }
+        break;
+
+        case S:
+        // check lower left corner
+        if (CheckForCollision(x_pos+1,y_pos+1) == 1) {
+            return 1;
+        }
+        // check lower right corner
+        if (CheckForCollision(x_pos+39,y_pos) == 1) {
+            return 1;
+        }
+        break;
+
+        case W:
+        // check upper left corner
+        if (CheckForCollision(x_pos,y_pos+39) == 1) {
+            return 1;
+        }
+        // check lower left corner
+        if (CheckForCollision(x_pos,y_pos) == 1) {
+            return 1;
+        }
+        break;
+    }
+    return 0;
+};
+
+void CNPC::MoveUp() {
+    if (CollisionCheck(N) == 0) {
+        y_pos++;
+        //current_texture = 1;
+    }
+};
+
+void CNPC::MoveDown() {
+    if (CollisionCheck(S) == 0) {
+        y_pos--;
+        //current_texture = 5;
+    }
+};
+
+void CNPC::MoveLeft() {
+    if (CollisionCheck(W) == 0) {
+        x_pos--;
+        //current_texture = 7;
+    }
+};
+
+void CNPC::MoveRight() {
+    if (CollisionCheck(E) == 0) {
+        x_pos++;
+        //current_texture = 3;
+    }
+};
+
+void CNPC::Move(int direction)
+{
+    int movePerStep = 10; // moves one step per movePerStep ms
+
+    //while ( remainingMovePoints > movePerStep )
+    //{
+        remainingMovePoints -= movePerStep;
+
+        switch( direction )
+        {
+            case NW:
+                MoveLeft();
+                MoveUp();
+            break;
+            case N:
+                MoveUp();
+            break;
+            case NE:
+                MoveRight();
+                MoveUp();
+            break;
+            case W:
+                MoveLeft();
+            break;
+            case E:
+                MoveRight();
+            break;
+            case SW:
+                MoveLeft();
+                MoveDown();
+            break;
+            case S:
+                MoveDown();
+            break;
+            case SE:
+                MoveRight();
+                MoveDown();
+            break;
+            default:
+            break;
+        }
+   // }
+}
+
+void CNPC::giveMovePoints( uint32_t movePoints )
+{
+    remainingMovePoints += movePoints;
+}
+
+
+void CNPC::Wander() {
+    if (wandering) {
+        if (wander_points_left > 0) {
+            Move(wander_direction);
+            wander_points_left--;
+        } else {
+            wander_lastframe = SDL_GetTicks();
+            wandering = false;
+        }
+    } else {
+        wander_thisframe = SDL_GetTicks();
+        if ((wander_thisframe-wander_lastframe) > (wander_every_seconds*1000)) {
+            wandering = true;
+            wander_points_left = rand() % 50 + 10;
+            wander_direction = rand() % 9;
+            Move(wander_direction);
+        }
+    }
+};
+
+void CNPC::Die() {
+    alive = false;
+    respawn_lastframe = SDL_GetTicks();
+};
+
+void CNPC::Respawn() {
+    if (alive == false && do_respawn == true) {
+        respawn_thisframe = SDL_GetTicks();
+        if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
+                alive = true;
+                x_pos = x_spawn_pos;
+                y_pos = y_spawn_pos;
+                respawn_thisframe = 0.0f;
+                respawn_lastframe = 0.0f;
+        }
+    }
+};
+
+void CNPC::Draw() {
+    if (alive == true) {
+        texture.DrawTexture(x_pos,y_pos,current_frame);
+    }
+};
