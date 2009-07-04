@@ -23,9 +23,14 @@
 #include <iostream>
 #include <vector>
 #include "CTexture.h"
+#include "CMessage.h"
+
+extern CMessage message;
 
 class CNPC {
     private:
+
+
 
     public:
 
@@ -39,12 +44,16 @@ class CNPC {
         lastframe_respawn = 0.0f; thisframe_respawn = 0.0f; // helps us count when to respawn the NPC.
     };
 
+    char name[32];
+    int level;
+
     int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, respawn_rate, time_to_respawn;
     int current_frame;
     bool do_respawn, alive;
     CTexture texture;
     float lastframe_respawn, thisframe_respawn;
 
+    int LoadMobInfo();
 };
 
 #endif
