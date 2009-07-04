@@ -228,11 +228,9 @@ int main(int argc, char* argv[]) {
             character.giveMovePoints( ticksDiff );
             character.Move();
 
-
-
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
                 for (unsigned int x=0; x<zone1.NPC.size(); x++) {
-                    zone1.NPC[x].alive = false;
+                    zone1.NPC[x].Die();
                 }
             }
 
