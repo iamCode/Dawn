@@ -220,14 +220,12 @@ int main(int argc, char* argv[]) {
 
             character.giveMovePoints( ticksDiff );
             character.Move();
-            //if (keys[SDLK_DOWN]) { character.MoveDown(); }
-            //if (keys[SDLK_UP]) { character.MoveUp(); }
-            //if (keys[SDLK_LEFT]) { character.MoveLeft(); }
-            //if (keys[SDLK_RIGHT]) { character.MoveRight(); }
+
+
 
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-                for (unsigned int x=0; x<zone1.NPCs.NPC.size(); x++) {
-                    zone1.NPCs.NPC[x].alive = false;
+                for (unsigned int x=0; x<zone1.NPC.size(); x++) {
+                    zone1.NPC[x].alive = false;
                 }
             }
 
