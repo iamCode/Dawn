@@ -64,7 +64,7 @@ class CNPC {
     int CheckForCollision(int x_pos, int y_pos);
     void Die();
     int LoadNPCInfo();
-
+    CTexture texture;
 
     private:
     // states of the NPC
@@ -81,7 +81,7 @@ class CNPC {
     int NPC_id;
     int seconds_to_respawn;
 
-    CTexture texture;
+
     CZone *zone;
 };
 
