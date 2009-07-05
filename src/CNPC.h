@@ -44,8 +44,13 @@ class CNPC {
         zone = _zone;
     };
 
+    // NPC attributes
     char name[32];
+    int x_pos, y_pos;
     int level;
+    uint16_t strength, dexterity, vitality, intellect, wisdom;
+    uint16_t health, mana, energy, armor;
+    uint8_t alignment; // HOSTILE, NEUTRAL, FRIENDLY
 
     void Wander();
     void MoveUp();
@@ -58,21 +63,25 @@ class CNPC {
     int CollisionCheck(Direction direction);
     int CheckForCollision(int x_pos, int y_pos);
     void Die();
-    int LoadMobInfo();
-
-    int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, seconds_to_respawn;
-    bool do_respawn, alive;
-    CTexture texture;
-    float respawn_thisframe, respawn_lastframe;
-
+    int LoadNPCInfo();
 
 
     private:
-    float wander_thisframe, wander_lastframe;
-    int wander_every_seconds, wander_points_left, wander_direction;
-    bool wandering;
-    int current_texture;
+    // states of the NPC
+    bool wandering, moving, in_combat, alive;
 
+    // timers
+    float wander_thisframe, wander_lastframe;
+    float respawn_thisframe, respawn_lastframe;
+
+    int wander_every_seconds, wander_points_left, wander_direction, wander_radius;
+    int current_texture;
+    bool do_respawn;
+    int x_spawn_pos, y_spawn_pos;
+    int NPC_id;
+    int seconds_to_respawn;
+
+    CTexture texture;
     CZone *zone;
 };
 
