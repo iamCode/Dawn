@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <algorithm>
 #include "CDrawingHelpers.h"
-#include "CNPC.h"
 
 struct sTileMap {
     int x_pos, y_pos, id;
@@ -71,7 +70,6 @@ class CZone {
     int LoadEnvironment(char *file);
     int LoadShadow(char *file);
     int LoadCollisions(char *file);
-    int LoadSpawnPoints(char *file);
 
     int LocateTile(int x, int y);
     int LocateShadow(int x, int y);
@@ -97,9 +95,6 @@ class CZone {
     CTexture ZoneTiles;
     CTexture ZoneEnvironment;
     CTexture ZoneShadow;
-
-    std::vector <CNPC> NPC;
-    void DrawNPCs();
 };
 
 #endif

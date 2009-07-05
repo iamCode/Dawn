@@ -27,6 +27,8 @@ CEditor Editor;
 
 CInterface GUI;
 
+std::vector <CNPC> NPC;
+
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
 float lastframe,thisframe;           // FPS Stuff
@@ -78,6 +80,30 @@ static bool HandleCommandLineAurguments(int argc, char** argv) {
     return shouldExit;
 }
 
+int LoadSpawnPoints(char *file) {
+    FILE *fp;
+    char buf[255];
+    int NPC_id = 0, x_pos = 0, y_pos = 0, respawn_rate = 0, do_respawn = 0;
+
+    // open the zoneX.spawnpoints-file, if not give us an error in stdout.txt.
+    if ((fp=fopen(file, "r")) == NULL) {
+        std::cout << "ERROR opening file " << file << std::endl << std::endl;
+        return -1;
+    }
+
+    while(!feof(fp)) {
+        fgets(buf, 255, fp);
+        if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
+            sscanf(buf, "%d %d %d %d %d", &x_pos, &y_pos, &NPC_id, &respawn_rate, &do_respawn);
+            // the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
+            NPC.push_back(CNPC(x_pos,y_pos,NPC_id,respawn_rate, do_respawn, &zone1));
+        }
+    }
+
+    fclose(fp);
+    return 0;
+};
+
 void DrawScene() {
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -89,6 +115,9 @@ void DrawScene() {
     zone1.DrawZone();
 
     character.Draw();
+    for (unsigned int x=0; x<NPC.size(); x++) {
+        NPC[x].Draw();
+    }
 
     // check our FPS and output it
     thisframe=SDL_GetTicks();     // Count the FPS
@@ -173,11 +202,12 @@ int main(int argc, char* argv[]) {
         character.texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
         character.Init((RES_X/2),(RES_Y/2));
 
+        LoadSpawnPoints("data/zone1.spawnpointmap");
 
-        zone1.NPC[0].texture.texture.reserve(10);
-        zone1.NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
-        for (unsigned int x=0; x<zone1.NPC.size();x++) {
-            zone1.NPC[x].LoadMobInfo();
+        NPC[0].texture.texture.reserve(10);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
+        for (unsigned int x=0; x<NPC.size();x++) {
+            NPC[x].LoadMobInfo();
         }
 
         Editor.LoadTextures();
@@ -228,9 +258,14 @@ int main(int argc, char* argv[]) {
             character.giveMovePoints( ticksDiff );
             character.Move();
 
+            for (unsigned int x=0; x<NPC.size(); x++) {
+                NPC[x].Respawn();
+                NPC[x].Wander();
+            }
+
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-                for (unsigned int x=0; x<zone1.NPC.size(); x++) {
-                    zone1.NPC[x].Die();
+                for (unsigned int x=0; x<NPC.size(); x++) {
+                    NPC[x].Die();
                 }
             }
 

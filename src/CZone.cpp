@@ -22,15 +22,10 @@ void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
-    for (unsigned int x=0; x<NPC.size(); x++) {
-        NPC[x].Respawn();
-        NPC[x].Draw();
-        NPC[x].Wander();
-    }
 }
 
 void CZone::LoadZone(char *file) {
-    char texturemap[32], textureenvironment[32], collisionmap[32], tilemap[32], environmentmap[32], textureshadow[32], shadowmap[32], spawnpointmap[32];
+    char texturemap[32], textureenvironment[32], collisionmap[32], tilemap[32], environmentmap[32], textureshadow[32], shadowmap[32];
 
     sprintf(texturemap,"%s.textures",file);
     sprintf(tilemap,"%s.tilemap",file);
@@ -39,7 +34,6 @@ void CZone::LoadZone(char *file) {
     sprintf(shadowmap,"%s.shadowmap",file);
     sprintf(textureshadow,"%s.textureshadow",file);
     sprintf(collisionmap,"%s.collisionmap",file);
-    sprintf(spawnpointmap,"%s.spawnpointmap",file);
 
     ZoneTiles.LoadTextureMap(texturemap);
     ZoneEnvironment.LoadTextureMap(textureenvironment,true);
@@ -49,7 +43,6 @@ void CZone::LoadZone(char *file) {
     LoadEnvironment(environmentmap);
     LoadShadow(shadowmap);
     LoadCollisions(collisionmap);
-    LoadSpawnPoints(spawnpointmap);
 }
 
 int CZone::LoadCollisions(char *file) {
@@ -126,30 +119,6 @@ int CZone::LoadShadow(char *file) {
     fclose(fp);
     return 0;
 }
-
-int CZone::LoadSpawnPoints(char *file) {
-    FILE *fp;
-    char buf[255];
-    int NPC_id = 0, x_pos = 0, y_pos = 0, respawn_rate = 0, do_respawn = 0;
-
-    // open the zoneX.spawnpoints-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
-        std::cout << "ERROR opening file " << file << std::endl << std::endl;
-        return -1;
-    }
-
-    while(!feof(fp)) {
-        fgets(buf, 255, fp);
-        if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-            sscanf(buf, "%d %d %d %d %d", &x_pos, &y_pos, &NPC_id, &respawn_rate, &do_respawn);
-            // the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
-            NPC.push_back(CNPC(x_pos,y_pos,NPC_id,respawn_rate, do_respawn));
-        }
-    }
-
-    fclose(fp);
-    return 0;
-};
 
 int CZone::LoadMap(char *file) {
     FILE *fp;

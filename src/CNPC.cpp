@@ -62,13 +62,13 @@ int CNPC::LoadMobInfo() {
 };
 
 int CNPC::CheckForCollision(int x_pos, int y_pos) {
-    /**for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
-        if ((zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w >= x_pos) && (zone1.CollisionMap[t].CR.x <= x_pos)) {
-            if ((zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h >= y_pos) && (zone1.CollisionMap[t].CR.y <= y_pos)) {
+    for (unsigned int t=0;t<zone->CollisionMap.size();t++) {
+        if ((zone->CollisionMap[t].CR.x+zone->CollisionMap[t].CR.w >= x_pos) && (zone->CollisionMap[t].CR.x <= x_pos)) {
+            if ((zone->CollisionMap[t].CR.y+zone->CollisionMap[t].CR.h >= y_pos) && (zone->CollisionMap[t].CR.y <= y_pos)) {
                 return 1;
             }
         }
-    }**/
+    }
     return 0;
 }
 

@@ -25,20 +25,12 @@
 #include "CTexture.h"
 #include "CMessage.h"
 #include "CDirection.h"
-
+#include "CZone.h"
 
 class CNPC {
-    private:
-
-    uint32_t remainingMovePoints;
-
-    float wander_thisframe, wander_lastframe;
-    int wander_every_seconds, wander_points_left, wander_direction;
-    bool wandering;
 
     public:
-
-    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn) {
+    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
         x_pos = _x_spawn_pos; y_pos = _y_spawn_pos;
         x_spawn_pos = _x_spawn_pos; y_spawn_pos = _y_spawn_pos;
         NPC_id = _NPC_id; do_respawn = _do_respawn;
@@ -49,6 +41,7 @@ class CNPC {
         wander_thisframe = 0.0f; wander_lastframe = 0.0f; // helping us decide when the mob will wander.
         wander_every_seconds = 1; // this mob wanders every 15 seconds.
         wandering = false;
+        zone = _zone;
     };
 
     char name[32];
@@ -66,6 +59,7 @@ class CNPC {
     int CheckForCollision(int x_pos, int y_pos);
     void giveMovePoints( uint32_t movePoints );
     void Die();
+    int LoadMobInfo();
 
     int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, seconds_to_respawn;
     int current_frame;
@@ -74,7 +68,13 @@ class CNPC {
     float respawn_thisframe, respawn_lastframe;
 
 
-    int LoadMobInfo();
+
+    private:
+    uint32_t remainingMovePoints;
+    float wander_thisframe, wander_lastframe;
+    int wander_every_seconds, wander_points_left, wander_direction;
+    bool wandering;
+    CZone *zone;
 };
 
 #endif
