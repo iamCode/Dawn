@@ -205,7 +205,14 @@ int main(int argc, char* argv[]) {
         LoadSpawnPoints("data/zone1.spawnpointmap");
 
         NPC[0].texture.texture.reserve(10);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",1);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
+        NPC[0].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
         for (unsigned int x=0; x<NPC.size();x++) {
             NPC[x].LoadMobInfo();
         }

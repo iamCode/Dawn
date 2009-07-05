@@ -124,28 +124,24 @@ int CNPC::CollisionCheck(Direction direction) {
 void CNPC::MoveUp() {
     if (CollisionCheck(N) == 0) {
         y_pos++;
-        //current_texture = 1;
     }
 };
 
 void CNPC::MoveDown() {
     if (CollisionCheck(S) == 0) {
         y_pos--;
-        //current_texture = 5;
     }
 };
 
 void CNPC::MoveLeft() {
     if (CollisionCheck(W) == 0) {
         x_pos--;
-        //current_texture = 7;
     }
 };
 
 void CNPC::MoveRight() {
     if (CollisionCheck(E) == 0) {
         x_pos++;
-        //current_texture = 3;
     }
 };
 
@@ -153,51 +149,40 @@ void CNPC::Move(int direction)
 {
     int movePerStep = 10; // moves one step per movePerStep ms
 
-    //while ( remainingMovePoints > movePerStep )
-    //{
-        remainingMovePoints -= movePerStep;
-
-        switch( direction )
-        {
-            case NW:
-                MoveLeft();
-                MoveUp();
-            break;
-            case N:
-                MoveUp();
-            break;
-            case NE:
-                MoveRight();
-                MoveUp();
-            break;
-            case W:
-                MoveLeft();
-            break;
-            case E:
-                MoveRight();
-            break;
-            case SW:
-                MoveLeft();
-                MoveDown();
-            break;
-            case S:
-                MoveDown();
-            break;
-            case SE:
-                MoveRight();
-                MoveDown();
-            break;
-            default:
-            break;
-        }
-   // }
+    switch( direction )
+    {
+        case NW:
+            MoveLeft();
+            MoveUp();
+        break;
+        case N:
+            MoveUp();
+        break;
+        case NE:
+            MoveRight();
+            MoveUp();
+        break;
+        case W:
+            MoveLeft();
+        break;
+        case E:
+            MoveRight();
+        break;
+        case SW:
+            MoveLeft();
+            MoveDown();
+        break;
+        case S:
+            MoveDown();
+        break;
+        case SE:
+            MoveRight();
+            MoveDown();
+        break;
+        default:
+        break;
+    }
 }
-
-void CNPC::giveMovePoints( uint32_t movePoints )
-{
-    remainingMovePoints += movePoints;
-}
-
 
 void CNPC::Wander() {
     if (wandering) {
@@ -212,8 +197,9 @@ void CNPC::Wander() {
         wander_thisframe = SDL_GetTicks();
         if ((wander_thisframe-wander_lastframe) > (wander_every_seconds*1000)) {
             wandering = true;
-            wander_points_left = rand() % 50 + 10;
-            wander_direction = rand() % 9;
+            wander_points_left = rand() % 50 + 10;  // how far will the NPC wander?
+            wander_direction = rand() % 8 + 1;  // random at which direction NPC will go.
+            current_texture = wander_direction;
             Move(wander_direction);
         }
     }
@@ -239,6 +225,6 @@ void CNPC::Respawn() {
 
 void CNPC::Draw() {
     if (alive == true) {
-        texture.DrawTexture(x_pos,y_pos,current_frame);
+        texture.DrawTexture(x_pos,y_pos,current_texture);
     }
 };

@@ -36,7 +36,7 @@ class CNPC {
         NPC_id = _NPC_id; do_respawn = _do_respawn;
         seconds_to_respawn = _seconds_to_respawn;
         alive = true;
-        current_frame = 1; // this will be altered later on to draw what animation frame we want to draw.
+        current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
         respawn_thisframe = 0.0f; respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
         wander_thisframe = 0.0f; wander_lastframe = 0.0f; // helping us decide when the mob will wander.
         wander_every_seconds = 1; // this mob wanders every 15 seconds.
@@ -57,12 +57,10 @@ class CNPC {
     void Draw();
     int CollisionCheck(Direction direction);
     int CheckForCollision(int x_pos, int y_pos);
-    void giveMovePoints( uint32_t movePoints );
     void Die();
     int LoadMobInfo();
 
     int x_pos, y_pos, x_spawn_pos, y_spawn_pos, NPC_id, seconds_to_respawn;
-    int current_frame;
     bool do_respawn, alive;
     CTexture texture;
     float respawn_thisframe, respawn_lastframe;
@@ -70,10 +68,11 @@ class CNPC {
 
 
     private:
-    uint32_t remainingMovePoints;
     float wander_thisframe, wander_lastframe;
     int wander_every_seconds, wander_points_left, wander_direction;
     bool wandering;
+    int current_texture;
+
     CZone *zone;
 };
 
