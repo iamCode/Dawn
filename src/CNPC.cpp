@@ -18,7 +18,7 @@
 
 #include "CNPC.h"
 
-int CNPC::LoadMobInfo() {
+int CNPC::LoadNPCInfo() {
     FILE *fp;
     char buf[255];
     sprintf(buf,"data/NPC/%d.NPC",NPC_id);
@@ -147,8 +147,8 @@ void CNPC::MoveRight() {
 
 void CNPC::Move(int direction)
 {
-    int movePerStep = 10; // moves one step per movePerStep ms
-
+    // should probably add Ansgar's movepoint function here so characters move at the
+    // correct speed, regardless of framerates.
     switch( direction )
     {
         case NW:

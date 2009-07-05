@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
         for (unsigned int x=0; x<NPC.size();x++) {
-            NPC[x].LoadMobInfo();
+            NPC[x].LoadNPCInfo();
         }
 
         Editor.LoadTextures();
