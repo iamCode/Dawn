@@ -213,6 +213,17 @@ int main(int argc, char* argv[]) {
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
+
+        NPC[1].texture.texture.reserve(10);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
+        NPC[1].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
+
         for (unsigned int x=0; x<NPC.size();x++) {
             NPC[x].LoadNPCInfo();
         }
