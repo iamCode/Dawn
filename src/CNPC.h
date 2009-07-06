@@ -44,6 +44,11 @@ class CNPC {
         wandering = false;
         zone = _zone;
         wander_radius = 200;
+        max_health = 251;
+        current_health = 251;
+        life_percentage = 1.0f;
+        mana_percentage = 1.0f;
+        energy_percentage = 1.0f;
     };
 
     // NPC attributes
@@ -51,7 +56,7 @@ class CNPC {
     int x_pos, y_pos;
     int level;
     uint16_t strength, dexterity, vitality, intellect, wisdom;
-    uint16_t health, mana, energy, armor;
+    uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
     uint8_t alignment; // HOSTILE, NEUTRAL, FRIENDLY
 
     void Wander();
@@ -62,11 +67,15 @@ class CNPC {
     void Move(int direction);
     void Respawn();
     void Draw();
+    void DrawLifebar();
     int CollisionCheck(Direction direction);
     int CheckForCollision(int x_pos, int y_pos);
+    void Damage(int amount);
+    void Heal(int amount);
     void Die();
     int LoadNPCInfo();
     CTexture texture;
+    CTexture lifebar;
 
     private:
     // states of the NPC
@@ -75,6 +84,10 @@ class CNPC {
     // timers
     float wander_thisframe, wander_lastframe;
     float respawn_thisframe, respawn_lastframe;
+
+    // stats
+    float life_percentage, mana_percentage, energy_percentage;
+    void CalculateStats();
 
     int wander_every_seconds, wander_points_left, wander_direction, wander_radius;
     int current_texture;

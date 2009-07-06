@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CNPC.h"
+#include "CDrawingHelpers.h"
 
 int CNPC::LoadNPCInfo() {
     FILE *fp;
@@ -226,6 +227,10 @@ void CNPC::Respawn() {
                 y_pos = y_spawn_pos;
                 respawn_thisframe = 0.0f;
                 respawn_lastframe = 0.0f;
+                current_health = max_health;
+                current_mana = max_mana;
+                current_energy = max_energy;
+                CalculateStats();
         }
     }
 };
@@ -234,4 +239,44 @@ void CNPC::Draw() {
     if (alive == true) {
         texture.DrawTexture(x_pos,y_pos,current_texture);
     }
+    if (in_target = true) {
+        DrawLifebar();
+    }
+};
+
+void CNPC::DrawLifebar() {
+    glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
+    DrawingHelpers::mapTextureToRect( lifebar.texture[1].texture,
+                                      x_pos, 64*life_percentage,
+                                      y_pos+texture.texture[current_texture].height, 8 );
+    glColor4f(1.0f,1.0f,1.0f,1.0f);
+};
+
+void CNPC::Damage(int amount) {
+    if (alive) {
+        if (current_health <= amount) {
+            current_health = 0;
+            Die();
+        } else {
+            current_health -= amount;
+        }
+        CalculateStats();
+    }
+};
+
+void CNPC::Heal(int amount) {
+    if (alive) {
+        if ((max_health - current_health) <= amount) {
+            current_health = max_health;
+        } else {
+            current_health += amount;
+        }
+        CalculateStats();
+    }
+};
+
+void CNPC::CalculateStats() {
+     life_percentage = static_cast<float>(current_health) / static_cast<float>(max_health);
+     mana_percentage = static_cast<float>(current_mana) / static_cast<float>(max_mana);
+     energy_percentage = static_cast<float>(current_energy) / static_cast<float>(max_energy);
 };

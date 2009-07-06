@@ -213,6 +213,8 @@ int main(int argc, char* argv[]) {
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
         NPC[0].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
+        NPC[0].lifebar.texture.reserve(2);
+        NPC[0].lifebar.LoadIMG("data/lifebar.tga",1);
 
         NPC[1].texture.texture.reserve(10);
         NPC[1].texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
@@ -223,6 +225,8 @@ int main(int argc, char* argv[]) {
         NPC[1].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
         NPC[1].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
         NPC[1].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
+        NPC[1].lifebar.texture.reserve(2);
+        NPC[1].lifebar.LoadIMG("data/lifebar.tga",1);
 
         for (unsigned int x=0; x<NPC.size();x++) {
             NPC[x].LoadNPCInfo();
@@ -295,6 +299,18 @@ int main(int argc, char* argv[]) {
 
             if (!keys[SDLK_l]) {
                 Editor.KP_toggle_editor = false;
+            }
+
+            if (keys[SDLK_1]) {
+                for (unsigned int x=0; x<NPC.size(); x++) {
+                    NPC[x].Damage(rand() % 20 +1);
+                }
+            }
+
+            if (keys[SDLK_2]) {
+                for (unsigned int x=0; x<NPC.size(); x++) {
+                    NPC[x].Heal(rand() % 20 +1);
+                }
             }
         }
         DrawScene();
