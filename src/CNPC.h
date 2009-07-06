@@ -26,6 +26,7 @@
 #include "CMessage.h"
 #include "CDirection.h"
 #include "CZone.h"
+#include <math.h>
 
 class CNPC {
 
@@ -42,6 +43,7 @@ class CNPC {
         wander_every_seconds = 1; // this mob wanders every 15 seconds.
         wandering = false;
         zone = _zone;
+        wander_radius = 200;
     };
 
     // NPC attributes
@@ -68,7 +70,7 @@ class CNPC {
 
     private:
     // states of the NPC
-    bool wandering, moving, in_combat, alive;
+    bool wandering, moving, in_combat, alive,in_target;
 
     // timers
     float wander_thisframe, wander_lastframe;

@@ -187,8 +187,15 @@ void CNPC::Move(int direction)
 void CNPC::Wander() {
     if (wandering) {
         if (wander_points_left > 0) {
-            Move(wander_direction);
-            wander_points_left--;
+            // checking if character is moving more than the wander_radius. if he does we'll stop him.
+            // probably is some other function we could use here that doesnt require as much power... /arnestig
+            if (sqrt((pow(x_pos - x_spawn_pos,2)+pow(y_pos - y_spawn_pos,2))) < wander_radius) {
+                Move(wander_direction);
+                wander_points_left--;
+            } else {
+                wander_lastframe = SDL_GetTicks();
+                wandering = false;
+            }
         } else {
             wander_lastframe = SDL_GetTicks();
             wandering = false;
