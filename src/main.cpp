@@ -48,8 +48,9 @@ bool fullscreenenabled = true;
 static bool HandleCommandLineAurguments(int argc, char** argv) {
     bool shouldExit = 0;
     std::string executable(argv[0]);
-
+#ifdef _WIN32
     freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
+#endif
     for(int i=1 ; i < argc ; ++i) {
         std::string currentarg(argv[i]);
 	    if(currentarg == "-f" || currentarg == "--fullscreen") {
@@ -78,7 +79,9 @@ static bool HandleCommandLineAurguments(int argc, char** argv) {
             break;
         }
     }
-    freopen( "stdio.txt", "wt", stdout ); // Redirect stdout back to the file
+#ifdef _WIN32
+    freopen( "stdout.txt", "wt", stdout ); // Redirect stdout back to the file
+#endif
     return shouldExit;
 }
 
