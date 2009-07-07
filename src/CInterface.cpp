@@ -24,6 +24,7 @@ void CInterface::LoadTextures() {
     interfacetextures.texture.reserve(10);
     interfacetextures.LoadIMG("data/interface/blended_bg.tga",0);
     interfacetextures.LoadIMG("data/interface/lifemana.tga",1);
+    interfacetextures.LoadIMG("data/lifebar.tga",2);
 };
 
 void CInterface::DrawInterface() {
@@ -36,4 +37,14 @@ void CInterface::DrawInterface() {
     DrawingHelpers::mapTextureToRect( interfacetextures.texture[1].texture,
                                       world_x, interfacetextures.texture[1].width,
                                       world_y, interfacetextures.texture[1].height );
-}
+
+    if (player->IsCasting()) {
+        glColor4f(0.8f,0.8f,0.0f,1.0f);
+        DrawingHelpers::mapTextureToRect(interfacetextures.texture[2].texture,world_x+(RES_X/2),100*player->casting_percentage,world_y+20,20);
+        glColor4f(1.0f,1.0f,1.0f,1.0f);
+    }
+};
+
+void CInterface::SetPlayer(CCharacter *player_) {
+    player = player_;
+};

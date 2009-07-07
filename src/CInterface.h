@@ -20,6 +20,7 @@
 #define __C_INTERFACE__
 
 #include "CTexture.h"
+#include "CCharacter.h"
 
 extern int RES_X,RES_Y,world_x,world_y;
 
@@ -28,10 +29,13 @@ class CInterface {
     void LoadTextures();
     bool enabled;
     void DrawInterface();
+    void SetPlayer(CCharacter *player_);
 
 
     private:
     CTexture interfacetextures;
+
+    CCharacter *player;
 };
 
 
