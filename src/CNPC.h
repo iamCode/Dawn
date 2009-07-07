@@ -59,6 +59,8 @@ class CNPC {
     uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
     uint8_t alignment; // HOSTILE, NEUTRAL, FRIENDLY
 
+    bool in_target;
+
     void Wander();
     void MoveUp();
     void MoveDown();
@@ -70,6 +72,7 @@ class CNPC {
     void DrawLifebar();
     int CollisionCheck(Direction direction);
     int CheckForCollision(int x_pos, int y_pos);
+    void CheckMouseOver(int _x_pos, int _y_pos);
     void Damage(int amount);
     void Heal(int amount);
     void Die();
@@ -79,7 +82,7 @@ class CNPC {
 
     private:
     // states of the NPC
-    bool wandering, moving, in_combat, alive,in_target;
+    bool wandering, moving, in_combat, alive;
 
     // timers
     float wander_thisframe, wander_lastframe;

@@ -239,7 +239,7 @@ void CNPC::Draw() {
     if (alive == true) {
         texture.DrawTexture(x_pos,y_pos,current_texture);
     }
-    if (in_target = true) {
+    if (in_target == true) {
         DrawLifebar();
     }
 };
@@ -279,4 +279,13 @@ void CNPC::CalculateStats() {
      life_percentage = static_cast<float>(current_health) / static_cast<float>(max_health);
      mana_percentage = static_cast<float>(current_mana) / static_cast<float>(max_mana);
      energy_percentage = static_cast<float>(current_energy) / static_cast<float>(max_energy);
+};
+
+void CNPC::CheckMouseOver(int _x_pos, int _y_pos) {
+    if (((x_pos < _x_pos) && ((x_pos+texture.texture[current_texture].width ) > _x_pos))
+    && (( y_pos < _y_pos) && ((y_pos+texture.texture[current_texture].height) > _y_pos))) {
+        in_target = true;
+    } else {
+        in_target = false;
+    }
 };
