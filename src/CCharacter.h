@@ -22,6 +22,7 @@
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 #include "CTexture.h"
 #include "CZone.h"
+#include "CNPC.h"
 #include "CDirection.h"
 #include <SDL/SDL.h> // SDL
 
@@ -32,26 +33,36 @@ class CCharacter {
     public:
     GLuint frame;
     int x_pos,y_pos;
+    float casting_percentage;
 
     void MoveUp();
     void MoveDown();
     void MoveLeft();
     void MoveRight();
     void Move();
-    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; remainingMovePoints = 0; }
+    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; remainingMovePoints = 0; is_casting = false; }
     void Draw();
+    bool IsCasting();
     int CollisionCheck(Direction direction);
+    void CastSpell(float castspell_, CNPC *target_, int spell_target_damage);
     void giveMovePoints( uint32_t movePoints );
     CTexture texture;
-    
+
     private:
     Uint8 *keys;
+    uint32_t casting_currentframe, casting_startframe;
     Direction GetDirection();
     int GetDirectionTexture();
     int current_texture, last_direction_texture;
     int CheckForCollision(int x, int y);
     uint32_t remainingMovePoints;
-
+    float spell_casttime;
+    bool is_casting;
+    void CastingComplete();
+    void CastingAborted();
+    void CastingInterrupted();
+    CNPC *spell_target;
+    int spell_target_damage;
 };
 
 

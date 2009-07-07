@@ -36,7 +36,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos) {
         }
     }
     return 0;
-}
+};
 
 int CCharacter::CollisionCheck(Direction direction) {
 
@@ -162,12 +162,12 @@ void CCharacter::Move()
             break;
         }
     }
-}
+};
 
 void CCharacter::giveMovePoints( uint32_t movePoints )
 {
     remainingMovePoints += movePoints;
-}
+};
 
 Direction CCharacter::GetDirection()
 {
@@ -201,12 +201,74 @@ Direction CCharacter::GetDirection()
         return E;
     }
 
-    return STOP; 
-}
+    return STOP;
+};
 
 int CCharacter::GetDirectionTexture() {
     int direction = GetDirection();
     if ( direction == STOP )
         return last_direction_texture;
     return static_cast<int>(direction);
-}
+};
+
+// since we dont have any combat class, im putting this spellcasting here.
+// in the future we could probably benefit from putting this into the combat class,
+// since we probably would use the same functions for NPCs when they are casting spells etc...
+
+void CCharacter::CastSpell(float casttime_, CNPC *target_, int spell_target_damage_) {
+    if (!is_casting) { // setup all variables for a spellcasting.
+        is_casting = true;
+        casting_startframe = SDL_GetTicks();
+        spell_casttime = casttime_;
+        spell_target = target_;
+        spell_target_damage = spell_target_damage_;
+        IsCasting();
+    }
+};
+
+bool CCharacter::IsCasting() {
+    if (is_casting) {
+        casting_currentframe = SDL_GetTicks();
+
+        // casting_percentage is mostly just for the castbar display, guess we could alter this code.
+        casting_percentage = (static_cast<float>(casting_currentframe-casting_startframe)/1000) / spell_casttime;
+
+        if (casting_percentage >= 1.0f) {
+            CastingComplete();
+        }
+    }
+    return is_casting;
+};
+
+void CCharacter::CastingComplete() {
+    is_casting = false;
+    casting_currentframe = 0;
+    casting_startframe = 0;
+
+    // when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
+    // So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
+    // fow now we'll just damage / heal the NPC in target
+    std::cout << spell_target_damage<< std::endl;
+    if (spell_target_damage > 0) {
+        std::cout << "Do we ever get here?2" << std::endl;
+        spell_target->Heal(spell_target_damage);
+    } else {
+        std::cout << "Do we ever get here?3" << std::endl;
+        spell_target->Damage(-spell_target_damage);
+    }
+    spell_target = NULL;
+};
+
+void CCharacter::CastingAborted() {
+    // if we moved, got stunned, or in some way unable to complete the spell ritual, spellcasting will fail.
+    // If we are following the above instructions to use a pointer to a spell and so on, we should clear that pointer here.
+    is_casting = false;
+    spell_target = NULL;
+};
+
+void CCharacter::CastingInterrupted() {
+    // when casting a spell, mobs attacking us in any way should interfere with our spellcasting, slowing us down a bit.
+    // so if we have a spell with 5 seconds spellcast, and we're up at 4 seconds of casting.. getting hit at that moment
+    // should set the current_castingtime back to say 3.2 or so..
+    casting_currentframe *= 0.8;
+};
