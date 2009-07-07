@@ -29,6 +29,8 @@ CInterface GUI;
 
 std::vector <CNPC> NPC;
 
+bool KP_damage, KP_heal;
+
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
 float lastframe,thisframe;           // FPS Stuff
@@ -234,13 +236,14 @@ int main(int argc, char* argv[]) {
 
         Editor.LoadTextures();
         GUI.LoadTextures();
+        GUI.SetPlayer(&character);
 
         // initialize fonts where needed
         fpsFont.open("data/verdana.ttf", 12);
         message.initFonts();
         Editor.initFonts();
 
-        SDL_ShowCursor(0);
+        //SDL_ShowCursor(SDL_DISABLE);
     }
 
     Uint32 lastTicks = SDL_GetTicks();
@@ -265,9 +268,19 @@ int main(int argc, char* argv[]) {
                     if (event.key.keysym.sym == SDLK_SPACE) { }
                 }
 
+                if (event.type == SDL_MOUSEBUTTONDOWN) {
+                    switch (event.button.button) {
+                        case 1:
+                            for (unsigned int x=0; x<NPC.size(); x++) {
+                                NPC[x].CheckMouseOver(mouseX,mouseY);
+                            }
+                        break;
+                    }
+                }
+
                 if (event.type == SDL_MOUSEMOTION) {
                     mouseX = event.motion.x;
-                    mouseY = event.motion.y;
+                    mouseY = RES_Y - event.motion.y - 1;
                 }
             }
 
@@ -301,22 +314,33 @@ int main(int argc, char* argv[]) {
                 Editor.KP_toggle_editor = false;
             }
 
-            if (keys[SDLK_1]) {
+            if (keys[SDLK_1] && !KP_damage) {
+                KP_damage = true;
                 for (unsigned int x=0; x<NPC.size(); x++) {
-                    NPC[x].Damage(rand() % 20 +1);
+                    if (NPC[x].in_target == true) {
+                        character.CastSpell(3.0f,&NPC[x], -rand() % 60 - 30);
+                    }
                 }
             }
 
-            if (keys[SDLK_2]) {
+            if (!keys[SDLK_1]) {
+                KP_damage = false;
+            }
+
+            if (keys[SDLK_2] && !KP_heal) {
+                KP_heal = true;
                 for (unsigned int x=0; x<NPC.size(); x++) {
-                    NPC[x].Heal(rand() % 20 +1);
+                    if (NPC[x].in_target == true) {
+                        character.CastSpell(1.5f,&NPC[x],rand() % 30);
+                    }
                 }
+            }
+
+            if (!keys[SDLK_2]) {
+                KP_heal = false;
             }
         }
         DrawScene();
     }
   return 0;
 }
-
-
-
