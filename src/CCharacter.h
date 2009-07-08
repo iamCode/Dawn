@@ -48,9 +48,11 @@ class CCharacter {
     void giveMovePoints( uint32_t movePoints );
     CTexture texture;
 
+    void CastingInterrupted();
+
     private:
     Uint8 *keys;
-    uint32_t casting_currentframe, casting_startframe;
+    uint32_t casting_currentframe, casting_startframe, casting_offset;
     Direction GetDirection();
     int GetDirectionTexture();
     int current_texture, last_direction_texture;
@@ -60,7 +62,7 @@ class CCharacter {
     bool is_casting;
     void CastingComplete();
     void CastingAborted();
-    void CastingInterrupted();
+
     CNPC *spell_target;
     int spell_target_damage;
 };

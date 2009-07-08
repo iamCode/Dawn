@@ -124,6 +124,11 @@ void CCharacter::Move()
 {
     int movePerStep = 10; // moves one step per movePerStep ms
     Direction direction = GetDirection();
+
+    if ((direction != STOP) && IsCasting()) {
+        CastingAborted();
+    }
+
     while ( remainingMovePoints > movePerStep )
     {
         remainingMovePoints -= movePerStep;
@@ -232,7 +237,6 @@ bool CCharacter::IsCasting() {
 
         // casting_percentage is mostly just for the castbar display, guess we could alter this code.
         casting_percentage = (static_cast<float>(casting_currentframe-casting_startframe)/1000) / spell_casttime;
-
         if (casting_percentage >= 1.0f) {
             CastingComplete();
         }
@@ -250,10 +254,8 @@ void CCharacter::CastingComplete() {
     // fow now we'll just damage / heal the NPC in target
     std::cout << spell_target_damage<< std::endl;
     if (spell_target_damage > 0) {
-        std::cout << "Do we ever get here?2" << std::endl;
         spell_target->Heal(spell_target_damage);
     } else {
-        std::cout << "Do we ever get here?3" << std::endl;
         spell_target->Damage(-spell_target_damage);
     }
     spell_target = NULL;
@@ -270,5 +272,8 @@ void CCharacter::CastingInterrupted() {
     // when casting a spell, mobs attacking us in any way should interfere with our spellcasting, slowing us down a bit.
     // so if we have a spell with 5 seconds spellcast, and we're up at 4 seconds of casting.. getting hit at that moment
     // should set the current_castingtime back to say 3.2 or so..
-    casting_currentframe *= 0.8;
+    casting_startframe += 500; // for now using a static pushback of the spellcasting, 0.5 seconds.
+    if (casting_startframe > casting_currentframe) {
+        casting_startframe = casting_currentframe;
+    }
 };

@@ -29,7 +29,7 @@ CInterface GUI;
 
 std::vector <CNPC> NPC;
 
-bool KP_damage, KP_heal;
+bool KP_damage, KP_heal, KP_interrupt;
 
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
@@ -341,6 +341,15 @@ int main(int argc, char* argv[]) {
 
             if (!keys[SDLK_2]) {
                 KP_heal = false;
+            }
+
+            if (keys[SDLK_3] && !KP_interrupt) {
+                KP_interrupt = true;
+                character.CastingInterrupted();
+            }
+
+            if (!keys[SDLK_3]) {
+                KP_interrupt = false;
             }
         }
         DrawScene();
