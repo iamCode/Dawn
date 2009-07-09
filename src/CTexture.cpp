@@ -21,8 +21,8 @@
 
 #include "CDrawingHelpers.h"
 
-void CTexture::LoadIMG(char *file, int texture_index) {
-    if ((surface = IMG_Load(file))) {
+void CTexture::LoadIMG(std::string file, int texture_index) {
+    if ((surface = IMG_Load(file.c_str()))) {
         // Check that the image's width is a power of 2
         if ((surface->w & (surface->w - 1)) != 0) {
             std::cout << "Warning: the width of image " << file <<
