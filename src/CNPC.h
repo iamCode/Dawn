@@ -56,11 +56,11 @@ class CNPC {
     void setStrength( uint16_t newStrength );
     uint16_t getStrength() const;
     void modifyStrength( int16_t strengthModifier );
-    
+
     void setDexterity( uint16_t newDexterity );
     uint16_t getDexterity() const;
     void modifyDexterity( int16_t dexterityModifier );
-    
+
     void setVitality( uint16_t newVitality );
     uint16_t getVitality() const;
     void modifyVitality( int16_t vitalityModifier );
@@ -121,7 +121,6 @@ class CNPC {
     void Damage(int amount);
     void Heal(int amount);
     void Die();
-    int LoadNPCInfo();
 
     void setTexture( CTexture *newTexture );
     CTexture *getTexture() const;

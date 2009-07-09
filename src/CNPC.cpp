@@ -163,6 +163,7 @@ void CNPC::modifyWisdom( int16_t wisdomModifier )
 void CNPC::setMaxHealth( uint16_t newMaxHealth )
 {
     max_health = newMaxHealth;
+    current_health = newMaxHealth;
 }
 
 uint16_t CNPC::getMaxHealth() const
@@ -172,12 +173,13 @@ uint16_t CNPC::getMaxHealth() const
 
 void CNPC::modifyMaxHealth( int16_t maxHealthModifier )
 {
-    if ( maxHealthModifier < 0 && static_cast<uint16_t>(maxHealthModifier) > getMaxHealth() )
-        setMaxHealth( 0 );
-    else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) > getMaxHealth() )
+    /**if ( maxHealthModifier < 0 && static_cast<uint16_t>(maxHealthModifier) > getMaxHealth() ) {
+        setMaxHealth( 10 );
+    } else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) > getMaxHealth() ) {
         setMaxHealth( std::numeric_limits<uint16_t>::max() );
-    else
+    } else {**/
         setMaxHealth( getMaxHealth() + maxHealthModifier );
+    /**}**/
 }
 
 void CNPC::setMaxMana( uint16_t newMaxMana )
@@ -247,7 +249,7 @@ void CNPC::setMoveTexture( int direction, std::string filename )
         texture = new CTexture();
         texture->texture.reserve( 10 );
     }
-    texture->LoadIMG( filename.c_str(), direction );
+    texture->LoadIMG( filename, direction );
 }
 
 void CNPC::setLifeTexture( std::string filename )
@@ -257,53 +259,10 @@ void CNPC::setLifeTexture( std::string filename )
         lifebar = new  CTexture();
         lifebar->texture.reserve( 2 );
     }
-    lifebar->LoadIMG( filename.c_str(), 1 );
+    lifebar->LoadIMG( filename, 1 );
 }
 
 // end of Dawn LUA Interface
-
-int CNPC::LoadNPCInfo() {
-    FILE *fp;
-    char buf[255];
-    sprintf(buf,"data/NPC/%d.NPC",NPC_id);
-
-    // open the NPC_id.npc-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(buf, "r")) == NULL) {
-        std::cout << "ERROR opening file " << buf << std::endl << std::endl;
-        return -1;
-    }
-
-    while(!feof(fp)) {
-        fgets(buf, 255, fp);
-        if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-            /**
-            here we should scan through the entire X.NPC file and look for
-            name, level, stats, textures, abilities etc... not sure how to do this.
-            should probably abandon scanf and go for some ifstream.
-
-            The X.NPC file i thought should look like this:
-            Name: A wolf pup
-            Level: 1
-            Min_gold: 0
-            Max_gold: 0
-            Loot table: 25,78,92 (points to item-ids).
-            Adjusted str: -2
-            Adjusted dex: -2
-            Adjusted vit: -1
-            Adjusted int: -5
-            Adjusted wis: -5
-            Adjusted health: -10
-            Adjusted mana: 0
-            Adjusted energy: 0
-
-            And so on.. It will be easy to create an NPC this way I think, we only need a simple function to load all of the data.
-            /Arnestig
-            **/
-        }
-    }
-    fclose(fp);
-    return 0;
-};
 
 int CNPC::CheckForCollision(int x_pos, int y_pos) {
     for (unsigned int t=0;t<zone->CollisionMap.size();t++) {
