@@ -72,8 +72,9 @@ uint16_t CNPC::getStrength() const
 
 void CNPC::modifyStrength( int16_t strengthModifier )
 {
-    if ( strengthModifier < 0 && static_cast<uint16_t>(strengthModifier) > getStrength() )
-        setStrength( 0 );
+    if ( strengthModifier < 0 && static_cast<uint16_t>(-strengthModifier) > getStrength() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyStrength." << std::endl;
     else if ( strengthModifier > 0 && (std::numeric_limits<uint16_t>::max() - strengthModifier) > getStrength() )
         setStrength( std::numeric_limits<uint16_t>::max() );
     else
@@ -92,8 +93,9 @@ uint16_t CNPC::getDexterity() const
 
 void CNPC::modifyDexterity( int16_t dexterityModifier )
 {
-    if ( dexterityModifier < 0 && static_cast<uint16_t>(dexterityModifier) > getDexterity() )
-        setDexterity( 0 );
+    if ( dexterityModifier < 0 && static_cast<uint16_t>(-dexterityModifier) > getDexterity() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyDexterity." << std::endl;
     else if ( dexterityModifier > 0 && (std::numeric_limits<uint16_t>::max() - dexterityModifier) > getDexterity() )
         setDexterity( std::numeric_limits<uint16_t>::max() );
     else
@@ -112,8 +114,9 @@ uint16_t CNPC::getVitality() const
 
 void CNPC::modifyVitality( int16_t vitalityModifier )
 {
-    if ( vitalityModifier < 0 && static_cast<uint16_t>(vitalityModifier) > getVitality() )
-        setVitality( 0 );
+    if ( vitalityModifier < 0 && static_cast<uint16_t>(-vitalityModifier) > getVitality() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyVitality." << std::endl;
     else if ( vitalityModifier > 0 && (std::numeric_limits<uint16_t>::max() - vitalityModifier) > getVitality() )
         setVitality( std::numeric_limits<uint16_t>::max() );
     else
@@ -132,8 +135,9 @@ uint16_t CNPC::getIntellect() const
 
 void CNPC::modifyIntellect( int16_t intellectModifier )
 {
-    if ( intellectModifier < 0 && static_cast<uint16_t>(intellectModifier) > getIntellect() )
-        setIntellect( 0 );
+    if ( intellectModifier < 0 && static_cast<uint16_t>(-intellectModifier) > getIntellect() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyIntellect." << std::endl;
     else if ( intellectModifier > 0 && (std::numeric_limits<uint16_t>::max() - intellectModifier) > getIntellect() )
         setIntellect( std::numeric_limits<uint16_t>::max() );
     else
@@ -152,8 +156,9 @@ uint16_t CNPC::getWisdom() const
 
 void CNPC::modifyWisdom( int16_t wisdomModifier )
 {
-    if ( wisdomModifier < 0 && static_cast<uint16_t>(wisdomModifier) > getWisdom() )
-        setWisdom( 0 );
+    if ( wisdomModifier < 0 && static_cast<uint16_t>(-wisdomModifier) > getWisdom() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyWisdom." << std::endl;
     else if ( wisdomModifier > 0 && (std::numeric_limits<uint16_t>::max() - wisdomModifier) > getWisdom() )
         setWisdom( std::numeric_limits<uint16_t>::max() );
     else
@@ -173,18 +178,20 @@ uint16_t CNPC::getMaxHealth() const
 
 void CNPC::modifyMaxHealth( int16_t maxHealthModifier )
 {
-    /**if ( maxHealthModifier < 0 && static_cast<uint16_t>(maxHealthModifier) > getMaxHealth() ) {
-        setMaxHealth( 10 );
+    if ( maxHealthModifier < 0 && static_cast<uint16_t>(-maxHealthModifier) > getMaxHealth() ) {
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyMaxHealth." << std::endl;
     } else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) > getMaxHealth() ) {
         setMaxHealth( std::numeric_limits<uint16_t>::max() );
-    } else {**/
+    } else {
         setMaxHealth( getMaxHealth() + maxHealthModifier );
-    /**}**/
+    }
 }
 
 void CNPC::setMaxMana( uint16_t newMaxMana )
 {
     max_mana = newMaxMana;
+    current_mana = newMaxMana;
 }
 
 uint16_t CNPC::getMaxMana() const
@@ -194,8 +201,9 @@ uint16_t CNPC::getMaxMana() const
 
 void CNPC::modifyMaxMana( int16_t maxManaModifier )
 {
-    if ( maxManaModifier < 0 && static_cast<uint16_t>(maxManaModifier) > getMaxMana() )
-        setMaxMana( 0 );
+    if ( maxManaModifier < 0 && static_cast<uint16_t>(-maxManaModifier) > getMaxMana() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyMaxMana." << std::endl;
     else if ( maxManaModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxManaModifier) > getMaxMana() )
         setMaxMana( std::numeric_limits<uint16_t>::max() );
     else
@@ -205,6 +213,7 @@ void CNPC::modifyMaxMana( int16_t maxManaModifier )
 void CNPC::setMaxEnergy( uint16_t newMaxEnergy )
 {
     max_energy = newMaxEnergy;
+    current_energy = newMaxEnergy;
 }
 
 uint16_t CNPC::getMaxEnergy() const
@@ -214,8 +223,9 @@ uint16_t CNPC::getMaxEnergy() const
 
 void CNPC::modifyMaxEnergy( int16_t maxEnergyModifier )
 {
-    if ( maxEnergyModifier < 0 && static_cast<uint16_t>(maxEnergyModifier) > getMaxEnergy() )
-        setMaxEnergy( 0 );
+    if ( maxEnergyModifier < 0 && static_cast<uint16_t>(-maxEnergyModifier) > getMaxEnergy() )
+        // don't modify the max_XXXXX since modifier < maxXXXXX
+        std::cout << "Error during modifyMaxEnergy." << std::endl;
     else if ( maxEnergyModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxEnergyModifier) > getMaxEnergy() )
         setMaxEnergy( std::numeric_limits<uint16_t>::max() );
     else
