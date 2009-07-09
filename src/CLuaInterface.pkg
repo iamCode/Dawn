@@ -1,0 +1,76 @@
+$#include "CLuaInterface.h"
+
+enum Direction
+{
+    STOP = 0,
+    N    = 1,
+    NE   = 2,
+    E    = 3,
+    SE   = 4,
+    S    = 5,
+    SW   = 6,
+    W    = 7,
+    NW   = 8
+};
+
+class CNPC {
+    void baseOnType( std::string otherType );
+
+    void setStrength( int newStrength );
+    uint16_t getStrength() const;
+    void modifyStrength( int strengthModifier );
+    
+    void setDexterity( int newDexterity );
+    uint16_t getDexterity() const;
+    void modifyDexterity( int dexterityModifier );
+    
+    void setVitality( int newVitality );
+    uint16_t getVitality() const;
+    void modifyVitality( int vitalityModifier );
+
+    void setIntellect( int newIntellect );
+    uint16_t getIntellect() const;
+    void modifyIntellect( int intellectModifier );
+
+    void setWisdom( int newWisdom );
+    uint16_t getWisdom() const;
+    void modifyWisdom( int wisdomModifier );
+
+    void setMaxHealth( int newMaxHealth );
+    uint16_t getMaxHealth() const;
+    void modifyMaxHealth( int maxHealthModifier );
+
+    void setMaxMana( int newMaxMana );
+    uint16_t getMaxMana() const;
+    void modifyMaxMana( int maxManaModifier );
+
+    void setMaxEnergy( int newMaxEnergy );
+    uint16_t getMaxEnergy() const;
+    void modifyMaxEnergy( int maxEnergyModifier );
+
+    void setMoveTexture( int direction, std::string filename );
+    void setLifeTexture( std::string filename );
+};
+
+namespace DawnInterface
+{
+    CNPC* createNewMobType( std::string typeID );
+    CZone* getCurrentZone();
+    void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+}
+
+enum Direction
+{
+    STOP = 0,
+    N    = 1,
+    NE   = 2,
+    E    = 3,
+    SE   = 4,
+    S    = 5,
+    SW   = 6,
+    W    = 7,
+    NW   = 8
+};
+
+
+

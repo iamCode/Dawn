@@ -18,6 +18,8 @@
 
 #include "main.h"
 
+#include "CLuaFunctions.h"
+
 SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
@@ -27,7 +29,7 @@ CEditor Editor;
 
 CInterface GUI;
 
-std::vector <CNPC> NPC;
+std::vector <CNPC*> NPC;
 
 bool KP_damage, KP_heal, KP_interrupt;
 
@@ -85,29 +87,23 @@ static bool HandleCommandLineAurguments(int argc, char** argv) {
     return shouldExit;
 }
 
-int LoadSpawnPoints(char *file) {
-    FILE *fp;
-    char buf[255];
-    int NPC_id = 0, x_pos = 0, y_pos = 0, respawn_rate = 0, do_respawn = 0;
-
-    // open the zoneX.spawnpoints-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
-        std::cout << "ERROR opening file " << file << std::endl << std::endl;
-        return -1;
+namespace DawnInterface
+{
+    CZone* getCurrentZone()
+    {
+        return &zone1;
     }
 
-    while(!feof(fp)) {
-        fgets(buf, 255, fp);
-        if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-            sscanf(buf, "%d %d %d %d %d", &x_pos, &y_pos, &NPC_id, &respawn_rate, &do_respawn);
-            // the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
-            NPC.push_back(CNPC(x_pos,y_pos,NPC_id,respawn_rate, do_respawn, &zone1));
-        }
+    void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
+    {
+        CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
+        newMob->texture = NULL;
+        newMob->lifebar = NULL;
+        newMob->baseOnType( mobID );
+        newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
+        NPC.push_back( newMob );
     }
-
-    fclose(fp);
-    return 0;
-};
+}
 
 void DrawScene() {
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -121,7 +117,7 @@ void DrawScene() {
 
     character.Draw();
     for (unsigned int x=0; x<NPC.size(); x++) {
-        NPC[x].Draw();
+        NPC[x]->Draw();
     }
 
     // check our FPS and output it
@@ -194,6 +190,8 @@ int main(int argc, char* argv[]) {
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
+        LuaFunctions::executeLuaFile("data/mobdata.all");
+
         zone1.LoadZone("data/zone1");
 
         character.texture.texture.reserve(10);
@@ -206,36 +204,6 @@ int main(int argc, char* argv[]) {
         character.texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
         character.texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
         character.Init((RES_X/2),(RES_Y/2));
-
-        LoadSpawnPoints("data/zone1.spawnpointmap");
-
-        NPC[0].texture.texture.reserve(10);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
-        NPC[0].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
-        NPC[0].lifebar.texture.reserve(2);
-        NPC[0].lifebar.LoadIMG("data/lifebar.tga",1);
-
-        NPC[1].texture.texture.reserve(10);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
-        NPC[1].texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
-        NPC[1].lifebar.texture.reserve(2);
-        NPC[1].lifebar.LoadIMG("data/lifebar.tga",1);
-
-        for (unsigned int x=0; x<NPC.size();x++) {
-            NPC[x].LoadNPCInfo();
-        }
 
         Editor.LoadTextures();
         GUI.LoadTextures();
@@ -275,7 +243,7 @@ int main(int argc, char* argv[]) {
                     switch (event.button.button) {
                         case 1:
                             for (unsigned int x=0; x<NPC.size(); x++) {
-                                NPC[x].CheckMouseOver(mouseX,mouseY);
+                                NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y);
                             }
                         break;
                     }
@@ -297,13 +265,13 @@ int main(int argc, char* argv[]) {
             character.Move();
 
             for (unsigned int x=0; x<NPC.size(); x++) {
-                NPC[x].Respawn();
-                NPC[x].Wander();
+                NPC[x]->Respawn();
+                NPC[x]->Wander();
             }
 
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
                 for (unsigned int x=0; x<NPC.size(); x++) {
-                    NPC[x].Die();
+                    NPC[x]->Die();
                 }
             }
 
@@ -320,8 +288,8 @@ int main(int argc, char* argv[]) {
             if (keys[SDLK_1] && !KP_damage) {
                 KP_damage = true;
                 for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x].in_target == true) {
-                        character.CastSpell(3.0f,&NPC[x], -rand() % 60 - 30);
+                    if (NPC[x]->in_target == true) {
+                        character.CastSpell(3.0f,NPC[x], -rand() % 60 - 30);
                     }
                 }
             }
@@ -333,8 +301,8 @@ int main(int argc, char* argv[]) {
             if (keys[SDLK_2] && !KP_heal) {
                 KP_heal = true;
                 for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x].in_target == true) {
-                        character.CastSpell(1.5f,&NPC[x],rand() % 30);
+                    if (NPC[x]->in_target == true) {
+                        character.CastSpell(1.5f,NPC[x],rand() % 30);
                     }
                 }
             }

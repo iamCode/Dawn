@@ -18,6 +18,8 @@
 
 #include "CZone.h"
 
+#include "CLuaFunctions.h"
+
 void CZone::DrawZone() {
     DrawTiles(); // draw the tiles (ground) first.
     DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
@@ -43,6 +45,7 @@ void CZone::LoadZone(char *file) {
     LoadEnvironment(environmentmap);
     LoadShadow(shadowmap);
     LoadCollisions(collisionmap);
+    LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
 }
 
 int CZone::LoadCollisions(char *file) {
