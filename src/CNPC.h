@@ -51,6 +51,51 @@ class CNPC {
         energy_percentage = 1.0f;
     };
 
+    void baseOnType( std::string otherType );
+
+    void setStrength( uint16_t newStrength );
+    uint16_t getStrength() const;
+    void modifyStrength( int16_t strengthModifier );
+    
+    void setDexterity( uint16_t newDexterity );
+    uint16_t getDexterity() const;
+    void modifyDexterity( int16_t dexterityModifier );
+    
+    void setVitality( uint16_t newVitality );
+    uint16_t getVitality() const;
+    void modifyVitality( int16_t vitalityModifier );
+
+    void setIntellect( uint16_t newIntellect );
+    uint16_t getIntellect() const;
+    void modifyIntellect( int16_t intellectModifier );
+
+    void setWisdom( uint16_t newWisdom );
+    uint16_t getWisdom() const;
+    void modifyWisdom( int16_t wisdomModifier );
+
+    void setMaxHealth( uint16_t newMaxHealth );
+    uint16_t getMaxHealth() const;
+    void modifyMaxHealth( int16_t maxHealthModifier );
+
+    void setMaxMana( uint16_t newMaxMana );
+    uint16_t getMaxMana() const;
+    void modifyMaxMana( int16_t maxManaModifier );
+
+    void setMaxEnergy( uint16_t newMaxEnergy );
+    uint16_t getMaxEnergy() const;
+    void modifyMaxEnergy( int16_t maxEnergyModifier );
+
+    void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone )
+    {
+        x_pos = _x_spawn_pos;
+        y_pos = _y_spawn_pos;
+        x_spawn_pos = _x_spawn_pos;
+        y_spawn_pos = _y_spawn_pos;
+        do_respawn = _do_respawn;
+        seconds_to_respawn = _seconds_to_respawn;
+        zone = _zone;
+    }
+
     // NPC attributes
     char name[32];
     int x_pos, y_pos;
@@ -77,8 +122,15 @@ class CNPC {
     void Heal(int amount);
     void Die();
     int LoadNPCInfo();
-    CTexture texture;
-    CTexture lifebar;
+
+    void setTexture( CTexture *newTexture );
+    CTexture *getTexture() const;
+    void setLifebar( CTexture *newLifebar );
+    CTexture *getLifebar() const;
+    void setMoveTexture( int direction, std::string filename );
+    void setLifeTexture( std::string filename );
+    CTexture *texture;
+    CTexture *lifebar;
 
     private:
     // states of the NPC

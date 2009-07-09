@@ -19,6 +19,249 @@
 #include "CNPC.h"
 #include "CDrawingHelpers.h"
 
+#include <map>
+#include <string>
+#include <limits>
+#include <iostream>
+
+std::map< std::string, CNPC* > allMobTypes;
+
+// Dawn LUA Interface
+namespace DawnInterface
+{
+    CNPC* createNewMobType( std::string typeID )
+    {
+        CNPC *newMobType = new CNPC(0, 0, 0, 0, 0, NULL);
+        newMobType->texture = NULL;
+        newMobType->lifebar = NULL;
+        allMobTypes[ typeID ] = newMobType;
+        return newMobType;
+    }
+}
+
+void CNPC::baseOnType( std::string otherName )
+{
+    CNPC *other;
+    if ( allMobTypes.count( otherName ) != 1 )
+    {
+        std::cerr << "mob type \"" << otherName << "\" found " << allMobTypes.count( otherName ) << " times!!! aborting." << std::endl;
+        abort();
+    }
+    other = allMobTypes[ otherName ];
+    setStrength( other->getStrength() );
+    setDexterity( other->getDexterity() );
+    setVitality( other->getVitality() );
+    setIntellect( other->getIntellect() );
+    setWisdom( other->getWisdom() );
+    setMaxHealth( other->getMaxHealth() );
+    setMaxMana( other->getMaxMana() );
+    setMaxEnergy( other->getMaxEnergy() );
+    setTexture( other->getTexture() );
+    setLifebar( other->getLifebar() );
+}
+
+void CNPC::setStrength( uint16_t newStrength )
+{
+    strength = newStrength;
+}
+
+uint16_t CNPC::getStrength() const
+{
+    return strength;
+}
+
+void CNPC::modifyStrength( int16_t strengthModifier )
+{
+    if ( strengthModifier < 0 && static_cast<uint16_t>(strengthModifier) > getStrength() )
+        setStrength( 0 );
+    else if ( strengthModifier > 0 && (std::numeric_limits<uint16_t>::max() - strengthModifier) > getStrength() )
+        setStrength( std::numeric_limits<uint16_t>::max() );
+    else
+        setStrength( getStrength() + strengthModifier );
+}
+
+void CNPC::setDexterity( uint16_t newDexterity )
+{
+    dexterity = newDexterity;
+}
+
+uint16_t CNPC::getDexterity() const
+{
+    return dexterity;
+}
+
+void CNPC::modifyDexterity( int16_t dexterityModifier )
+{
+    if ( dexterityModifier < 0 && static_cast<uint16_t>(dexterityModifier) > getDexterity() )
+        setDexterity( 0 );
+    else if ( dexterityModifier > 0 && (std::numeric_limits<uint16_t>::max() - dexterityModifier) > getDexterity() )
+        setDexterity( std::numeric_limits<uint16_t>::max() );
+    else
+        setDexterity( getDexterity() + dexterityModifier );
+}
+
+void CNPC::setVitality( uint16_t newVitality )
+{
+    vitality = newVitality;
+}
+
+uint16_t CNPC::getVitality() const
+{
+    return vitality;
+}
+
+void CNPC::modifyVitality( int16_t vitalityModifier )
+{
+    if ( vitalityModifier < 0 && static_cast<uint16_t>(vitalityModifier) > getVitality() )
+        setVitality( 0 );
+    else if ( vitalityModifier > 0 && (std::numeric_limits<uint16_t>::max() - vitalityModifier) > getVitality() )
+        setVitality( std::numeric_limits<uint16_t>::max() );
+    else
+        setVitality( getVitality() + vitalityModifier );
+}
+
+void CNPC::setIntellect( uint16_t newIntellect )
+{
+    intellect = newIntellect;
+}
+
+uint16_t CNPC::getIntellect() const
+{
+    return intellect;
+}
+
+void CNPC::modifyIntellect( int16_t intellectModifier )
+{
+    if ( intellectModifier < 0 && static_cast<uint16_t>(intellectModifier) > getIntellect() )
+        setIntellect( 0 );
+    else if ( intellectModifier > 0 && (std::numeric_limits<uint16_t>::max() - intellectModifier) > getIntellect() )
+        setIntellect( std::numeric_limits<uint16_t>::max() );
+    else
+        setIntellect( getIntellect() + intellectModifier );
+}
+
+void CNPC::setWisdom( uint16_t newWisdom )
+{
+    wisdom = newWisdom;
+}
+
+uint16_t CNPC::getWisdom() const
+{
+    return wisdom;
+}
+
+void CNPC::modifyWisdom( int16_t wisdomModifier )
+{
+    if ( wisdomModifier < 0 && static_cast<uint16_t>(wisdomModifier) > getWisdom() )
+        setWisdom( 0 );
+    else if ( wisdomModifier > 0 && (std::numeric_limits<uint16_t>::max() - wisdomModifier) > getWisdom() )
+        setWisdom( std::numeric_limits<uint16_t>::max() );
+    else
+        setWisdom( getWisdom() + wisdomModifier );
+}
+
+void CNPC::setMaxHealth( uint16_t newMaxHealth )
+{
+    max_health = newMaxHealth;
+}
+
+uint16_t CNPC::getMaxHealth() const
+{
+    return max_health;
+}
+
+void CNPC::modifyMaxHealth( int16_t maxHealthModifier )
+{
+    if ( maxHealthModifier < 0 && static_cast<uint16_t>(maxHealthModifier) > getMaxHealth() )
+        setMaxHealth( 0 );
+    else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) > getMaxHealth() )
+        setMaxHealth( std::numeric_limits<uint16_t>::max() );
+    else
+        setMaxHealth( getMaxHealth() + maxHealthModifier );
+}
+
+void CNPC::setMaxMana( uint16_t newMaxMana )
+{
+    max_mana = newMaxMana;
+}
+
+uint16_t CNPC::getMaxMana() const
+{
+    return max_mana;
+}
+
+void CNPC::modifyMaxMana( int16_t maxManaModifier )
+{
+    if ( maxManaModifier < 0 && static_cast<uint16_t>(maxManaModifier) > getMaxMana() )
+        setMaxMana( 0 );
+    else if ( maxManaModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxManaModifier) > getMaxMana() )
+        setMaxMana( std::numeric_limits<uint16_t>::max() );
+    else
+        setMaxMana( getMaxMana() + maxManaModifier );
+}
+
+void CNPC::setMaxEnergy( uint16_t newMaxEnergy )
+{
+    max_energy = newMaxEnergy;
+}
+
+uint16_t CNPC::getMaxEnergy() const
+{
+    return max_energy;
+}
+
+void CNPC::modifyMaxEnergy( int16_t maxEnergyModifier )
+{
+    if ( maxEnergyModifier < 0 && static_cast<uint16_t>(maxEnergyModifier) > getMaxEnergy() )
+        setMaxEnergy( 0 );
+    else if ( maxEnergyModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxEnergyModifier) > getMaxEnergy() )
+        setMaxEnergy( std::numeric_limits<uint16_t>::max() );
+    else
+        setMaxEnergy( getMaxEnergy() + maxEnergyModifier );
+}
+
+void CNPC::setTexture( CTexture *newTexture )
+{
+    this->texture = newTexture;
+}
+
+CTexture* CNPC::getTexture() const
+{
+    return this->texture;
+}
+
+void CNPC::setLifebar( CTexture *newLifebar )
+{
+    this->lifebar = newLifebar;
+}
+
+CTexture* CNPC::getLifebar() const
+{
+    return this->lifebar;
+}
+
+void CNPC::setMoveTexture( int direction, std::string filename )
+{
+    if ( texture == NULL )
+    {
+        texture = new CTexture();
+        texture->texture.reserve( 10 );
+    }
+    texture->LoadIMG( filename.c_str(), direction );
+}
+
+void CNPC::setLifeTexture( std::string filename )
+{
+    if ( lifebar == NULL )
+    {
+        lifebar = new  CTexture();
+        lifebar->texture.reserve( 2 );
+    }
+    lifebar->LoadIMG( filename.c_str(), 1 );
+}
+
+// end of Dawn LUA Interface
+
 int CNPC::LoadNPCInfo() {
     FILE *fp;
     char buf[255];
@@ -237,7 +480,7 @@ void CNPC::Respawn() {
 
 void CNPC::Draw() {
     if (alive == true) {
-        texture.DrawTexture(x_pos,y_pos,current_texture);
+        texture->DrawTexture(x_pos,y_pos,current_texture);
     }
     if (in_target == true) {
         DrawLifebar();
@@ -246,9 +489,9 @@ void CNPC::Draw() {
 
 void CNPC::DrawLifebar() {
     glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
-    DrawingHelpers::mapTextureToRect( lifebar.texture[1].texture,
+    DrawingHelpers::mapTextureToRect( lifebar->texture[1].texture,
                                       x_pos, 64*life_percentage,
-                                      y_pos+texture.texture[current_texture].height, 8 );
+                                      y_pos+texture->texture[current_texture].height, 8 );
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
 
@@ -282,8 +525,8 @@ void CNPC::CalculateStats() {
 };
 
 void CNPC::CheckMouseOver(int _x_pos, int _y_pos) {
-    if (((x_pos < _x_pos) && ((x_pos+texture.texture[current_texture].width ) > _x_pos))
-    && (( y_pos < _y_pos) && ((y_pos+texture.texture[current_texture].height) > _y_pos))) {
+    if (((x_pos < _x_pos) && ((x_pos+texture->texture[current_texture].width ) > _x_pos))
+    && (( y_pos < _y_pos) && ((y_pos+texture->texture[current_texture].height) > _y_pos))) {
         in_target = true;
     } else {
         in_target = false;
