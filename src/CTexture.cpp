@@ -133,14 +133,14 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
-int CTexture::LoadTextureMap(char *file, bool try_load_collision_box) {
+int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box) {
     FILE *fp;
     char buf[255], filename[255];
     int loaded_texture_id = 0, highest_texture = 0;
     int CR_x = 0, CR_y = 0, CR_w = 0, CR_h = 0, contains_collision_box = 0;
 
     // open the texturemap-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
+    if ((fp=fopen(file.c_str(), "r")) == NULL) {
         std::cout << "ERROR opening file " << file
         << std::endl << std::endl;
         return -1;

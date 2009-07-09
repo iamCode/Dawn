@@ -26,35 +26,25 @@ void CZone::DrawZone() {
     DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
 }
 
-void CZone::LoadZone(char *file) {
-    char texturemap[32], textureenvironment[32], collisionmap[32], tilemap[32], environmentmap[32], textureshadow[32], shadowmap[32];
+void CZone::LoadZone(std::string file) {
+    ZoneTiles.LoadTextureMap( std::string( file ).append ( ".textures" ) );
+    ZoneEnvironment.LoadTextureMap( std::string( file ).append ( ".textureenvironment" ) ,true);
+    ZoneShadow.LoadTextureMap( std::string( file ).append ( ".textureshadow" ) );
 
-    sprintf(texturemap,"%s.textures",file);
-    sprintf(tilemap,"%s.tilemap",file);
-    sprintf(textureenvironment,"%s.textureenvironment",file);
-    sprintf(environmentmap,"%s.environmentmap",file);
-    sprintf(shadowmap,"%s.shadowmap",file);
-    sprintf(textureshadow,"%s.textureshadow",file);
-    sprintf(collisionmap,"%s.collisionmap",file);
-
-    ZoneTiles.LoadTextureMap(texturemap);
-    ZoneEnvironment.LoadTextureMap(textureenvironment,true);
-    ZoneShadow.LoadTextureMap(textureshadow);
-
-    LoadMap(tilemap);
-    LoadEnvironment(environmentmap);
-    LoadShadow(shadowmap);
-    LoadCollisions(collisionmap);
+    LoadMap( std::string( file ).append ( ".tilemap" ) );
+    LoadEnvironment( std::string( file ).append ( ".environmentmap" ) );
+    LoadShadow( std::string( file ).append ( ".shadowmap" ) );
+    LoadCollisions( std::string( file ).append ( ".collisionmap" ) );
     LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
 }
 
-int CZone::LoadCollisions(char *file) {
+int CZone::LoadCollisions(std::string file) {
     FILE *fp;
     char buf[255];
     int CR_x = 0, CR_y = 0, CR_h = 0, CR_w = 0;
 
     // open the texturemap-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
+    if ((fp=fopen(file.c_str(), "r")) == NULL) {
         std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
@@ -70,14 +60,14 @@ int CZone::LoadCollisions(char *file) {
     return 0;
 }
 
-int CZone::LoadEnvironment(char *file) {
+int CZone::LoadEnvironment(std::string file) {
     FILE *fp;
     char buf[255];
     int texture_id = 0, x_pos = 0, y_pos = 0;
     float transparency, red, green, blue, x_scale, y_scale;
 
     // open the texturemap-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
+    if ((fp=fopen(file.c_str(), "r")) == NULL) {
         std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
@@ -96,14 +86,14 @@ int CZone::LoadEnvironment(char *file) {
     return 0;
 }
 
-int CZone::LoadShadow(char *file) {
+int CZone::LoadShadow(std::string file) {
     FILE *fp;
     char buf[255];
     int texture_id = 0, x_pos = 0, y_pos = 0;
     float transparency, red, green, blue, x_scale, y_scale;
 
     // open the shadowmap-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
+    if ((fp=fopen(file.c_str(), "r")) == NULL) {
         std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }
@@ -123,13 +113,13 @@ int CZone::LoadShadow(char *file) {
     return 0;
 }
 
-int CZone::LoadMap(char *file) {
+int CZone::LoadMap(std::string file) {
     FILE *fp;
     char buf[255];
     int texture_id = 0, x_pos = 0, y_pos = 0;
 
     // open the texturemap-file, if not give us an error in stdout.txt.
-    if ((fp=fopen(file, "r")) == NULL) {
+    if ((fp=fopen(file.c_str(), "r")) == NULL) {
         std::cout << "ERROR opening file " << file << std::endl << std::endl;
         return -1;
     }

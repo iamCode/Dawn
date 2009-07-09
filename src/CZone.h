@@ -65,11 +65,11 @@ class CZone {
     public:
     void DrawZone();
 
-    void LoadZone(char *file);
-    int LoadMap(char *file);
-    int LoadEnvironment(char *file);
-    int LoadShadow(char *file);
-    int LoadCollisions(char *file);
+    void LoadZone(std::string file);
+    int LoadMap(std::string file);
+    int LoadEnvironment(std::string file);
+    int LoadShadow(std::string file);
+    int LoadCollisions(std::string file);
 
     int LocateTile(int x, int y);
     int LocateShadow(int x, int y);

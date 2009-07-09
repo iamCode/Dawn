@@ -38,7 +38,7 @@ class CTexture {
     public:
     std::vector<sTexture> texture;
 
-    int LoadTextureMap(char *file, bool try_load_collision_box = false);
+    int LoadTextureMap(std::string file, bool try_load_collision_box = false);
     void LoadIMG(std::string file, int texture_index);
     void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float x_scale = 1.0f, float y_scale = 1.0f);
     int NumberOfTextures;
