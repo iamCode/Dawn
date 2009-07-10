@@ -18,6 +18,7 @@
 
 #include "CTexture.h"
 #include <SDL/SDL_image.h>
+#include <glu.h>
 
 #include "CDrawingHelpers.h"
 
@@ -89,7 +90,7 @@ void CTexture::LoadIMG(std::string file, int texture_index) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // Edit the texture object's image data using the information SDL_Surface gives us
-        glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
     } else {
         std::cout << "SDL could not load " << file << ": " << SDL_GetError() << std::endl;
         SDL_Quit();
