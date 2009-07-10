@@ -427,6 +427,7 @@ void CNPC::Wander() {
 
 void CNPC::Die() {
     alive = false;
+    in_target = false;
     respawn_lastframe = SDL_GetTicks();
 };
 
