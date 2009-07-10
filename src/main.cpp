@@ -31,7 +31,7 @@ CInterface GUI;
 
 std::vector <CNPC*> NPC;
 
-bool KP_damage, KP_heal, KP_interrupt;
+bool KP_damage, KP_heal, KP_interrupt, KP_select_next = false;
 
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
@@ -284,6 +284,44 @@ int main(int argc, char* argv[]) {
             if (!keys[SDLK_l]) {
                 Editor.KP_toggle_editor = false;
             }
+
+            if (keys[SDLK_TAB] && !KP_select_next)
+            {
+                KP_select_next = true;
+                // find current target (if any)
+                size_t curTarget = NPC.size();
+                for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
+                {
+                    if ( NPC[curNPC]->in_target )
+                    {
+                        curTarget = curNPC;
+                        break;
+                    }
+                }
+                // select next npc on screen
+                for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
+                {
+                    size_t checkNPCNr = (curNPC + curTarget + 1) % NPC.size();
+                    // if NPC is in on screen (might be changed to line of sight or something)
+                    if ( DrawingHelpers::isRectOnScreen( NPC[checkNPCNr]->x_pos, 1, NPC[checkNPCNr]->y_pos, 1 ) )
+                    {
+                        // deselect previous target
+                        if ( curTarget != NPC.size() )
+                        {
+                            NPC[curTarget]->in_target = false;
+                        }
+                        // select new target
+                        NPC[checkNPCNr]->in_target = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!keys[SDLK_TAB])
+            {
+                KP_select_next = false;
+            }
+
 
             if (keys[SDLK_1] && !KP_damage) {
                 KP_damage = true;
