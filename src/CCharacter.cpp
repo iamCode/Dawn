@@ -125,6 +125,10 @@ void CCharacter::Move()
     int movePerStep = 10; // moves one step per movePerStep ms
     Direction direction = GetDirection();
 
+    // To balance moving diagonally boost, movePerStep = 10*sqrt(2)
+    if (direction == NW || direction == NE || direction == SW || direction == SE)
+        movePerStep = 14;
+
     if ((direction != STOP) && IsCasting()) {
         CastingAborted();
     }
