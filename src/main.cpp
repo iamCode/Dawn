@@ -19,6 +19,7 @@
 #include "main.h"
 
 #include "CLuaFunctions.h"
+#include "CSpell.h"
 
 SDL_Surface *screen;
 extern CZone zone1;
@@ -31,7 +32,7 @@ CInterface GUI;
 
 std::vector <CNPC*> NPC;
 
-bool KP_damage, KP_heal, KP_interrupt, KP_select_next = false;
+bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false;
 
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
@@ -303,7 +304,8 @@ int main(int argc, char* argv[]) {
                 {
                     size_t checkNPCNr = (curNPC + curTarget + 1) % NPC.size();
                     // if NPC is in on screen (might be changed to line of sight or something)
-                    if ( DrawingHelpers::isRectOnScreen( NPC[checkNPCNr]->x_pos, 1, NPC[checkNPCNr]->y_pos, 1 ) )
+                    if ( DrawingHelpers::isRectOnScreen( NPC[checkNPCNr]->x_pos, 1, NPC[checkNPCNr]->y_pos, 1 )
+                         && NPC[checkNPCNr]->isAlive() )
                     {
                         // deselect previous target
                         if ( curTarget != NPC.size() )
@@ -327,7 +329,8 @@ int main(int argc, char* argv[]) {
                 KP_damage = true;
                 for (unsigned int x=0; x<NPC.size(); x++) {
                     if (NPC[x]->in_target == true) {
-                        character.CastSpell(3.0f,NPC[x], -rand() % 60 - 30);
+                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, NPC[x] );
+                        character.CastSpell(spell);
                     }
                 }
             }
@@ -338,23 +341,48 @@ int main(int argc, char* argv[]) {
 
             if (keys[SDLK_2] && !KP_heal) {
                 KP_heal = true;
-                for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x]->in_target == true) {
-                        character.CastSpell(1.5f,NPC[x],rand() % 30);
-                    }
-                }
+                CSpell *spell = SpellCreation::createSelfAffectingSpellByName( "Healing", &character );
+                character.CastSpell( spell );
             }
 
             if (!keys[SDLK_2]) {
                 KP_heal = false;
             }
 
-            if (keys[SDLK_3] && !KP_interrupt) {
+            if (keys[SDLK_3] && !KP_magicMissile) {
+                KP_magicMissile = true;
+                for (unsigned int x=0; x<NPC.size(); x++) {
+                    if (NPC[x]->in_target == true) {
+                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, NPC[x] );
+                        character.CastSpell(spell);
+                    }
+                }
+            }
+
+            if (!keys[SDLK_3]) {
+                KP_magicMissile = false;
+            }
+
+            if (keys[SDLK_4] && !KP_healOther) {
+                KP_healOther = true;
+                for (unsigned int x=0; x<NPC.size(); x++) {
+                    if (NPC[x]->in_target == true) {
+                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, NPC[x] );
+                        character.CastSpell(spell);
+                    }
+                }
+            }
+
+            if (!keys[SDLK_4]) {
+                KP_healOther = false;
+            }
+
+            if (keys[SDLK_5] && !KP_interrupt) {
                 KP_interrupt = true;
                 character.CastingInterrupted();
             }
 
-            if (!keys[SDLK_3]) {
+            if (!keys[SDLK_5]) {
                 KP_interrupt = false;
             }
         }

@@ -29,6 +29,8 @@
 extern int RES_X,RES_Y,world_x,world_y;
 extern CZone zone1;
 
+class CSpell;
+
 class CCharacter {
     public:
     GLuint frame;
@@ -40,13 +42,15 @@ class CCharacter {
     void MoveLeft();
     void MoveRight();
     void Move();
-    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; remainingMovePoints = 0; is_casting = false; }
+    void Init(int x, int y) { x_pos = x; y_pos = y; last_direction_texture = 1; remainingMovePoints = 0; is_casting = false; curSpell = NULL; }
     void Draw();
     bool IsCasting();
     int CollisionCheck(Direction direction);
-    void CastSpell(float castspell_, CNPC *target_, int spell_target_damage);
+    void CastSpell( CSpell* spell );
     void giveMovePoints( uint32_t movePoints );
     CTexture texture;
+
+    void modifyCurHealth( int16_t curHealthModifier );
 
     void CastingInterrupted();
 
@@ -58,13 +62,12 @@ class CCharacter {
     int current_texture, last_direction_texture;
     int CheckForCollision(int x, int y);
     uint32_t remainingMovePoints;
-    float spell_casttime;
     bool is_casting;
     void CastingComplete();
     void CastingAborted();
+    void abortCurrentSpell();
 
-    CNPC *spell_target;
-    int spell_target_damage;
+    CSpell *curSpell;
 };
 
 

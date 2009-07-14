@@ -18,7 +18,9 @@
 
 #include "CCharacter.h"
 
+#include <cassert>
 #include "CDrawingHelpers.h"
+#include "CSpell.h"
 
 void CCharacter::Draw() {
     last_direction_texture = GetDirectionTexture();
@@ -224,14 +226,17 @@ int CCharacter::GetDirectionTexture() {
 // in the future we could probably benefit from putting this into the combat class,
 // since we probably would use the same functions for NPCs when they are casting spells etc...
 
-void CCharacter::CastSpell(float casttime_, CNPC *target_, int spell_target_damage_) {
+void CCharacter::CastSpell( CSpell *spell ) {
     if (!is_casting) { // setup all variables for a spellcasting.
         is_casting = true;
+        curSpell = spell;
         casting_startframe = SDL_GetTicks();
-        spell_casttime = casttime_;
-        spell_target = target_;
-        spell_target_damage = spell_target_damage_;
         IsCasting();
+    }
+    else
+    {
+        // don't cast the new spell (enqueue in list of coming spells?)
+        delete spell;
     }
 };
 
@@ -240,7 +245,8 @@ bool CCharacter::IsCasting() {
         casting_currentframe = SDL_GetTicks();
 
         // casting_percentage is mostly just for the castbar display, guess we could alter this code.
-        casting_percentage = (static_cast<float>(casting_currentframe-casting_startframe)/1000) / spell_casttime;
+        casting_percentage = static_cast<float>(casting_currentframe-casting_startframe) / curSpell->getCastTime();
+
         if (casting_percentage >= 1.0f) {
             CastingComplete();
         }
@@ -256,20 +262,22 @@ void CCharacter::CastingComplete() {
     // when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
     // So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
     // fow now we'll just damage / heal the NPC in target
-    std::cout << spell_target_damage<< std::endl;
-    if (spell_target_damage > 0) {
-        spell_target->Heal(spell_target_damage);
-    } else {
-        spell_target->Damage(-spell_target_damage);
-    }
-    spell_target = NULL;
+    curSpell->applyEffect();
+    abortCurrentSpell();
 };
+
+void CCharacter::abortCurrentSpell()
+{
+    assert( curSpell != NULL );
+    delete curSpell;
+    curSpell = NULL;
+    is_casting = false;
+}
 
 void CCharacter::CastingAborted() {
     // if we moved, got stunned, or in some way unable to complete the spell ritual, spellcasting will fail.
     // If we are following the above instructions to use a pointer to a spell and so on, we should clear that pointer here.
-    is_casting = false;
-    spell_target = NULL;
+    abortCurrentSpell();
 };
 
 void CCharacter::CastingInterrupted() {
@@ -281,3 +289,10 @@ void CCharacter::CastingInterrupted() {
         casting_startframe = casting_currentframe;
     }
 };
+
+void CCharacter::modifyCurHealth( int16_t curHealthModifier )
+{
+    // TODO!
+}
+
+

@@ -85,6 +85,15 @@ class CNPC {
     uint16_t getMaxEnergy() const;
     void modifyMaxEnergy( int16_t maxEnergyModifier );
 
+    void setCurHealth( uint16_t newCurHealth );
+    uint16_t getCurHealth() const;
+    void modifyCurHealth( int16_t curHealthModifier );
+
+    bool isAlive() const
+    {
+        return alive;
+    }
+
     void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone )
     {
         x_pos = _x_spawn_pos;

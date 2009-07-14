@@ -232,6 +232,39 @@ void CNPC::modifyMaxEnergy( int16_t maxEnergyModifier )
         setMaxEnergy( getMaxEnergy() + maxEnergyModifier );
 }
 
+void CNPC::setCurHealth( uint16_t newCurHealth )
+{
+    current_health = newCurHealth;
+    if ( current_health == 0 )
+        Die();
+}
+
+uint16_t CNPC::getCurHealth() const
+{
+    return current_health;
+}
+
+void CNPC::modifyCurHealth( int16_t curHealthModifier )
+{
+    if ( curHealthModifier < 0 && static_cast<uint16_t>(-curHealthModifier) > getCurHealth() )
+    {
+        // don't remove HP below zero, but since modifyCurHealth will be called every time damage is
+        // dealt we don't want to enforce this check on the damage dealing functions
+        setCurHealth( 0 );
+    }
+    else if ( curHealthModifier > 0 
+              && (curHealthModifier > getMaxHealth() 
+                  || (std::numeric_limits<uint16_t>::max() - curHealthModifier > getMaxHealth() ) ) )
+    {
+        // changing health would lead to a value bigger than getMaxHealth()
+        setCurHealth( getMaxHealth() );
+    }
+    else
+    {
+        setCurHealth( getCurHealth() + curHealthModifier );
+    }
+}
+
 void CNPC::setTexture( CTexture *newTexture )
 {
     this->texture = newTexture;
