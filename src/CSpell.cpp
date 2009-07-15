@@ -21,7 +21,6 @@
 #include <iostream>
 #include <cstdlib>
 #include "CCharacter.h"
-#include "CNPC.h"
 
 /// Implementation of class CSpell
 
