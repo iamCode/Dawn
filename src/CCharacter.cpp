@@ -26,6 +26,8 @@
 #include <limits>
 #include <iostream>
 
+void enqueueActiveSpell( CSpell *spell );
+
 std::map< std::string, CCharacter* > allMobTypes;
 
 // Dawn LUA Interface
@@ -609,8 +611,10 @@ void CCharacter::CastingComplete() {
     // when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
     // So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
     // fow now we'll just damage / heal the NPC in target
-    curSpell->applyEffect();
-    abortCurrentSpell();
+    
+    curSpell->startEffect();
+    enqueueActiveSpell( curSpell );
+    curSpell = NULL;
 };
 
 void CCharacter::abortCurrentSpell()

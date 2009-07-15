@@ -46,6 +46,30 @@ GLFT_Font fpsFont;
 // actual game settings class
 bool fullscreenenabled = true;
 
+std::vector<CSpell*> activeSpells;
+
+void enqueueActiveSpell( CSpell *spell )
+{
+    activeSpells.push_back( spell );
+}
+
+void cleanupActiveSpells()
+{
+    size_t curActiveNr = 0;
+    while ( curActiveNr < activeSpells.size() )
+    {
+        if ( activeSpells[ curActiveNr ]->isEffectComplete() )
+        {
+            delete activeSpells[ curActiveNr ];
+            activeSpells.erase( activeSpells.begin() + curActiveNr );
+        }
+        else
+        {
+            ++curActiveNr;
+        }
+    }
+}
+
 // Handle command line arguments, returns 1 if the game loop is
 // not supposed to run.
 static bool HandleCommandLineAurguments(int argc, char** argv) {
@@ -119,6 +143,14 @@ void DrawScene() {
     for (unsigned int x=0; x<NPC.size(); x++) {
         NPC[x]->Draw();
         fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+88 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+    }
+
+    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
+    {
+        if ( ! activeSpells[ curActiveSpellNr ]->isEffectComplete() )
+        {
+            activeSpells[ curActiveSpellNr ]->drawSpellEffect();
+        }
     }
 
     // check our FPS and output it
@@ -213,6 +245,8 @@ int main(int argc, char* argv[]) {
         message.initFonts();
         Editor.initFonts();
 
+        SpellCreation::initSpells();
+
         //SDL_ShowCursor(SDL_DISABLE);
     }
 
@@ -270,6 +304,13 @@ int main(int argc, char* argv[]) {
                 NPC[x]->Wander();
             }
 
+            for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
+            {
+                activeSpells[ curActiveSpellNr ]->inEffect();
+            }
+
+            cleanupActiveSpells();
+            
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
                 for (unsigned int x=0; x<NPC.size(); x++) {
                     NPC[x]->Die();

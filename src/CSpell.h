@@ -45,7 +45,10 @@ class CSpell
     std::string getName() const;
     std::string getSpellInfo() const;
 
-    virtual void applyEffect() = 0;
+    virtual void drawSpellEffect() = 0;
+    virtual void startEffect() = 0;
+    virtual void inEffect() = 0;
+    virtual bool isEffectComplete() = 0;
 
   private:
     uint16_t castTime;
@@ -56,6 +59,7 @@ class CSpell
 
 namespace SpellCreation
 {
+    void initSpells();
     CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CNPC *target );
     CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
 }

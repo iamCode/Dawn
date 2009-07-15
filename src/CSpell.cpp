@@ -21,6 +21,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "CCharacter.h"
+#include "CTexture.h"
 
 /// Implementation of class CSpell
 
@@ -87,11 +88,24 @@ class MagicMissileSpell : public CSpell
     {
     }
 
-    virtual void applyEffect()
+    virtual void startEffect()
     {
         int damage = 1 + rand() % 5 + 5;
 
         target->Damage( damage );
+    }
+
+    virtual void inEffect()
+    {
+    }
+
+    virtual void drawSpellEffect()
+    {
+    }
+
+    virtual bool isEffectComplete()
+    {
+        return true;
     }
 
   private:
@@ -124,27 +138,90 @@ class LightningSpell : public CSpell
         return "Causes 30 + (1 to 60) points of lightning damage to the target.\n";
     }
 
+    static CTexture *spellTexture;
+
+    static void init()
+    {
+        LightningSpell::spellTexture = new CTexture();
+        LightningSpell::spellTexture->texture.reserve( 1 );
+        LightningSpell::spellTexture->LoadIMG( "data/lightning.tga", 0 );
+    }
+
     LightningSpell( CCharacter *caster_, CNPC *target_ )
         : CSpell( LightningSpell::getStaticCastTime(),
                   LightningSpell::getStaticManaCost(),
                   LightningSpell::getStaticName(),
                   LightningSpell::getStaticSpellInfo() ),
           caster( caster_ ),
-          target( target_ )
+          target( target_ ),
+          finished( false ),
+          continuousDamageCaused( 0 )
     {
     }
 
-    virtual void applyEffect()
+    virtual void startEffect()
     {
-        int damage = 1 + rand() % 60 + 30;
+        int damage = 1 + rand() % 60;
 
         target->Damage( damage );
+        effectStart = SDL_GetTicks();
+        lastEffect = effectStart;
+    }
+
+    virtual void inEffect()
+    {
+        uint32_t curTime = SDL_GetTicks();
+        int curDamage = static_cast<int>( (curTime - lastEffect) / 50 );
+        bool callFinish = false;
+
+        if ( continuousDamageCaused + curDamage >= 30 )
+        {
+            curDamage = 30 - continuousDamageCaused;
+            callFinish = true;
+        }
+
+        if ( curDamage > 0 )
+        {
+            target->Damage( curDamage );
+            lastEffect += curDamage * 50;
+            continuousDamageCaused += curDamage;
+        }
+
+        if ( callFinish || ! target->isAlive() )
+        {
+            finishEffect();
+        }
+    }
+
+    void finishEffect()
+    {
+        finished = true;
+    }
+
+    virtual void drawSpellEffect()
+    {
+        double percentageTodo = static_cast<double>(continuousDamageCaused)/30;
+        DrawingHelpers::mapTextureToRect( 
+                LightningSpell::spellTexture->texture[0].texture, 
+                target->x_pos + percentageTodo * 0.5 * target->texture->texture[1].width, target->texture->texture[1].width * (1-percentageTodo),
+                target->y_pos + percentageTodo * 0.5 * target->texture->texture[1].height, target->texture->texture[1].height * (1-percentageTodo) );
+    }
+
+    virtual bool isEffectComplete()
+    {
+        return finished;
     }
 
   private:
     CCharacter *caster;
     CNPC *target;
+    uint32_t effectStart;
+    uint32_t lastEffect;
+    bool finished;
+    int continuousDamageCaused;
 };
+
+CTexture *LightningSpell::spellTexture = NULL;
 
 /// Heal Other spell
 
@@ -181,11 +258,24 @@ class HealOtherSpell : public CSpell
     {
     }
 
-    virtual void applyEffect()
+    virtual void startEffect()
     {
         int healEffect = 50;
 
         target->Heal( healEffect );
+    }
+
+    virtual void inEffect()
+    {
+    }
+
+    virtual void drawSpellEffect()
+    {
+    }
+
+    virtual bool isEffectComplete()
+    {
+        return true;
     }
 
   private:
@@ -227,11 +317,24 @@ class HealingSpell : public CSpell
     {
     }
 
-    virtual void applyEffect()
+    virtual void startEffect()
     {
         int healing = 100;
 
         caster->Heal( healing );
+    }
+
+    virtual void inEffect()
+    {
+    }
+
+    virtual void drawSpellEffect()
+    {
+    }
+
+    virtual bool isEffectComplete()
+    {
+        return true;
     }
 
   private:
@@ -242,6 +345,11 @@ class HealingSpell : public CSpell
 
 namespace SpellCreation
 {
+
+void initSpells()
+{
+    LightningSpell::init();
+}
 
 /// TODO: as soon as CCharacter is the base and CNPC derived from it, make the target a CCharacter to allow
 ///       mobs to cast as well. This must be added to the spells as well.
