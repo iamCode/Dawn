@@ -16,13 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "CNPC.h"
+#include "CCharacter.h"
 
 class CZone;
 
 namespace DawnInterface
 {
-    CNPC* createNewMobType( std::string typeID );
+    CCharacter* createNewMobType( std::string typeID );
     CZone* getCurrentZone();
     void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 }

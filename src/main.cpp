@@ -24,7 +24,7 @@
 SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
-CCharacter character;
+Player character;
 
 CEditor Editor;
 
@@ -115,10 +115,10 @@ void DrawScene() {
     glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
     zone1.DrawZone();
-
     character.Draw();
     for (unsigned int x=0; x<NPC.size(); x++) {
         NPC[x]->Draw();
+        fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+88 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
     }
 
     // check our FPS and output it
@@ -161,7 +161,6 @@ int main(int argc, char* argv[]) {
         atexit(SDL_Quit);
 
 
-
         if(fullscreenenabled == false)
             screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
         else
@@ -194,17 +193,16 @@ int main(int argc, char* argv[]) {
         LuaFunctions::executeLuaFile("data/mobdata.all");
 
         zone1.LoadZone("data/zone1");
-
-        character.texture.texture.reserve(10);
-        character.texture.LoadIMG("data/character/pacman/pacman_n.tga",1);
-        character.texture.LoadIMG("data/character/pacman/pacman_ne.tga",2);
-        character.texture.LoadIMG("data/character/pacman/pacman_e.tga",3);
-        character.texture.LoadIMG("data/character/pacman/pacman_se.tga",4);
-        character.texture.LoadIMG("data/character/pacman/pacman_s.tga",5);
-        character.texture.LoadIMG("data/character/pacman/pacman_sw.tga",6);
-        character.texture.LoadIMG("data/character/pacman/pacman_w.tga",7);
-        character.texture.LoadIMG("data/character/pacman/pacman_nw.tga",8);
-        character.Init((RES_X/2),(RES_Y/2));
+        character.setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
+        character.setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
+        character.setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
+        character.setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
+        character.setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
+        character.setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
+        character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
+        character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
+        character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
+        character.Init(RES_X/2,RES_Y/2);
 
         Editor.LoadTextures();
         GUI.LoadTextures();
@@ -266,6 +264,8 @@ int main(int argc, char* argv[]) {
             character.Move();
 
             for (unsigned int x=0; x<NPC.size(); x++) {
+                NPC[x]->giveMovePoints( ticksDiff );
+                NPC[x]->Move();
                 NPC[x]->Respawn();
                 NPC[x]->Wander();
             }

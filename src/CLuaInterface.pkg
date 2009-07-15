@@ -13,7 +13,7 @@ enum Direction
     NW   = 8
 };
 
-class CNPC {
+class CCharacter {
     void baseOnType( std::string otherType );
 
     void setStrength( int newStrength );
@@ -50,27 +50,21 @@ class CNPC {
 
     void setMoveTexture( int direction, std::string filename );
     void setLifeTexture( std::string filename );
+
+    void setWanderRadius( int newWanderRadius );
+    uint16_t getWanderRadius() const;
+
+    void setName( std::string newName );
+    std::string getName() const;
+
+    void setLevel( int newLevel );
+    uint8_t getLevel() const;
 };
 
 namespace DawnInterface
 {
-    CNPC* createNewMobType( std::string typeID );
+    CCharacter* createNewMobType( std::string typeID );
     CZone* getCurrentZone();
     void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 }
-
-enum Direction
-{
-    STOP = 0,
-    N    = 1,
-    NE   = 2,
-    E    = 3,
-    SE   = 4,
-    S    = 5,
-    SW   = 6,
-    W    = 7,
-    NW   = 8
-};
-
-
 
