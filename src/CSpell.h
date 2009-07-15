@@ -22,7 +22,6 @@
 #include <string>
 
 class CCharacter;
-class CNPC;
 
 namespace EffectType
 {
@@ -60,7 +59,7 @@ class CSpell
 namespace SpellCreation
 {
     void initSpells();
-    CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CNPC *target );
+    CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target );
     CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
 }
 

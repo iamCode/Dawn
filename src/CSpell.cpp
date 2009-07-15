@@ -78,7 +78,7 @@ class MagicMissileSpell : public CSpell
         return "Causes 5 + (1 to 5) points of lightning damage to the target.\n";
     }
 
-    MagicMissileSpell( CCharacter *caster_, CNPC *target_ )
+    MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( MagicMissileSpell::getStaticCastTime(),
                   MagicMissileSpell::getStaticManaCost(),
                   MagicMissileSpell::getStaticName(),
@@ -110,7 +110,7 @@ class MagicMissileSpell : public CSpell
 
   private:
     CCharacter *caster;
-    CNPC *target;
+    CCharacter *target;
 };
 
 /// Lightning spell
@@ -147,7 +147,7 @@ class LightningSpell : public CSpell
         LightningSpell::spellTexture->LoadIMG( "data/lightning.tga", 0 );
     }
 
-    LightningSpell( CCharacter *caster_, CNPC *target_ )
+    LightningSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( LightningSpell::getStaticCastTime(),
                   LightningSpell::getStaticManaCost(),
                   LightningSpell::getStaticName(),
@@ -214,7 +214,7 @@ class LightningSpell : public CSpell
 
   private:
     CCharacter *caster;
-    CNPC *target;
+    CCharacter *target;
     uint32_t effectStart;
     uint32_t lastEffect;
     bool finished;
@@ -248,7 +248,7 @@ class HealOtherSpell : public CSpell
         return "Heals 50 points of damage on the target.\n";
     }
 
-    HealOtherSpell( CCharacter *caster_, CNPC *target_ )
+    HealOtherSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( HealOtherSpell::getStaticCastTime(),
                   HealOtherSpell::getStaticManaCost(),
                   HealOtherSpell::getStaticName(),
@@ -280,7 +280,7 @@ class HealOtherSpell : public CSpell
 
   private:
     CCharacter *caster;
-    CNPC *target;
+    CCharacter *target;
 };
 
 /// Healing spell
@@ -351,9 +351,7 @@ void initSpells()
     LightningSpell::init();
 }
 
-/// TODO: as soon as CCharacter is the base and CNPC derived from it, make the target a CCharacter to allow
-///       mobs to cast as well. This must be added to the spells as well.
-CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CNPC *target )
+CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target )
 {
     if ( name == LightningSpell::getStaticName() )
     {

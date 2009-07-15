@@ -119,6 +119,11 @@ class CCharacter
     void setLevel ( uint8_t newLevel );
     uint8_t getLevel() const;
 
+    bool isAlive() const
+    {
+        return alive;
+    }
+
     // NPC attributes
     std::string name;
     uint16_t strength, dexterity, vitality, intellect, wisdom;
@@ -205,11 +210,6 @@ class CNPC : public CCharacter
         do_respawn = _do_respawn;
         seconds_to_respawn = _seconds_to_respawn;
         zone = _zone;
-    }
-
-    bool isAlive() const
-    {
-        return alive;
     }
 
     void Draw();
