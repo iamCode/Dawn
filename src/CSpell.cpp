@@ -92,7 +92,7 @@ class MagicMissileSpell : public CSpell
     {
         int damage = 1 + rand() % 5 + 5;
 
-        target->modifyCurHealth( -damage );
+        target->Damage( damage );
     }
 
   private:
@@ -139,7 +139,7 @@ class LightningSpell : public CSpell
     {
         int damage = 1 + rand() % 60 + 30;
 
-        target->modifyCurHealth( -damage );
+        target->Damage( damage );
     }
 
   private:
@@ -186,7 +186,7 @@ class HealOtherSpell : public CSpell
     {
         int healEffect = 50;
 
-        target->modifyCurHealth( healEffect );
+        target->Heal( healEffect );
     }
 
   private:
@@ -197,7 +197,7 @@ class HealOtherSpell : public CSpell
 /// Healing spell
 
 class HealingSpell : public CSpell
-{  
+{
   public:
     static uint16_t getStaticCastTime()
     {
@@ -232,7 +232,7 @@ class HealingSpell : public CSpell
     {
         int healing = 100;
 
-        caster->modifyCurHealth( healing );
+        caster->Heal( healing );
     }
 
   private:
