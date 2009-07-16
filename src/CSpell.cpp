@@ -144,11 +144,11 @@ class LightningSpell : public CSpell
     {
         LightningSpell::spellTexture = new CTexture();
         LightningSpell::spellTexture->texture.reserve( 5 );
-        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/1.tga", 0 );
-        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/2.tga", 1 );
-        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/3.tga", 2 );
-        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/4.tga", 3 );
-        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/5.tga", 4 );
+        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/1.tga", 0 );
+        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/2.tga", 1 );
+        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/3.tga", 2 );
+        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/4.tga", 3 );
+        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/5.tga", 4 );
     }
 
     LightningSpell( CCharacter *caster_, CCharacter *target_ )
