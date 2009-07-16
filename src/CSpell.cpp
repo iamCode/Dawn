@@ -143,8 +143,12 @@ class LightningSpell : public CSpell
     static void init()
     {
         LightningSpell::spellTexture = new CTexture();
-        LightningSpell::spellTexture->texture.reserve( 1 );
-        LightningSpell::spellTexture->LoadIMG( "data/lightning.tga", 0 );
+        LightningSpell::spellTexture->texture.reserve( 5 );
+        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/1.tga", 0 );
+        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/2.tga", 1 );
+        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/3.tga", 2 );
+        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/4.tga", 3 );
+        LightningSpell::spellTexture->LoadIMG( "../graphics/lightning/5.tga", 4 );
     }
 
     LightningSpell( CCharacter *caster_, CCharacter *target_ )
@@ -201,10 +205,37 @@ class LightningSpell : public CSpell
     virtual void drawSpellEffect()
     {
         double percentageTodo = static_cast<double>(continuousDamageCaused)/30;
-        DrawingHelpers::mapTextureToRect( 
-                LightningSpell::spellTexture->texture[0].texture, 
-                target->x_pos + percentageTodo * 0.5 * target->texture->texture[1].width, target->texture->texture[1].width * (1-percentageTodo),
-                target->y_pos + percentageTodo * 0.5 * target->texture->texture[1].height, target->texture->texture[1].height * (1-percentageTodo) );
+        float degrees;
+        degrees = asin((caster->y_pos - target->y_pos)/sqrt((pow(caster->x_pos - target->x_pos,2)+pow(caster->y_pos - target->y_pos,2)))) * 57,296;
+        degrees += 90;
+
+        animationTimerStop = SDL_GetTicks();
+        if (animationTimerStop - animationTimerStart > 50)
+        {
+            frameCount = rand() % 4;
+        }
+
+        if (caster->x_pos < target->x_pos) { degrees = -degrees; }
+
+
+        glPushMatrix();
+            glBindTexture( GL_TEXTURE_2D, LightningSpell::spellTexture->texture[frameCount].texture);
+
+            glTranslatef(caster->x_pos+32, caster->y_pos+32, 0.0f);
+            glRotatef(degrees,0.0f,0.0f,1.0f);
+            glTranslatef(-160-caster->x_pos,-caster->y_pos-32,0.0);
+
+            glBegin( GL_QUADS );
+            // Bottom-left vertex (corner)
+                glTexCoord2f( 0.0f, 0.0f ); glVertex3f( caster->x_pos+32, caster->y_pos+64, 0.0f );
+                // Bottom-right vertex (corner)
+                glTexCoord2f( 1.0f, 0.0f ); glVertex3f( caster->x_pos+256+32, caster->y_pos+64, 0.0f );
+                // Top-right vertex (corner)
+                glTexCoord2f( 1.0f, 1.0f ); glVertex3f( caster->x_pos+256+32, caster->y_pos+400+64, 0.0f );
+                // Top-left vertex (corner)
+                glTexCoord2f( 0.0f, 1.0f ); glVertex3f( caster->x_pos+32, caster->y_pos+400+64, 0.0f );
+            glEnd();
+        glPopMatrix();
     }
 
     virtual bool isEffectComplete()
@@ -215,8 +246,11 @@ class LightningSpell : public CSpell
   private:
     CCharacter *caster;
     CCharacter *target;
+    uint8_t frameCount;
     uint32_t effectStart;
     uint32_t lastEffect;
+    uint32_t animationTimerStart;
+    uint32_t animationTimerStop;
     bool finished;
     int continuousDamageCaused;
 };
