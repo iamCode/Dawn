@@ -140,12 +140,11 @@ void DrawScene() {
 
     zone1.DrawZone();
     character.Draw();
-    for (unsigned int x=0; x<NPC.size(); x++) {
+    for (unsigned int x=0; x<NPC.size(); x++)
+    {
         NPC[x]->Draw();
         if ( character.getTarget() == NPC[x] )
             fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, FOUND YOU!: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
-
-        fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+88 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
     }
 
     // draws the character's target's lifebar, if we have any target.
@@ -355,13 +354,14 @@ int main(int argc, char* argv[]) {
                 for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
                 {
                     // if NPC is in on screen (might be changed to line of sight or something)
+                    // this makes a list of all visible NPCs, easier to select next target this way.
                     if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
                          && NPC[curNPC]->isAlive() )
                     {
                         NPClist.push_back(NPC[curNPC]);
                     }
                 }
-
+                // selects next target in the list, if target = NULL, set target to first NPC on the visible list.
                 for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC )
                 {
                     if ( character.getTarget() == NULL)
