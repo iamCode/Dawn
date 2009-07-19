@@ -72,6 +72,7 @@ class CCharacter
     void abortCurrentSpell();
 
     CSpell *curSpell;
+    CCharacter *Target;
 
     void baseOnType( std::string otherType );
 
@@ -131,11 +132,9 @@ class CCharacter
     uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
     uint8_t alignment, level;
 
-    bool in_target;
-
     void DrawLifebar();
 
-    void CheckMouseOver(int _x_pos, int _y_pos);
+    bool CheckMouseOver(int _x_pos, int _y_pos);
     void Damage(int amount);
     void Heal(int amount);
     void Die();
@@ -178,8 +177,10 @@ class Player : public CCharacter
 
     public:
 
-    void Move();
-    void Draw();
+        void Move();
+        void Draw();
+        CCharacter* getTarget() const;
+        void setTarget(CCharacter *newTarget);
 };
 
 class CNPC : public CCharacter

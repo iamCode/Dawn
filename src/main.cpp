@@ -142,7 +142,21 @@ void DrawScene() {
     character.Draw();
     for (unsigned int x=0; x<NPC.size(); x++) {
         NPC[x]->Draw();
+        if ( character.getTarget() == NPC[x] )
+            fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, FOUND YOU!: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+
         fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+88 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+    }
+
+    // draws the character's target's lifebar, if we have any target.
+    if ( character.getTarget() != NULL )
+        character.getTarget()->DrawLifebar();
+
+    // making sure our target is still alive, if not well set our target to NULL.
+    if ( character.getTarget() != NULL )
+    {
+        if ( !character.getTarget()->isAlive() )
+        character.setTarget( NULL );
     }
 
     for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
@@ -275,8 +289,13 @@ int main(int argc, char* argv[]) {
                 if (event.type == SDL_MOUSEBUTTONDOWN) {
                     switch (event.button.button) {
                         case 1:
+                            character.setTarget( NULL );
+
                             for (unsigned int x=0; x<NPC.size(); x++) {
-                                NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y);
+                                if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) )
+                                {
+                                    character.setTarget( NPC[x] );
+                                }
                             }
                         break;
                     }
@@ -310,7 +329,7 @@ int main(int argc, char* argv[]) {
             }
 
             cleanupActiveSpells();
-            
+
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
                 for (unsigned int x=0; x<NPC.size(); x++) {
                     NPC[x]->Die();
@@ -330,33 +349,41 @@ int main(int argc, char* argv[]) {
             if (keys[SDLK_TAB] && !KP_select_next)
             {
                 KP_select_next = true;
-                // find current target (if any)
-                size_t curTarget = NPC.size();
-                for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
-                {
-                    if ( NPC[curNPC]->in_target )
-                    {
-                        curTarget = curNPC;
-                        break;
-                    }
-                }
+                bool FoundNewTarget = false;
+                std::vector <CNPC*> NPClist;
                 // select next npc on screen
                 for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
                 {
-                    size_t checkNPCNr = (curNPC + curTarget + 1) % NPC.size();
                     // if NPC is in on screen (might be changed to line of sight or something)
-                    if ( DrawingHelpers::isRectOnScreen( NPC[checkNPCNr]->x_pos, 1, NPC[checkNPCNr]->y_pos, 1 )
-                         && NPC[checkNPCNr]->isAlive() )
+                    if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
+                         && NPC[curNPC]->isAlive() )
                     {
-                        // deselect previous target
-                        if ( curTarget != NPC.size() )
-                        {
-                            NPC[curTarget]->in_target = false;
+                        NPClist.push_back(NPC[curNPC]);
+                    }
+                }
+
+                for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC )
+                {
+                    if ( character.getTarget() == NULL)
+                    {
+                        character.setTarget( NPClist[0] );
+                    }
+
+                    if ( character.getTarget() == NPClist[curNPC] )
+                    {
+                        if ( curNPC+1 == NPClist.size() ) {
+                            character.setTarget(NPClist[0]);
+                        } else {
+                            character.setTarget(NPClist[curNPC+1]);
                         }
-                        // select new target
-                        NPC[checkNPCNr]->in_target = true;
+                        FoundNewTarget = true;
                         break;
                     }
+                }
+
+                if ( !FoundNewTarget && NPClist.size() > 0)
+                {
+                    character.setTarget( NPClist[0] );
                 }
             }
 
@@ -365,14 +392,12 @@ int main(int argc, char* argv[]) {
                 KP_select_next = false;
             }
 
-
             if (keys[SDLK_1] && !KP_damage) {
                 KP_damage = true;
-                for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x]->in_target == true) {
-                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, NPC[x] );
-                        character.CastSpell(spell);
-                    }
+                if ( character.getTarget() != NULL )
+                {
+                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, character.getTarget() );
+                    character.CastSpell(spell);
                 }
             }
 
@@ -392,11 +417,10 @@ int main(int argc, char* argv[]) {
 
             if (keys[SDLK_3] && !KP_magicMissile) {
                 KP_magicMissile = true;
-                for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x]->in_target == true) {
-                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, NPC[x] );
-                        character.CastSpell(spell);
-                    }
+                if ( character.getTarget() != NULL )
+                {
+                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, character.getTarget() );
+                    character.CastSpell(spell);
                 }
             }
 
@@ -406,11 +430,10 @@ int main(int argc, char* argv[]) {
 
             if (keys[SDLK_4] && !KP_healOther) {
                 KP_healOther = true;
-                for (unsigned int x=0; x<NPC.size(); x++) {
-                    if (NPC[x]->in_target == true) {
-                        CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, NPC[x] );
-                        character.CastSpell(spell);
-                    }
+                if ( character.getTarget() != NULL )
+                {
+                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, character.getTarget() );
+                    character.CastSpell(spell);
                 }
             }
 

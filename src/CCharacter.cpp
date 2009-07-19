@@ -471,7 +471,6 @@ void Player::Move()
 
 void CNPC::Move()
 {
-    std::cout << "Moving character. remainingMovePoints: " << remainingMovePoints << ". Current x_pos: " << x_pos << " y_pos: " << y_pos << std::endl;
     int movePerStep = 10; // moves one step per movePerStep ms
 
     Direction moving_direction;
@@ -579,7 +578,7 @@ int CCharacter::GetDirectionTexture() {
 // since we probably would use the same functions for NPCs when they are casting spells etc...
 
 void CCharacter::CastSpell( CSpell *spell ) {
-    if (!is_casting) { // setup all variables for a spellcasting.
+    if (!is_casting ) { // setup all variables for a spellcasting.
         is_casting = true;
         curSpell = spell;
         casting_startframe = SDL_GetTicks();
@@ -611,7 +610,7 @@ void CCharacter::CastingComplete() {
     // when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
     // So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
     // fow now we'll just damage / heal the NPC in target
-    
+
     curSpell->startEffect();
     enqueueActiveSpell( curSpell );
     curSpell = NULL;
@@ -671,7 +670,6 @@ void CNPC::Wander() {
 
 void CCharacter::Die() {
     alive = false;
-    in_target = false;
     respawn_lastframe = SDL_GetTicks();
 };
 
@@ -699,11 +697,6 @@ void CNPC::Draw() {
     if (alive == true)
     {
         texture->DrawTexture(x_pos,y_pos,direction_texture);
-    }
-
-    if (in_target == true)
-    {
-        DrawLifebar();
     }
 };
 
@@ -751,11 +744,21 @@ void CCharacter::CalculateStats() {
      energy_percentage = static_cast<float>(current_energy) / static_cast<float>(max_energy);
 };
 
-void CCharacter::CheckMouseOver(int _x_pos, int _y_pos) {
+bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos) {
     if (((x_pos < _x_pos) && ((x_pos+texture->texture[current_texture].width ) > _x_pos))
     && (( y_pos < _y_pos) && ((y_pos+texture->texture[current_texture].height) > _y_pos))) {
-        in_target = true;
+        return true;
     } else {
-        in_target = false;
+        return false;
     }
 };
+
+CCharacter* Player::getTarget() const
+{
+    return Target;
+}
+
+void Player::setTarget(CCharacter *newTarget)
+{
+    Target = newTarget;
+}
