@@ -151,13 +151,6 @@ void DrawScene() {
     if ( character.getTarget() != NULL )
         character.getTarget()->DrawLifebar();
 
-    // making sure our target is still alive, if not well set our target to NULL.
-    if ( character.getTarget() != NULL )
-    {
-        if ( !character.getTarget()->isAlive() )
-        character.setTarget( NULL );
-    }
-
     for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
     {
         if ( ! activeSpells[ curActiveSpellNr ]->isEffectComplete() )
@@ -320,6 +313,13 @@ int main(int argc, char* argv[]) {
                 NPC[x]->Move();
                 NPC[x]->Respawn();
                 NPC[x]->Wander();
+            }
+
+            // making sure our target is still alive, if not well set our target to NULL.
+            if ( character.getTarget() != NULL )
+            {
+                if ( !character.getTarget()->isAlive() )
+                character.setTarget( NULL );
             }
 
             for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
