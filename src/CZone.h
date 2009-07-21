@@ -23,6 +23,8 @@
 #include <vector>
 #include <stdio.h>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 #include "CDrawingHelpers.h"
 
 struct sTileMap {
