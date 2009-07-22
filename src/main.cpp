@@ -144,7 +144,7 @@ void DrawScene() {
     {
         NPC[x]->Draw();
         if ( character.getTarget() == NPC[x] )
-            fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, FOUND YOU!: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+            fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
     }
 
     // draws the character's target's lifebar, if we have any target.
