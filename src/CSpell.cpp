@@ -78,40 +78,101 @@ class MagicMissileSpell : public CSpell
         return "Causes 5 + (1 to 5) points of lightning damage to the target.\n";
     }
 
+    static CTexture *spellTexture;
+
+    static void init()
+    {
+        MagicMissileSpell::spellTexture = new CTexture();
+        MagicMissileSpell::spellTexture->texture.reserve( 1 );
+        MagicMissileSpell::spellTexture->LoadIMG( "data/magicmissile.tga", 0 );
+    }
+
     MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( MagicMissileSpell::getStaticCastTime(),
                   MagicMissileSpell::getStaticManaCost(),
                   MagicMissileSpell::getStaticName(),
                   MagicMissileSpell::getStaticSpellInfo() ),
           caster( caster_ ),
-          target( target_ )
+          target( target_ ),
+          finished( false )
     {
     }
 
     virtual void startEffect()
     {
-        int damage = 1 + rand() % 5 + 5;
-
-        target->Damage( damage );
+        effectStart = SDL_GetTicks();
+        lastEffect = effectStart;
+        posx = caster->getXPos() + (caster->getWidth() / 2);
+        posy = caster->getYPos() + (caster->getHeight() / 2);
     }
 
     virtual void inEffect()
     {
+        uint32_t curTicks = SDL_GetTicks();
+        int move = (curTicks - lastEffect);
+        int targetx = target->getXPos() + (target->getWidth() / 2);
+        int targety = target->getYPos() + (target->getHeight() / 2);
+        int dx = targetx - posx;
+        int dy = targety - posy;
+        double dist = sqrt( (dx * dx) + (dy * dy) );
+        double percdist = (move / dist);
+        int movex;
+        int movey;
+        
+        if ( percdist >= 1.0 )
+        {
+            movex = dx;
+            movey = dy;
+        }
+        else
+        {
+            movex = dx * percdist;
+            movey = dy * percdist;
+        }
+
+        double movedDist = sqrt(movex * movex + movey * movey);
+        lastEffect += movedDist;
+        if ( lastEffect > curTicks )
+            lastEffect = curTicks;
+        
+        posx += movex;
+        posy += movey;
+
+        if ( posx == targetx && posy == targety ) 
+            finishEffect();
+    }
+
+    void finishEffect()
+    {
+        int damage = 1 + rand() % 5 + 5;
+
+        target->Damage( damage );
+        finished = true;
     }
 
     virtual void drawSpellEffect()
     {
+        DrawingHelpers::mapTextureToRect( 
+                MagicMissileSpell::spellTexture->texture[0].texture, 
+                posx - 16, 32,
+                posy - 16, 32 );
     }
 
     virtual bool isEffectComplete()
     {
-        return true;
+        return finished;
     }
 
   private:
     CCharacter *caster;
     CCharacter *target;
+    uint32_t effectStart;
+    uint32_t lastEffect;
+    bool finished;
+    int posx, posy;
 };
+
+CTexture *MagicMissileSpell::spellTexture = NULL;
 
 /// Lightning spell
 
@@ -382,6 +443,7 @@ namespace SpellCreation
 
 void initSpells()
 {
+    MagicMissileSpell::init();
     LightningSpell::init();
 }
 
