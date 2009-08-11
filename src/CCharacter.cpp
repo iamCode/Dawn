@@ -327,6 +327,26 @@ void CCharacter::setLifeTexture( std::string filename )
 
 // end of Dawn LUA Interface
 
+int CCharacter::getXPos() const
+{
+    return x_pos;
+}
+
+int CCharacter::getYPos() const
+{
+    return y_pos;
+}
+
+int CCharacter::getWidth() const
+{
+    return texture->texture[1].width;
+}
+
+int CCharacter::getHeight() const
+{
+    return texture->texture[1].height;
+}
+
 int CCharacter::CheckForCollision(int x_pos, int y_pos) {
     for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
         if ((zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w >= x_pos) && (zone1.CollisionMap[t].CR.x <= x_pos)) {

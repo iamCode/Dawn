@@ -52,6 +52,11 @@ class CCharacter
 
     void CastSpell(CSpell *spell );
 
+    // position access functions
+    int getXPos() const;
+    int getYPos() const;
+    int getWidth() const;
+    int getHeight() const;
 
     void CastingInterrupted();
     Direction GetDirection();
