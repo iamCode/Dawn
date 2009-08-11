@@ -79,12 +79,22 @@ class MagicMissileSpell : public CSpell
     }
 
     static CTexture *spellTexture;
+    static CTexture *spellSymbol;
 
     static void init()
     {
         MagicMissileSpell::spellTexture = new CTexture();
         MagicMissileSpell::spellTexture->texture.reserve( 1 );
-        MagicMissileSpell::spellTexture->LoadIMG( "data/magicmissile.tga", 0 );
+        MagicMissileSpell::spellTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
+
+        MagicMissileSpell::spellSymbol = new CTexture();
+        MagicMissileSpell::spellSymbol->texture.reserve( 1 );
+        MagicMissileSpell::spellSymbol->LoadIMG( "data/spells/magicmissile/symbol.tga", 0 );
+    }
+
+    static CTexture* getStaticSymbol()
+    {
+        return MagicMissileSpell::spellSymbol;
     }
 
     MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
@@ -173,6 +183,7 @@ class MagicMissileSpell : public CSpell
 };
 
 CTexture *MagicMissileSpell::spellTexture = NULL;
+CTexture *MagicMissileSpell::spellSymbol = NULL;
 
 /// Lightning spell
 
@@ -200,6 +211,7 @@ class LightningSpell : public CSpell
     }
 
     static CTexture *spellTexture;
+    static CTexture *spellSymbol;
 
     static void init()
     {
@@ -210,6 +222,15 @@ class LightningSpell : public CSpell
         LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/3.tga", 2 );
         LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/4.tga", 3 );
         LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/5.tga", 4 );
+
+        LightningSpell::spellSymbol = new CTexture();
+        LightningSpell::spellSymbol->texture.reserve(1);
+        LightningSpell::spellSymbol->LoadIMG( "data/spells/lightning/symbol.tga", 0 );
+    }
+
+    static CTexture* getStaticSymbol()
+    {
+        return LightningSpell::spellSymbol;
     }
 
     LightningSpell( CCharacter *caster_, CCharacter *target_ )
@@ -317,6 +338,7 @@ class LightningSpell : public CSpell
 };
 
 CTexture *LightningSpell::spellTexture = NULL;
+CTexture *LightningSpell::spellSymbol = NULL;
 
 /// Heal Other spell
 
@@ -446,6 +468,23 @@ void initSpells()
     MagicMissileSpell::init();
     LightningSpell::init();
 }
+
+CTexture* getSpellSymbolByName( std::string name )
+{
+    if ( name == LightningSpell::getStaticName() )
+    {
+        return LightningSpell::getStaticSymbol();
+    }
+    else if ( name == MagicMissileSpell::getStaticName() )
+    {
+        return MagicMissileSpell::getStaticSymbol();
+    }
+    else
+    {
+        std::cerr << "symbol for spell \"" << name << "\" not implemented yet" << std::endl;
+        abort();
+    }
+} 
 
 CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target )
 {

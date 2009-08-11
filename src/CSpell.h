@@ -22,6 +22,7 @@
 #include <string>
 
 class CCharacter;
+class CTexture;
 
 namespace EffectType
 {
@@ -59,6 +60,7 @@ class CSpell
 namespace SpellCreation
 {
     void initSpells();
+    CTexture* getSpellSymbolByName( std::string name );
     CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target );
     CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
 }

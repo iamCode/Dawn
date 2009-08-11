@@ -250,6 +250,7 @@ int main(int argc, char* argv[]) {
         fpsFont.open("data/verdana.ttf", 12);
         message.initFonts();
         Editor.initFonts();
+        GUI.initFonts();
 
         SpellCreation::initSpells();
 

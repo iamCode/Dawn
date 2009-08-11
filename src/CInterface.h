@@ -21,6 +21,7 @@
 
 #include "CTexture.h"
 #include "CCharacter.h"
+#include "GLFT_Font.h"
 
 extern int RES_X,RES_Y,world_x,world_y;
 
@@ -31,11 +32,14 @@ class CInterface {
     void DrawInterface();
     void SetPlayer(CCharacter *player_);
 
+    void initFonts();
 
     private:
     CTexture interfacetextures;
 
     CCharacter *player;
+
+    GLFT_Font shortcutFont;
 };
 
 
