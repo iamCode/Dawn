@@ -50,6 +50,8 @@ class CSpellActionBase
     virtual void inEffect() = 0;
     virtual bool isEffectComplete() = 0;
 
+    virtual CTexture* getSymbol() const = 0;
+
   private:
     uint16_t castTime;
     uint16_t manaCost;

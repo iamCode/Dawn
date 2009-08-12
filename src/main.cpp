@@ -20,6 +20,7 @@
 
 #include "CLuaFunctions.h"
 #include "CSpell.h"
+#include "CAction.h"
 
 SDL_Surface *screen;
 extern CZone zone1;
@@ -32,7 +33,7 @@ CInterface GUI;
 
 std::vector <CNPC*> NPC;
 
-bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false;
+bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 
 extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
 
@@ -46,22 +47,22 @@ GLFT_Font fpsFont;
 // actual game settings class
 bool fullscreenenabled = true;
 
-std::vector<CSpell*> activeSpells;
+std::vector<CSpellActionBase*> activeSpellActions;
 
-void enqueueActiveSpell( CSpell *spell )
+void enqueueActiveSpellAction( CSpellActionBase *spellaction )
 {
-    activeSpells.push_back( spell );
+    activeSpellActions.push_back( spellaction );
 }
 
-void cleanupActiveSpells()
+void cleanupActiveSpellActions()
 {
     size_t curActiveNr = 0;
-    while ( curActiveNr < activeSpells.size() )
+    while ( curActiveNr < activeSpellActions.size() )
     {
-        if ( activeSpells[ curActiveNr ]->isEffectComplete() )
+        if ( activeSpellActions[ curActiveNr ]->isEffectComplete() )
         {
-            delete activeSpells[ curActiveNr ];
-            activeSpells.erase( activeSpells.begin() + curActiveNr );
+            delete activeSpellActions[ curActiveNr ];
+            activeSpellActions.erase( activeSpellActions.begin() + curActiveNr );
         }
         else
         {
@@ -151,11 +152,11 @@ void DrawScene() {
     if ( character.getTarget() != NULL )
         character.getTarget()->DrawLifebar();
 
-    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
+    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
     {
-        if ( ! activeSpells[ curActiveSpellNr ]->isEffectComplete() )
+        if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() )
         {
-            activeSpells[ curActiveSpellNr ]->drawEffect();
+            activeSpellActions[ curActiveSpellNr ]->drawEffect();
         }
     }
 
@@ -253,6 +254,7 @@ int main(int argc, char* argv[]) {
         GUI.initFonts();
 
         SpellCreation::initSpells();
+        ActionCreation::initActions();
 
         //SDL_ShowCursor(SDL_DISABLE);
     }
@@ -323,12 +325,12 @@ int main(int argc, char* argv[]) {
                 character.setTarget( NULL );
             }
 
-            for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpells.size(); ++curActiveSpellNr )
+            for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
             {
-                activeSpells[ curActiveSpellNr ]->inEffect();
+                activeSpellActions[ curActiveSpellNr ]->inEffect();
             }
 
-            cleanupActiveSpells();
+            cleanupActiveSpellActions();
 
             if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
                 for (unsigned int x=0; x<NPC.size(); x++) {
@@ -449,6 +451,19 @@ int main(int argc, char* argv[]) {
 
             if (!keys[SDLK_5]) {
                 KP_interrupt = false;
+            }
+
+            if (keys[SDLK_SPACE] && !KP_attack) {
+                KP_attack = true;
+                if ( character.getTarget() != NULL )
+                {
+                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
+                    character.startAction(action);
+                }
+            }
+
+            if (!keys[SDLK_SPACE]) {
+                KP_attack = false;
             }
         }
         DrawScene();

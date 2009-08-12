@@ -29,7 +29,9 @@
 extern int RES_X,RES_Y,world_x,world_y;
 extern CZone zone1;
 
+class CSpellActionBase;
 class CSpell;
+class CAction;
 
 class CCharacter
 {
@@ -51,6 +53,7 @@ class CCharacter
     int CollisionCheck(Direction direction);
 
     void CastSpell(CSpell *spell );
+    void startAction( CAction *action );
 
     // position access functions
     int getXPos() const;
@@ -76,7 +79,7 @@ class CCharacter
     void CastingAborted();
     void abortCurrentSpell();
 
-    CSpell *curSpell;
+    CSpellActionBase *curSpell;
     CCharacter *Target;
 
     void baseOnType( std::string otherType );

@@ -20,13 +20,14 @@
 #include <cassert>
 #include "CDrawingHelpers.h"
 #include "CSpell.h"
+#include "CAction.h"
 
 #include <map>
 #include <string>
 #include <limits>
 #include <iostream>
 
-void enqueueActiveSpell( CSpell *spell );
+void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
 
@@ -597,6 +598,12 @@ int CCharacter::GetDirectionTexture() {
 // in the future we could probably benefit from putting this into the combat class,
 // since we probably would use the same functions for NPCs when they are casting spells etc...
 
+void CCharacter::startAction( CAction *action )
+{
+    action->startEffect();
+    enqueueActiveSpellAction( action );
+}
+
 void CCharacter::CastSpell( CSpell *spell ) {
     if (!is_casting ) { // setup all variables for a spellcasting.
         is_casting = true;
@@ -632,7 +639,7 @@ void CCharacter::CastingComplete() {
     // fow now we'll just damage / heal the NPC in target
 
     curSpell->startEffect();
-    enqueueActiveSpell( curSpell );
+    enqueueActiveSpellAction( curSpell );
     curSpell = NULL;
 };
 

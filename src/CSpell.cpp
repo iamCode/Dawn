@@ -97,6 +97,11 @@ class MagicMissileSpell : public CSpell
         return spellSymbol;
     }
 
+    CTexture* getSymbol() const
+    {
+        return getStaticSymbol();
+    }
+
     MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( getStaticCastTime(),
                   getStaticManaCost(),
@@ -233,6 +238,11 @@ class LightningSpell : public CSpell
         return spellSymbol;
     }
 
+    CTexture* getSymbol() const
+    {
+        return getStaticSymbol();
+    }
+
     LightningSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( getStaticCastTime(),
                   getStaticManaCost(),
@@ -365,6 +375,11 @@ class HealOtherSpell : public CSpell
         return "Heals 50 points of damage on the target.\n";
     }
 
+    CTexture* getSymbol() const
+    {
+        return NULL;
+    }
+
     HealOtherSpell( CCharacter *caster_, CCharacter *target_ )
         : CSpell( getStaticCastTime(),
                   getStaticManaCost(),
@@ -423,6 +438,11 @@ class HealingSpell : public CSpell
     static std::string getStaticSpellInfo()
     {
         return "Heals 100 points of damage on self.\n";
+    }
+
+    CTexture* getSymbol() const
+    {
+        return NULL;
     }
 
     HealingSpell( CCharacter *caster_ )
