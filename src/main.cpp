@@ -155,7 +155,7 @@ void DrawScene() {
     {
         if ( ! activeSpells[ curActiveSpellNr ]->isEffectComplete() )
         {
-            activeSpells[ curActiveSpellNr ]->drawSpellEffect();
+            activeSpells[ curActiveSpellNr ]->drawEffect();
         }
     }
 

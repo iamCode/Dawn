@@ -23,34 +23,34 @@
 #include "CCharacter.h"
 #include "CTexture.h"
 
-/// Implementation of class CSpell
+/// Implementation of class CSpellActionBase
 
-CSpell::CSpell( uint16_t castTime_, uint16_t manaCost_, std::string name_, std::string spellInfo_ )
+CSpellActionBase::CSpellActionBase( uint16_t castTime_, uint16_t manaCost_, std::string name_, std::string info_ )
     : castTime( castTime_ ),
       manaCost( manaCost_ ),
       name( name_ ),
-      spellInfo( spellInfo_ )
+      info( info_ )
 {
 }
 
-uint16_t CSpell::getCastTime() const
+uint16_t CSpellActionBase::getCastTime() const
 {
     return castTime;
 }
 
-uint16_t CSpell::getManaCost() const
+uint16_t CSpellActionBase::getManaCost() const
 {
     return manaCost;
 }
 
-std::string CSpell::getName() const
+std::string CSpellActionBase::getName() const
 {
     return name;
 }
 
-std::string CSpell::getSpellInfo() const
+std::string CSpellActionBase::getInfo() const
 {
-    return spellInfo;
+    return info;
 }
 
 /// Magic Missile
@@ -83,25 +83,25 @@ class MagicMissileSpell : public CSpell
 
     static void init()
     {
-        MagicMissileSpell::spellTexture = new CTexture();
-        MagicMissileSpell::spellTexture->texture.reserve( 1 );
-        MagicMissileSpell::spellTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
+        spellTexture = new CTexture();
+        spellTexture->texture.reserve( 1 );
+        spellTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
 
-        MagicMissileSpell::spellSymbol = new CTexture();
-        MagicMissileSpell::spellSymbol->texture.reserve( 1 );
-        MagicMissileSpell::spellSymbol->LoadIMG( "data/spells/magicmissile/symbol.tga", 0 );
+        spellSymbol = new CTexture();
+        spellSymbol->texture.reserve( 1 );
+        spellSymbol->LoadIMG( "data/spells/magicmissile/symbol.tga", 0 );
     }
 
     static CTexture* getStaticSymbol()
     {
-        return MagicMissileSpell::spellSymbol;
+        return spellSymbol;
     }
 
     MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( MagicMissileSpell::getStaticCastTime(),
-                  MagicMissileSpell::getStaticManaCost(),
-                  MagicMissileSpell::getStaticName(),
-                  MagicMissileSpell::getStaticSpellInfo() ),
+        : CSpell( getStaticCastTime(),
+                  getStaticManaCost(),
+                  getStaticName(),
+                  getStaticSpellInfo() ),
           caster( caster_ ),
           target( target_ ),
           finished( false )
@@ -160,10 +160,10 @@ class MagicMissileSpell : public CSpell
         finished = true;
     }
 
-    virtual void drawSpellEffect()
+    virtual void drawEffect()
     {
         DrawingHelpers::mapTextureToRect( 
-                MagicMissileSpell::spellTexture->texture[0].texture, 
+                spellTexture->texture[0].texture, 
                 posx - 16, 32,
                 posy - 16, 32 );
     }
@@ -215,29 +215,29 @@ class LightningSpell : public CSpell
 
     static void init()
     {
-        LightningSpell::spellTexture = new CTexture();
-        LightningSpell::spellTexture->texture.reserve( 5 );
-        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/1.tga", 0 );
-        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/2.tga", 1 );
-        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/3.tga", 2 );
-        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/4.tga", 3 );
-        LightningSpell::spellTexture->LoadIMG( "data/spells/lightning/5.tga", 4 );
+        spellTexture = new CTexture();
+        spellTexture->texture.reserve( 5 );
+        spellTexture->LoadIMG( "data/spells/lightning/1.tga", 0 );
+        spellTexture->LoadIMG( "data/spells/lightning/2.tga", 1 );
+        spellTexture->LoadIMG( "data/spells/lightning/3.tga", 2 );
+        spellTexture->LoadIMG( "data/spells/lightning/4.tga", 3 );
+        spellTexture->LoadIMG( "data/spells/lightning/5.tga", 4 );
 
-        LightningSpell::spellSymbol = new CTexture();
-        LightningSpell::spellSymbol->texture.reserve(1);
-        LightningSpell::spellSymbol->LoadIMG( "data/spells/lightning/symbol.tga", 0 );
+        spellSymbol = new CTexture();
+        spellSymbol->texture.reserve(1);
+        spellSymbol->LoadIMG( "data/spells/lightning/symbol.tga", 0 );
     }
 
     static CTexture* getStaticSymbol()
     {
-        return LightningSpell::spellSymbol;
+        return spellSymbol;
     }
 
     LightningSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( LightningSpell::getStaticCastTime(),
-                  LightningSpell::getStaticManaCost(),
-                  LightningSpell::getStaticName(),
-                  LightningSpell::getStaticSpellInfo() ),
+        : CSpell( getStaticCastTime(),
+                  getStaticManaCost(),
+                  getStaticName(),
+                  getStaticSpellInfo() ),
           caster( caster_ ),
           target( target_ ),
           finished( false ),
@@ -284,7 +284,7 @@ class LightningSpell : public CSpell
         finished = true;
     }
 
-    virtual void drawSpellEffect()
+    virtual void drawEffect()
     {
         double percentageTodo = static_cast<double>(continuousDamageCaused)/30;
         float degrees;
@@ -301,7 +301,7 @@ class LightningSpell : public CSpell
 
 
         glPushMatrix();
-            glBindTexture( GL_TEXTURE_2D, LightningSpell::spellTexture->texture[frameCount].texture);
+            glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
 
             glTranslatef(caster->x_pos+32, caster->y_pos+32, 0.0f);
             glRotatef(degrees,0.0f,0.0f,1.0f);
@@ -366,10 +366,10 @@ class HealOtherSpell : public CSpell
     }
 
     HealOtherSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( HealOtherSpell::getStaticCastTime(),
-                  HealOtherSpell::getStaticManaCost(),
-                  HealOtherSpell::getStaticName(),
-                  HealOtherSpell::getStaticSpellInfo() ),
+        : CSpell( getStaticCastTime(),
+                  getStaticManaCost(),
+                  getStaticName(),
+                  getStaticSpellInfo() ),
           caster( caster_ ),
           target( target_ )
     {
@@ -386,7 +386,7 @@ class HealOtherSpell : public CSpell
     {
     }
 
-    virtual void drawSpellEffect()
+    virtual void drawEffect()
     {
     }
 
@@ -426,10 +426,10 @@ class HealingSpell : public CSpell
     }
 
     HealingSpell( CCharacter *caster_ )
-        : CSpell( HealingSpell::getStaticCastTime(),
-                  HealingSpell::getStaticManaCost(),
-                  HealingSpell::getStaticName(),
-                  HealingSpell::getStaticSpellInfo() ),
+        : CSpell( getStaticCastTime(),
+                  getStaticManaCost(),
+                  getStaticName(),
+                  getStaticSpellInfo() ),
           caster( caster_ )
     {
     }
@@ -445,7 +445,7 @@ class HealingSpell : public CSpell
     {
     }
 
-    virtual void drawSpellEffect()
+    virtual void drawEffect()
     {
     }
 

@@ -33,19 +33,19 @@ namespace EffectType
     };
 }
 
-class CSpell
+class CSpellActionBase
 {
   public:
-    CSpell( uint16_t castTime, uint16_t manaCost, std::string name, std::string spellInfo );
+    CSpellActionBase( uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
 
     /// \brief Returns the time needed to cast a spell in ms.
     uint16_t getCastTime() const;
     uint16_t getManaCost() const;
 
     std::string getName() const;
-    std::string getSpellInfo() const;
+    std::string getInfo() const;
 
-    virtual void drawSpellEffect() = 0;
+    virtual void drawEffect() = 0;
     virtual void startEffect() = 0;
     virtual void inEffect() = 0;
     virtual bool isEffectComplete() = 0;
@@ -54,7 +54,15 @@ class CSpell
     uint16_t castTime;
     uint16_t manaCost;
     std::string name;
-    std::string spellInfo;
+    std::string info;
+};
+
+class CSpell : public CSpellActionBase
+{
+  public:
+    CSpell( uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
+        : CSpellActionBase( castTime, manaCost, name, info )
+    {}
 };
 
 namespace SpellCreation
