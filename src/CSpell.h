@@ -20,6 +20,7 @@
 #define __C_SPELL_H_
 
 #include <string>
+#include <stdint.h>
 
 class CCharacter;
 class CTexture;

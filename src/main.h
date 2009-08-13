@@ -45,6 +45,7 @@
 #include "CCharacter.h"
 #include "CEditor.h"
 #include "CMessage.h"
+#include "cameraFocusHandler.h"
 
 int RES_X = 1024,RES_Y = 768, RES_BPP = 32;
 int world_x = 0, world_y = 0;

@@ -26,6 +26,7 @@ SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
 Player character;
+cameraFocusHandler focus;
 
 CEditor Editor;
 
@@ -133,9 +134,11 @@ namespace DawnInterface
 
 void DrawScene() {
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); 
+    glMatrixMode( GL_MODELVIEW );	 
     glLoadIdentity();
-    glTranslated(-world_x,-world_y,0);
+    
+    glTranslated(-focus.getX(), -focus.getY(),0);
 
     glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
@@ -169,6 +172,11 @@ void DrawScene() {
         lastframe=thisframe;
     }
 
+/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be 
+ * removed once Editor and GUI don't need them */
+    world_x = focus.getX();
+    world_y = focus.getY();
+
     if (Editor.isEnabled() ) {
         Editor.DrawEditor();
     } else {
@@ -177,7 +185,7 @@ void DrawScene() {
 
     // note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
     //       causing overflow and not drawing the font if it gets negative
-    fpsFont.drawText(world_x, world_y+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %d, world_y: %d      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps, world_x,world_y, character.x_pos, character.y_pos, mouseX, mouseY);
+    fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 
     message.DrawAll();
     message.DeleteDecayed();
@@ -262,6 +270,15 @@ int main(int argc, char* argv[]) {
     Uint32 lastTicks = SDL_GetTicks();
     Uint32 curTicks  = lastTicks;
     Uint32 ticksDiff = 0;
+
+/*  Tryme:
+ *  Replace focus.setFocus(&character)
+ *  with :
+ *  focus.setPath(10, 0, 100, 70); 
+ *  or:
+ *  focus.setFocus(NPC[0]);
+ */
+    focus.setFocus(&character);
 
     while(done == 0) {
         if (Editor.isEnabled()) {
@@ -467,6 +484,7 @@ int main(int argc, char* argv[]) {
             }
         }
         DrawScene();
+	focus.updateFocus();
     }
   return 0;
 }

@@ -269,7 +269,7 @@ void GLFT_Font::drawText(float x, float y, const char *str, ...) const
     char buf[1024];
 
     va_start(args,str);
-    std::vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
+    vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
     va_end(args);
 
     glBindTexture(GL_TEXTURE_2D, texID_);
