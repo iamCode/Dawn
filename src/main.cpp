@@ -208,12 +208,12 @@ int main(int argc, char* argv[]) {
         atexit(SDL_Quit);
 
 
-        if(fullscreenenabled == false)
-            screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
-        else
+        if(fullscreenenabled)
             screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
-
-        if ( screen == NULL ) {
+	else
+            screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
+        
+	if ( !screen ) {
             std::cout << "Unable to set resolution " << RES_X <<
             "x" << RES_Y << " video:" << SDL_GetError();
             exit(1);
@@ -280,7 +280,7 @@ int main(int argc, char* argv[]) {
  */
     focus.setFocus(&character);
 
-    while(done == 0) {
+    while(!done) {
         if (Editor.isEnabled()) {
             Editor.HandleKeys();
 

@@ -43,10 +43,10 @@ class CCharacter
 
     virtual void Draw() = 0;
     virtual void Move() = 0;
-    void MoveUp(int world_y_ = 0);
-    void MoveDown(int world_y_ = 0);
-    void MoveLeft(int world_x_ = 0);
-    void MoveRight(int world_x_ = 0);
+    void MoveUp();
+    void MoveDown();
+    void MoveLeft();
+    void MoveRight();
     void giveMovePoints( uint32_t movePoints );
     void Init(int x, int y) { x_pos = x; y_pos = y; direction_texture = S; remainingMovePoints = 0; is_casting = false; alive = true; curSpell = NULL; }
     bool IsCasting();

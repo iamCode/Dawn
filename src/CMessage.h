@@ -41,7 +41,7 @@ struct sBook {
 class CMessage {
     public:
     void initFonts();
-    void AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, char *text, ...);
+    void AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...);
     void DrawAll();
     void DeleteDecayed();
 

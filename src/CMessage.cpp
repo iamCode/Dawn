@@ -48,7 +48,7 @@ void CMessage::DrawAll() {
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
 
-void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, char *text, ...) {
+void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...) {
     char buffer[1024];
     std::va_list args;
 

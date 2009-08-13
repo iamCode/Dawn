@@ -405,41 +405,40 @@ int CCharacter::CollisionCheck(Direction direction) {
             return 1;
         }
         break;
+	
+	default:
+	break;
     }
     return 0;
 };
 
-void CCharacter::MoveUp(int world_y_) {
+void CCharacter::MoveUp() {
     if (CollisionCheck(N) == 0) {
         y_pos++;
-        world_y += world_y_;
     }
 };
 
-void CCharacter::MoveDown(int world_y_) {
+void CCharacter::MoveDown() {
     if (CollisionCheck(S) == 0) {
         y_pos--;
-        world_y += world_y_;
     }
 };
 
-void CCharacter::MoveLeft(int world_x_) {
+void CCharacter::MoveLeft() {
     if (CollisionCheck(W) == 0) {
         x_pos--;
-        world_x += world_x_;
     }
 };
 
-void CCharacter::MoveRight(int world_x_) {
+void CCharacter::MoveRight() {
     if (CollisionCheck(E) == 0) {
         x_pos++;
-        world_x += world_x_;
     }
 };
 
 void Player::Move()
 {
-    int movePerStep = 10; // moves one step per movePerStep ms
+    unsigned int movePerStep = 10; // moves one step per movePerStep ms
 
     Direction moving_direction = GetDirection();
 
@@ -447,7 +446,7 @@ void Player::Move()
     if ( moving_direction == NW || moving_direction == NE || moving_direction == SW || moving_direction == SE )
         movePerStep = 14;
 
-    if (( moving_direction!= STOP) && IsCasting() ) {
+    if (( moving_direction != STOP) && IsCasting() ) {
         CastingAborted();
     }
 
@@ -457,32 +456,32 @@ void Player::Move()
         switch( moving_direction )
         {
             case NW:
-                MoveLeft(-1);
-                MoveUp(1);
+                MoveLeft();
+                MoveUp();
             break;
             case N:
-                MoveUp(1);
+                MoveUp();
             break;
             case NE:
-                MoveRight(1);
-                MoveUp(1);
+                MoveRight();
+                MoveUp();
             break;
             case W:
-                MoveLeft(-1);
+                MoveLeft();
             break;
             case E:
-                MoveRight(1);
+                MoveRight();
             break;
             case SW:
-                MoveLeft(-1);
-                MoveDown(-1);
+                MoveLeft();
+                MoveDown();
             break;
             case S:
-                MoveDown(-1);
+                MoveDown();
             break;
             case SE:
-                MoveRight(1);
-                MoveDown(-1);
+                MoveRight();
+                MoveDown();
             break;
             default:
             break;
@@ -492,7 +491,7 @@ void Player::Move()
 
 void CNPC::Move()
 {
-    int movePerStep = 10; // moves one step per movePerStep ms
+    unsigned int movePerStep = 10; // moves one step per movePerStep ms
 
     Direction moving_direction;
 
