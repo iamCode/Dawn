@@ -26,7 +26,7 @@ SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
 Player character;
-cameraFocusHandler focus;
+cameraFocusHandler focus(RES_X, RES_Y);
 
 CEditor Editor;
 
@@ -152,7 +152,7 @@ void DrawScene() {
     }
 
     // draws the character's target's lifebar, if we have any target.
-    if ( character.getTarget() != NULL )
+    if (character.getTarget())
         character.getTarget()->DrawLifebar();
 
     for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
@@ -279,7 +279,7 @@ int main(int argc, char* argv[]) {
  *  focus.setFocus(NPC[0]);
  */
     focus.setFocus(&character);
-
+    
     while(!done) {
         if (Editor.isEnabled()) {
             Editor.HandleKeys();
@@ -336,10 +336,10 @@ int main(int argc, char* argv[]) {
             }
 
             // making sure our target is still alive, if not well set our target to NULL.
-            if ( character.getTarget() != NULL )
+            if (character.getTarget())
             {
                 if ( !character.getTarget()->isAlive() )
-                character.setTarget( NULL );
+                character.setTarget(0);
             }
 
             for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
@@ -384,9 +384,9 @@ int main(int argc, char* argv[]) {
                 // selects next target in the list, if target = NULL, set target to first NPC on the visible list.
                 for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC )
                 {
-                    if ( character.getTarget() == NULL)
+                    if (!character.getTarget())
                     {
-                        character.setTarget( NPClist[0] );
+                        character.setTarget(NPClist[0]);
                     }
 
                     if ( character.getTarget() == NPClist[curNPC] )
@@ -403,7 +403,7 @@ int main(int argc, char* argv[]) {
 
                 if ( !FoundNewTarget && NPClist.size() > 0)
                 {
-                    character.setTarget( NPClist[0] );
+                    character.setTarget(NPClist[0]);
                 }
             }
 

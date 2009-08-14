@@ -1,8 +1,11 @@
 #include "cameraFocusHandler.h"
 
-cameraFocusHandler::cameraFocusHandler()
+cameraFocusHandler::cameraFocusHandler(int _resW, int _resH)
 {
-
+	screenWidth = _resW;
+	screenHeight = _resH;
+	currentNPC = 0;
+	currentPlayer = 0;
 }
 
 cameraFocusHandler::~cameraFocusHandler()
@@ -64,26 +67,23 @@ void cameraFocusHandler::updateFocus()
 	static float difference_y1y2 = 0.0; // Difference between y1 and y2
 	static float x_step = 0.0; // How much to increment the x axis position each run
 	static float y_step = 0.0; // How much to increment the y axis position each run
-	static bool calculations_done = false; // Lets us remember if the trajectory calculations are done
 	static float trajectory_angleA; // Trajectory angle to the x-axis (tan-1(o/a))
 
 	switch (followTag) {
 		case (VIEW_CNPC):
-        		XYCoOrdinates.first = (float)currentNPC->x_pos-(RES_X/2);
-			XYCoOrdinates.second = (float)currentNPC->y_pos-(RES_Y/2);
+        		XYCoOrdinates.first = (float)currentNPC->x_pos-(screenHeight/2);
+			XYCoOrdinates.second = (float)currentNPC->y_pos-(screenWidth/2);
 		break;
 		
 		case (VIEW_PLAYER):
-			XYCoOrdinates.first = (float)currentPlayer->x_pos-(RES_X/2);
-			XYCoOrdinates.second = (float)currentPlayer->y_pos-(RES_Y/2);
+			XYCoOrdinates.first = (float)currentPlayer->x_pos-(screenWidth/2);
+			XYCoOrdinates.second = (float)currentPlayer->y_pos-(screenHeight/2);
 		break;
 	
-		case (VIEW_PATH):
-			
-			/* We want to update the focus every 250ms */
+		case (VIEW_PATH):	
 			if (SDL_GetTicks()+1000 >= lastMoveTime && followTag == VIEW_PATH) {
 				// We only want to run the step calculations in the first run of the path
-				if(!calculations_done) {
+				if(!_inPath) {
 					std::cout << "cameraFocusHandler::updateFocus : " <<
 						"Entering path from (" << XYCoOrdinates.first <<
 						", " << XYCoOrdinates.second << ") to (" <<
@@ -126,7 +126,7 @@ void cameraFocusHandler::updateFocus()
 						difference_x1x2 << ", Y1-Y2=" << difference_y1y2 << std::endl;					
 					
 
-					calculations_done = true;
+					_inPath = true;
 				}
 				
 				if(XYTarget.first > XYCoOrdinates.first)			
@@ -154,7 +154,7 @@ void cameraFocusHandler::updateFocus()
 				XYCoOrdinates.first = XYTarget.first;
 				XYCoOrdinates.second = XYTarget.second;
 				followTag = VIEW_XY;
-				calculations_done = false;
+				_inPath = false;
 				std::cout << "cameraFocusHandler::updateFocus : " <<
 					"Path complete" << std::endl;
 			}
@@ -162,7 +162,6 @@ void cameraFocusHandler::updateFocus()
 
 		break;
 		
-		case (VIEW_XY):
 		default:
 				// Nothing needs to be done.
 		break;
@@ -175,6 +174,11 @@ void cameraFocusHandler::updateFocus()
 	*/
 }
 
+bool cameraFocusHandler::inPath(void)
+{
+	return _inPath;
+}
+
 float cameraFocusHandler::getX(void)
 {
 	return XYCoOrdinates.first;
@@ -184,4 +188,3 @@ float cameraFocusHandler::getY(void)
 {
 	return XYCoOrdinates.second;
 }
-
