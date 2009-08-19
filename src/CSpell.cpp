@@ -25,12 +25,24 @@
 
 /// Implementation of class CSpellActionBase
 
-CSpellActionBase::CSpellActionBase( uint16_t castTime_, uint16_t manaCost_, std::string name_, std::string info_ )
-    : castTime( castTime_ ),
+CSpellActionBase::CSpellActionBase( CCharacter *creator_, uint16_t castTime_, uint16_t manaCost_, std::string name_, std::string info_ )
+    : creator( creator_ ),
+      castTime( castTime_ ),
       manaCost( manaCost_ ),
       name( name_ ),
-      info( info_ )
+      info( info_ ),
+      boundToCreator( false ),
+      finished( false )
 {
+}
+
+CSpellActionBase::~CSpellActionBase()
+{
+    if ( boundToCreator )
+    {
+        creator->curSpellAction = NULL;
+        creator->isPreparing = false;
+    }
 }
 
 uint16_t CSpellActionBase::getCastTime() const
@@ -51,6 +63,37 @@ std::string CSpellActionBase::getName() const
 std::string CSpellActionBase::getInfo() const
 {
     return info;
+}
+
+void CSpellActionBase::unbindFromCreator()
+{
+    if ( boundToCreator )
+    {
+        creator->curSpellAction = NULL;
+        creator->isPreparing = false;
+        boundToCreator = false;
+    }
+}
+
+bool CSpellActionBase::isBoundToCreator() const
+{
+    return boundToCreator;
+}
+
+void CSpellActionBase::beginPreparationOfSpellAction()
+{
+    boundToCreator = true;
+}
+
+void CSpellActionBase::markSpellActionAsFinished()
+{
+    unbindFromCreator();
+    finished = true;
+}
+
+bool CSpellActionBase::isEffectComplete()
+{
+    return finished;
 }
 
 /// Magic Missile
@@ -102,14 +145,13 @@ class MagicMissileSpell : public CSpell
         return getStaticSymbol();
     }
 
-    MagicMissileSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( getStaticCastTime(),
+    MagicMissileSpell( CCharacter *creator_, CCharacter *target_ )
+        : CSpell( creator_,
+                  getStaticCastTime(),
                   getStaticManaCost(),
                   getStaticName(),
                   getStaticSpellInfo() ),
-          caster( caster_ ),
-          target( target_ ),
-          finished( false )
+          target( target_ )
     {
     }
 
@@ -117,8 +159,9 @@ class MagicMissileSpell : public CSpell
     {
         effectStart = SDL_GetTicks();
         lastEffect = effectStart;
-        posx = caster->getXPos() + (caster->getWidth() / 2);
-        posy = caster->getYPos() + (caster->getHeight() / 2);
+        posx = creator->getXPos() + (creator->getWidth() / 2);
+        posy = creator->getYPos() + (creator->getHeight() / 2);
+        unbindFromCreator();
     }
 
     virtual void inEffect()
@@ -162,7 +205,8 @@ class MagicMissileSpell : public CSpell
         int damage = 1 + rand() % 5 + 5;
 
         target->Damage( damage );
-        finished = true;
+
+        markSpellActionAsFinished();
     }
 
     virtual void drawEffect()
@@ -173,17 +217,10 @@ class MagicMissileSpell : public CSpell
                 posy - 16, 32 );
     }
 
-    virtual bool isEffectComplete()
-    {
-        return finished;
-    }
-
   private:
-    CCharacter *caster;
     CCharacter *target;
     uint32_t effectStart;
     uint32_t lastEffect;
-    bool finished;
     int posx, posy;
 };
 
@@ -243,14 +280,13 @@ class LightningSpell : public CSpell
         return getStaticSymbol();
     }
 
-    LightningSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( getStaticCastTime(),
+    LightningSpell( CCharacter *creator_, CCharacter *target_ )
+        : CSpell( creator_,
+                  getStaticCastTime(),
                   getStaticManaCost(),
                   getStaticName(),
                   getStaticSpellInfo() ),
-          caster( caster_ ),
           target( target_ ),
-          finished( false ),
           continuousDamageCaused( 0 )
     {
     }
@@ -262,6 +298,7 @@ class LightningSpell : public CSpell
         target->Damage( damage );
         effectStart = SDL_GetTicks();
         lastEffect = effectStart;
+        unbindFromCreator();
     }
 
     virtual void inEffect()
@@ -291,14 +328,14 @@ class LightningSpell : public CSpell
 
     void finishEffect()
     {
-        finished = true;
+        markSpellActionAsFinished();
     }
 
     virtual void drawEffect()
     {
         double percentageTodo = static_cast<double>(continuousDamageCaused)/30;
         float degrees;
-        degrees = asin((caster->y_pos - target->y_pos)/sqrt((pow(caster->x_pos - target->x_pos,2)+pow(caster->y_pos - target->y_pos,2)))) * 57,296;
+        degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57,296;
         degrees += 90;
 
         animationTimerStop = SDL_GetTicks();
@@ -307,43 +344,36 @@ class LightningSpell : public CSpell
             frameCount = rand() % 4;
         }
 
-        if (caster->x_pos < target->x_pos) { degrees = -degrees; }
+        if (creator->x_pos < target->x_pos) { degrees = -degrees; }
 
 
         glPushMatrix();
             glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
 
-            glTranslatef(caster->x_pos+32, caster->y_pos+32, 0.0f);
+            glTranslatef(creator->x_pos+32, creator->y_pos+32, 0.0f);
             glRotatef(degrees,0.0f,0.0f,1.0f);
-            glTranslatef(-160-caster->x_pos,-caster->y_pos-32,0.0);
+            glTranslatef(-160-creator->x_pos,-creator->y_pos-32,0.0);
 
             glBegin( GL_QUADS );
             // Bottom-left vertex (corner)
-                glTexCoord2f( 0.0f, 0.0f ); glVertex3f( caster->x_pos+32, caster->y_pos+64, 0.0f );
+                glTexCoord2f( 0.0f, 0.0f ); glVertex3f( creator->x_pos+32, creator->y_pos+64, 0.0f );
                 // Bottom-right vertex (corner)
-                glTexCoord2f( 1.0f, 0.0f ); glVertex3f( caster->x_pos+256+32, caster->y_pos+64, 0.0f );
+                glTexCoord2f( 1.0f, 0.0f ); glVertex3f( creator->x_pos+256+32, creator->y_pos+64, 0.0f );
                 // Top-right vertex (corner)
-                glTexCoord2f( 1.0f, 1.0f ); glVertex3f( caster->x_pos+256+32, caster->y_pos+400+64, 0.0f );
+                glTexCoord2f( 1.0f, 1.0f ); glVertex3f( creator->x_pos+256+32, creator->y_pos+400+64, 0.0f );
                 // Top-left vertex (corner)
-                glTexCoord2f( 0.0f, 1.0f ); glVertex3f( caster->x_pos+32, caster->y_pos+400+64, 0.0f );
+                glTexCoord2f( 0.0f, 1.0f ); glVertex3f( creator->x_pos+32, creator->y_pos+400+64, 0.0f );
             glEnd();
         glPopMatrix();
     }
 
-    virtual bool isEffectComplete()
-    {
-        return finished;
-    }
-
   private:
-    CCharacter *caster;
     CCharacter *target;
     uint8_t frameCount;
     uint32_t effectStart;
     uint32_t lastEffect;
     uint32_t animationTimerStart;
     uint32_t animationTimerStop;
-    bool finished;
     int continuousDamageCaused;
 };
 
@@ -380,12 +410,12 @@ class HealOtherSpell : public CSpell
         return NULL;
     }
 
-    HealOtherSpell( CCharacter *caster_, CCharacter *target_ )
-        : CSpell( getStaticCastTime(),
+    HealOtherSpell( CCharacter *creator_, CCharacter *target_ )
+        : CSpell( creator_,
+                  getStaticCastTime(),
                   getStaticManaCost(),
                   getStaticName(),
                   getStaticSpellInfo() ),
-          caster( caster_ ),
           target( target_ )
     {
     }
@@ -395,6 +425,8 @@ class HealOtherSpell : public CSpell
         int healEffect = 50;
 
         target->Heal( healEffect );
+        unbindFromCreator();
+        markSpellActionAsFinished();
     }
 
     virtual void inEffect()
@@ -405,13 +437,7 @@ class HealOtherSpell : public CSpell
     {
     }
 
-    virtual bool isEffectComplete()
-    {
-        return true;
-    }
-
   private:
-    CCharacter *caster;
     CCharacter *target;
 };
 
@@ -445,12 +471,12 @@ class HealingSpell : public CSpell
         return NULL;
     }
 
-    HealingSpell( CCharacter *caster_ )
-        : CSpell( getStaticCastTime(),
+    HealingSpell( CCharacter *creator_ )
+        : CSpell( creator_,
+                  getStaticCastTime(),
                   getStaticManaCost(),
                   getStaticName(),
-                  getStaticSpellInfo() ),
-          caster( caster_ )
+                  getStaticSpellInfo() )
     {
     }
 
@@ -458,7 +484,9 @@ class HealingSpell : public CSpell
     {
         int healing = 100;
 
-        caster->Heal( healing );
+        creator->Heal( healing );
+        unbindFromCreator();
+        markSpellActionAsFinished();
     }
 
     virtual void inEffect()
@@ -469,13 +497,6 @@ class HealingSpell : public CSpell
     {
     }
 
-    virtual bool isEffectComplete()
-    {
-        return true;
-    }
-
-  private:
-    CCharacter *caster;
 };
 
 /// SpellCreation factory methods

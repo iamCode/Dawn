@@ -37,7 +37,8 @@ namespace EffectType
 class CSpellActionBase
 {
   public:
-    CSpellActionBase( uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
+    CSpellActionBase( CCharacter *Creator, uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
+    virtual ~CSpellActionBase();
 
     /// \brief Returns the time needed to cast a spell in ms.
     uint16_t getCastTime() const;
@@ -46,25 +47,35 @@ class CSpellActionBase
     std::string getName() const;
     std::string getInfo() const;
 
+    void beginPreparationOfSpellAction();
     virtual void drawEffect() = 0;
     virtual void startEffect() = 0;
     virtual void inEffect() = 0;
-    virtual bool isEffectComplete() = 0;
+    void markSpellActionAsFinished();
+    bool isEffectComplete();
 
     virtual CTexture* getSymbol() const = 0;
+
+    void unbindFromCreator();
+    bool isBoundToCreator() const;
+
+  protected:
+    CCharacter *creator;
 
   private:
     uint16_t castTime;
     uint16_t manaCost;
     std::string name;
     std::string info;
+    bool boundToCreator;
+    bool finished;
 };
 
 class CSpell : public CSpellActionBase
 {
   public:
-    CSpell( uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
-        : CSpellActionBase( castTime, manaCost, name, info )
+    CSpell( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
+        : CSpellActionBase( creator_, castTime, manaCost, name, info )
     {}
 };
 

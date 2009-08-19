@@ -55,14 +55,13 @@ class AttackAction : public CAction
         return getStaticSymbol();
     }
 
-    AttackAction( CCharacter *attacker_, CCharacter *target_ )
-        : CAction( getStaticCastTime(),
+    AttackAction( CCharacter *creator_, CCharacter *target_ )
+        : CAction( creator_,
+                  getStaticCastTime(),
                   getStaticManaCost(),
                   getStaticName(),
                   getStaticActionInfo() ),
-          attacker( attacker_ ),
           target( target_ ),
-          finished( false ),
           damageCaused( true )
     {
     }
@@ -87,7 +86,7 @@ class AttackAction : public CAction
 
         if ( curArc >= 0 && !damageCaused )
         {
-            double distance = sqrt( pow(attacker->getXPos() - target->getXPos(),2) + pow(attacker->getYPos() - target->getYPos(),2) );
+            double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
             if ( distance <= 120 )
             {
                 target->Damage( 20 );
@@ -103,40 +102,33 @@ class AttackAction : public CAction
 
     void finishEffect()
     {
-        finished = true;
+        markSpellActionAsFinished();
     }
 
     virtual void drawEffect()
     {
         float degrees;
-        degrees = asin((attacker->getYPos() - target->getYPos())/sqrt((pow(attacker->getXPos() - target->getXPos(),2)+pow(attacker->getYPos() - target->getYPos(),2)))) * 57,296;
+        degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57,296;
 
         degrees += 90;        
 
-        if (attacker->getXPos() < target->x_pos) { degrees = -degrees; }
+        if (creator->getXPos() < target->x_pos) { degrees = -degrees; }
 
         degrees += curArc + 90;
 
         glPushMatrix();
-            glTranslatef(attacker->getXPos() + (attacker->getWidth() / 2), attacker->getYPos() + (attacker->getHeight() / 2), 0.0f);
+            glTranslatef(creator->getXPos() + (creator->getWidth() / 2), creator->getYPos() + (creator->getHeight() / 2), 0.0f);
             glRotatef(degrees,0.0f,0.0f,1.0f);
             
             DrawingHelpers::mapTextureToRect( actionTexture->texture[0].texture,
-                                              attacker->getWidth() / 2, 50,
+                                              creator->getWidth() / 2, 50,
                                               0, 10 );
         glPopMatrix();
     }
 
-    virtual bool isEffectComplete()
-    {
-        return finished;
-    }
-
   private:
-    CCharacter *attacker;
     CCharacter *target;
     uint32_t effectStart;
-    bool finished;
     bool damageCaused;
     double curArc;
 };

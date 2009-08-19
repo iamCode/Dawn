@@ -417,7 +417,7 @@ int main(int argc, char* argv[]) {
                 if ( character.getTarget() != NULL )
                 {
                     CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, character.getTarget() );
-                    character.CastSpell(spell);
+                    character.castSpell(spell);
                 }
             }
 
@@ -428,7 +428,7 @@ int main(int argc, char* argv[]) {
             if (keys[SDLK_2] && !KP_heal) {
                 KP_heal = true;
                 CSpell *spell = SpellCreation::createSelfAffectingSpellByName( "Healing", &character );
-                character.CastSpell( spell );
+                character.castSpell( spell );
             }
 
             if (!keys[SDLK_2]) {
@@ -440,7 +440,7 @@ int main(int argc, char* argv[]) {
                 if ( character.getTarget() != NULL )
                 {
                     CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, character.getTarget() );
-                    character.CastSpell(spell);
+                    character.castSpell(spell);
                 }
             }
 
@@ -453,7 +453,7 @@ int main(int argc, char* argv[]) {
                 if ( character.getTarget() != NULL )
                 {
                     CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, character.getTarget() );
-                    character.CastSpell(spell);
+                    character.castSpell(spell);
                 }
             }
 
@@ -475,7 +475,7 @@ int main(int argc, char* argv[]) {
                 if ( character.getTarget() != NULL )
                 {
                     CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-                    character.startAction(action);
+                    character.executeAction(action);
                 }
             }
 

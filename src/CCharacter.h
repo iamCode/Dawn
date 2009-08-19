@@ -35,11 +35,13 @@ class CAction;
 
 class CCharacter
 {
+    friend class CSpellActionBase;
+
     public:
+    virtual ~CCharacter();
 
     GLuint frame;
     int x_pos,y_pos;
-    float casting_percentage;
 
     virtual void Draw() = 0;
     virtual void Move() = 0;
@@ -48,12 +50,19 @@ class CCharacter
     void MoveLeft();
     void MoveRight();
     void giveMovePoints( uint32_t movePoints );
-    void Init(int x, int y) { x_pos = x; y_pos = y; direction_texture = S; remainingMovePoints = 0; is_casting = false; alive = true; curSpell = NULL; }
-    bool IsCasting();
+    void Init(int x, int y) { x_pos = x; y_pos = y; direction_texture = S; remainingMovePoints = 0; isPreparing = false; alive = true; curSpellAction = NULL; }
     int CollisionCheck(Direction direction);
 
-    void CastSpell(CSpell *spell );
-    void startAction( CAction *action );
+    // casting spells and executing actions
+    void executeAction( CAction *action );
+    void castSpell(CSpell *spell );
+    void giveToPreparation( CSpellActionBase *toPrepare );
+    bool continuePreparing();
+    void startSpellAction();
+    void CastingAborted();
+    void CastingInterrupted();
+    void abortCurrentSpellAction();
+    float getPreparationPercentage() const;
 
     // position access functions
     int getXPos() const;
@@ -61,25 +70,16 @@ class CCharacter
     int getWidth() const;
     int getHeight() const;
 
-    void CastingInterrupted();
     Direction GetDirection();
     Direction WanderDirection, MovingDirection;
 
     Uint8 *keys;
-    uint32_t casting_currentframe, casting_startframe, casting_offset;
-
 
     int GetDirectionTexture();
     int current_texture, direction_texture;
     int CheckForCollision(int x, int y);
     uint32_t remainingMovePoints;
 
-    bool is_casting;
-    void CastingComplete();
-    void CastingAborted();
-    void abortCurrentSpell();
-
-    CSpellActionBase *curSpell;
     CCharacter *Target;
 
     void baseOnType( std::string otherType );
@@ -177,6 +177,21 @@ class CCharacter
     int seconds_to_respawn;
 
     CZone *zone;
+
+  protected:
+    bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
+    bool mayDoAnythingAffectingSpellActionWithAborting() const; 
+
+  private:
+    
+    // casting spells / executing actions
+    bool isPreparing;
+    CSpellActionBase *curSpellAction;
+    uint32_t preparationStartTime, preparationCurrentTime;
+    float preparationPercentage;
+
+
+
 };
 
 class Player : public CCharacter

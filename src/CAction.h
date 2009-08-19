@@ -6,8 +6,8 @@
 class CAction : public CSpellActionBase
 {
   public:
-    CAction( uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
-        : CSpellActionBase( castTime, manaCost, name, info )
+    CAction( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
+        : CSpellActionBase( creator_, castTime, manaCost, name, info )
     {}
 };
 

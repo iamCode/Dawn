@@ -76,9 +76,9 @@ void CInterface::DrawInterface() {
                                       world_x, interfacetextures.texture[1].width,
                                       world_y, interfacetextures.texture[1].height );
 
-    if (player->IsCasting()) {
+    if (player->continuePreparing()) {
         glColor4f(0.8f,0.8f,0.0f,1.0f);
-        DrawingHelpers::mapTextureToRect(interfacetextures.texture[2].texture,world_x+150,100*player->casting_percentage,world_y+20,20);
+        DrawingHelpers::mapTextureToRect(interfacetextures.texture[2].texture,world_x+150,100*player->getPreparationPercentage(),world_y+20,20);
         glColor4f(1.0f,1.0f,1.0f,1.0f);
     }
 };

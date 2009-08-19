@@ -328,6 +328,17 @@ void CCharacter::setLifeTexture( std::string filename )
 
 // end of Dawn LUA Interface
 
+CCharacter::~CCharacter()
+{
+    if ( isPreparing )
+    {
+        // note: if the current spell / action is not null this means
+        //       it is still bound to the player. He alone is responsible
+        //       for it.
+        delete curSpellAction;
+    }
+}
+
 int CCharacter::getXPos() const
 {
     return x_pos;
@@ -438,6 +449,16 @@ void CCharacter::MoveRight() {
 
 void Player::Move()
 {
+    continuePreparing();
+    if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() )
+    {
+        if ( ! mayDoAnythingAffectingSpellActionWithAborting() )
+        {
+            remainingMovePoints = 0;
+            return;
+        }
+    }
+
     unsigned int movePerStep = 10; // moves one step per movePerStep ms
 
     Direction moving_direction = GetDirection();
@@ -446,7 +467,7 @@ void Player::Move()
     if ( moving_direction == NW || moving_direction == NE || moving_direction == SW || moving_direction == SE )
         movePerStep = 14;
 
-    if (( moving_direction != STOP) && IsCasting() ) {
+    if (( moving_direction != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
         CastingAborted();
     }
 
@@ -597,74 +618,115 @@ int CCharacter::GetDirectionTexture() {
 // in the future we could probably benefit from putting this into the combat class,
 // since we probably would use the same functions for NPCs when they are casting spells etc...
 
-void CCharacter::startAction( CAction *action )
+void CCharacter::executeAction( CAction *action )
 {
-    action->startEffect();
-    enqueueActiveSpellAction( action );
+    giveToPreparation( action );
 }
 
-void CCharacter::CastSpell( CSpell *spell ) {
-    if (!is_casting ) { // setup all variables for a spellcasting.
-        is_casting = true;
-        curSpell = spell;
-        casting_startframe = SDL_GetTicks();
-        IsCasting();
-    } else {
-        // don't cast the new spell (enqueue in list of coming spells?)
-        delete spell;
+void CCharacter::castSpell( CSpell *spell ) {
+    giveToPreparation( spell );
+}
+
+void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
+{
+    if ( curSpellAction != NULL )
+    {
+        // don't cast / execute. Enqueue in the list of coming actions / spells ?
+        delete toPrepare;
+    }
+    else
+    {
+        // setup all variables for casting / executing
+        isPreparing = true;
+        curSpellAction = toPrepare;
+        toPrepare->beginPreparationOfSpellAction();
+        preparationStartTime = SDL_GetTicks();
+        continuePreparing();
     }
 };
 
-bool CCharacter::IsCasting() {
-    if (is_casting) {
-        casting_currentframe = SDL_GetTicks();
+bool CCharacter::continuePreparing() {
+    if ( isPreparing ) 
+    {
+        bool preparationFinished = (curSpellAction->getCastTime() == 0);
+        if ( ! preparationFinished )
+        {
+            preparationCurrentTime = SDL_GetTicks();
 
-        // casting_percentage is mostly just for the castbar display, guess we could alter this code.
-        casting_percentage = (static_cast<float>(casting_currentframe-casting_startframe)) / curSpell->getCastTime();
-        if (casting_percentage >= 1.0f) {
-            CastingComplete();
+            // casting_percentage is mostly just for the castbar display, guess we could alter this code.
+            preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / curSpellAction->getCastTime();
+            preparationFinished = ( preparationPercentage >= 1.0f );
+        }
+        if ( preparationFinished ) {
+            startSpellAction();
         }
     }
-    return is_casting;
+
+    return isPreparing;
 };
 
-void CCharacter::CastingComplete() {
-    is_casting = false;
-    casting_currentframe = 0;
-    casting_startframe = 0;
+void CCharacter::startSpellAction() {
+    isPreparing = false;
+    preparationCurrentTime = 0;
+    preparationStartTime = 0;
 
     // when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
     // So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
     // fow now we'll just damage / heal the NPC in target
 
-    curSpell->startEffect();
-    enqueueActiveSpellAction( curSpell );
-    curSpell = NULL;
+    enqueueActiveSpellAction( curSpellAction );
+    curSpellAction->startEffect();
 };
 
-void CCharacter::abortCurrentSpell()
+void CCharacter::abortCurrentSpellAction()
 {
-    assert( curSpell != NULL );
-    delete curSpell;
-    curSpell = NULL;
-    is_casting = false;
+    assert( curSpellAction != NULL );
+    if ( isPreparing )
+    {
+        delete curSpellAction;
+        curSpellAction = NULL;
+        isPreparing = false;
+    }
 }
 
 void CCharacter::CastingAborted() {
     // if we moved, got stunned, or in some way unable to complete the spell ritual, spellcasting will fail.
     // If we are following the above instructions to use a pointer to a spell and so on, we should clear that pointer here.
-    abortCurrentSpell();
+    abortCurrentSpellAction();
 };
 
 void CCharacter::CastingInterrupted() {
     // when casting a spell, mobs attacking us in any way should interfere with our spellcasting, slowing us down a bit.
     // so if we have a spell with 5 seconds spellcast, and we're up at 4 seconds of casting.. getting hit at that moment
     // should set the current_castingtime back to say 3.2 or so..
-    casting_startframe += 500; // for now using a static pushback of the spellcasting, 0.5 seconds.
-    if (casting_startframe > casting_currentframe) {
-        casting_startframe = casting_currentframe;
+    preparationStartTime += 500; // for now using a static pushback of the spellcasting, 0.5 seconds.
+    if (preparationStartTime > preparationCurrentTime) {
+        preparationStartTime = preparationCurrentTime;
     }
 };
+
+float CCharacter::getPreparationPercentage() const
+{
+    if ( isPreparing )
+    {
+        return preparationPercentage;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+bool CCharacter::mayDoAnythingAffectingSpellActionWithoutAborting() const
+{
+    return ( curSpellAction == NULL );
+}
+
+bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
+{
+    return ( curSpellAction == NULL || isPreparing );
+}
+
 
 void CNPC::Wander() {
     if (wandering) {
