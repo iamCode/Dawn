@@ -31,7 +31,7 @@ namespace LuaFunctions
 	///
 	/// can be called after globalInit();
 	lua_State *getGlobalLuaState();
-	
+
 	void executeLuaFile( std::string filename );
 	void executeLuaScript( std::string scripttext );
 } // namespace LuaFunctions

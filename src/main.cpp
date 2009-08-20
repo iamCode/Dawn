@@ -52,439 +52,424 @@ std::vector<CSpellActionBase*> activeSpellActions;
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction )
 {
-    activeSpellActions.push_back( spellaction );
+	activeSpellActions.push_back( spellaction );
 }
 
 void cleanupActiveSpellActions()
 {
-    size_t curActiveNr = 0;
-    while ( curActiveNr < activeSpellActions.size() )
-    {
-        if ( activeSpellActions[ curActiveNr ]->isEffectComplete() )
-        {
-            delete activeSpellActions[ curActiveNr ];
-            activeSpellActions.erase( activeSpellActions.begin() + curActiveNr );
-        }
-        else
-        {
-            ++curActiveNr;
-        }
-    }
+	size_t curActiveNr = 0;
+	while ( curActiveNr < activeSpellActions.size() ) {
+		if ( activeSpellActions[ curActiveNr ]->isEffectComplete() ) {
+			delete activeSpellActions[ curActiveNr ];
+			activeSpellActions.erase( activeSpellActions.begin() + curActiveNr );
+		} else {
+			++curActiveNr;
+		}
+	}
 }
 
 // Handle command line arguments, returns 1 if the game loop is
 // not supposed to run.
-static bool HandleCommandLineAurguments(int argc, char** argv) {
-    bool shouldExit = 0;
-    std::string executable(argv[0]);
+static bool HandleCommandLineAurguments(int argc, char** argv)
+{
+	bool shouldExit = 0;
+	std::string executable(argv[0]);
 #ifdef _WIN32
-    freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
+	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
 #endif
-    for(int i=1 ; i < argc ; ++i) {
-        std::string currentarg(argv[i]);
-	    if(currentarg == "-f" || currentarg == "--fullscreen") {
-            fullscreenenabled = true;
-            shouldExit = false;
-        } else if(currentarg == "-w" || currentarg == "--window") {
-            fullscreenenabled = false;
-            shouldExit = false;
-        } else if(currentarg == "-h" || currentarg == "--help") {
-            std::cout << "Dawn-RPG Startup Parameters" <<
-            std::endl << std::endl <<
-            " -f, --fullscreen         Run Dawn in fullscreen mode" <<
-            std::endl <<
-            " -w, --window             Run Dawn inside a window" <<
-            std::endl <<
-            " -h, --help               Show this help screen" <<
-            std::endl;
-            shouldExit = true;
-        } else {
-            std::cout << std::endl <<"\"" << currentarg <<
-            "\" is not a recognised option" << std::endl << std::endl <<
-            "Please type \"" << executable <<
-            " -h\" for all available options" << std::endl <<
-            std::endl;
-            shouldExit = true;
-            break;
-        }
-    }
+	for (int i=1 ; i < argc ; ++i) {
+		std::string currentarg(argv[i]);
+		if (currentarg == "-f" || currentarg == "--fullscreen") {
+			fullscreenenabled = true;
+			shouldExit = false;
+		} else if (currentarg == "-w" || currentarg == "--window") {
+			fullscreenenabled = false;
+			shouldExit = false;
+		} else if (currentarg == "-h" || currentarg == "--help") {
+			std::cout << "Dawn-RPG Startup Parameters" <<
+			          std::endl << std::endl <<
+			          " -f, --fullscreen         Run Dawn in fullscreen mode" <<
+			          std::endl <<
+			          " -w, --window             Run Dawn inside a window" <<
+			          std::endl <<
+			          " -h, --help               Show this help screen" <<
+			          std::endl;
+			shouldExit = true;
+		} else {
+			std::cout << std::endl <<"\"" << currentarg <<
+			          "\" is not a recognised option" << std::endl << std::endl <<
+			          "Please type \"" << executable <<
+			          " -h\" for all available options" << std::endl <<
+			          std::endl;
+			shouldExit = true;
+			break;
+		}
+	}
 #ifdef _WIN32
-    freopen( "stdout.txt", "wt", stdout ); // Redirect stdout back to the file
+	freopen( "stdout.txt", "wt", stdout ); // Redirect stdout back to the file
 #endif
-    return shouldExit;
+	return shouldExit;
 }
 
 namespace DawnInterface
 {
-    CZone* getCurrentZone()
-    {
-        return &zone1;
-    }
+	CZone* getCurrentZone()
+	{
+		return &zone1;
+	}
 
-    void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
-    {
-        CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
-        newMob->texture = NULL;
-        newMob->lifebar = NULL;
-        newMob->baseOnType( mobID );
-        newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
-        NPC.push_back( newMob );
-    }
+	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
+	{
+		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
+		newMob->texture = NULL;
+		newMob->lifebar = NULL;
+		newMob->baseOnType( mobID );
+		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
+		NPC.push_back( newMob );
+	}
 }
 
-void DrawScene() {
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); 
-    glMatrixMode( GL_MODELVIEW );	 
-    glLoadIdentity();
-    
-    glTranslated(-focus.getX(), -focus.getY(),0);
+void DrawScene()
+{
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
 
-    glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
+	glTranslated(-focus.getX(), -focus.getY(),0);
 
-    zone1.DrawZone();
-    character.Draw();
-    for (unsigned int x=0; x<NPC.size(); x++)
-    {
-        NPC[x]->Draw();
-        if ( character.getTarget() == NPC[x] )
-            fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
-    }
+	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
-    // draws the character's target's lifebar, if we have any target.
-    if (character.getTarget())
-        character.getTarget()->DrawLifebar();
+	zone1.DrawZone();
+	character.Draw();
+	for (unsigned int x=0; x<NPC.size(); x++) {
+		NPC[x]->Draw();
+		if ( character.getTarget() == NPC[x] )
+			fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+	}
 
-    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
-    {
-        if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() )
-        {
-            activeSpellActions[ curActiveSpellNr ]->drawEffect();
-        }
-    }
+	// draws the character's target's lifebar, if we have any target.
+	if (character.getTarget())
+		character.getTarget()->DrawLifebar();
 
-    // check our FPS and output it
-    thisframe=SDL_GetTicks();     // Count the FPS
-    ff++;
-    if((thisframe-lastframe) > 1000) {
-        fps=ff;
-        ff=0;
-        lastframe=thisframe;
-    }
+	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
+			activeSpellActions[ curActiveSpellNr ]->drawEffect();
+		}
+	}
 
-/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be 
- * removed once Editor and GUI don't need them */
-    world_x = focus.getX();
-    world_y = focus.getY();
+	// check our FPS and output it
+	thisframe=SDL_GetTicks();     // Count the FPS
+	ff++;
+	if ((thisframe-lastframe) > 1000) {
+		fps=ff;
+		ff=0;
+		lastframe=thisframe;
+	}
 
-    if (Editor.isEnabled() ) {
-        Editor.DrawEditor();
-    } else {
-        GUI.DrawInterface();
-    }
+	/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be
+	 * removed once Editor and GUI don't need them */
+	world_x = focus.getX();
+	world_y = focus.getY();
 
-    // note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
-    //       causing overflow and not drawing the font if it gets negative
-    fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	if (Editor.isEnabled() ) {
+		Editor.DrawEditor();
+	} else {
+		GUI.DrawInterface();
+	}
 
-    message.DrawAll();
-    message.DeleteDecayed();
+	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
+	//       causing overflow and not drawing the font if it gets negative
+	fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 
-    SDL_GL_SwapBuffers();
+	message.DrawAll();
+	message.DeleteDecayed();
+
+	SDL_GL_SwapBuffers();
 }
 
-int main(int argc, char* argv[]) {
-    Uint8 *keys;
+int main(int argc, char* argv[])
+{
+	Uint8 *keys;
 
-    done = HandleCommandLineAurguments(argc, argv);
+	done = HandleCommandLineAurguments(argc, argv);
 
-    // Skip the init steps if true was set as a result of the command line parameters
-    if(!done) {
+	// Skip the init steps if true was set as a result of the command line parameters
+	if (!done) {
 
-        if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0) { // start up SDL
-            std::cout << "Unable to init SDL: " << SDL_GetError() << std::endl;
-            exit(1);
-        }
-        atexit(SDL_Quit);
+		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0) { // start up SDL
+			std::cout << "Unable to init SDL: " << SDL_GetError() << std::endl;
+			exit(1);
+		}
+		atexit(SDL_Quit);
 
 
-        if(fullscreenenabled)
-            screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
-	else
-            screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
-        
-	if ( !screen ) {
-            std::cout << "Unable to set resolution " << RES_X <<
-            "x" << RES_Y << " video:" << SDL_GetError();
-            exit(1);
-        }
+		if (fullscreenenabled)
+			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
+		else
+			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
 
-        glEnable( GL_TEXTURE_2D );
+		if ( !screen ) {
+			std::cout << "Unable to set resolution " << RES_X <<
+			          "x" << RES_Y << " video:" << SDL_GetError();
+			exit(1);
+		}
 
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glViewport( 0, 0, RES_X, RES_Y );
+		glEnable( GL_TEXTURE_2D );
 
-        glClear( GL_COLOR_BUFFER_BIT );
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		glViewport( 0, 0, RES_X, RES_Y );
 
-        glMatrixMode( GL_PROJECTION );
-        glLoadIdentity(); // reset view to 0,0
+		glClear( GL_COLOR_BUFFER_BIT );
 
-        glOrtho(0.0f, RES_X, 0.0f, RES_Y, -1.0f, 1.0f);
-        glMatrixMode( GL_MODELVIEW );
-        glLoadIdentity();  // reset view to 0,0
+		glMatrixMode( GL_PROJECTION );
+		glLoadIdentity(); // reset view to 0,0
 
-        glEnable( GL_BLEND ); // enable blending
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-        glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
+		glOrtho(0.0f, RES_X, 0.0f, RES_Y, -1.0f, 1.0f);
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();  // reset view to 0,0
 
-        LuaFunctions::executeLuaFile("data/mobdata.all");
+		glEnable( GL_BLEND ); // enable blending
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
-        zone1.LoadZone("data/zone1");
-        character.setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
-        character.setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
-        character.setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
-        character.setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
-        character.setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
-        character.setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
-        character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
-        character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
-        character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
-        character.Init(RES_X/2,RES_Y/2);
+		LuaFunctions::executeLuaFile("data/mobdata.all");
 
-        Editor.LoadTextures();
-        GUI.LoadTextures();
-        GUI.SetPlayer(&character);
+		zone1.LoadZone("data/zone1");
+		character.setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
+		character.setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
+		character.setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
+		character.setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
+		character.setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
+		character.setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
+		character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
+		character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
+		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
+		character.Init(RES_X/2,RES_Y/2);
 
-        // initialize fonts where needed
-        fpsFont.open("data/verdana.ttf", 12);
-        message.initFonts();
-        Editor.initFonts();
-        GUI.initFonts();
+		Editor.LoadTextures();
+		GUI.LoadTextures();
+		GUI.SetPlayer(&character);
 
-        SpellCreation::initSpells();
-        ActionCreation::initActions();
+		// initialize fonts where needed
+		fpsFont.open("data/verdana.ttf", 12);
+		message.initFonts();
+		Editor.initFonts();
+		GUI.initFonts();
 
-        //SDL_ShowCursor(SDL_DISABLE);
-    }
+		SpellCreation::initSpells();
+		ActionCreation::initActions();
 
-    Uint32 lastTicks = SDL_GetTicks();
-    Uint32 curTicks  = lastTicks;
-    Uint32 ticksDiff = 0;
+		//SDL_ShowCursor(SDL_DISABLE);
+	}
 
-/*  Tryme:
- *  Replace focus.setFocus(&character)
- *  with :
- *  focus.setPath(10, 0, 100, 70); 
- *  or:
- *  focus.setFocus(NPC[0]);
- */
-    focus.setFocus(&character);
-    
-    while(!done) {
-        if (Editor.isEnabled()) {
-            Editor.HandleKeys();
+	Uint32 lastTicks = SDL_GetTicks();
+	Uint32 curTicks  = lastTicks;
+	Uint32 ticksDiff = 0;
 
-            lastTicks = SDL_GetTicks();
-            curTicks  = lastTicks;
-            ticksDiff = 0;
-        } else {
-            SDL_Event event;
+	/*  Tryme:
+	 *  Replace focus.setFocus(&character)
+	 *  with :
+	 *  focus.setPath(10, 0, 100, 70);
+	 *  or:
+	 *  focus.setFocus(NPC[0]);
+	 */
+	focus.setFocus(&character);
 
-            while (SDL_PollEvent(&event)) {
-                if (event.type == SDL_QUIT)  { done = 1; }
+	while (!done) {
+		if (Editor.isEnabled()) {
+			Editor.HandleKeys();
 
-                if (event.type == SDL_KEYDOWN) {
-                    if (event.key.keysym.sym == SDLK_ESCAPE) { done = 1; }
-                    if (event.key.keysym.sym == SDLK_SPACE) { }
-                }
+			lastTicks = SDL_GetTicks();
+			curTicks  = lastTicks;
+			ticksDiff = 0;
+		} else {
+			SDL_Event event;
 
-                if (event.type == SDL_MOUSEBUTTONDOWN) {
-                    switch (event.button.button) {
-                        case 1:
-                            character.setTarget( NULL );
+			while (SDL_PollEvent(&event)) {
+				if (event.type == SDL_QUIT)  {
+					done = 1;
+				}
 
-                            for (unsigned int x=0; x<NPC.size(); x++) {
-                                if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) )
-                                {
-                                    character.setTarget( NPC[x] );
-                                }
-                            }
-                        break;
-                    }
-                }
+				if (event.type == SDL_KEYDOWN) {
+					if (event.key.keysym.sym == SDLK_ESCAPE) {
+						done = 1;
+					}
+					if (event.key.keysym.sym == SDLK_SPACE) { }
+				}
 
-                if (event.type == SDL_MOUSEMOTION) {
-                    mouseX = event.motion.x;
-                    mouseY = RES_Y - event.motion.y - 1;
-                }
-            }
+				if (event.type == SDL_MOUSEBUTTONDOWN) {
+					switch (event.button.button) {
+						case 1:
+							character.setTarget( NULL );
 
-            keys = SDL_GetKeyState(NULL);
+							for (unsigned int x=0; x<NPC.size(); x++) {
+								if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+									character.setTarget( NPC[x] );
+								}
+							}
+						break;
+					}
+				}
 
-            curTicks  = SDL_GetTicks();
-            ticksDiff = curTicks - lastTicks;
-            lastTicks = curTicks;
+				if (event.type == SDL_MOUSEMOTION) {
+					mouseX = event.motion.x;
+					mouseY = RES_Y - event.motion.y - 1;
+				}
+			}
 
-            character.giveMovePoints( ticksDiff );
-            character.Move();
+			keys = SDL_GetKeyState(NULL);
 
-            for (unsigned int x=0; x<NPC.size(); x++) {
-                NPC[x]->giveMovePoints( ticksDiff );
-                NPC[x]->Move();
-                NPC[x]->Respawn();
-                NPC[x]->Wander();
-            }
+			curTicks  = SDL_GetTicks();
+			ticksDiff = curTicks - lastTicks;
+			lastTicks = curTicks;
 
-            // making sure our target is still alive, if not well set our target to NULL.
-            if (character.getTarget())
-            {
-                if ( !character.getTarget()->isAlive() )
-                character.setTarget(0);
-            }
+			character.giveMovePoints( ticksDiff );
+			character.Move();
 
-            for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
-            {
-                activeSpellActions[ curActiveSpellNr ]->inEffect();
-            }
+			for (unsigned int x=0; x<NPC.size(); x++) {
+				NPC[x]->giveMovePoints( ticksDiff );
+				NPC[x]->Move();
+				NPC[x]->Respawn();
+				NPC[x]->Wander();
+			}
 
-            cleanupActiveSpellActions();
+			// making sure our target is still alive, if not well set our target to NULL.
+			if (character.getTarget()) {
+				if ( !character.getTarget()->isAlive() )
+					character.setTarget(0);
+			}
 
-            if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-                for (unsigned int x=0; x<NPC.size(); x++) {
-                    NPC[x]->Die();
-                }
-            }
+			for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+				activeSpellActions[ curActiveSpellNr ]->inEffect();
+			}
 
-            if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-                Editor.setEditZone( &zone1 );
-                Editor.setEnabled( true );
-                Editor.KP_toggle_editor = true;
-            }
+			cleanupActiveSpellActions();
 
-            if (!keys[SDLK_l]) {
-                Editor.KP_toggle_editor = false;
-            }
+			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
+				for (unsigned int x=0; x<NPC.size(); x++) {
+					NPC[x]->Die();
+				}
+			}
 
-            if (keys[SDLK_TAB] && !KP_select_next)
-            {
-                KP_select_next = true;
-                bool FoundNewTarget = false;
-                std::vector <CNPC*> NPClist;
-                // select next npc on screen
-                for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC )
-                {
-                    // if NPC is in on screen (might be changed to line of sight or something)
-                    // this makes a list of all visible NPCs, easier to select next target this way.
-                    if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
-                         && NPC[curNPC]->isAlive() )
-                    {
-                        NPClist.push_back(NPC[curNPC]);
-                    }
-                }
-                // selects next target in the list, if target = NULL, set target to first NPC on the visible list.
-                for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC )
-                {
-                    if (!character.getTarget())
-                    {
-                        character.setTarget(NPClist[0]);
-                    }
+			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
+				Editor.setEditZone( &zone1 );
+				Editor.setEnabled( true );
+				Editor.KP_toggle_editor = true;
+			}
 
-                    if ( character.getTarget() == NPClist[curNPC] )
-                    {
-                        if ( curNPC+1 == NPClist.size() ) {
-                            character.setTarget(NPClist[0]);
-                        } else {
-                            character.setTarget(NPClist[curNPC+1]);
-                        }
-                        FoundNewTarget = true;
-                        break;
-                    }
-                }
+			if (!keys[SDLK_l]) {
+				Editor.KP_toggle_editor = false;
+			}
 
-                if ( !FoundNewTarget && NPClist.size() > 0)
-                {
-                    character.setTarget(NPClist[0]);
-                }
-            }
+			if (keys[SDLK_TAB] && !KP_select_next) {
+				KP_select_next = true;
+				bool FoundNewTarget = false;
+				std::vector <CNPC*> NPClist;
+				// select next npc on screen
+				for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC ) {
+					// if NPC is in on screen (might be changed to line of sight or something)
+					// this makes a list of all visible NPCs, easier to select next target this way.
+					if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
+					        && NPC[curNPC]->isAlive() ) {
+						NPClist.push_back(NPC[curNPC]);
+					}
+				}
+				// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
+				for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
+					if (!character.getTarget()) {
+						character.setTarget(NPClist[0]);
+					}
 
-            if (!keys[SDLK_TAB])
-            {
-                KP_select_next = false;
-            }
+					if ( character.getTarget() == NPClist[curNPC] ) {
+						if ( curNPC+1 == NPClist.size() ) {
+							character.setTarget(NPClist[0]);
+						} else {
+							character.setTarget(NPClist[curNPC+1]);
+						}
+						FoundNewTarget = true;
+						break;
+					}
+				}
 
-            if (keys[SDLK_1] && !KP_damage) {
-                KP_damage = true;
-                if ( character.getTarget() != NULL )
-                {
-                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, character.getTarget() );
-                    character.castSpell(spell);
-                }
-            }
+				if ( !FoundNewTarget && NPClist.size() > 0) {
+					character.setTarget(NPClist[0]);
+				}
+			}
 
-            if (!keys[SDLK_1]) {
-                KP_damage = false;
-            }
+			if (!keys[SDLK_TAB]) {
+				KP_select_next = false;
+			}
 
-            if (keys[SDLK_2] && !KP_heal) {
-                KP_heal = true;
-                CSpell *spell = SpellCreation::createSelfAffectingSpellByName( "Healing", &character );
-                character.castSpell( spell );
-            }
+			if (keys[SDLK_1] && !KP_damage) {
+				KP_damage = true;
+				if ( character.getTarget() != NULL ) {
+					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, character.getTarget() );
+					character.castSpell(spell);
+				}
+			}
 
-            if (!keys[SDLK_2]) {
-                KP_heal = false;
-            }
+			if (!keys[SDLK_1]) {
+				KP_damage = false;
+			}
 
-            if (keys[SDLK_3] && !KP_magicMissile) {
-                KP_magicMissile = true;
-                if ( character.getTarget() != NULL )
-                {
-                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, character.getTarget() );
-                    character.castSpell(spell);
-                }
-            }
+			if (keys[SDLK_2] && !KP_heal) {
+				KP_heal = true;
+				CSpell *spell = SpellCreation::createSelfAffectingSpellByName( "Healing", &character );
+				character.castSpell( spell );
+			}
 
-            if (!keys[SDLK_3]) {
-                KP_magicMissile = false;
-            }
+			if (!keys[SDLK_2]) {
+				KP_heal = false;
+			}
 
-            if (keys[SDLK_4] && !KP_healOther) {
-                KP_healOther = true;
-                if ( character.getTarget() != NULL )
-                {
-                    CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, character.getTarget() );
-                    character.castSpell(spell);
-                }
-            }
+			if (keys[SDLK_3] && !KP_magicMissile) {
+				KP_magicMissile = true;
+				if ( character.getTarget() != NULL ) {
+					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, character.getTarget() );
+					character.castSpell(spell);
+				}
+			}
 
-            if (!keys[SDLK_4]) {
-                KP_healOther = false;
-            }
+			if (!keys[SDLK_3]) {
+				KP_magicMissile = false;
+			}
 
-            if (keys[SDLK_5] && !KP_interrupt) {
-                KP_interrupt = true;
-                character.CastingInterrupted();
-            }
+			if (keys[SDLK_4] && !KP_healOther) {
+				KP_healOther = true;
+				if ( character.getTarget() != NULL ) {
+					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, character.getTarget() );
+					character.castSpell(spell);
+				}
+			}
 
-            if (!keys[SDLK_5]) {
-                KP_interrupt = false;
-            }
+			if (!keys[SDLK_4]) {
+				KP_healOther = false;
+			}
 
-            if (keys[SDLK_SPACE] && !KP_attack) {
-                KP_attack = true;
-                if ( character.getTarget() != NULL )
-                {
-                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-                    character.executeAction(action);
-                }
-            }
+			if (keys[SDLK_5] && !KP_interrupt) {
+				KP_interrupt = true;
+				character.CastingInterrupted();
+			}
 
-            if (!keys[SDLK_SPACE]) {
-                KP_attack = false;
-            }
-        }
-        DrawScene();
-	focus.updateFocus();
-    }
-  return 0;
+			if (!keys[SDLK_5]) {
+				KP_interrupt = false;
+			}
+
+			if (keys[SDLK_SPACE] && !KP_attack) {
+				KP_attack = true;
+				if ( character.getTarget() != NULL ) {
+					CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
+					character.executeAction(action);
+				}
+			}
+
+			if (!keys[SDLK_SPACE]) {
+				KP_attack = false;
+			}
+		}
+		DrawScene();
+		focus.updateFocus();
+	}
+	return 0;
 }

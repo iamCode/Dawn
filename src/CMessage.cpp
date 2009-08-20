@@ -21,50 +21,53 @@
 
 void CMessage::initFonts()
 {
-    messageFont.open("data/verdana.ttf", 12);
+	messageFont.open("data/verdana.ttf", 12);
 }
 
-void CMessage::DrawAll() {
-    for (unsigned int book = 0; book < MessageBook.size(); book++) {
-        if (MessageBook[book].lifetime > 0.0) { // if we have a lifetime, we need to wait until we start decaying the message.
-            MessageBook[book].startdecaythisframe = SDL_GetTicks();
-            // currently waiting 1 second, until we decrease our lifetime with one second and then repeat.
-            if ((MessageBook[book].startdecaythisframe-MessageBook[book].startdecaylastframe) > 1000) {
-                MessageBook[book].startdecaylastframe = MessageBook[book].startdecaythisframe;
-                MessageBook[book].lifetime -= 1.0;
-            }
-        }
-        if (MessageBook[book].lifetime == 0.0) { // lifetime is up, lets start decaying...
-            MessageBook[book].thisframe = SDL_GetTicks();
-            if ((MessageBook[book].thisframe-MessageBook[book].lastframe) > MessageBook[book].decayrate) {
-                MessageBook[book].lastframe = MessageBook[book].thisframe;
-                MessageBook[book].transparency -= 0.01;
-            }
-        }
-        // set the color + transparency then draw the text.
-        glColor4f(MessageBook[book].red,MessageBook[book].green,MessageBook[book].blue,MessageBook[book].transparency);
-        messageFont.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
-    }
-    glColor4f(1.0f,1.0f,1.0f,1.0f);
+void CMessage::DrawAll()
+{
+	for (unsigned int book = 0; book < MessageBook.size(); book++) {
+		if (MessageBook[book].lifetime > 0.0) { // if we have a lifetime, we need to wait until we start decaying the message.
+			MessageBook[book].startdecaythisframe = SDL_GetTicks();
+			// currently waiting 1 second, until we decrease our lifetime with one second and then repeat.
+			if ((MessageBook[book].startdecaythisframe-MessageBook[book].startdecaylastframe) > 1000) {
+				MessageBook[book].startdecaylastframe = MessageBook[book].startdecaythisframe;
+				MessageBook[book].lifetime -= 1.0;
+			}
+		}
+		if (MessageBook[book].lifetime == 0.0) { // lifetime is up, lets start decaying...
+			MessageBook[book].thisframe = SDL_GetTicks();
+			if ((MessageBook[book].thisframe-MessageBook[book].lastframe) > MessageBook[book].decayrate) {
+				MessageBook[book].lastframe = MessageBook[book].thisframe;
+				MessageBook[book].transparency -= 0.01;
+			}
+		}
+		// set the color + transparency then draw the text.
+		glColor4f(MessageBook[book].red,MessageBook[book].green,MessageBook[book].blue,MessageBook[book].transparency);
+		messageFont.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
+	}
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
 
-void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...) {
-    char buffer[1024];
-    std::va_list args;
+void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...)
+{
+	char buffer[1024];
+	std::va_list args;
 
-    // writing our text and arguments to the buffer
-    va_start(args, text);
-    vsnprintf(buffer,1024,text,args);
-    va_end(args);
+	// writing our text and arguments to the buffer
+	va_start(args, text);
+	vsnprintf(buffer,1024,text,args);
+	va_end(args);
 
-    // push everything to our vector.
-    MessageBook.push_back(sBook(std::string(buffer), x, y, red, green, blue, transparency, decayrate, lifetime));
+	// push everything to our vector.
+	MessageBook.push_back(sBook(std::string(buffer), x, y, red, green, blue, transparency, decayrate, lifetime));
 };
 
-void CMessage::DeleteDecayed() {
-    for (unsigned int book = 0; book < MessageBook.size(); book++) {
-        if (MessageBook[book].transparency < 0.0) {
-            MessageBook.erase(MessageBook.begin()+book);
-        }
-    }
+void CMessage::DeleteDecayed()
+{
+	for (unsigned int book = 0; book < MessageBook.size(); book++) {
+		if (MessageBook[book].transparency < 0.0) {
+			MessageBook.erase(MessageBook.begin()+book);
+		}
+	}
 };

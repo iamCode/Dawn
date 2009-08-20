@@ -26,129 +26,115 @@
 
 class AttackAction : public CAction
 {
-  public:
-    static uint16_t getStaticCastTime()
-    {
-        return 0;
-    }
+	public:
+		static uint16_t getStaticCastTime() {
+			return 0;
+		}
 
-    static uint16_t getStaticManaCost()
-    {
-        return 0;
-    }
+		static uint16_t getStaticManaCost() {
+			return 0;
+		}
 
-    static std::string getStaticName()
-    {
-        return "Melee Attack";
-    }
+		static std::string getStaticName() {
+			return "Melee Attack";
+		}
 
-    static std::string getStaticActionInfo()
-    {
-        return "Causes 20 points of damage to the target.\n";
-    }
+		static std::string getStaticActionInfo() {
+			return "Causes 20 points of damage to the target.\n";
+		}
 
-    static CTexture *actionTexture;
-    static CTexture *actionSymbol;
+		static CTexture *actionTexture;
+		static CTexture *actionSymbol;
 
-    static void init()
-    {
-        actionTexture = new CTexture();
-        actionTexture->texture.reserve(1);
-        //actionTexture->LoadIMG( "data/actions/attack/attack.tga", 0 );
-        actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
-        
-        actionSymbol = new CTexture();
-        actionSymbol->texture.reserve(1);
-        //actionSymbol->LoadIMG( "data/actions/attack/symbol.tga", 0 );
-        actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
-    }
+		static void init() {
+			actionTexture = new CTexture();
+			actionTexture->texture.reserve(1);
+			//actionTexture->LoadIMG( "data/actions/attack/attack.tga", 0 );
+			actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
 
-    static CTexture* getStaticSymbol()
-    {
-        return actionSymbol;
-    }
+			actionSymbol = new CTexture();
+			actionSymbol->texture.reserve(1);
+			//actionSymbol->LoadIMG( "data/actions/attack/symbol.tga", 0 );
+			actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
+		}
 
-    CTexture* getSymbol() const
-    {
-        return getStaticSymbol();
-    }
+		static CTexture* getStaticSymbol() {
+			return actionSymbol;
+		}
 
-    AttackAction( CCharacter *creator_, CCharacter *target_ )
-        : CAction( creator_,
-                  getStaticCastTime(),
-                  getStaticManaCost(),
-                  getStaticName(),
-                  getStaticActionInfo() ),
-          target( target_ ),
-          damageCaused( true )
-    {
-    }
+		CTexture* getSymbol() const {
+			return getStaticSymbol();
+		}
 
-    virtual void startEffect()
-    {
-        effectStart = SDL_GetTicks();
-        curArc = -45.0;
-        damageCaused = false;
-    }
+		AttackAction( CCharacter *creator_, CCharacter *target_ )
+				: CAction( creator_,
+				           getStaticCastTime(),
+				           getStaticManaCost(),
+				           getStaticName(),
+				           getStaticActionInfo() ),
+				target( target_ ),
+				damageCaused( true ) {
+		}
 
-    virtual void inEffect()
-    {
-        uint32_t curTime = SDL_GetTicks();
-        curArc = -45.0 + (curTime - effectStart) / 5;
-        
+		virtual void startEffect() {
+			effectStart = SDL_GetTicks();
+			curArc = -45.0;
+			damageCaused = false;
+		}
 
-        if ( curArc > 45.0 )
-        {
-            curArc = 45.0;
-        }
+		virtual void inEffect() {
+			uint32_t curTime = SDL_GetTicks();
+			curArc = -45.0 + (curTime - effectStart) / 5;
 
-        if ( curArc >= 0 && !damageCaused )
-        {
-            double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
-            if ( distance <= 120 )
-            {
-                target->Damage( 20 );
-            }
-            damageCaused = true;
-        }
 
-        if ( curArc >= 45 )
-        {
-            finishEffect();
-        }
-    }
+			if ( curArc > 45.0 ) {
+				curArc = 45.0;
+			}
 
-    void finishEffect()
-    {
-        markSpellActionAsFinished();
-    }
+			if ( curArc >= 0 && !damageCaused ) {
+				double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
+				if ( distance <= 120 ) {
+					target->Damage( 20 );
+				}
+				damageCaused = true;
+			}
 
-    virtual void drawEffect()
-    {
-        float degrees;
-        degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57,296;
+			if ( curArc >= 45 ) {
+				finishEffect();
+			}
+		}
 
-        degrees += 90;        
+		void finishEffect() {
+			markSpellActionAsFinished();
+		}
 
-        if (creator->getXPos() < target->x_pos) { degrees = -degrees; }
+		virtual void drawEffect() {
+			float degrees;
+			degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57,296;
 
-        degrees += curArc + 90;
+			degrees += 90;
 
-        glPushMatrix();
-            glTranslatef(creator->getXPos() + (creator->getWidth() / 2), creator->getYPos() + (creator->getHeight() / 2), 0.0f);
-            glRotatef(degrees,0.0f,0.0f,1.0f);
-            
-            DrawingHelpers::mapTextureToRect( actionTexture->texture[0].texture,
-                                              creator->getWidth() / 2, 50,
-                                              0, 10 );
-        glPopMatrix();
-    }
+			if (creator->getXPos() < target->x_pos) {
+				degrees = -degrees;
+			}
 
-  private:
-    CCharacter *target;
-    uint32_t effectStart;
-    bool damageCaused;
-    double curArc;
+			degrees += curArc + 90;
+
+			glPushMatrix();
+			glTranslatef(creator->getXPos() + (creator->getWidth() / 2), creator->getYPos() + (creator->getHeight() / 2), 0.0f);
+			glRotatef(degrees,0.0f,0.0f,1.0f);
+
+			DrawingHelpers::mapTextureToRect( actionTexture->texture[0].texture,
+			                                  creator->getWidth() / 2, 50,
+			                                  0, 10 );
+			glPopMatrix();
+		}
+
+	private:
+		CCharacter *target;
+		uint32_t effectStart;
+		bool damageCaused;
+		double curArc;
 };
 
 CTexture *AttackAction::actionTexture = NULL;
@@ -157,26 +143,23 @@ CTexture *AttackAction::actionSymbol = NULL;
 
 namespace ActionCreation
 {
-    void initActions()
-    {
-        AttackAction::init();
-    }
+	void initActions()
+	{
+		AttackAction::init();
+	}
 
-    CTexture* getActionSymbolByName( std::string name )
-    {
-        if ( name == AttackAction::getStaticName() )
-        {
-            return AttackAction::getStaticSymbol();
-        }
-        else
-        {
-            std::cerr << "symbol for action \"" << name << "\" not implemented yet" << std::endl;
-            abort();
-        }
-    }
+	CTexture* getActionSymbolByName( std::string name )
+	{
+		if ( name == AttackAction::getStaticName() ) {
+			return AttackAction::getStaticSymbol();
+		} else {
+			std::cerr << "symbol for action \"" << name << "\" not implemented yet" << std::endl;
+			abort();
+		}
+	}
 
-    CAction* createAttackAction( CCharacter *attacker, CCharacter *target )
-    {
-        return new AttackAction( attacker, target );
-    }
+	CAction* createAttackAction( CCharacter *attacker, CCharacter *target )
+	{
+		return new AttackAction( attacker, target );
+	}
 }

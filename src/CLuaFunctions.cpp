@@ -33,20 +33,18 @@ namespace LuaFunctions
 	/* Note: If you are opening and running a file containing Lua code */
 	/* using 'luaL_dofile(l, "myfile.lua") - you must delcare all the libraries */
 	/* used in that file here also. */
-	static const luaL_reg lualibs[] =
-	{
+	static const luaL_reg lualibs[] = {
 		{ "",     luaopen_base },
 		{ "io",   luaopen_io },
 		{ "DawnInterface", tolua_CLuaInterface_open },
 		{ NULL,         NULL }
 	};
-	
-	static lua_State *globalLuaState = NULL;	
+
+	static lua_State *globalLuaState = NULL;
 
 	static void cleanupLuaState()
 	{
-		if ( globalLuaState != NULL )
-		{
+		if ( globalLuaState != NULL ) {
 			lua_close( globalLuaState );
 			globalLuaState = NULL;
 		}
@@ -56,25 +54,23 @@ namespace LuaFunctions
 	{
 		// initialize lua script interpreter
 		lua_State *luaState = lua_open();
-		
+
 		// open lua libs
-		for ( const luaL_reg *lib = lualibs; lib->func != NULL; lib++ )
-		{
-            lua_pushcfunction(luaState, lib->func);
-            lua_pushstring(luaState, lib->name);
-            lua_call(luaState, 1, 0);
+		for ( const luaL_reg *lib = lualibs; lib->func != NULL; lib++ ) {
+			lua_pushcfunction(luaState, lib->func);
+			lua_pushstring(luaState, lib->name);
+			lua_call(luaState, 1, 0);
 		}
 
-        return luaState;
+		return luaState;
 	}
-	
+
 	lua_State* getGlobalLuaState()
 	{
-        if ( globalLuaState == NULL )
-        {
-            globalLuaState = createAndInitNewLuaState();
-		    atexit( cleanupLuaState );
-        }
+		if ( globalLuaState == NULL ) {
+			globalLuaState = createAndInitNewLuaState();
+			atexit( cleanupLuaState );
+		}
 		return globalLuaState;
 	}
 
@@ -82,23 +78,21 @@ namespace LuaFunctions
 	{
 		lua_State *lState = getGlobalLuaState();
 		int retcode = luaL_dofile( lState, filename.c_str() );
-		if ( retcode != 0 )
-		{
+		if ( retcode != 0 ) {
 			// there is some error in the lua code
-            std::cout << "error in lua file: " << lua_tostring(lState, -1) << std::endl;
+			std::cout << "error in lua file: " << lua_tostring(lState, -1) << std::endl;
 			abort();
 		}
 	}
-	
+
 	void executeLuaScript( std::string scripttext )
 	{
 		lua_State *lState = getGlobalLuaState();
 		int retcode = luaL_dostring( lState, scripttext.c_str() );
-		if ( retcode != 0 )
-		{
+		if ( retcode != 0 ) {
 			// there is some error in the lua code
 			std::cout << "error in lua script: " << lua_tostring(lState, -1) << std::endl;
-            abort();
+			abort();
 		}
 	}
 

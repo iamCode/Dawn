@@ -22,8 +22,8 @@ class CZone;
 
 namespace DawnInterface
 {
-    CCharacter* createNewMobType( std::string typeID );
-    CZone* getCurrentZone();
-    void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	CCharacter* createNewMobType( std::string typeID );
+	CZone* getCurrentZone();
+	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 }
 

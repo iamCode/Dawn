@@ -26,27 +26,32 @@
 #include <vector>
 
 struct sTexture {
-    GLuint texture;
-    int height, width;
-    bool contains_collision_box;
-    SDL_Rect collision_box;
+	GLuint texture;
+	int height, width;
+	bool contains_collision_box;
+	SDL_Rect collision_box;
 
-    sTexture(int _height, int _width, bool _ccb) { height = _height; width = _width; contains_collision_box = _ccb; };
+	sTexture(int _height, int _width, bool _ccb) {
+		height = _height;
+		width = _width;
+		contains_collision_box = _ccb;
+	};
 };
 
-class CTexture {
-    public:
-    std::vector<sTexture> texture;
+class CTexture
+{
+	public:
+		std::vector<sTexture> texture;
 
-    int LoadTextureMap(std::string file, bool try_load_collision_box = false);
-    void LoadIMG(std::string file, int texture_index);
-    void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float x_scale = 1.0f, float y_scale = 1.0f);
-    int NumberOfTextures;
+		int LoadTextureMap(std::string file, bool try_load_collision_box = false);
+		void LoadIMG(std::string file, int texture_index);
+		void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float x_scale = 1.0f, float y_scale = 1.0f);
+		int NumberOfTextures;
 
-    private:
-    SDL_Surface *surface;
-    GLenum texture_format;
-    GLint nOfColors;
+	private:
+		SDL_Surface *surface;
+		GLenum texture_format;
+		GLint nOfColors;
 };
 
 #endif

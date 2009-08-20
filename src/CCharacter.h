@@ -35,160 +35,167 @@ class CAction;
 
 class CCharacter
 {
-    friend class CSpellActionBase;
+		friend class CSpellActionBase;
 
-    public:
-    virtual ~CCharacter();
+	public:
+		virtual ~CCharacter();
 
-    GLuint frame;
-    int x_pos,y_pos;
+		GLuint frame;
+		int x_pos,y_pos;
 
-    virtual void Draw() = 0;
-    virtual void Move() = 0;
-    void MoveUp();
-    void MoveDown();
-    void MoveLeft();
-    void MoveRight();
-    void giveMovePoints( uint32_t movePoints );
-    void Init(int x, int y) { x_pos = x; y_pos = y; direction_texture = S; remainingMovePoints = 0; isPreparing = false; alive = true; curSpellAction = NULL; }
-    int CollisionCheck(Direction direction);
+		virtual void Draw() = 0;
+		virtual void Move() = 0;
+		void MoveUp();
+		void MoveDown();
+		void MoveLeft();
+		void MoveRight();
+		void giveMovePoints( uint32_t movePoints );
+		void Init(int x, int y) {
+			x_pos = x;
+			y_pos = y;
+			direction_texture = S;
+			remainingMovePoints = 0;
+			isPreparing = false;
+			alive = true;
+			curSpellAction = NULL;
+		}
+		int CollisionCheck(Direction direction);
 
-    // casting spells and executing actions
-    void executeAction( CAction *action );
-    void castSpell(CSpell *spell );
-    void giveToPreparation( CSpellActionBase *toPrepare );
-    bool continuePreparing();
-    void startSpellAction();
-    void CastingAborted();
-    void CastingInterrupted();
-    void abortCurrentSpellAction();
-    float getPreparationPercentage() const;
+		// casting spells and executing actions
+		void executeAction( CAction *action );
+		void castSpell(CSpell *spell );
+		void giveToPreparation( CSpellActionBase *toPrepare );
+		bool continuePreparing();
+		void startSpellAction();
+		void CastingAborted();
+		void CastingInterrupted();
+		void abortCurrentSpellAction();
+		float getPreparationPercentage() const;
 
-    // position access functions
-    int getXPos() const;
-    int getYPos() const;
-    int getWidth() const;
-    int getHeight() const;
+		// position access functions
+		int getXPos() const;
+		int getYPos() const;
+		int getWidth() const;
+		int getHeight() const;
 
-    Direction GetDirection();
-    Direction WanderDirection, MovingDirection;
+		Direction GetDirection();
+		Direction WanderDirection, MovingDirection;
 
-    Uint8 *keys;
+		Uint8 *keys;
 
-    int GetDirectionTexture();
-    int current_texture, direction_texture;
-    int CheckForCollision(int x, int y);
-    uint32_t remainingMovePoints;
+		int GetDirectionTexture();
+		int current_texture, direction_texture;
+		int CheckForCollision(int x, int y);
+		uint32_t remainingMovePoints;
 
-    CCharacter *Target;
+		CCharacter *Target;
 
-    void baseOnType( std::string otherType );
+		void baseOnType( std::string otherType );
 
-    void setStrength( uint16_t newStrength );
-    uint16_t getStrength() const;
-    void modifyStrength( int16_t strengthModifier );
+		void setStrength( uint16_t newStrength );
+		uint16_t getStrength() const;
+		void modifyStrength( int16_t strengthModifier );
 
-    void setDexterity( uint16_t newDexterity );
-    uint16_t getDexterity() const;
-    void modifyDexterity( int16_t dexterityModifier );
+		void setDexterity( uint16_t newDexterity );
+		uint16_t getDexterity() const;
+		void modifyDexterity( int16_t dexterityModifier );
 
-    void setVitality( uint16_t newVitality );
-    uint16_t getVitality() const;
-    void modifyVitality( int16_t vitalityModifier );
+		void setVitality( uint16_t newVitality );
+		uint16_t getVitality() const;
+		void modifyVitality( int16_t vitalityModifier );
 
-    void setIntellect( uint16_t newIntellect );
-    uint16_t getIntellect() const;
-    void modifyIntellect( int16_t intellectModifier );
+		void setIntellect( uint16_t newIntellect );
+		uint16_t getIntellect() const;
+		void modifyIntellect( int16_t intellectModifier );
 
-    void setWisdom( uint16_t newWisdom );
-    uint16_t getWisdom() const;
-    void modifyWisdom( int16_t wisdomModifier );
+		void setWisdom( uint16_t newWisdom );
+		uint16_t getWisdom() const;
+		void modifyWisdom( int16_t wisdomModifier );
 
-    void setMaxHealth( uint16_t newMaxHealth );
-    uint16_t getMaxHealth() const;
-    uint16_t getCurrentHealth() const;
-    void modifyMaxHealth( int16_t maxHealthModifier );
+		void setMaxHealth( uint16_t newMaxHealth );
+		uint16_t getMaxHealth() const;
+		uint16_t getCurrentHealth() const;
+		void modifyMaxHealth( int16_t maxHealthModifier );
 
-    void setMaxMana( uint16_t newMaxMana );
-    uint16_t getMaxMana() const;
-    uint16_t getCurrentMana() const;
-    void modifyMaxMana( int16_t maxManaModifier );
+		void setMaxMana( uint16_t newMaxMana );
+		uint16_t getMaxMana() const;
+		uint16_t getCurrentMana() const;
+		void modifyMaxMana( int16_t maxManaModifier );
 
-    void setMaxEnergy( uint16_t newMaxEnergy );
-    uint16_t getMaxEnergy() const;
-    uint16_t getCurrentEnergy() const;
-    void modifyMaxEnergy( int16_t maxEnergyModifier );
+		void setMaxEnergy( uint16_t newMaxEnergy );
+		uint16_t getMaxEnergy() const;
+		uint16_t getCurrentEnergy() const;
+		void modifyMaxEnergy( int16_t maxEnergyModifier );
 
-    void setWanderRadius( uint16_t newWanderRadius );
-    uint16_t getWanderRadius() const;
+		void setWanderRadius( uint16_t newWanderRadius );
+		uint16_t getWanderRadius() const;
 
-    void setName( std::string newName );
-    std::string getName() const;
+		void setName( std::string newName );
+		std::string getName() const;
 
-    void setLevel ( uint8_t newLevel );
-    uint8_t getLevel() const;
+		void setLevel ( uint8_t newLevel );
+		uint8_t getLevel() const;
 
-    bool isAlive() const
-    {
-        return alive;
-    }
+		bool isAlive() const {
+			return alive;
+		}
 
-    // NPC attributes
-    std::string name;
-    uint16_t strength, dexterity, vitality, intellect, wisdom;
-    uint16_t wander_radius;
-    uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
-    uint8_t alignment, level;
+		// NPC attributes
+		std::string name;
+		uint16_t strength, dexterity, vitality, intellect, wisdom;
+		uint16_t wander_radius;
+		uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
+		uint8_t alignment, level;
 
-    void DrawLifebar();
+		void DrawLifebar();
 
-    bool CheckMouseOver(int _x_pos, int _y_pos);
-    void Damage(int amount);
-    void Heal(int amount);
-    void Die();
+		bool CheckMouseOver(int _x_pos, int _y_pos);
+		void Damage(int amount);
+		void Heal(int amount);
+		void Die();
 
-    void setTexture( CTexture *newTexture );
-    CTexture *getTexture() const;
-    void setLifebar( CTexture *newLifebar );
-    CTexture *getLifebar() const;
-    void setMoveTexture( int direction, std::string filename );
-    void setLifeTexture( std::string filename );
-    CTexture *texture;
-    CTexture *lifebar;
+		void setTexture( CTexture *newTexture );
+		CTexture *getTexture() const;
+		void setLifebar( CTexture *newLifebar );
+		CTexture *getLifebar() const;
+		void setMoveTexture( int direction, std::string filename );
+		void setLifeTexture( std::string filename );
+		CTexture *texture;
+		CTexture *lifebar;
 
 
-    bool alive;
+		bool alive;
 
-    // states of the NPC
-    bool wandering, moving, in_combat;
+		// states of the NPC
+		bool wandering, moving, in_combat;
 
-    // timers
-    float wander_thisframe, wander_lastframe;
-    float respawn_thisframe, respawn_lastframe;
+		// timers
+		float wander_thisframe, wander_lastframe;
+		float respawn_thisframe, respawn_lastframe;
 
-    // stats
-    float life_percentage, mana_percentage, energy_percentage;
-    void CalculateStats();
+		// stats
+		float life_percentage, mana_percentage, energy_percentage;
+		void CalculateStats();
 
-    int wander_every_seconds, wander_points_left;
-    bool do_respawn;
-    int x_spawn_pos, y_spawn_pos;
-    int NPC_id;
-    int seconds_to_respawn;
+		int wander_every_seconds, wander_points_left;
+		bool do_respawn;
+		int x_spawn_pos, y_spawn_pos;
+		int NPC_id;
+		int seconds_to_respawn;
 
-    CZone *zone;
+		CZone *zone;
 
-  protected:
-    bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
-    bool mayDoAnythingAffectingSpellActionWithAborting() const; 
+	protected:
+		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
+		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
-  private:
-    
-    // casting spells / executing actions
-    bool isPreparing;
-    CSpellActionBase *curSpellAction;
-    uint32_t preparationStartTime, preparationCurrentTime;
-    float preparationPercentage;
+	private:
+
+		// casting spells / executing actions
+		bool isPreparing;
+		CSpellActionBase *curSpellAction;
+		uint32_t preparationStartTime, preparationCurrentTime;
+		float preparationPercentage;
 
 
 
@@ -196,50 +203,51 @@ class CCharacter
 
 class Player : public CCharacter
 {
-    private:
+	private:
 
-    public:
+	public:
 
-        void Move();
-        void Draw();
-        CCharacter* getTarget() const;
-        void setTarget(CCharacter *newTarget);
+		void Move();
+		void Draw();
+		CCharacter* getTarget() const;
+		void setTarget(CCharacter *newTarget);
 };
 
 class CNPC : public CCharacter
 {
-    private:
+	private:
 
-    public:
+	public:
 
-    CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
-        alive = true;
-        current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
-        respawn_thisframe = 0.0f; respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
-        wander_thisframe = 0.0f; wander_lastframe = 0.0f; // helping us decide when the mob will wander.
-        wander_every_seconds = 1; // this mob wanders every 1 seconds.
-        wandering = false;
-        MovingDirection = STOP;
+		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
+			alive = true;
+			current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
+			respawn_thisframe = 0.0f;
+			respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
+			wander_thisframe = 0.0f;
+			wander_lastframe = 0.0f; // helping us decide when the mob will wander.
+			wander_every_seconds = 1; // this mob wanders every 1 seconds.
+			wandering = false;
+			MovingDirection = STOP;
 
-        remainingMovePoints = 0;
-        direction_texture = S;
-    }
+			remainingMovePoints = 0;
+			direction_texture = S;
+		}
 
-    void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone )
-    {
-        x_pos = _x_spawn_pos;
-        y_pos = _y_spawn_pos;
-        x_spawn_pos = _x_spawn_pos;
-        y_spawn_pos = _y_spawn_pos;
-        do_respawn = _do_respawn;
-        seconds_to_respawn = _seconds_to_respawn;
-        zone = _zone;
-    }
+		void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
+			x_pos = _x_spawn_pos;
+			y_pos = _y_spawn_pos;
+			x_spawn_pos = _x_spawn_pos;
+			y_spawn_pos = _y_spawn_pos;
+			do_respawn = _do_respawn;
+			seconds_to_respawn = _seconds_to_respawn;
+			zone = _zone;
+		}
 
-    void Draw();
-    void Move();
-    void Respawn();
-    void Wander();
+		void Draw();
+		void Move();
+		void Respawn();
+		void Wander();
 };
 
 #endif

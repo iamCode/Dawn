@@ -27,64 +27,62 @@ class CTexture;
 
 namespace EffectType
 {
-    enum EffectType
-    {
-        SingleTargetSpell,
-        SelfAffectingSpell
-    };
+	enum EffectType {
+		SingleTargetSpell,
+		SelfAffectingSpell
+	};
 }
 
 class CSpellActionBase
 {
-  public:
-    CSpellActionBase( CCharacter *Creator, uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
-    virtual ~CSpellActionBase();
+	public:
+		CSpellActionBase( CCharacter *Creator, uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
+		virtual ~CSpellActionBase();
 
-    /// \brief Returns the time needed to cast a spell in ms.
-    uint16_t getCastTime() const;
-    uint16_t getManaCost() const;
+		/// \brief Returns the time needed to cast a spell in ms.
+		uint16_t getCastTime() const;
+		uint16_t getManaCost() const;
 
-    std::string getName() const;
-    std::string getInfo() const;
+		std::string getName() const;
+		std::string getInfo() const;
 
-    void beginPreparationOfSpellAction();
-    virtual void drawEffect() = 0;
-    virtual void startEffect() = 0;
-    virtual void inEffect() = 0;
-    void markSpellActionAsFinished();
-    bool isEffectComplete();
+		void beginPreparationOfSpellAction();
+		virtual void drawEffect() = 0;
+		virtual void startEffect() = 0;
+		virtual void inEffect() = 0;
+		void markSpellActionAsFinished();
+		bool isEffectComplete();
 
-    virtual CTexture* getSymbol() const = 0;
+		virtual CTexture* getSymbol() const = 0;
 
-    void unbindFromCreator();
-    bool isBoundToCreator() const;
+		void unbindFromCreator();
+		bool isBoundToCreator() const;
 
-  protected:
-    CCharacter *creator;
+	protected:
+		CCharacter *creator;
 
-  private:
-    uint16_t castTime;
-    uint16_t manaCost;
-    std::string name;
-    std::string info;
-    bool boundToCreator;
-    bool finished;
+	private:
+		uint16_t castTime;
+		uint16_t manaCost;
+		std::string name;
+		std::string info;
+		bool boundToCreator;
+		bool finished;
 };
 
 class CSpell : public CSpellActionBase
 {
-  public:
-    CSpell( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
-        : CSpellActionBase( creator_, castTime, manaCost, name, info )
-    {}
+	public:
+		CSpell( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
+				: CSpellActionBase( creator_, castTime, manaCost, name, info ) {}
 };
 
 namespace SpellCreation
 {
-    void initSpells();
-    CTexture* getSpellSymbolByName( std::string name );
-    CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target );
-    CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
+	void initSpells();
+	CTexture* getSpellSymbolByName( std::string name );
+	CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target );
+	CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
 }
 
 #endif // __C_SPELL_H_

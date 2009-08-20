@@ -21,7 +21,7 @@
 #include <iostream>
 
 #ifdef _WIN32
-    #include <windows.h> // Nothing uses this, perhaps it could be removed?
+#include <windows.h> // Nothing uses this, perhaps it could be removed?
 #endif
 
 #include <vector>

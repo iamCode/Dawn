@@ -25,21 +25,22 @@
 
 extern int RES_X,RES_Y,world_x,world_y;
 
-class CInterface {
-    public:
-    void LoadTextures();
-    bool enabled;
-    void DrawInterface();
-    void SetPlayer(CCharacter *player_);
+class CInterface
+{
+	public:
+		void LoadTextures();
+		bool enabled;
+		void DrawInterface();
+		void SetPlayer(CCharacter *player_);
 
-    void initFonts();
+		void initFonts();
 
-    private:
-    CTexture interfacetextures;
+	private:
+		CTexture interfacetextures;
 
-    CCharacter *player;
+		CCharacter *player;
 
-    GLFT_Font shortcutFont;
+		GLFT_Font shortcutFont;
 };
 
 

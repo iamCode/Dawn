@@ -28,36 +28,45 @@
 extern int world_x, world_y, mouseX, mouseY, RES_X, RES_Y, done;
 extern CMessage message;
 
-class CEditor {
-    public:
-    CEditor() { enabled = false; tilepos_offset = 0; tilepos = 1; current_tilepos = 1; current_object = 0; objectedit_selected = -1; zoneToEdit = NULL; };
+class CEditor
+{
+	public:
+		CEditor() {
+			enabled = false;
+			tilepos_offset = 0;
+			tilepos = 1;
+			current_tilepos = 1;
+			current_object = 0;
+			objectedit_selected = -1;
+			zoneToEdit = NULL;
+		};
 
-    void initFonts();
+		void initFonts();
 
-    bool KP_toggle_editor;
-    void DrawEditor();
-    int SaveZone();
-    void HandleKeys();
-    void LoadTextures();
+		bool KP_toggle_editor;
+		void DrawEditor();
+		int SaveZone();
+		void HandleKeys();
+		void LoadTextures();
 
-    void setEditZone( CZone *zoneToEdit );
-    bool isEnabled() const;
-    void setEnabled( bool enabled );
+		void setEditZone( CZone *zoneToEdit );
+		bool isEnabled() const;
+		void setEnabled( bool enabled );
 
-    private:
-    void inc_tilepos();
-    void dec_tilepos();
-    
-    void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
+	private:
+		void inc_tilepos();
+		void dec_tilepos();
 
-    bool enabled;
-    int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-    bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone;
+		void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
 
-    CTexture interfacetexture;
-    GLFT_Font objectDescriptionFont;
-    GLFT_Font keybindingFont;
-    CZone *zoneToEdit;
+		bool enabled;
+		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
+		bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone;
+
+		CTexture interfacetexture;
+		GLFT_Font objectDescriptionFont;
+		GLFT_Font keybindingFont;
+		CZone *zoneToEdit;
 };
 
 #endif

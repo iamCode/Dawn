@@ -28,43 +28,45 @@ extern int RES_Y;
 
 namespace DrawingHelpers
 {
-    inline void mapTextureToRect( GLuint texture, int left, int width, int bottom, int height )
-    {
-        // don't rebind texture if it is already bound
-        // (this may save a lot of performance, if the texture is not scaled)
-        GLuint boundTexture;
-        int paramValue;
-        glGetIntegerv( GL_TEXTURE_BINDING_2D, &paramValue );
-        boundTexture = static_cast<GLuint>(paramValue);    
-        
-        if ( boundTexture != texture )
-        {
-            glBindTexture( GL_TEXTURE_2D, texture);
-        }
-        
-        glBegin( GL_QUADS );
-        // Bottom-left vertex (corner)
-        glTexCoord2f( 0.0f, 0.0f ); glVertex3f( left, bottom, 0.0f );
-        // Bottom-right vertex (corner)
-        glTexCoord2f( 1.0f, 0.0f ); glVertex3f( left + width, bottom, 0.0f );
-        // Top-right vertex (corner)
-        glTexCoord2f( 1.0f, 1.0f ); glVertex3f( left + width, bottom + height, 0.0f );
-        // Top-left vertex (corner)
-        glTexCoord2f( 0.0f, 1.0f ); glVertex3f( left, bottom + height, 0.0f );
-        glEnd();
-    }
+	inline void mapTextureToRect( GLuint texture, int left, int width, int bottom, int height )
+	{
+		// don't rebind texture if it is already bound
+		// (this may save a lot of performance, if the texture is not scaled)
+		GLuint boundTexture;
+		int paramValue;
+		glGetIntegerv( GL_TEXTURE_BINDING_2D, &paramValue );
+		boundTexture = static_cast<GLuint>(paramValue);
 
-    inline bool isRectOnScreen( int left, int width, int bottom, int height )
-    {
-        if (    left >= (world_x + RES_X)           // object right of screen
-             || bottom >= (world_y + RES_Y)         // object above screen
-             || (left + width) <= world_x           // object left of screen
-             || (bottom + height) <= world_y )      // object below screen
-        {
-            return false;
-        }
-        return true;
-    }
+		if ( boundTexture != texture ) {
+			glBindTexture( GL_TEXTURE_2D, texture);
+		}
+
+		glBegin( GL_QUADS );
+		// Bottom-left vertex (corner)
+		glTexCoord2f( 0.0f, 0.0f );
+		glVertex3f( left, bottom, 0.0f );
+		// Bottom-right vertex (corner)
+		glTexCoord2f( 1.0f, 0.0f );
+		glVertex3f( left + width, bottom, 0.0f );
+		// Top-right vertex (corner)
+		glTexCoord2f( 1.0f, 1.0f );
+		glVertex3f( left + width, bottom + height, 0.0f );
+		// Top-left vertex (corner)
+		glTexCoord2f( 0.0f, 1.0f );
+		glVertex3f( left, bottom + height, 0.0f );
+		glEnd();
+	}
+
+	inline bool isRectOnScreen( int left, int width, int bottom, int height )
+	{
+		if (    left >= (world_x + RES_X)           // object right of screen
+		        || bottom >= (world_y + RES_Y)         // object above screen
+		        || (left + width) <= world_x           // object left of screen
+		        || (bottom + height) <= world_y ) {    // object below screen
+			return false;
+		}
+		return true;
+	}
 }
 
 #endif // __DRAWING_HELPERS_H
