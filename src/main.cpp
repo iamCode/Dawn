@@ -125,6 +125,7 @@ namespace DawnInterface
 		newMob->lifebar = NULL;
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
+		newMob->setActiveGUI( &GUI );
 		NPC.push_back( newMob );
 	}
 }
@@ -246,6 +247,7 @@ int main(int argc, char* argv[])
 		character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
 		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
 		character.Init(RES_X/2,RES_Y/2);
+		character.setActiveGUI( &GUI );
 
 		Editor.LoadTextures();
 		GUI.LoadTextures();
