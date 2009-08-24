@@ -20,6 +20,7 @@
 #include <cassert>
 #include "CDrawingHelpers.h"
 #include "CSpell.h"
+#include "CInterface.h"
 #include "CAction.h"
 
 #include <map>
@@ -801,6 +802,7 @@ void CCharacter::DrawLifebar()
 void CCharacter::Damage(int amount)
 {
 	if (alive) {
+	    addDamageDisplayToGUI( amount, false, 0 );
 		if (current_health <= amount) {
 			current_health = 0;
 			Die();
@@ -813,6 +815,7 @@ void CCharacter::Damage(int amount)
 void CCharacter::Heal(int amount)
 {
 	if (alive) {
+	    addDamageDisplayToGUI( amount, false, 1 );
 		if ((max_health - current_health) <= amount) {
 			current_health = max_health;
 		} else {
@@ -820,6 +823,16 @@ void CCharacter::Heal(int amount)
 		}
 	}
 };
+
+void CCharacter::setActiveGUI( CInterface *GUI_ )
+{
+    activeGUI = GUI_;
+}
+
+void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType )
+{
+    activeGUI->addCombatText(amount, critical, damageType, getXPos(), getYPos()+getHeight()+20);
+}
 
 void CCharacter::CalculateStats()
 {

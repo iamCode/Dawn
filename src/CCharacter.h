@@ -32,6 +32,7 @@ extern CZone zone1;
 class CSpellActionBase;
 class CSpell;
 class CAction;
+class CInterface;
 
 class CCharacter
 {
@@ -163,6 +164,9 @@ class CCharacter
 		CTexture *texture;
 		CTexture *lifebar;
 
+		void setActiveGUI( CInterface *GUI_ );
+		void addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType );
+
 
 		bool alive;
 
@@ -196,7 +200,7 @@ class CCharacter
 		CSpellActionBase *curSpellAction;
 		uint32_t preparationStartTime, preparationCurrentTime;
 		float preparationPercentage;
-
+        CInterface *activeGUI;
 
 
 };
