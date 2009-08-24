@@ -71,14 +71,14 @@ void cameraFocusHandler::updateFocus()
 
 	switch (followTag) {
 		case (VIEW_CNPC):
-			XYCoOrdinates.first = (float)currentNPC->x_pos-(screenHeight/2);
-			XYCoOrdinates.second = (float)currentNPC->y_pos-(screenWidth/2);
-			break;
+			XYCoOrdinates.first = (float)currentNPC->x_pos-(screenWidth/2);
+			XYCoOrdinates.second = (float)currentNPC->y_pos-(screenHeight/2);
+		break;
 
 		case (VIEW_PLAYER):
 			XYCoOrdinates.first = (float)currentPlayer->x_pos-(screenWidth/2);
 			XYCoOrdinates.second = (float)currentPlayer->y_pos-(screenHeight/2);
-			break;
+		break;
 
 		case (VIEW_PATH):
 			if (SDL_GetTicks()+1000 >= lastMoveTime && followTag == VIEW_PATH) {
@@ -159,11 +159,11 @@ void cameraFocusHandler::updateFocus()
 			}
 
 
-			break;
+		break;
 
 		default:
 			// Nothing needs to be done.
-			break;
+		break;
 	}
 
 	/*
