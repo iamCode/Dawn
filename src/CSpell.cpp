@@ -297,7 +297,7 @@ class LightningSpell : public CSpell
 				callFinish = true;
 			}
 
-			if ( curDamage > 0 ) {
+			if ( curDamage > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
 				target->Damage( curDamage );
 				lastEffect += curDamage * 50;
 				continuousDamageCaused += curDamage;
