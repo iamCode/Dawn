@@ -47,6 +47,8 @@ void CInterface::LoadTextures()
 	damageDisplayTextures.LoadIMG("data/interface/combattext/9.tga",9);
 };
 
+extern std::vector<CActionFactory*> quickSlots;
+
 void CInterface::DrawInterface()
 {
 	// background at bottom of screen, black and nicely blended.
@@ -57,27 +59,19 @@ void CInterface::DrawInterface()
 	// spell key shortcut fields
 	size_t numShortcutFields = 10;
 	for ( size_t curShortcutField=0; curShortcutField < numShortcutFields; ++curShortcutField ) {
+		// we draw in order 1 2 3 4 5 6 7 8 9 0, so calculate the correct index for the field we are drawing
+		size_t curIndex = ( (curShortcutField + 1) % 10 );
+		std::string charToDraw( 1, char('0' + curIndex ) );
+		shortcutFont.drawText( world_x+ 300 + curShortcutField * 70 - 10, world_y + 50, charToDraw.c_str() );
+
+		if ( quickSlots[ curIndex ] != NULL ) {
+			quickSlots[ curIndex ]->draw( world_x+ 300 + curShortcutField * 70 + 2, 46,
+			                                        world_y+ 10, 46 );
+		}
+
 		DrawingHelpers::mapTextureToRect( interfacetextures.texture[3].texture,
 		                                  world_x+ 300 + curShortcutField * 70, 50,
 		                                  world_y+ 8, 50 );
-
-		std::string charToDraw( 1, char('0' + ( (curShortcutField + 1) % 10 ) ) );
-		shortcutFont.drawText( world_x+ 300 + curShortcutField * 70 - 10, world_y + 50, charToDraw.c_str() );
-
-		CTexture *spellSymbol = NULL;
-
-		// determine spell symbol
-		if ( curShortcutField == 0 ) {
-			spellSymbol = SpellCreation::getSpellSymbolByName("Lightning");
-		} else if ( curShortcutField == 2 ) {
-			spellSymbol = SpellCreation::getSpellSymbolByName("Magic Missile");
-		}
-
-		if ( spellSymbol != NULL ) {
-			DrawingHelpers::mapTextureToRect( spellSymbol->texture[0].texture,
-			                                  world_x+ 300 + curShortcutField * 70 + 2, 46,
-			                                  world_y+ 10, 46 );
-		}
 	}
 
 	// life and mana bars (bottom left)

@@ -77,12 +77,18 @@ class CSpell : public CSpellActionBase
 				: CSpellActionBase( creator_, castTime, manaCost, name, info ) {}
 };
 
+class CActionFactory
+{
+	public:
+		virtual CSpellActionBase* create( CCharacter *target ) = 0;
+		virtual void draw( int left, int width, int bottom, int height ) = 0;
+		virtual EffectType::EffectType getEffectType() const = 0;
+};
+
 namespace SpellCreation
 {
 	void initSpells();
-	CTexture* getSpellSymbolByName( std::string name );
-	CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target );
-	CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster );
+	CActionFactory* createActionFactoryByName( std::string name, CCharacter *caster );
 }
 
 #endif // __C_SPELL_H_

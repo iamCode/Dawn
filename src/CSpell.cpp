@@ -23,6 +23,8 @@
 #include "CCharacter.h"
 #include "CTexture.h"
 
+#include <cassert>
+
 /// Implementation of class CSpellActionBase
 
 CSpellActionBase::CSpellActionBase( CCharacter *creator_, uint16_t castTime_, uint16_t manaCost_, std::string name_, std::string info_ )
@@ -134,6 +136,11 @@ class MagicMissileSpell : public CSpell
 
 		CTexture* getSymbol() const {
 			return getStaticSymbol();
+		}
+
+		static EffectType::EffectType getStaticEffectType()
+		{
+			return EffectType::SingleTargetSpell;
 		}
 
 		MagicMissileSpell( CCharacter *creator_, CCharacter *target_ )
@@ -256,6 +263,11 @@ class LightningSpell : public CSpell
 			return getStaticSymbol();
 		}
 
+		static EffectType::EffectType getStaticEffectType()
+		{
+			return EffectType::SingleTargetSpell;
+		}
+
 		LightningSpell( CCharacter *creator_, CCharacter *target_ )
 				: CSpell( creator_,
 				          getStaticCastTime(),
@@ -374,8 +386,25 @@ class HealOtherSpell : public CSpell
 			return "Heals 50 points of damage on the target.\n";
 		}
 
+		static CTexture *spellSymbol;
+
+		static void init() {
+			spellSymbol = new CTexture();
+			spellSymbol->texture.reserve(1);
+			spellSymbol->LoadIMG( "data/spells/healother/symbol.tga", 0 );
+		}
+
+		static CTexture* getStaticSymbol() {
+			return spellSymbol;
+		}
+
 		CTexture* getSymbol() const {
-			return NULL;
+			return spellSymbol;
+		}
+
+		static EffectType::EffectType getStaticEffectType()
+		{
+			return EffectType::SingleTargetSpell;
 		}
 
 		HealOtherSpell( CCharacter *creator_, CCharacter *target_ )
@@ -405,6 +434,8 @@ class HealOtherSpell : public CSpell
 		CCharacter *target;
 };
 
+CTexture *HealOtherSpell::spellSymbol = NULL;
+
 /// Healing spell
 
 class HealingSpell : public CSpell
@@ -426,16 +457,36 @@ class HealingSpell : public CSpell
 			return "Heals 100 points of damage on self.\n";
 		}
 
-		CTexture* getSymbol() const {
-			return NULL;
+		static CTexture *spellSymbol;
+
+		static void init() {
+			spellSymbol = new CTexture();
+			spellSymbol->texture.reserve(1);
+			spellSymbol->LoadIMG( "data/spells/healing/symbol.tga", 0 );
 		}
 
-		HealingSpell( CCharacter *creator_ )
+		static CTexture* getStaticSymbol() {
+			return spellSymbol;
+		}
+
+		CTexture* getSymbol() const {
+			return spellSymbol;
+		}
+
+		static EffectType::EffectType getStaticEffectType()
+		{
+			return EffectType::SelfAffectingSpell;
+		}
+
+		HealingSpell( CCharacter *creator_, CCharacter *target_ )
 				: CSpell( creator_,
 				          getStaticCastTime(),
 				          getStaticManaCost(),
 				          getStaticName(),
 				          getStaticSpellInfo() ) {
+			// ignore target so far. This is a self affecting spell.
+			// but to ensure no unintentional wrong use check that creator is target
+			assert( creator_ == target_ );
 		}
 
 		virtual void startEffect() {
@@ -454,6 +505,39 @@ class HealingSpell : public CSpell
 
 };
 
+CTexture *HealingSpell::spellSymbol = NULL;
+
+template <class T>
+class CActionFactoryImpl : public CActionFactory
+{
+	private:
+		typedef T ActionType;
+		CCharacter *creator;
+
+	public:
+		CActionFactoryImpl( CCharacter *creator_ )
+			: creator( creator_ )
+		{
+		}
+
+		CSpellActionBase *create( CCharacter *target )
+		{
+			return new ActionType( creator, target );
+		}
+
+		void draw( int left, int width, int bottom, int height )
+		{
+			CTexture *texture = ActionType::getStaticSymbol();
+			DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
+												left, width, bottom, height );
+		}
+		
+		EffectType::EffectType getEffectType() const
+		{
+			return ActionType::getStaticEffectType();
+		}
+};
+
 /// SpellCreation factory methods
 
 namespace SpellCreation
@@ -463,40 +547,22 @@ namespace SpellCreation
 	{
 		MagicMissileSpell::init();
 		LightningSpell::init();
+		HealOtherSpell::init();
+		HealingSpell::init();
 	}
 
-	CTexture* getSpellSymbolByName( std::string name )
+	CActionFactory* createActionFactoryByName( std::string name, CCharacter *caster )
 	{
 		if ( name == LightningSpell::getStaticName() ) {
-			return LightningSpell::getStaticSymbol();
+			return new CActionFactoryImpl<LightningSpell>( caster );
 		} else if ( name == MagicMissileSpell::getStaticName() ) {
-			return MagicMissileSpell::getStaticSymbol();
-		} else {
-			std::cerr << "symbol for spell \"" << name << "\" not implemented yet" << std::endl;
-			abort();
-		}
-	}
-
-	CSpell* createSingleTargetSpellByName( std::string name, CCharacter *caster, CCharacter *target )
-	{
-		if ( name == LightningSpell::getStaticName() ) {
-			return new LightningSpell( caster, target );
-		} else if ( name == MagicMissileSpell::getStaticName() ) {
-			return new MagicMissileSpell( caster, target );
+			return new CActionFactoryImpl<MagicMissileSpell>( caster );
 		} else if ( name == HealOtherSpell::getStaticName() ) {
-			return new HealOtherSpell( caster, target );
+			return new CActionFactoryImpl<HealOtherSpell>( caster );
+		} else if ( name == HealingSpell::getStaticName() ) {
+			return new CActionFactoryImpl<HealingSpell>( caster );
 		} else {
-			std::cerr << "unknown single target spell \"" << name << "\"" << std::endl;
-			abort();
-		}
-	}
-
-	CSpell* createSelfAffectingSpellByName( std::string name, CCharacter *caster )
-	{
-		if ( name == HealingSpell::getStaticName() ) {
-			return new HealingSpell( caster );
-		} else {
-			std::cerr << "unknown self affecting spell \"" << name << "\"" << std::endl;
+			std::cerr << "unknown spell \"" << name << "\"" << std::endl;
 			abort();
 		}
 	}

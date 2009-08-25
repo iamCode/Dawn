@@ -33,6 +33,7 @@ CEditor Editor;
 CInterface GUI;
 
 std::vector <CNPC*> NPC;
+std::vector<CActionFactory*> quickSlots;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 
@@ -278,6 +279,22 @@ int main(int argc, char* argv[])
 	 */
 	focus.setFocus(&character);
 
+	// initialize quick slot bar.
+	// this should be done dynamically in the future as set by the player
+	const int nrOfQuickSlots = 11;
+	quickSlots.reserve( nrOfQuickSlots ); // one for each key [0-9], + Space (last)
+	std::vector<bool> wasPressed( nrOfQuickSlots );
+	
+	for ( size_t curQuickSlotNr = 0; curQuickSlotNr < nrOfQuickSlots; ++curQuickSlotNr ) {
+		quickSlots[ curQuickSlotNr ] = NULL;
+		wasPressed[ curQuickSlotNr ] = false;
+	}
+
+	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
+	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
+	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
+	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
+
 	while (!done) {
 		if (Editor.isEnabled()) {
 			Editor.HandleKeys();
@@ -403,50 +420,34 @@ int main(int argc, char* argv[])
 				KP_select_next = false;
 			}
 
-			if (keys[SDLK_1] && !KP_damage) {
-				KP_damage = true;
-				if ( character.getTarget() != NULL ) {
-					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Lightning", &character, character.getTarget() );
-					character.castSpell(spell);
+			for ( size_t curQuickSlotIndex = 0; curQuickSlotIndex < nrOfQuickSlots; ++ curQuickSlotIndex ) {
+				// TODO: use a conversion table here from quickslot nr to keycode
+				if ( keys[ SDLK_0 + curQuickSlotIndex ] && ! wasPressed[ curQuickSlotIndex ] ) {
+					if ( quickSlots[ curQuickSlotIndex ] != NULL ) {
+						CSpellActionBase *curAction = NULL;
+						
+						EffectType::EffectType effectType = quickSlots[ curQuickSlotIndex ]->getEffectType();
+
+						if ( effectType == EffectType::SingleTargetSpell
+						         && character.getTarget() != NULL ) {
+							curAction = quickSlots[ curQuickSlotIndex ]->create( character.getTarget() );
+						} else if ( effectType == EffectType::SelfAffectingSpell ) {
+							curAction = quickSlots[ curQuickSlotIndex ]->create( &character );
+						}
+						
+						if ( curAction != NULL ) {
+							// TODO: This is a hack. just create a single type of action
+							if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
+								character.castSpell( dynamic_cast<CSpell*>( curAction ) );
+							} else {
+								character.executeAction( dynamic_cast<CAction*>( curAction ) );
+							}
+						}
+					}
 				}
-			}
-
-			if (!keys[SDLK_1]) {
-				KP_damage = false;
-			}
-
-			if (keys[SDLK_2] && !KP_heal) {
-				KP_heal = true;
-				CSpell *spell = SpellCreation::createSelfAffectingSpellByName( "Healing", &character );
-				character.castSpell( spell );
-			}
-
-			if (!keys[SDLK_2]) {
-				KP_heal = false;
-			}
-
-			if (keys[SDLK_3] && !KP_magicMissile) {
-				KP_magicMissile = true;
-				if ( character.getTarget() != NULL ) {
-					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Magic Missile", &character, character.getTarget() );
-					character.castSpell(spell);
+				if ( ! keys[ SDLK_0 + curQuickSlotIndex ] ) {
+					wasPressed[ curQuickSlotIndex ] = false;
 				}
-			}
-
-			if (!keys[SDLK_3]) {
-				KP_magicMissile = false;
-			}
-
-			if (keys[SDLK_4] && !KP_healOther) {
-				KP_healOther = true;
-				if ( character.getTarget() != NULL ) {
-					CSpell *spell = SpellCreation::createSingleTargetSpellByName( "Heal Other", &character, character.getTarget() );
-					character.castSpell(spell);
-				}
-			}
-
-			if (!keys[SDLK_4]) {
-				KP_healOther = false;
 			}
 
 			if (keys[SDLK_5] && !KP_interrupt) {
