@@ -91,8 +91,8 @@ void cameraFocusHandler::updateFocus()
 					          ") " << std::endl;
 
 					// Get the change in displacement between x1y1 to x2y2
-					difference_x1x2 = (XYTarget.second - XYCoOrdinates.second);
-					difference_y1y2 = (XYTarget.first - XYCoOrdinates.first);
+					difference_x1x2 = (XYTarget.first - XYCoOrdinates.first);
+					difference_y1y2 = (XYTarget.second - XYCoOrdinates.second);
 
 					// Convert the change values to positives;
 					if (difference_x1x2 < 0)
@@ -101,7 +101,7 @@ void cameraFocusHandler::updateFocus()
 						difference_y1y2 *= -1;
 
 					// Calculate the angle of the trajectory from the x-axis
-					trajectory_angleA = atan(difference_x1x2 / difference_y1y2);
+					trajectory_angleA = atan(difference_y1y2 / difference_x1x2);
 					trajectory_angleA *= (360/(2*3.141)); // Convert to degrees from rads
 
 					// Calculate the x component of the trajectory

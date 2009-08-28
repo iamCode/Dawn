@@ -278,6 +278,7 @@ int main(int argc, char* argv[])
 	 *  focus.setFocus(NPC[0]);
 	 */
 	focus.setFocus(&character);
+	//focus.setPath(-100, 0, 400, 400, 10);
 
 	// initialize quick slot bar.
 	// this should be done dynamically in the future as set by the player
