@@ -34,6 +34,7 @@ void cameraFocusHandler::setPath(float ex, float ey, float nx, float ny, float s
 	pathSpeed = speed;
 	lastMoveTime = 0;
 	followTag = VIEW_PATH;
+	_inPath = true;
 }
 
 void cameraFocusHandler::setPath(float ex, float ey, float nx, float ny)
@@ -45,6 +46,7 @@ void cameraFocusHandler::setPath(float ex, float ey, float nx, float ny)
 	pathSpeed = 1;
 	lastMoveTime = 0;
 	followTag = VIEW_PATH;
+	_inPath = true;
 }
 
 void cameraFocusHandler::setFocus(float _x, float _y)
@@ -67,7 +69,9 @@ void cameraFocusHandler::updateFocus()
 	static float difference_y1y2 = 0.0; // Difference between y1 and y2
 	static float x_step = 0.0; // How much to increment the x axis position each run
 	static float y_step = 0.0; // How much to increment the y axis position each run
-	static float trajectory_angleA; // Trajectory angle to the x-axis (tan-1(o/a))
+	static float trajectory_angleA = 0.0; // Trajectory angle to the x-axis (tan-1(o/a))
+	static bool  calculationsDone = false; // Remeber if the calculation have been done
+	std::stringstream ss;
 
 	switch (followTag) {
 		case (VIEW_CNPC):
@@ -81,14 +85,16 @@ void cameraFocusHandler::updateFocus()
 		break;
 
 		case (VIEW_PATH):
-			if (SDL_GetTicks()+1000 >= lastMoveTime && followTag == VIEW_PATH) {
+			if (SDL_GetTicks()+1000 >= lastMoveTime) {
 				// We only want to run the step calculations in the first run of the path
-				if (!_inPath) {
-					std::cout << "cameraFocusHandler::updateFocus : " <<
+				if (!calculationsDone) {
+					ss << "cameraFocusHandler::updateFocus : " <<
 					          "Entering path from (" << XYCoOrdinates.first <<
 					          ", " << XYCoOrdinates.second << ") to (" <<
 					          XYTarget.first << ", " << XYTarget.second <<
-					          ") " << std::endl;
+					          ") ";
+					dawn_debug_info(ss.str());
+					ss.str("");
 
 					// Get the change in displacement between x1y1 to x2y2
 					difference_x1x2 = (XYTarget.first - XYCoOrdinates.first);
@@ -110,23 +116,29 @@ void cameraFocusHandler::updateFocus()
 					// Calculate the y component of the trajectory
 					y_step = pathSpeed * sin(trajectory_angleA * (3.14159265/180));
 
-					std::cout << "cameraFocusHandler::updateFocus : " <<
-					          "Trajectory angle from the x-axis: " << trajectory_angleA <<
-					          std::endl;
+					ss << "cameraFocusHandler::updateFocus : " <<
+					          "Trajectory angle from the x-axis: " << trajectory_angleA;
+					dawn_debug_info (ss.str());
+					ss.str("");
 
-					std::cout << "cameraFocusHandler::updateFocus : " <<
-					          ": Trajectoy x component: " << x_step <<
-					          std::endl;
 
-					std::cout << "cameraFocusHandler::updateFocus : " <<
-					          ": Trajectoy y component: " << y_step <<
-					          std::endl;
+					ss << "cameraFocusHandler::updateFocus : " <<
+					          "Trajectoy x component=" << x_step;
+					dawn_debug_info (ss.str());
+					ss.str("");
 
-					std::cout << "cameraFocusHandler::updateFocus : X1-X2 = " <<
+
+					ss << "cameraFocusHandler::updateFocus : " <<
+					          "Trajectoy y component=" << y_step;
+					dawn_debug_info (ss.str());
+					ss.str("");
+
+					ss << "cameraFocusHandler::updateFocus : X1-X2 = " <<
 					          difference_x1x2 << ", Y1-Y2=" << difference_y1y2 << std::endl;
+					dawn_debug_info (ss.str());
+					ss.str("");
 
-
-					_inPath = true;
+					calculationsDone = true;
 				}
 
 				if (XYTarget.first > XYCoOrdinates.first)
@@ -154,6 +166,7 @@ void cameraFocusHandler::updateFocus()
 				XYCoOrdinates.second = XYTarget.second;
 				followTag = VIEW_XY;
 				_inPath = false;
+				calculationsDone = false;
 				std::cout << "cameraFocusHandler::updateFocus : " <<
 				          "Path complete" << std::endl;
 			}

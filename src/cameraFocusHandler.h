@@ -2,8 +2,11 @@
 #define __CAMERAFOCUSHANDLER_H__
 
 #include "CCharacter.h"
+#include "debug.h"
 #include <cmath>
-
+#include <sstream>
+#include <string>
+ 
 class cameraFocusHandler
 {
 	private:

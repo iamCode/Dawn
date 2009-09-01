@@ -21,6 +21,7 @@
 #include "CLuaFunctions.h"
 #include "CSpell.h"
 #include "CAction.h"
+#include "debug.h"
 
 SDL_Surface *screen;
 extern CZone zone1;
@@ -44,11 +45,15 @@ int ff, fps;                         // FPS Stuff
 
 GLFT_Font fpsFont;
 
-// **** Global Settings ****
-// Thought: I think this should be expanded so that there is an
-// actual game settings class
-bool fullscreenenabled = true;
-
+/* Global settings now reside in the
+   dawn_configuration namespace, variables
+   are added to this across multiple files.
+   current headers adding to it:
+   debug.h
+ */
+namespace dawn_configuration {
+	bool fullscreenenabled = true;
+}
 std::vector<CSpellActionBase*> activeSpellActions;
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction )
@@ -81,10 +86,10 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 	for (int i=1 ; i < argc ; ++i) {
 		std::string currentarg(argv[i]);
 		if (currentarg == "-f" || currentarg == "--fullscreen") {
-			fullscreenenabled = true;
+			dawn_configuration::fullscreenenabled = true;
 			shouldExit = false;
 		} else if (currentarg == "-w" || currentarg == "--window") {
-			fullscreenenabled = false;
+			dawn_configuration::fullscreenenabled = false;
 			shouldExit = false;
 		} else if (currentarg == "-h" || currentarg == "--help") {
 			std::cout << "Dawn-RPG Startup Parameters" <<
@@ -193,29 +198,31 @@ void DrawScene()
 int main(int argc, char* argv[])
 {
 	Uint8 *keys;
-
+		
+	dawn_configuration::logfile = "dawn-log.log";
+	dawn_configuration::debug_stdout = true;
+	dawn_configuration::debug_fileout = true;
+	dawn_configuration::show_info_messages = true;
+	dawn_configuration::show_warn_messages = true;
+	
 	done = HandleCommandLineAurguments(argc, argv);
 
 	// Skip the init steps if true was set as a result of the command line parameters
 	if (!done) {
 
-		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0) { // start up SDL
-			std::cout << "Unable to init SDL: " << SDL_GetError() << std::endl;
-			exit(1);
-		}
+		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
+			dawn_debug_fatal("Unable to init SDL");
+
 		atexit(SDL_Quit);
 
 
-		if (fullscreenenabled)
+		if (dawn_configuration::fullscreenenabled)
 			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
 		else
 			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
 
-		if ( !screen ) {
-			std::cout << "Unable to set resolution " << RES_X <<
-			          "x" << RES_Y << " video:" << SDL_GetError();
-			exit(1);
-		}
+		if ( !screen )
+			dawn_debug_fatal("Unable to set resolution");
 
 		glEnable( GL_TEXTURE_2D );
 
@@ -234,6 +241,10 @@ int main(int argc, char* argv[])
 		glEnable( GL_BLEND ); // enable blending
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
+		
+		// TODO: data exists check
+	
+		dawn_debug_info("Loading Dawn data");
 
 		LuaFunctions::executeLuaFile("data/mobdata.all");
 
@@ -278,7 +289,7 @@ int main(int argc, char* argv[])
 	 *  focus.setFocus(NPC[0]);
 	 */
 	focus.setFocus(&character);
-	//focus.setPath(-100, 0, 400, 400, 10);
+	//focus.setPath(10, 0, 100, 70);
 
 	// initialize quick slot bar.
 	// this should be done dynamically in the future as set by the player
@@ -297,6 +308,7 @@ int main(int argc, char* argv[])
 	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
 
 	while (!done) {
+		
 		if (Editor.isEnabled()) {
 			Editor.HandleKeys();
 
