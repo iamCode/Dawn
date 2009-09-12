@@ -117,16 +117,19 @@ class CCharacter
 		uint16_t getMaxHealth() const;
 		uint16_t getCurrentHealth() const;
 		void modifyMaxHealth( int16_t maxHealthModifier );
+        void modifyCurrentHealth( int16_t currentHealthModifier);
 
 		void setMaxMana( uint16_t newMaxMana );
 		uint16_t getMaxMana() const;
 		uint16_t getCurrentMana() const;
 		void modifyMaxMana( int16_t maxManaModifier );
+		void modifyCurrentMana( int16_t currentManaModifier);
 
 		void setMaxEnergy( uint16_t newMaxEnergy );
 		uint16_t getMaxEnergy() const;
 		uint16_t getCurrentEnergy() const;
 		void modifyMaxEnergy( int16_t maxEnergyModifier );
+        void modifyCurrentEnergy( int16_t currentEnergyModifier);
 
 		void setWanderRadius( uint16_t newWanderRadius );
 		uint16_t getWanderRadius() const;
@@ -209,12 +212,15 @@ class Player : public CCharacter
 {
 	private:
 
+        uint32_t remainingRegenPoints;
+
 	public:
 
 		void Move();
 		void Draw();
 		CCharacter* getTarget() const;
 		void setTarget(CCharacter *newTarget);
+        void regenerateLifeMana(uint32_t regenPoints);
 };
 
 class CNPC : public CCharacter

@@ -202,6 +202,27 @@ void CCharacter::modifyMaxHealth( int16_t maxHealthModifier )
 	}
 }
 
+void CCharacter::modifyCurrentHealth( int16_t currentHealthModifier )
+{
+    if ( currentHealthModifier < 0 )
+    {
+        if ( getCurrentHealth() <= currentHealthModifier )
+        {
+            current_health = 0;
+        } else {
+            current_health += currentHealthModifier;
+        }
+    } else {
+        if (( getMaxHealth() - getCurrentHealth() ) < currentHealthModifier )
+        {
+            current_health = getMaxHealth();
+        } else {
+            current_health += currentHealthModifier;
+        }
+    }
+}
+
+
 void CCharacter::setMaxMana( uint16_t newMaxMana )
 {
 	max_mana = newMaxMana;
@@ -229,6 +250,27 @@ void CCharacter::modifyMaxMana( int16_t maxManaModifier )
 		setMaxMana( getMaxMana() + maxManaModifier );
 }
 
+void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
+{
+    std::cout << currentManaModifier;
+    if ( currentManaModifier < 0 )
+    {
+        if ( getCurrentMana() <= currentManaModifier)
+        {
+            current_mana = 0;
+        } else {
+            current_mana += currentManaModifier;
+        }
+    } else {
+        if (( getMaxMana() - getCurrentMana() ) < currentManaModifier)
+        {
+            current_mana = getMaxMana();
+        } else {
+            current_mana += currentManaModifier;
+        }
+    }
+}
+
 void CCharacter::setMaxEnergy( uint16_t newMaxEnergy )
 {
 	max_energy = newMaxEnergy;
@@ -254,6 +296,26 @@ void CCharacter::modifyMaxEnergy( int16_t maxEnergyModifier )
 		setMaxEnergy( std::numeric_limits<uint16_t>::max() );
 	else
 		setMaxEnergy( getMaxEnergy() + maxEnergyModifier );
+}
+
+void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
+{
+    if ( currentEnergyModifier < 0 )
+    {
+        if ( getCurrentEnergy() <= currentEnergyModifier )
+        {
+            current_energy = 0;
+        } else {
+            current_energy += currentEnergyModifier;
+        }
+    } else {
+        if (( getMaxEnergy() - getCurrentEnergy() ) < currentEnergyModifier )
+        {
+            current_energy = getMaxEnergy();
+        } else {
+            current_energy += currentEnergyModifier;
+        }
+    }
 }
 
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )
@@ -622,7 +684,16 @@ void CCharacter::executeAction( CAction *action )
 
 void CCharacter::castSpell( CSpell *spell )
 {
-	giveToPreparation( spell );
+	if ( spell->getManaCost() <= getCurrentMana() )
+	{
+	    giveToPreparation( spell );
+	} else {
+	    /**
+	    can't cast, not enough mana.
+	    TODO: add message to the GUI displaying the shortage of mana.
+	    Lots of other information would be added to the GUI the same way.
+	    **/
+	}
 }
 
 void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
@@ -807,7 +878,7 @@ void CCharacter::Damage(int amount)
 			current_health = 0;
 			Die();
 		} else {
-			current_health -= amount;
+			modifyCurrentHealth( -amount );
 		}
 	}
 };
@@ -819,7 +890,7 @@ void CCharacter::Heal(int amount)
 		if ((max_health - current_health) <= amount) {
 			current_health = max_health;
 		} else {
-			current_health += amount;
+			modifyCurrentHealth ( amount );
 		}
 	}
 };
@@ -859,4 +930,20 @@ CCharacter* Player::getTarget() const
 void Player::setTarget(CCharacter *newTarget)
 {
 	Target = newTarget;
+}
+
+void Player::regenerateLifeMana(uint32_t regenPoints)
+{
+    /** Regenerate life, mana and energy every 500 ms.
+    For now, we're regenerating a static amount.
+    In the future this will be calculated based on characters stats. **/
+
+    remainingRegenPoints += regenPoints;
+
+    if ( remainingRegenPoints > 500 ) {
+        modifyCurrentMana( 1 );
+        modifyCurrentHealth( 1 );
+        modifyCurrentEnergy( 1 );
+        remainingRegenPoints -= 500;
+    }
 }
