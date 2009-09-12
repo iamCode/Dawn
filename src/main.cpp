@@ -187,7 +187,9 @@ void DrawScene()
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
-	fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+
+	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
+	//fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 
 	message.DrawAll();
 	message.DeleteDecayed();
@@ -198,13 +200,13 @@ void DrawScene()
 int main(int argc, char* argv[])
 {
 	Uint8 *keys;
-		
+
 	dawn_configuration::logfile = "dawn-log.log";
 	dawn_configuration::debug_stdout = true;
 	dawn_configuration::debug_fileout = true;
 	dawn_configuration::show_info_messages = true;
 	dawn_configuration::show_warn_messages = true;
-	
+
 	done = HandleCommandLineAurguments(argc, argv);
 
 	// Skip the init steps if true was set as a result of the command line parameters
@@ -241,9 +243,9 @@ int main(int argc, char* argv[])
 		glEnable( GL_BLEND ); // enable blending
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
-		
+
 		// TODO: data exists check
-	
+
 		dawn_debug_info("Loading Dawn data");
 
 		LuaFunctions::executeLuaFile("data/mobdata.all");
@@ -260,6 +262,8 @@ int main(int argc, char* argv[])
 		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
 		character.Init(RES_X/2,RES_Y/2);
 		character.setActiveGUI( &GUI );
+		character.setMaxHealth(100);
+		character.setMaxMana(50);
 
 		Editor.LoadTextures();
 		GUI.LoadTextures();
@@ -296,7 +300,7 @@ int main(int argc, char* argv[])
 	const int nrOfQuickSlots = 11;
 	quickSlots.reserve( nrOfQuickSlots ); // one for each key [0-9], + Space (last)
 	std::vector<bool> wasPressed( nrOfQuickSlots );
-	
+
 	for ( size_t curQuickSlotNr = 0; curQuickSlotNr < nrOfQuickSlots; ++curQuickSlotNr ) {
 		quickSlots[ curQuickSlotNr ] = NULL;
 		wasPressed[ curQuickSlotNr ] = false;
@@ -308,7 +312,7 @@ int main(int argc, char* argv[])
 	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
 
 	while (!done) {
-		
+
 		if (Editor.isEnabled()) {
 			Editor.HandleKeys();
 
@@ -358,6 +362,8 @@ int main(int argc, char* argv[])
 
 			character.giveMovePoints( ticksDiff );
 			character.Move();
+			character.regenerateLifeMana( ticksDiff );
+
 
 			for (unsigned int x=0; x<NPC.size(); x++) {
 				NPC[x]->giveMovePoints( ticksDiff );
@@ -438,7 +444,7 @@ int main(int argc, char* argv[])
 				if ( keys[ SDLK_0 + curQuickSlotIndex ] && ! wasPressed[ curQuickSlotIndex ] ) {
 					if ( quickSlots[ curQuickSlotIndex ] != NULL ) {
 						CSpellActionBase *curAction = NULL;
-						
+
 						EffectType::EffectType effectType = quickSlots[ curQuickSlotIndex ]->getEffectType();
 
 						if ( effectType == EffectType::SingleTargetSpell
@@ -447,7 +453,7 @@ int main(int argc, char* argv[])
 						} else if ( effectType == EffectType::SelfAffectingSpell ) {
 							curAction = quickSlots[ curQuickSlotIndex ]->create( &character );
 						}
-						
+
 						if ( curAction != NULL ) {
 							// TODO: This is a hack. just create a single type of action
 							if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
