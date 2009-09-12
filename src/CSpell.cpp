@@ -72,6 +72,7 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
+		creator->modifyCurrentMana(-getManaCost());
 	}
 }
 
