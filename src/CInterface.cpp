@@ -28,11 +28,15 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.reserve(4);
+	interfacetextures.texture.reserve(8);
 	interfacetextures.LoadIMG("data/interface/blended_bg.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana.tga",1);
 	interfacetextures.LoadIMG("data/lifebar.tga",2);
 	interfacetextures.LoadIMG("data/border.tga",3);
+	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",4);
+	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",5);
+	interfacetextures.LoadIMG("data/interface/lifebar.tga",6);
+	interfacetextures.LoadIMG("data/interface/manabar.tga",7);
 
     damageDisplayTextures.texture.reserve(10);
 	damageDisplayTextures.LoadIMG("data/interface/combattext/0.tga",0);
@@ -74,10 +78,29 @@ void CInterface::DrawInterface()
 		                                  world_y+ 8, 50 );
 	}
 
-	// life and mana bars (bottom left)
-	DrawingHelpers::mapTextureToRect( interfacetextures.texture[1].texture,
-	                                  world_x, interfacetextures.texture[1].width,
-	                                  world_y, interfacetextures.texture[1].height );
+	// drawing the base of the life and mana bar.
+	DrawingHelpers::mapTextureToRect( interfacetextures.texture[4].texture,
+	                                  world_x, interfacetextures.texture[4].width,
+	                                  world_y+RES_Y-interfacetextures.texture[4].height, interfacetextures.texture[4].height );
+
+    /** drawing the procentual display of characters life and mana.
+    starts of at an Y-offset of 31, this is where the transparent part of the lifebar starts.
+    The "bar" is 91 pixels wide, that means 100% life/mana = 91 pixels of bar. **/
+    int lifeBarWidth = static_cast<float>(player->getCurrentHealth()) / player->getMaxHealth() * 91;
+    int manaBarWidth = static_cast<float>(player->getCurrentMana()) / player->getMaxMana() * 91;
+
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[6].texture,
+	                                  world_x+31, lifeBarWidth,
+	                                  world_y+RES_Y-interfacetextures.texture[6].height, interfacetextures.texture[6].height );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[7].texture,
+	                                  world_x+31, manaBarWidth,
+	                                  world_y+RES_Y-32-interfacetextures.texture[7].height, interfacetextures.texture[6].height );
+
+    // drawing the top part of the life and mana bar
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[5].texture,
+	                                  world_x, interfacetextures.texture[5].width,
+	                                  world_y+RES_Y-interfacetextures.texture[5].height, interfacetextures.texture[5].height );
+
 
 	if (player->continuePreparing()) {
 		glColor4f(0.8f,0.8f,0.0f,1.0f);
@@ -123,7 +146,8 @@ void CInterface::drawCombatText()
         // cleaning up text that is already faded out.
         if (damageDisplay[currentDamageDisplay].transparency < 0.0f) {
             damageDisplay.erase(damageDisplay.begin() + currentDamageDisplay);
-            break;
+            if ( currentDamageDisplay >= damageDisplay.size() )
+                break;
         }
 
         // fading and moving text upwards every 50ms
