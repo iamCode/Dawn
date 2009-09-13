@@ -23,11 +23,30 @@
 #include "CAction.h"
 #include "debug.h"
 
+/* Global settings now reside in the
+   dawn_configuration namespace, variables
+   are added to this across multiple files.
+   current headers adding to it:
+   debug.h
+ */
+namespace dawn_configuration {
+	bool fullscreenenabled = true;
+	int screenWidthX = 1024;
+	int screenWidthY = 768;
+	int bpp = 32;
+}
+// FIXME: This is a temp hack until the 
+// 	objects dont need those variables.
+//	david: I'll have this sorted pretty
+//	quick.
+int RES_X = dawn_configuration::screenWidthX;
+int RES_Y = dawn_configuration::screenWidthY;
+
 SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
 Player character;
-cameraFocusHandler focus(RES_X, RES_Y);
+cameraFocusHandler focus(dawn_configuration::screenWidthX, dawn_configuration::screenWidthY);
 
 CEditor Editor;
 
@@ -38,22 +57,13 @@ std::vector<CActionFactory*> quickSlots;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 
-extern int RES_X, RES_Y, RES_BPP, world_x, world_y, mouseX, mouseY, done;
+extern int world_x, world_y, mouseX, mouseY;
 
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
 GLFT_Font fpsFont;
 
-/* Global settings now reside in the
-   dawn_configuration namespace, variables
-   are added to this across multiple files.
-   current headers adding to it:
-   debug.h
- */
-namespace dawn_configuration {
-	bool fullscreenenabled = true;
-}
 std::vector<CSpellActionBase*> activeSpellActions;
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction )
@@ -74,11 +84,9 @@ void cleanupActiveSpellActions()
 	}
 }
 
-// Handle command line arguments, returns 1 if the game loop is
-// not supposed to run.
 static bool HandleCommandLineAurguments(int argc, char** argv)
 {
-	bool shouldExit = 0;
+	bool run_game = true;
 	std::string executable(argv[0]);
 #ifdef _WIN32
 	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
@@ -87,10 +95,10 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 		std::string currentarg(argv[i]);
 		if (currentarg == "-f" || currentarg == "--fullscreen") {
 			dawn_configuration::fullscreenenabled = true;
-			shouldExit = false;
+			run_game = true;
 		} else if (currentarg == "-w" || currentarg == "--window") {
 			dawn_configuration::fullscreenenabled = false;
-			shouldExit = false;
+			run_game = true;
 		} else if (currentarg == "-h" || currentarg == "--help") {
 			std::cout << "Dawn-RPG Startup Parameters" <<
 			          std::endl << std::endl <<
@@ -100,21 +108,21 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 			          std::endl <<
 			          " -h, --help               Show this help screen" <<
 			          std::endl;
-			shouldExit = true;
+			run_game = false;
 		} else {
 			std::cout << std::endl <<"\"" << currentarg <<
 			          "\" is not a recognised option" << std::endl << std::endl <<
 			          "Please type \"" << executable <<
 			          " -h\" for all available options" << std::endl <<
 			          std::endl;
-			shouldExit = true;
+			run_game = false;
 			break;
 		}
 	}
 #ifdef _WIN32
 	freopen( "stdout.txt", "wt", stdout ); // Redirect stdout back to the file
 #endif
-	return shouldExit;
+	return run_game;
 }
 
 namespace DawnInterface
@@ -197,21 +205,12 @@ void DrawScene()
 	SDL_GL_SwapBuffers();
 }
 
-int main(int argc, char* argv[])
-{
-	Uint8 *keys;
-
-	dawn_configuration::logfile = "dawn-log.log";
-	dawn_configuration::debug_stdout = true;
-	dawn_configuration::debug_fileout = true;
-	dawn_configuration::show_info_messages = true;
-	dawn_configuration::show_warn_messages = true;
-
-	done = HandleCommandLineAurguments(argc, argv);
-
-	// Skip the init steps if true was set as a result of the command line parameters
-	if (!done) {
-
+bool dawn_init(int argc, char** argv)
+{		
+		if(!HandleCommandLineAurguments(argc, argv))
+			return false;
+		
+		dawn_debug_info("Initializing...");
 		dawn_debug_info("Checking if the game data exists");
 		
 		if(!utils::file_exists("data/mobdata.all"))
@@ -224,9 +223,12 @@ int main(int argc, char* argv[])
 		atexit(SDL_Quit);
 
 		if (dawn_configuration::fullscreenenabled)
-			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
+			screen=SDL_SetVideoMode(dawn_configuration::screenWidthX, 
+				dawn_configuration::screenWidthY, dawn_configuration::bpp, 
+				SDL_OPENGL | SDL_FULLSCREEN);
 		else
-			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL);
+			screen=SDL_SetVideoMode(dawn_configuration::screenWidthX, 
+				dawn_configuration::screenWidthY, dawn_configuration::bpp, SDL_OPENGL);
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
@@ -234,14 +236,14 @@ int main(int argc, char* argv[])
 		glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		glViewport( 0, 0, RES_X, RES_Y );
+		glViewport( 0, 0, dawn_configuration::screenWidthX, dawn_configuration::screenWidthY );
 
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity(); // reset view to 0,0
 
-		glOrtho(0.0f, RES_X, 0.0f, RES_Y, -1.0f, 1.0f);
+		glOrtho(0.0f, dawn_configuration::screenWidthX, 0.0f, dawn_configuration::screenWidthY, -1.0f, 1.0f);
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();  // reset view to 0,0
 
@@ -263,7 +265,7 @@ int main(int argc, char* argv[])
 		character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
 		character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
 		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
-		character.Init(RES_X/2,RES_Y/2);
+		character.Init(dawn_configuration::screenWidthX/2,dawn_configuration::screenWidthY/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(100);
 		character.setMaxMana(50);
@@ -281,22 +283,19 @@ int main(int argc, char* argv[])
 		SpellCreation::initSpells();
 		ActionCreation::initActions();
 
-		//SDL_ShowCursor(SDL_DISABLE);
-	}
+		return true;
+}
+
+void game_loop()
+{
+
+	// TODO: Break this down into subroutines 
 
 	Uint32 lastTicks = SDL_GetTicks();
 	Uint32 curTicks  = lastTicks;
 	Uint32 ticksDiff = 0;
-
-	/*  Tryme:
-	 *  Replace focus.setFocus(&character)
-	 *  with :
-	 *  focus.setPath(10, 0, 100, 70);
-	 *  or:
-	 *  focus.setFocus(NPC[0]);
-	 */
-	focus.setFocus(&character);
-	//focus.setPath(10, 0, 100, 70);
+	Uint8 *keys;
+	bool done = false;
 
 	// initialize quick slot bar.
 	// this should be done dynamically in the future as set by the player
@@ -308,11 +307,12 @@ int main(int argc, char* argv[])
 		quickSlots[ curQuickSlotNr ] = NULL;
 		wasPressed[ curQuickSlotNr ] = false;
 	}
-
 	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
 	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
 	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
-	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
+	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );	
+
+	focus.setFocus(&character);
 
 	while (!done) {
 
@@ -327,12 +327,12 @@ int main(int argc, char* argv[])
 
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT)  {
-					done = 1;
+					done = true;
 				}
 
 				if (event.type == SDL_KEYDOWN) {
 					if (event.key.keysym.sym == SDLK_ESCAPE) {
-						done = 1;
+						done = true;
 					}
 					if (event.key.keysym.sym == SDLK_SPACE) { }
 				}
@@ -353,7 +353,7 @@ int main(int argc, char* argv[])
 
 				if (event.type == SDL_MOUSEMOTION) {
 					mouseX = event.motion.x;
-					mouseY = RES_Y - event.motion.y - 1;
+					mouseY = dawn_configuration::screenWidthY - event.motion.y - 1;
 				}
 			}
 
@@ -496,5 +496,18 @@ int main(int argc, char* argv[])
 		DrawScene();
 		focus.updateFocus();
 	}
+}
+
+int main(int argc, char* argv[])
+{
+	dawn_configuration::logfile = "dawn-log.log";
+	dawn_configuration::debug_stdout = true;
+	dawn_configuration::debug_fileout = true;
+	dawn_configuration::show_info_messages = true;
+	dawn_configuration::show_warn_messages = true;
+	
+	if(dawn_init(argc, argv))
+		game_loop();
+	
 	return 0;
 }
