@@ -25,6 +25,8 @@
 #include <iostream>
 #include <vector>
 
+#include "debug.h"
+
 struct sTexture {
 	GLuint texture;
 	int height, width;

@@ -31,22 +31,22 @@
  */
 namespace dawn_configuration {
 	bool fullscreenenabled = true;
-	int screenWidthX = 1024;
-	int screenWidthY = 768;
+	int screenWidth = 1024;
+	int screenHeight = 768;
 	int bpp = 32;
 }
 // FIXME: This is a temp hack until the 
 // 	objects dont need those variables.
 //	david: I'll have this sorted pretty
 //	quick.
-int RES_X = dawn_configuration::screenWidthX;
-int RES_Y = dawn_configuration::screenWidthY;
+int RES_X = dawn_configuration::screenWidth;
+int RES_Y = dawn_configuration::screenHeight;
 
 SDL_Surface *screen;
 extern CZone zone1;
 extern CMessage message;
 Player character;
-cameraFocusHandler focus(dawn_configuration::screenWidthX, dawn_configuration::screenWidthY);
+cameraFocusHandler focus(dawn_configuration::screenWidth, dawn_configuration::screenHeight);
 
 CEditor Editor;
 
@@ -223,12 +223,12 @@ bool dawn_init(int argc, char** argv)
 		atexit(SDL_Quit);
 
 		if (dawn_configuration::fullscreenenabled)
-			screen=SDL_SetVideoMode(dawn_configuration::screenWidthX, 
-				dawn_configuration::screenWidthY, dawn_configuration::bpp, 
+			screen=SDL_SetVideoMode(dawn_configuration::screenWidth, 
+				dawn_configuration::screenHeight, dawn_configuration::bpp, 
 				SDL_OPENGL | SDL_FULLSCREEN);
 		else
-			screen=SDL_SetVideoMode(dawn_configuration::screenWidthX, 
-				dawn_configuration::screenWidthY, dawn_configuration::bpp, SDL_OPENGL);
+			screen=SDL_SetVideoMode(dawn_configuration::screenWidth, 
+				dawn_configuration::screenHeight, dawn_configuration::bpp, SDL_OPENGL);
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
@@ -236,14 +236,14 @@ bool dawn_init(int argc, char** argv)
 		glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		glViewport( 0, 0, dawn_configuration::screenWidthX, dawn_configuration::screenWidthY );
+		glViewport( 0, 0, dawn_configuration::screenWidth, dawn_configuration::screenHeight );
 
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity(); // reset view to 0,0
 
-		glOrtho(0.0f, dawn_configuration::screenWidthX, 0.0f, dawn_configuration::screenWidthY, -1.0f, 1.0f);
+		glOrtho(0.0f, dawn_configuration::screenWidth, 0.0f, dawn_configuration::screenHeight, -1.0f, 1.0f);
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();  // reset view to 0,0
 
@@ -265,7 +265,7 @@ bool dawn_init(int argc, char** argv)
 		character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
 		character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
 		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
-		character.Init(dawn_configuration::screenWidthX/2,dawn_configuration::screenWidthY/2);
+		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(100);
 		character.setMaxMana(50);
@@ -353,7 +353,7 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEMOTION) {
 					mouseX = event.motion.x;
-					mouseY = dawn_configuration::screenWidthY - event.motion.y - 1;
+					mouseY = dawn_configuration::screenWidth - event.motion.y - 1;
 				}
 			}
 
