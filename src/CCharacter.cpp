@@ -196,7 +196,6 @@ void CCharacter::modifyMaxHealth( int16_t maxHealthModifier )
 		std::cout << "Error during modifyMaxHealth." << std::endl;
 	} else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) < getMaxHealth() ) {
 		setMaxHealth( std::numeric_limits<uint16_t>::max() );
-		std::cout << (std::numeric_limits<uint16_t>::max() - maxHealthModifier) << std::endl;
 	} else {
 		setMaxHealth( getMaxHealth() + maxHealthModifier );
 	}
@@ -252,7 +251,6 @@ void CCharacter::modifyMaxMana( int16_t maxManaModifier )
 
 void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 {
-    std::cout << currentManaModifier;
     if ( currentManaModifier < 0 )
     {
         if ( getCurrentMana() <= currentManaModifier)
