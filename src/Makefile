@@ -17,8 +17,8 @@ clean:
 	rm *.o
 
 
-dawn-rpg: main debug GLFT_Font CZone CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions
-	$(CC) $(CCFLAGS) -o dawn-rpg main.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o $(LIBS) 
+dawn-rpg: main debug GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions
+	$(CC) $(CCFLAGS) -o dawn-rpg main.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o $(LIBS) 
 
 main: main.cpp
 	$(CC) $(CCFLAGS) -c main.cpp
@@ -46,6 +46,9 @@ CLuaInterfaceGenerated: CLuaInterfaceGenerated.cpp
 
 CTexture: CTexture.cpp
 	$(CC) $(CCFLAGS) -c CTexture.cpp
+
+utils: utils.cpp
+	$(CC) $(CCFLAGS) -c utils.cpp
 
 CInterface: CInterface.cpp
 	$(CC) $(CCFLAGS) -c CInterface.cpp

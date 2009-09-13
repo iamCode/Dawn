@@ -212,11 +212,16 @@ int main(int argc, char* argv[])
 	// Skip the init steps if true was set as a result of the command line parameters
 	if (!done) {
 
+		dawn_debug_info("Checking if the game data exists");
+		
+		if(!utils::file_exists("data/mobdata.all"))
+			dawn_debug_fatal("The LUA script \"mobdata.all\", " 
+				"Could not be found");
+
 		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
 			dawn_debug_fatal("Unable to init SDL");
 
 		atexit(SDL_Quit);
-
 
 		if (dawn_configuration::fullscreenenabled)
 			screen=SDL_SetVideoMode(RES_X,RES_Y,RES_BPP,SDL_OPENGL | SDL_FULLSCREEN);
@@ -244,10 +249,8 @@ int main(int argc, char* argv[])
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
-		// TODO: data exists check
-
-		dawn_debug_info("Loading Dawn data");
-
+		dawn_debug_info("Loading the game data files and objects");
+		
 		LuaFunctions::executeLuaFile("data/mobdata.all");
 
 		zone1.LoadZone("data/zone1");
