@@ -25,36 +25,35 @@
 void CTexture::LoadIMG(std::string file, int texture_index)
 {
 	if ((surface = IMG_Load(file.c_str()))) {
+		
+		dawn_debug_info("%s: width = %d and height = %d", file.c_str(), surface->w, surface->h);
+		
 		// Check that the image's width is a power of 2
 		if ((surface->w & (surface->w - 1)) != 0) {
-			std::cout << "Warning: the width of image " << file <<
-			          " is not a power of 2" << std::endl;
+			dawn_debug_warn("The width of image %s is not a"
+			          " power of 2", file.c_str());
 		}
 		// Also check if the height is a power of 2
 		if ((surface->h & (surface->h - 1)) != 0) {
-			std::cout << "Warning: the height of image " << file <<
-			          " is not a power of 2" << std::endl;
+			dawn_debug_warn("The height of image %s is not a"
+			          " power of 2", file.c_str());
 		}
 
 		// get the number of channels in the SDL surface
 		nOfColors = this->surface->format->BytesPerPixel;
 		if (nOfColors == 4) { // contains an alpha channel
-			if (surface->format->Rmask == 0x000000ff) {
+			if (surface->format->Rmask == 0x000000ff)
 				texture_format = GL_RGBA;
-			} else {
+			else
 				texture_format = GL_BGRA;
-			}
-		}
-
-		if (nOfColors == 3) {    // no alpha channel
-			if (surface->format->Rmask == 0x000000ff) {
+		} else if (nOfColors == 3) {    // no alpha channel
+			if (surface->format->Rmask == 0x000000ff)
 				texture_format = GL_RGB;
-			} else {
+			else
 				texture_format = GL_BGR;
-			}
-		} else {
-			std::cout << "warning: the image " << file <<
-			          " is not truecolor..  this will probably break" << std::endl;
+		} else if (nOfColors < 3){
+			dawn_debug_warn("The image %s"
+				" is not truecolor..  this will probably break", file.c_str());
 			// this error should not go unhandled
 		}
 
@@ -90,8 +89,7 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 		// Edit the texture object's image data using the information SDL_Surface gives us
 		gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
 	} else {
-		std::cout << "SDL could not load " << file << ": " << SDL_GetError() << std::endl;
-		SDL_Quit();
+		dawn_debug_fatal("SDL could not load %s : %s", file.c_str(), SDL_GetError());
 	}
 
 	// Free the SDL_Surface only if it was successfully created
