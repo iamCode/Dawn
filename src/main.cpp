@@ -216,23 +216,26 @@ bool dawn_init(int argc, char** argv)
 		if(!utils::file_exists("data/mobdata.all"))
 			dawn_debug_fatal("The LUA script \"mobdata.all\", " 
 				"Could not be found");
+		if(!utils::file_exists("data/verdana.ttf"))
+			dawn_debug_fatal("Font  \"verdana.ttf\", " 
+				"Could not be found");
 
 		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
-			dawn_debug_fatal("Unable to init SDL");
+			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
 
 		if (dawn_configuration::fullscreenenabled)
-			screen=SDL_SetVideoMode(dawn_configuration::screenWidth, 
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth, 
 				dawn_configuration::screenHeight, dawn_configuration::bpp, 
 				SDL_OPENGL | SDL_FULLSCREEN);
 		else
-			screen=SDL_SetVideoMode(dawn_configuration::screenWidth, 
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth, 
 				dawn_configuration::screenHeight, dawn_configuration::bpp, SDL_OPENGL);
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
-
+		
 		glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );

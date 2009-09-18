@@ -134,27 +134,17 @@ void cameraFocusHandler::updateFocus()
 					// Calculate the y component of the trajectory
 					y_step = pathSpeed * sin(trajectory_angleA * (3.14159265/180));
 
-					ss << "cameraFocusHandler::updateFocus : " <<
-					          "Trajectory angle from the x-axis: " << trajectory_angleA;
-					dawn_debug_info (ss.str());
-					ss.str("");
+					dawn_debug_info ("cameraFocusHandler::updateFocus : "
+					          "Trajectory angle from the x-axis: %f", trajectory_angleA);
 
+					dawn_debug_info ("cameraFocusHandler::updateFocus : "
+					          "Trajectoy x component=%f", x_step);
 
-					ss << "cameraFocusHandler::updateFocus : " <<
-					          "Trajectoy x component=" << x_step;
-					dawn_debug_info (ss.str());
-					ss.str("");
+					dawn_debug_info ("cameraFocusHandler::updateFocus : "
+					          "Trajectoy y component=%f", y_step);
 
-
-					ss << "cameraFocusHandler::updateFocus : " <<
-					          "Trajectoy y component=" << y_step;
-					dawn_debug_info (ss.str());
-					ss.str("");
-
-					ss << "cameraFocusHandler::updateFocus : X1-X2 = " <<
-					          difference_x1x2 << ", Y1-Y2=" << difference_y1y2 << std::endl;
-					dawn_debug_info (ss.str());
-					ss.str("");
+					dawn_debug_info ("cameraFocusHandler::updateFocus : X1-X2 = %f "
+					           ", Y1-Y2 = %f", difference_x1x2, difference_y1y2);
 
 					calculationsDone = true;
 				}
@@ -185,8 +175,8 @@ void cameraFocusHandler::updateFocus()
 				followTag = VIEW_XY;
 				_inPath = false;
 				calculationsDone = false;
-				std::cout << "cameraFocusHandler::updateFocus : " <<
-				          "Path complete" << std::endl;
+				dawn_debug_info("cameraFocusHandler::updateFocus : "
+				          "Path complete");
 			}
 
 

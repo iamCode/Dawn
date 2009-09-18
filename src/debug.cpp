@@ -18,14 +18,12 @@
 
 #include "debug.h"
 
-/* The init values are the class
-   defaults, these will usually be overwritten */
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
-	bool debug_stdout = true; // Write messages to stdout
-	bool debug_fileout = true; // Write messages to a file
-	bool show_info_messages = true; // Show or hide debug info
-	bool show_warn_messages = true; // show or hide warnings
+	bool debug_stdout = false; // Write messages to stdout
+	bool debug_fileout = false; // Write messages to a file
+	bool show_info_messages = false; // Show or hide debug info
+	bool show_warn_messages = false; // show or hide warnings
 }
 
 static std::string date_time_string()
@@ -42,9 +40,36 @@ static std::string date_time_string()
 	return _datetime;
 }
 
-void dawn_debug_info(const std::string& message)
+static char* debug_args(const char* message, std::va_list ap, debug_message_type debug)
 {
-	if(dawn_configuration::show_info_messages) {
+	char buf[1024];
+	std::string output_string;
+	std::stringstream ss;
+	bool should_output = false;
+
+	vsnprintf(buf ,1024, message, ap);
+	
+	switch(debug) {
+		case(DEBUG_INFO):
+			ss << date_time_string() << ": Information : " << buf;
+			output_string = ss.str();
+			if(dawn_configuration::show_info_messages)
+				should_output = true;
+			break;
+		case(DEBUG_WARN):
+			ss << date_time_string() << ": Warning : " << buf;
+			output_string = ss.str();
+			if(dawn_configuration::show_warn_messages)
+				should_output = true;
+			break;
+		case(DEBUG_FATAL):
+			ss << date_time_string() << ": Fatal : " << buf;
+			output_string = ss.str();
+			should_output = true;
+			break;
+	}
+
+	if(should_output) {
 		if(!log_started) {
 			/* This will reset the file if this is the first write this session */
 			std::ofstream temp(dawn_configuration::logfile.c_str());
@@ -55,62 +80,40 @@ void dawn_debug_info(const std::string& message)
 		std::ofstream outputfile(dawn_configuration::logfile.c_str(), std::ios_base::app);
 
 		if(dawn_configuration::debug_stdout)
-			std::cout << date_time_string() << ": Information : " <<
-				message << std::endl;
+			std::cout << output_string << std::endl;
 		if(dawn_configuration::debug_fileout)
 			if(outputfile)
-				outputfile << date_time_string() << ": Information : " <<
-					message << std::endl;
+				outputfile << output_string << std::endl;
 
 		outputfile.close();
 	}
 }
 
-void dawn_debug_warn(const std::string& message)
+void dawn_debug_info(const std::string& message ...)
 {
-	if(dawn_configuration::show_warn_messages) {
-		if(!log_started) {
-			/* This will reset the file if this is the first write this session */
-			std::ofstream temp(dawn_configuration::logfile.c_str());
-			log_started = true;
-			temp.close();
-		}
-
-		std::ofstream outputfile(dawn_configuration::logfile.c_str(), std::ios_base::app);
-
-		if(dawn_configuration::debug_stdout)
-			std::cout << date_time_string() << ": Warning : " <<
-				message << std::endl;
-		if(dawn_configuration::debug_fileout)
-			if(outputfile)
-				outputfile << date_time_string() << ": Warning : " <<
-					message << std::endl;
-
-	outputfile.close();
-	}
+	std::va_list ap;
+	
+	va_start(ap, message);
+		debug_args(message.c_str(), ap, DEBUG_INFO);
+	va_end(ap);
 }
 
-void dawn_debug_fatal(const std::string& message)
+void dawn_debug_warn(const std::string& message ...)
 {
-	if(!log_started) {
-		/* This will reset the file if this is the first write this session */
-		std::ofstream temp(dawn_configuration::logfile.c_str());
-		log_started = true;
-		temp.close();
-	}
+	std::va_list ap;
+	
+	va_start(ap, message);
+		debug_args(message.c_str(), ap, DEBUG_WARN);
+	va_end(ap);
+}
 
-	std::ofstream outputfile(dawn_configuration::logfile.c_str(), std::ios_base::app);
+void dawn_debug_fatal(const std::string& message ...)
+{
+	std::va_list ap;
+	
+	va_start(ap, message);
+		debug_args(message.c_str(), ap, DEBUG_FATAL);
+	va_end(ap);
 
-	if(dawn_configuration::debug_stdout)
-		std::cout << date_time_string() <<
-			": Fatal Error : " << message <<
-			std::endl;
-	if(dawn_configuration::debug_fileout)
-		if(outputfile)
-			outputfile << date_time_string() <<
-				": Fatal Error : "<< message <<
-				std::endl;
-
-	outputfile.close();
 	exit(1);
 }
