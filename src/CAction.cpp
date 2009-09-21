@@ -94,7 +94,7 @@ class AttackAction : public CAction
 			if ( curArc >= 0 && !damageCaused ) {
 				double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
 				if ( distance <= 120 ) {
-					target->Damage( 20 );
+					target->Damage( creator->getStrength() );
 				}
 				damageCaused = true;
 			}

@@ -79,7 +79,9 @@ class CCharacter
 		int getWidth() const;
 		int getHeight() const;
 
-		Direction GetDirection();
+		virtual Direction GetDirection() = 0;
+		Direction getDirectionTowards( int x_pos, int y_pos ) const;
+		
 		Direction WanderDirection, MovingDirection;
 
 		Uint8 *keys;
@@ -154,7 +156,7 @@ class CCharacter
 		void DrawLifebar();
 
 		bool CheckMouseOver(int _x_pos, int _y_pos);
-		void Damage(int amount);
+		virtual void Damage(int amount);
 		void Heal(int amount);
 		void Die();
 
@@ -221,15 +223,17 @@ class Player : public CCharacter
 		CCharacter* getTarget() const;
 		void setTarget(CCharacter *newTarget);
         void regenerateLifeMana(uint32_t regenPoints);
+		Direction GetDirection();
 };
 
 class CNPC : public CCharacter
 {
 	private:
-
+		enum { friendly, neutral, hostile } attitudeTowardsPlayer;
 	public:
 
 		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
+			Init( x_spawn_pos, y_spawn_pos );
 			alive = true;
 			current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
 			respawn_thisframe = 0.0f;
@@ -242,6 +246,7 @@ class CNPC : public CCharacter
 
 			remainingMovePoints = 0;
 			direction_texture = S;
+			attitudeTowardsPlayer = neutral;
 		}
 
 		void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
@@ -256,8 +261,11 @@ class CNPC : public CCharacter
 
 		void Draw();
 		void Move();
+		Direction GetDirection();
 		void Respawn();
 		void Wander();
+		
+		void Damage(int amount);
 };
 
 #endif

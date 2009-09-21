@@ -416,6 +416,10 @@ int CCharacter::getHeight() const
 	return texture->texture[1].height;
 }
 
+extern std::vector <CNPC*> NPC;
+
+extern Player character;
+
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
 	for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
@@ -425,6 +429,34 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 			}
 		}
 	}
+	
+	// check for collision with other characters
+	for ( size_t curNPCNr=0; curNPCNr < NPC.size(); ++curNPCNr )
+	{
+		CCharacter *curNPC = NPC[ curNPCNr ];
+		if ( curNPC == this || ! curNPC->isAlive() )
+			continue;
+
+		if (( curNPC->getXPos() + curNPC->getWidth() >= x_pos ) && ( curNPC->getXPos() <= x_pos) ) {
+			if ( ( curNPC->getYPos() + curNPC->getHeight() >= y_pos ) && ( curNPC->getYPos() <= y_pos ) ) {
+				return 1;
+			}
+		}
+		
+	}
+	
+	// check for collision with player
+	{
+		CCharacter *curNPC = &character;
+		if ( curNPC != this && curNPC->isAlive() ) {
+			if (( curNPC->getXPos() + curNPC->getWidth() >= x_pos ) && ( curNPC->getXPos() <= x_pos) ) {
+				if ( ( curNPC->getYPos() + curNPC->getHeight() >= y_pos ) && ( curNPC->getYPos() <= y_pos ) ) {
+					return 1;
+				}
+			}
+		}
+	}
+	
 	return 0;
 };
 
@@ -510,7 +542,7 @@ void CCharacter::MoveRight()
 	}
 };
 
-void Player::Move()
+void CCharacter::Move()
 {
 	continuePreparing();
 	if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
@@ -519,108 +551,70 @@ void Player::Move()
 			return;
 		}
 	}
-
-	unsigned int movePerStep = 10; // moves one step per movePerStep ms
-
-	Direction moving_direction = GetDirection();
-
-	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
-	if ( moving_direction == NW || moving_direction == NE || moving_direction == SW || moving_direction == SE )
-		movePerStep = 14;
-
-	if (( moving_direction != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
+	
+	Direction movingDirection = GetDirection();
+	if (( movingDirection != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		CastingAborted();
 	}
 
+	unsigned int movePerStep = 10; // moves one step per movePerStep ms
+
+	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
+	if ( movingDirection == NW || movingDirection == NE || movingDirection == SW || movingDirection == SE )
+		movePerStep = 14;
+
 	while ( remainingMovePoints > movePerStep ) {
 		remainingMovePoints -= movePerStep;
-		switch ( moving_direction ) {
+		switch ( movingDirection ) {
 			case NW:
 				MoveLeft();
 				MoveUp();
-			break;
+				break;
 			case N:
 				MoveUp();
-			break;
+				break;
 			case NE:
 				MoveRight();
 				MoveUp();
-			break;
+				break;
 			case W:
 				MoveLeft();
-			break;
+				break;
 			case E:
 				MoveRight();
-			break;
+				break;
 			case SW:
 				MoveLeft();
 				MoveDown();
-			break;
+				break;
 			case S:
 				MoveDown();
-			break;
+				break;
 			case SE:
 				MoveRight();
 				MoveDown();
-			break;
+				break;
 			default:
-			break;
+				break;
 		}
 	}
+}
+
+void Player::Move()
+{
+	CCharacter::Move();
 };
 
 void CNPC::Move()
 {
-	unsigned int movePerStep = 10; // moves one step per movePerStep ms
-
-	Direction moving_direction;
-
-	if ( wandering ) {
-		moving_direction = WanderDirection;
-	} else {
-		moving_direction = MovingDirection;
-	}
-
-	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
-	if (direction_texture == NW || direction_texture == NE || direction_texture == SW || direction_texture == SE)
-		movePerStep = 14;
-
-	while ( remainingMovePoints > movePerStep ) {
-		remainingMovePoints -= movePerStep;
-
-		switch ( moving_direction ) {
-			case NW:
-				MoveLeft();
-				MoveUp();
-			break;
-			case N:
-				MoveUp();
-			break;
-			case NE:
-				MoveRight();
-				MoveUp();
-			break;
-			case W:
-				MoveLeft();
-			break;
-			case E:
-				MoveRight();
-			break;
-			case SW:
-				MoveLeft();
-				MoveDown();
-			break;
-			case S:
-				MoveDown();
-			break;
-			case SE:
-				MoveRight();
-				MoveDown();
-			break;
-			default:
-			break;
+	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == hostile ) {
+		// check distance to player
+		double distance = sqrt( pow(getXPos() - character.getXPos(),2) + pow(getYPos() - character.getYPos(),2) );
+		if ( distance <= 80 ) {
+			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) ); 
 		}
 	}
+	CCharacter::Move();
 };
 
 void CCharacter::giveMovePoints( uint32_t movePoints )
@@ -628,7 +622,39 @@ void CCharacter::giveMovePoints( uint32_t movePoints )
 	remainingMovePoints += movePoints;
 };
 
-Direction CCharacter::GetDirection()
+Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
+{
+	int dx = x_pos - this->x_pos;
+	int dy = y_pos - this->y_pos;
+	
+	if ( dx > 0 ) {
+		if ( dy > 0 ) {
+			return NE;
+		} else if ( dy < 0 ) {
+			return SE;
+		} else {
+			return E;
+		}
+	} else if ( dx < 0 ) {
+		if ( dy > 0 ) {
+			return NW;
+		} else if ( dy < 0 ) {
+			return SW;
+		} else {
+			return W;
+		}
+	} else {
+		if ( dy > 0 ) {
+			return N;
+		} else if ( dy < 0 ) {
+			return S;
+		} else {
+			return STOP;
+		}
+	}
+}
+
+Direction Player::GetDirection()
 {
 	keys = SDL_GetKeyState(NULL);
 
@@ -662,6 +688,18 @@ Direction CCharacter::GetDirection()
 
 	return STOP;
 };
+
+Direction CNPC::GetDirection()
+{
+	if ( attitudeTowardsPlayer == hostile ) {
+		return getDirectionTowards( character.x_pos, character.y_pos );
+	}
+	if ( wandering ) {
+		return WanderDirection;
+	} else {
+		return MovingDirection;
+	}
+}
 
 int CCharacter::GetDirectionTexture()
 {
@@ -814,7 +852,6 @@ void CNPC::Wander()
 			wandering = true;
 			wander_points_left = rand() % 50 + 10;  // how far will the NPC wander?
 			WanderDirection = static_cast<Direction>( rand() % 8 + 1 );  // random at which direction NPC will go.
-			direction_texture = WanderDirection;
 		}
 	}
 };
@@ -830,6 +867,7 @@ void CNPC::Respawn()
 	if (alive == false && do_respawn == true) {
 		respawn_thisframe = SDL_GetTicks();
 		if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
+			Init( x_spawn_pos, y_spawn_pos );
 			alive = true;
 			x_pos = x_spawn_pos;
 			y_pos = y_spawn_pos;
@@ -838,6 +876,7 @@ void CNPC::Respawn()
 			current_health = max_health;
 			current_mana = max_mana;
 			current_energy = max_energy;
+			attitudeTowardsPlayer = neutral;
 		}
 	}
 }
@@ -845,6 +884,7 @@ void CNPC::Respawn()
 void CNPC::Draw()
 {
 	CalculateStats(); // always calculate the stats of the NPC.
+	direction_texture = GetDirectionTexture();
 	if (alive == true) {
 		texture->DrawTexture(x_pos,y_pos,direction_texture);
 	}
@@ -880,6 +920,12 @@ void CCharacter::Damage(int amount)
 		}
 	}
 };
+
+void CNPC::Damage(int amount)
+{
+	attitudeTowardsPlayer = hostile;
+	CCharacter::Damage( amount );
+}
 
 void CCharacter::Heal(int amount)
 {

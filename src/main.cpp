@@ -272,6 +272,7 @@ bool dawn_init(int argc, char** argv)
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(100);
 		character.setMaxMana(50);
+		character.setStrength(40);
 
 		Editor.LoadTextures();
 		GUI.LoadTextures();
@@ -372,8 +373,10 @@ void game_loop()
 
 
 			for (unsigned int x=0; x<NPC.size(); x++) {
-				NPC[x]->giveMovePoints( ticksDiff );
-				NPC[x]->Move();
+				if ( NPC[x]->isAlive() ) {
+					NPC[x]->giveMovePoints( ticksDiff );
+					NPC[x]->Move();
+				}
 				NPC[x]->Respawn();
 				NPC[x]->Wander();
 			}
