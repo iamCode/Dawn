@@ -19,9 +19,21 @@
 
 #include "CMessage.h"
 
+CMessage::CMessage()
+{
+	messageFont = NULL;
+}
+
+CMessage::~CMessage()
+{
+	if ( messageFont != NULL ) {
+		delete messageFont;
+	}
+}
+
 void CMessage::initFonts()
 {
-	messageFont.open("data/verdana.ttf", 12);
+	messageFont = new GLFT_Font("data/verdana.ttf", 12);
 }
 
 void CMessage::DrawAll()
@@ -44,7 +56,7 @@ void CMessage::DrawAll()
 		}
 		// set the color + transparency then draw the text.
 		glColor4f(MessageBook[book].red,MessageBook[book].green,MessageBook[book].blue,MessageBook[book].transparency);
-		messageFont.drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
+		messageFont->drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
 	}
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 };

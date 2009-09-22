@@ -53,6 +53,8 @@ struct sBook {
 class CMessage
 {
 	public:
+		CMessage();
+		~CMessage();
 		void initFonts();
 		void AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...);
 		void DrawAll();
@@ -60,7 +62,7 @@ class CMessage
 
 	private:
 		std::vector<sBook> MessageBook;
-		GLFT_Font messageFont;
+		GLFT_Font *messageFont;
 };
 
 #endif

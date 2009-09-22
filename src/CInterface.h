@@ -49,6 +49,9 @@ struct sDamageDisplay {
 class CInterface
 {
 	public:
+		CInterface();
+		~CInterface();
+
 		void LoadTextures();
 		bool enabled;
 		void DrawInterface();
@@ -68,7 +71,7 @@ class CInterface
 
 		CCharacter *player;
 
-		GLFT_Font shortcutFont;
+		GLFT_Font *shortcutFont;
 };
 
 

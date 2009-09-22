@@ -39,7 +39,18 @@ class CEditor
 			current_object = 0;
 			objectedit_selected = -1;
 			zoneToEdit = NULL;
+			objectDescriptionFont = NULL;
+			keybindingFont = NULL;
 		};
+		
+		~CEditor() {
+			if ( objectDescriptionFont != NULL ) {
+				delete objectDescriptionFont;
+			}
+			if ( keybindingFont != NULL ) {
+				delete keybindingFont;
+			}
+		}
 
 		void initFonts();
 
@@ -64,8 +75,8 @@ class CEditor
 		bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone;
 
 		CTexture interfacetexture;
-		GLFT_Font objectDescriptionFont;
-		GLFT_Font keybindingFont;
+		GLFT_Font *objectDescriptionFont;
+		GLFT_Font *keybindingFont;
 		CZone *zoneToEdit;
 };
 

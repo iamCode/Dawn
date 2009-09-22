@@ -23,8 +23,8 @@
 
 void CEditor::initFonts()
 {
-	objectDescriptionFont.open("data/verdana.ttf", 10);
-	keybindingFont.open("data/verdana.ttf", 9);
+	objectDescriptionFont = new GLFT_Font("data/verdana.ttf", 10);
+	keybindingFont = new GLFT_Font("data/verdana.ttf", 9);
 }
 
 void CEditor::inc_tilepos()
@@ -544,27 +544,27 @@ void CEditor::DrawEditor()
 	                                  world_x, RES_X,
 	                                  world_y, 100 );
 
-	int fontHeight = keybindingFont.getHeight();
+	int fontHeight = keybindingFont->getHeight();
 
 	// display our general help text for the editor.
 	glColor4f(1.0f,1.0f,0.13f,1.0f); // set yellow as font color
-	keybindingFont.drawText(world_x+10, world_y+90 - fontHeight, "[ Scoll Up/Down ]  Select previous/next object");
-	keybindingFont.drawText(world_x+10, world_y+80 - fontHeight, "[ F1 ]  Next set of objects");
-	keybindingFont.drawText(world_x+10, world_y+70 - fontHeight, "[ DEL ]  Delete object at mouse position");
-	keybindingFont.drawText(world_x+10, world_y+60 - fontHeight, "[ ENTER ]  Place object at mouse position");
-	keybindingFont.drawText(world_x+10, world_y+50 - fontHeight, "[ S ]  Saves the changes into zone1-files");
-	keybindingFont.drawText(world_x+10, world_y+40 - fontHeight, "[ O ]  Load a different zone (not yet implemented)");
-	keybindingFont.drawText(world_x+10, world_y+30 - fontHeight, "[ L ]  Exit the editor");
+	keybindingFont->drawText(world_x+10, world_y+90 - fontHeight, "[ Scoll Up/Down ]  Select previous/next object");
+	keybindingFont->drawText(world_x+10, world_y+80 - fontHeight, "[ F1 ]  Next set of objects");
+	keybindingFont->drawText(world_x+10, world_y+70 - fontHeight, "[ DEL ]  Delete object at mouse position");
+	keybindingFont->drawText(world_x+10, world_y+60 - fontHeight, "[ ENTER ]  Place object at mouse position");
+	keybindingFont->drawText(world_x+10, world_y+50 - fontHeight, "[ S ]  Saves the changes into zone1-files");
+	keybindingFont->drawText(world_x+10, world_y+40 - fontHeight, "[ O ]  Load a different zone (not yet implemented)");
+	keybindingFont->drawText(world_x+10, world_y+30 - fontHeight, "[ L ]  Exit the editor");
 
 	// if we have a selected object, display specific help text for it
 	if (objectedit_selected >= 0) {
 		glColor4f(0.5f,1.0f,0.5f,1.0f);
-		keybindingFont.drawText(world_x+500, world_y+90 - fontHeight, "[ UP, DOWN, LEFT, RIGHT ]  Move the object");
-		keybindingFont.drawText(world_x+500, world_y+80 - fontHeight, "[ Left Shift + UP, DOWN, LEFT, RIGHT ]  Change scale of object");
-		keybindingFont.drawText(world_x+500, world_y+70 - fontHeight, "[ . ]  Increase transparency");
-		keybindingFont.drawText(world_x+500, world_y+60 - fontHeight, "[ , ]  Decrease transparency");
-		keybindingFont.drawText(world_x+500, world_y+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
-		keybindingFont.drawText(world_x+500, world_y+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
+		keybindingFont->drawText(world_x+500, world_y+90 - fontHeight, "[ UP, DOWN, LEFT, RIGHT ]  Move the object");
+		keybindingFont->drawText(world_x+500, world_y+80 - fontHeight, "[ Left Shift + UP, DOWN, LEFT, RIGHT ]  Change scale of object");
+		keybindingFont->drawText(world_x+500, world_y+70 - fontHeight, "[ . ]  Increase transparency");
+		keybindingFont->drawText(world_x+500, world_y+60 - fontHeight, "[ , ]  Decrease transparency");
+		keybindingFont->drawText(world_x+500, world_y+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
+		keybindingFont->drawText(world_x+500, world_y+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
 	}
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
@@ -646,14 +646,14 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 	glPopMatrix();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	int fontHeight = objectDescriptionFont.getHeight();
+	int fontHeight = objectDescriptionFont->getHeight();
 
-	objectDescriptionFont.drawText(world_x+242, world_y+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
-	objectDescriptionFont.drawText(world_x+319, world_y+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
-	objectDescriptionFont.drawText(world_x+300, world_y+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
-	objectDescriptionFont.drawText(world_x+312, world_y+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
-	objectDescriptionFont.drawText(world_x+287, world_y+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
-	objectDescriptionFont.drawText(world_x+287, world_y+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+	objectDescriptionFont->drawText(world_x+242, world_y+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
+	objectDescriptionFont->drawText(world_x+319, world_y+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
+	objectDescriptionFont->drawText(world_x+300, world_y+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
+	objectDescriptionFont->drawText(world_x+312, world_y+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
+	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
+	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glScalef(1.0f,1.0f,1.0f);

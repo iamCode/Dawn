@@ -23,6 +23,8 @@
 #include "CAction.h"
 #include "debug.h"
 
+#include <memory>
+
 /* Global settings now reside in the
    dawn_configuration namespace, variables
    are added to this across multiple files.
@@ -62,7 +64,7 @@ extern int world_x, world_y, mouseX, mouseY;
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
-GLFT_Font fpsFont;
+std::auto_ptr<GLFT_Font> fpsFont;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -160,7 +162,7 @@ void DrawScene()
 	for (unsigned int x=0; x<NPC.size(); x++) {
 		NPC[x]->Draw();
 		if ( character.getTarget() == NPC[x] )
-			fpsFont.drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont.getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont->getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
 	}
 
 	// draws the character's target's lifebar, if we have any target.
@@ -279,7 +281,7 @@ bool dawn_init(int argc, char** argv)
 		GUI.SetPlayer(&character);
 
 		// initialize fonts where needed
-		fpsFont.open("data/verdana.ttf", 12);
+		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
 		message.initFonts();
 		Editor.initFonts();
 		GUI.initFonts();

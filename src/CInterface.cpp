@@ -21,9 +21,22 @@
 
 #include "CDrawingHelpers.h"
 
+CInterface::CInterface()
+{
+	shortcutFont = NULL;
+}
+
+CInterface::~CInterface()
+{
+	if ( shortcutFont != NULL ) {
+		delete shortcutFont;
+	}
+}
+
 void CInterface::initFonts()
 {
-	shortcutFont.open("data/verdana.ttf", 9);
+	shortcutFont = new GLFT_Font();
+	shortcutFont->open("data/verdana.ttf", 9);
 }
 
 void CInterface::LoadTextures()
@@ -66,7 +79,7 @@ void CInterface::DrawInterface()
 		// we draw in order 1 2 3 4 5 6 7 8 9 0, so calculate the correct index for the field we are drawing
 		size_t curIndex = ( (curShortcutField + 1) % 10 );
 		std::string charToDraw( 1, char('0' + curIndex ) );
-		shortcutFont.drawText( world_x+ 300 + curShortcutField * 70 - 10, world_y + 50, charToDraw.c_str() );
+		shortcutFont->drawText( world_x+ 300 + curShortcutField * 70 - 10, world_y + 50, charToDraw.c_str() );
 
 		if ( quickSlots[ curIndex ] != NULL ) {
 			quickSlots[ curIndex ]->draw( world_x+ 300 + curShortcutField * 70 + 2, 46,
