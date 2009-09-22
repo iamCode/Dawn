@@ -316,6 +316,46 @@ void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
     }
 }
 
+uint64_t CCharacter::getExperience() const
+{
+	return experience;
+}
+
+void CCharacter::gainExperience( uint64_t addExp )
+{
+	if ( std::numeric_limits<uint64_t>::max() - addExp < experience ) {
+		experience = std::numeric_limits<uint64_t>::max();
+		dawn_debug_warn( "max experience reached" );
+	} else {
+		experience += addExp;
+	}
+	
+	while ( canRaiseLevel() ) {
+		raiseLevel();
+	}
+}
+
+uint64_t CCharacter::getExpNeededForLevel( uint8_t level ) const
+{
+	uint64_t result = ((level+1)*level* 50);
+	return result;
+}
+
+bool CCharacter::canRaiseLevel() const
+{
+	return ( experience >= getExpNeededForLevel( getLevel() + 1 ) && ( getExpNeededForLevel( getLevel() + 1 ) != getExpNeededForLevel( getLevel() ) ) );
+}
+
+void CCharacter::raiseLevel()
+{
+	if ( canRaiseLevel() ) {
+		setMaxHealth( getMaxHealth() * 1.1 );
+		setMaxMana( getMaxMana() * 1.1 );
+		setStrength( getStrength() * 1.1 );
+		setLevel( getLevel() + 1 );
+	}
+}
+
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )
 {
 	wander_radius = newWanderRadius;

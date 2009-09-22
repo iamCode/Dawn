@@ -197,6 +197,9 @@ class MagicMissileSpell : public CSpell
 			int damage = 1 + rand() % 5 + 5;
 
 			target->Damage( damage );
+			if ( ! target->isAlive() ) {
+				creator->gainExperience( target->getMaxHealth() / 10 );
+			}
 
 			markSpellActionAsFinished();
 		}
@@ -283,6 +286,9 @@ class LightningSpell : public CSpell
 			int damage = 1 + rand() % 60;
 
 			target->Damage( damage );
+			if ( ! target->isAlive() ) {
+				creator->gainExperience( target->getMaxHealth() / 10 );
+			}
 			effectStart = SDL_GetTicks();
 			lastEffect = effectStart;
 			unbindFromCreator();
@@ -300,6 +306,9 @@ class LightningSpell : public CSpell
 
 			if ( curDamage > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
 				target->Damage( curDamage );
+				if ( ! target->isAlive() ) {
+					creator->gainExperience( target->getMaxHealth() / 10 );
+				}
 				lastEffect += curDamage * 50;
 				continuousDamageCaused += curDamage;
 			}

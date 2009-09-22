@@ -59,6 +59,7 @@ class CCharacter
 			isPreparing = false;
 			alive = true;
 			curSpellAction = NULL;
+			experience = 0;
 		}
 		int CollisionCheck(Direction direction);
 
@@ -133,6 +134,12 @@ class CCharacter
 		void modifyMaxEnergy( int16_t maxEnergyModifier );
         void modifyCurrentEnergy( int16_t currentEnergyModifier);
 
+		uint64_t getExperience() const;
+		void gainExperience( uint64_t addExp );
+		uint64_t getExpNeededForLevel( uint8_t level ) const;
+		bool canRaiseLevel() const;
+		void raiseLevel();
+
 		void setWanderRadius( uint16_t newWanderRadius );
 		uint16_t getWanderRadius() const;
 
@@ -199,7 +206,9 @@ class CCharacter
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
-
+		// character attributes
+		uint64_t experience;
+		
 		// casting spells / executing actions
 		bool isPreparing;
 		CSpellActionBase *curSpellAction;
