@@ -199,7 +199,9 @@ void DrawScene()
 	//       causing overflow and not drawing the font if it gets negative
 
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
-	//fpsFont.drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont.getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	//fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	// Only FPS
+	//fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
 
 	message.DrawAll();
 	message.DeleteDecayed();
@@ -292,6 +294,23 @@ bool dawn_init(int argc, char** argv)
 		return true;
 }
 
+void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &quickSlots, std::vector<bool> &wasPressed )
+{
+	// initialize quick slot bar.
+	// this should be done dynamically in the future as set by the player
+	quickSlots.reserve( nrOfQuickSlots ); // one for each key [0-9], + Space (last)
+	wasPressed.reserve( nrOfQuickSlots );
+
+	for ( size_t curQuickSlotNr = 0; curQuickSlotNr < nrOfQuickSlots; ++curQuickSlotNr ) {
+		quickSlots[ curQuickSlotNr ] = NULL;
+		wasPressed[ curQuickSlotNr ] = false;
+	}
+	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
+	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
+	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
+	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );	
+}
+
 void game_loop()
 {
 
@@ -303,21 +322,10 @@ void game_loop()
 	Uint8 *keys;
 	bool done = false;
 
-	// initialize quick slot bar.
-	// this should be done dynamically in the future as set by the player
+	std::vector<bool> wasPressed;
 	const int nrOfQuickSlots = 11;
-	quickSlots.reserve( nrOfQuickSlots ); // one for each key [0-9], + Space (last)
-	std::vector<bool> wasPressed( nrOfQuickSlots );
-
-	for ( size_t curQuickSlotNr = 0; curQuickSlotNr < nrOfQuickSlots; ++curQuickSlotNr ) {
-		quickSlots[ curQuickSlotNr ] = NULL;
-		wasPressed[ curQuickSlotNr ] = false;
-	}
-	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
-	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
-	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
-	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );	
-
+	initQuickSlotBar( nrOfQuickSlots, quickSlots, wasPressed );
+	
 	focus.setFocus(&character);
 
 	while (!done) {
