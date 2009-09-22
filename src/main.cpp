@@ -22,7 +22,7 @@
 #include "CSpell.h"
 #include "CAction.h"
 #include "debug.h"
-
+#include "CharacterInfoScreen.h"
 #include <memory>
 
 /* Global settings now reside in the
@@ -58,6 +58,7 @@ std::vector <CNPC*> NPC;
 std::vector<CActionFactory*> quickSlots;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
+bool KP_toggle_showCharacterInfo = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -65,6 +66,7 @@ float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
 std::auto_ptr<GLFT_Font> fpsFont;
+std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -195,6 +197,10 @@ void DrawScene()
 		GUI.DrawInterface();
 	}
 
+	if ( characterInfoScreen->isVisible() ) {
+		characterInfoScreen->drawScreen();
+	}
+	
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -281,12 +287,15 @@ bool dawn_init(int argc, char** argv)
 		Editor.LoadTextures();
 		GUI.LoadTextures();
 		GUI.SetPlayer(&character);
+		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
+		characterInfoScreen->LoadTextures();
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
 		message.initFonts();
 		Editor.initFonts();
 		GUI.initFonts();
+		characterInfoScreen->initFonts();
 
 		SpellCreation::initSpells();
 		ActionCreation::initActions();
@@ -456,6 +465,15 @@ void game_loop()
 
 			if (!keys[SDLK_TAB]) {
 				KP_select_next = false;
+			}
+
+			if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
+				KP_toggle_showCharacterInfo = true;
+				characterInfoScreen->setVisible( ! characterInfoScreen->isVisible() );
+			}
+
+			if ( !keys[SDLK_c] ) {
+				KP_toggle_showCharacterInfo = false;
 			}
 
 			for ( size_t curQuickSlotIndex = 0; curQuickSlotIndex < nrOfQuickSlots; ++ curQuickSlotIndex ) {
