@@ -69,6 +69,10 @@ void CharacterInfoScreen::drawScreen()
 	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Level" );
 	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d", player->getLevel() );
 	curLine++;
+	uint64_t nextXP = (player->getExpNeededForLevel(player->getLevel()+1));
+	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "EXP" );
+	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%jd / %jd", player->getExperience(), nextXP );
+	curLine++;
 	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Health" );
 	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d / %d", player->getCurrentHealth(), player->getMaxHealth() );
 	curLine++;
