@@ -59,6 +59,7 @@ std::vector<CActionFactory*> quickSlots;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
+bool KP_toggle_showInventory = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -67,6 +68,7 @@ int ff, fps;                         // FPS Stuff
 
 std::auto_ptr<GLFT_Font> fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
+std::auto_ptr<Inventory> inventory;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -200,7 +202,11 @@ void DrawScene()
 	if ( characterInfoScreen->isVisible() ) {
 		characterInfoScreen->drawScreen();
 	}
-	
+
+	if ( inventory->isVisible() ) {
+	    inventory->draw();
+	}
+
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -280,8 +286,8 @@ bool dawn_init(int argc, char** argv)
 		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
 		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
-		character.setMaxHealth(100);
-		character.setMaxMana(50);
+		character.setMaxHealth(400);
+		character.setMaxMana(250);
 		character.setStrength(40);
 
 		Editor.LoadTextures();
@@ -289,6 +295,8 @@ bool dawn_init(int argc, char** argv)
 		GUI.SetPlayer(&character);
 		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
 		characterInfoScreen->LoadTextures();
+		inventory = std::auto_ptr<Inventory>( new Inventory( &character, dawn_configuration::screenWidth ) );
+		inventory->LoadTextures();
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
@@ -323,7 +331,7 @@ void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &q
 void game_loop()
 {
 
-	// TODO: Break this down into subroutines 
+	// TODO: Break this down into subroutines
 
 	Uint32 lastTicks = SDL_GetTicks();
 	Uint32 curTicks  = lastTicks;
@@ -334,7 +342,7 @@ void game_loop()
 	std::vector<bool> wasPressed;
 	const int nrOfQuickSlots = 11;
 	initQuickSlotBar( nrOfQuickSlots, quickSlots, wasPressed );
-	
+
 	focus.setFocus(&character);
 
 	while (!done) {
@@ -474,6 +482,15 @@ void game_loop()
 
 			if ( !keys[SDLK_c] ) {
 				KP_toggle_showCharacterInfo = false;
+			}
+
+			if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
+			    KP_toggle_showInventory = true;
+			    inventory->setVisible( !inventory->isVisible() );
+			}
+
+			if ( !keys[SDLK_i] ) {
+			    KP_toggle_showInventory = false;
 			}
 
 			for ( size_t curQuickSlotIndex = 0; curQuickSlotIndex < nrOfQuickSlots; ++ curQuickSlotIndex ) {
