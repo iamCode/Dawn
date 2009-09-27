@@ -17,8 +17,8 @@ clean:
 	rm *.o
 
 
-dawn-rpg: main debug CharacterInfoScreen GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions
-	$(CC) $(CCFLAGS) -o dawn-rpg main.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o $(LIBS) 
+dawn-rpg: main debug CharacterInfoScreen Inventory GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions
+	$(CC) $(CCFLAGS) -o dawn-rpg main.o Inventory.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o $(LIBS) 
 
 main: main.cpp
 	$(CC) $(CCFLAGS) -c main.cpp
@@ -63,7 +63,9 @@ GLFT_Font: GLFT_Font.cpp
 	$(CC) $(CCFLAGS) -c GLFT_Font.cpp
 
 CharacterInfoScreen: CharacterInfoScreen.cpp
-	$(cc) $(CCFLAGS) -c CharacterInfoScreen.cpp 
+	$(CC) $(CCFLAGS) -c CharacterInfoScreen.cpp 
+Inventory: Inventory.cpp
+	$(CC) $(CCFLAGS) -c Inventory.cpp
 
 debug: debug.cpp
 	$(CC) $(CCFLAGS) -c debug.cpp
