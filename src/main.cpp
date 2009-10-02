@@ -23,6 +23,7 @@
 #include "CAction.h"
 #include "debug.h"
 #include "CharacterInfoScreen.h"
+#include "item.h"
 #include <memory>
 
 /* Global settings now reside in the
@@ -56,6 +57,8 @@ CInterface GUI;
 
 std::vector <CNPC*> NPC;
 std::vector<CActionFactory*> quickSlots;
+std::vector<Item*> groundItems;
+std::vector<std::pair<int,int> > groundPositions;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
@@ -68,7 +71,7 @@ int ff, fps;                         // FPS Stuff
 
 std::auto_ptr<GLFT_Font> fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
-std::auto_ptr<Inventory> inventory;
+std::auto_ptr<InventoryScreen> inventoryScreen;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -162,6 +165,20 @@ void DrawScene()
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
 	zone1.DrawZone();
+	
+	// draw items on the ground
+	for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
+		Item *curItem = groundItems[ curItemNr ];
+		int posX = groundPositions[ curItemNr ].first;
+		int posY = groundPositions[ curItemNr ].second;
+		
+		DrawingHelpers::mapTextureToRect( curItem->getSymbolTexture()->texture[0].texture,
+		                                  posX,
+		                                  curItem->getSizeX() * 32,
+		                                  posY,
+		                                  curItem->getSizeY() * 32 );
+	}
+	
 	character.Draw();
 	for (unsigned int x=0; x<NPC.size(); x++) {
 		NPC[x]->Draw();
@@ -203,15 +220,18 @@ void DrawScene()
 		characterInfoScreen->drawScreen();
 	}
 
-	if ( inventory->isVisible() ) {
-	    inventory->draw();
+	if ( inventoryScreen->isVisible() ) {
+	    inventoryScreen->draw();
+	}
+	if ( inventoryScreen->hasFloatingSelection() ) {
+		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
-	//fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 	// Only FPS
 	//fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
 
@@ -295,8 +315,8 @@ bool dawn_init(int argc, char** argv)
 		GUI.SetPlayer(&character);
 		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
 		characterInfoScreen->LoadTextures();
-		inventory = std::auto_ptr<Inventory>( new Inventory( &character, dawn_configuration::screenWidth ) );
-		inventory->LoadTextures();
+		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
+		inventoryScreen->LoadTextures();
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
@@ -328,9 +348,19 @@ void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &q
 	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );	
 }
 
+void initializePlayerDebugInventory()
+{
+	Inventory *playerInventory = character.getInventory();
+	Item *shield = new Item("shield", 2, 2, "data/items/shield.tga");
+	Item *sword =  new Item("sword", 3, 1, "data/items/sword.tga");
+	playerInventory->insertItem( shield );
+	playerInventory->insertItem( sword );
+}
+
 void game_loop()
 {
 
+	initializePlayerDebugInventory();
 	// TODO: Break this down into subroutines
 
 	Uint32 lastTicks = SDL_GetTicks();
@@ -369,22 +399,65 @@ void game_loop()
 				}
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
-					switch (event.button.button) {
-						case 1:
-							character.setTarget( NULL );
+					if ( ( inventoryScreen->isVisible() 
+					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
+					     || inventoryScreen->hasFloatingSelection() ) {
+						inventoryScreen->clicked( mouseX, mouseY );
+					} else {
+						switch (event.button.button) {
+							case 1:
+								// search for new target
+								bool foundSomething = false;
 
-							for (unsigned int x=0; x<NPC.size(); x++) {
-								if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-									character.setTarget( NPC[x] );
+								for (unsigned int x=0; x<NPC.size(); x++) {
+									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+										character.setTarget( NPC[x] );
+										foundSomething = true;
+										break;
+									}
 								}
-							}
-						break;
+								
+								if ( !foundSomething ) {
+									// search for items
+									for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
+										Item *curItem = groundItems[ curItemNr ];
+										int posX = groundPositions[ curItemNr ].first;
+										int posY = groundPositions[ curItemNr ].second;
+
+										int worldMouseX = world_x + mouseX;
+										int worldMouseY = world_y + mouseY;
+										if ( worldMouseX >= posX
+										     && worldMouseX <= posX + curItem->getSizeX() * 32
+										     && worldMouseY >= posY
+										     && worldMouseY <= posY + curItem->getSizeY() * 32 ) {
+											foundSomething = true;
+											if ( inventoryScreen->isVisible() ) {
+												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0 ) );
+												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
+												groundItems.resize( groundItems.size() - 1 );
+												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
+												groundPositions.resize( groundPositions.size() - 1 );
+											} else {
+												bool inserted = character.getInventory()->insertItem( curItem );
+												if ( inserted ) {
+													groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
+													groundItems.resize( groundItems.size() - 1 );
+													groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
+													groundPositions.resize( groundPositions.size() - 1 );
+												}
+											}
+											break;
+										}
+									}
+								}
+							break;
+						}
 					}
 				}
 
 				if (event.type == SDL_MOUSEMOTION) {
 					mouseX = event.motion.x;
-					mouseY = dawn_configuration::screenWidth - event.motion.y - 1;
+					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
 				}
 			}
 
@@ -486,7 +559,7 @@ void game_loop()
 
 			if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
 			    KP_toggle_showInventory = true;
-			    inventory->setVisible( !inventory->isVisible() );
+			    inventoryScreen->setVisible( !inventoryScreen->isVisible() );
 			}
 
 			if ( !keys[SDLK_i] ) {

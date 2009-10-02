@@ -23,6 +23,7 @@
 #include "CTexture.h"
 #include "CZone.h"
 #include "CDirection.h"
+#include "inventory.h"
 #include <SDL/SDL.h> // SDL
 #include <math.h>
 
@@ -224,15 +225,18 @@ class Player : public CCharacter
 	private:
 
         uint32_t remainingRegenPoints;
+		Inventory inventory;
 
 	public:
-
+		Player();
 		void Move();
 		void Draw();
 		CCharacter* getTarget() const;
 		void setTarget(CCharacter *newTarget);
         void regenerateLifeMana(uint32_t regenPoints);
 		Direction GetDirection();
+		
+		Inventory* getInventory();
 };
 
 class CNPC : public CCharacter

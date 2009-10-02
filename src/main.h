@@ -45,7 +45,7 @@
 #include "CCharacter.h"
 #include "CEditor.h"
 #include "CMessage.h"
-#include "Inventory.h"
+#include "InventoryScreen.h"
 #include "cameraFocusHandler.h"
 #include "utils.h"
 

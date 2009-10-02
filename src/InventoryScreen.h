@@ -16,40 +16,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "Inventory.h"
-#include "CDrawingHelpers.h"
+#ifndef __INVENTORYSCREEN_H__
+#define __INVENTORYSCREEN_H__
 
-Inventory::Inventory( Player *player_, int posX_ )
-	:	player( player_ ),
-		posX(posX_),
-		posY(100),
-		width(350),
-		height(400),
-		visible(false) {};
+#include "CTexture.h"
 
-Inventory::~Inventory()
+class Player;
+class InventoryItem;
+
+class InventoryScreen
 {
+	private:
+		Player *player;
+		bool visible;
+		int posX, posY, width, height;
+		CTexture textures;
+		
+		InventoryItem *floatingSelection;
+		
+		void drawBackpack();
+		void dropItemOnGround( InventoryItem *item );
 
-}
+	public:
+		InventoryScreen( Player *player_ );
+		~InventoryScreen();
 
-void Inventory::LoadTextures()
-{
-	textures.texture.reserve(1);
-	textures.LoadIMG("data/interface/inventory_base.tga",0);
-}
+		void setVisible( bool newVisible );
+		bool isVisible() const;
 
-bool Inventory::isVisible() const
-{
-    return visible;
-}
+		void clicked( int clickX, int clickY );
+		
+		void LoadTextures();
 
-void Inventory::setVisible(bool newVisible)
-{
-    visible = newVisible;
-}
+		void draw();
+		void drawFloatingSelection( int x, int y );
+		
+		bool isOnThisScreen( int x, int y ) const;
+		bool hasFloatingSelection() const;
+		
+		void selectFloating( InventoryItem *item );
+};
 
-void Inventory::draw()
-{
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-                                      world_x + posX - textures.texture[0].width - 50, textures.texture[0].width, world_y + posY, textures.texture[0].height);
-}
+#endif

@@ -948,6 +948,16 @@ void CCharacter::DrawLifebar()
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 };
 
+Player::Player()
+	:	inventory( Inventory( 10, 4 ) )
+{
+}
+
+Inventory* Player::getInventory()
+{
+	return &inventory;
+}
+
 void CCharacter::Damage(int amount)
 {
 	if (alive) {
