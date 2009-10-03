@@ -31,9 +31,9 @@ class InventoryScreen
 		bool visible;
 		int posX, posY, width, height;
 		CTexture textures;
-		
+
 		InventoryItem *floatingSelection;
-		
+
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
 
@@ -45,15 +45,17 @@ class InventoryScreen
 		bool isVisible() const;
 
 		void clicked( int clickX, int clickY );
-		
+
 		void LoadTextures();
 
 		void draw();
 		void drawFloatingSelection( int x, int y );
-		
+		void drawItemPlacement( int x, int y );
+
 		bool isOnThisScreen( int x, int y ) const;
+		bool isOnBackpackScreen( int x, int y ) const;
 		bool hasFloatingSelection() const;
-		
+
 		void selectFloating( InventoryItem *item );
 };
 
