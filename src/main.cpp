@@ -224,6 +224,7 @@ void DrawScene()
 	    inventoryScreen->draw();
 	}
 	if ( inventoryScreen->hasFloatingSelection() ) {
+	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
 		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
 
@@ -352,7 +353,7 @@ void initializePlayerDebugInventory()
 {
 	Inventory *playerInventory = character.getInventory();
 	Item *shield = new Item("shield", 2, 2, "data/items/shield.tga");
-	Item *sword =  new Item("sword", 3, 1, "data/items/sword.tga");
+	Item *sword =  new Item("sword", 1, 3, "data/items/sword.tga");
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
 }
@@ -629,9 +630,9 @@ int main(int argc, char* argv[])
 	dawn_configuration::debug_fileout = true;
 	dawn_configuration::show_info_messages = true;
 	dawn_configuration::show_warn_messages = true;
-	
+
 	if(dawn_init(argc, argv))
 		game_loop();
-	
+
 	return 0;
 }
