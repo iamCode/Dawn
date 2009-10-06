@@ -36,6 +36,15 @@ class InventoryScreen
 
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
+		
+		size_t backpackFieldWidth;
+		size_t backpackFieldHeight;
+		size_t backpackSeparatorWidth;
+		size_t backpackSeparatorHeight;
+		size_t backpackOffsetX;
+		size_t backpackOffsetY;
+		size_t numSlotsX;
+		size_t numSlotsY;
 
 	public:
 		InventoryScreen( Player *player_ );

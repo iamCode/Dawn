@@ -40,7 +40,15 @@ InventoryScreen::InventoryScreen( Player *player_ )
 		width(350),
 		height(400),
 		visible(false),
-		floatingSelection( NULL )
+		floatingSelection( NULL ),
+		backpackFieldWidth( 32 ),
+		backpackFieldHeight( 32 ),
+		backpackSeparatorWidth( 3 ),
+		backpackSeparatorHeight( 3 ),
+		backpackOffsetX( 96 ),
+		backpackOffsetY( 112 ),
+		numSlotsX( 10 ),
+		numSlotsY( 4 )
 {};
 
 InventoryScreen::~InventoryScreen()
@@ -64,8 +72,8 @@ void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 
 void InventoryScreen::clicked( int clickX, int clickY )
 {
-	size_t backpackOffsetX = 96;
-	size_t backpackOffsetY = 112;
+	// Put Floating selection out of inventory.
+	// Check several positions here for equipping, for now weapon hand and shield hand
 
 	Inventory *inventory = player->getInventory();
 
@@ -85,15 +93,12 @@ void InventoryScreen::clicked( int clickX, int clickY )
 	}
 
 	// calculate field index under mouse
-	if ( clickX < posX + backpackOffsetX
-	     || clickY < backpackOffsetY
-	     || clickX > posX + backpackOffsetX + 32 * 10 + (10-1)*3
-	     || clickY > backpackOffsetY + 32 * 4 + (4-1)*3 ) {
+	if ( ! isOnBackpackScreen( clickX, clickY ) ) {
 		return;
 	}
 
-	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (32+3);
-	int fieldIndexY = ( clickY - backpackOffsetY ) / (32+3);
+	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+	int fieldIndexY = ( clickY - backpackOffsetY ) / (backpackFieldHeight+backpackSeparatorHeight);
 
 	if ( floatingSelection != NULL ) {
 		if ( inventory->hasSufficientSpaceAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {
@@ -128,19 +133,16 @@ void InventoryScreen::drawBackpack()
 		Item *curItem = curInvItem->getItem();
 		CTexture *symbolTexture = curItem->getSymbolTexture();
 
-		size_t backpackOffsetX = 96;
-		size_t backpackOffsetY = 112;
-
 		size_t invPosX = curInvItem->getInventoryPosX();
 		size_t invPosY = curInvItem->getInventoryPosY();
 		size_t sizeX = curItem->getSizeX();
 		size_t sizeY = curItem->getSizeY();
 
 		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
-		                                  world_x + posX + backpackOffsetX + invPosX * 32 + invPosX * 3,
-		                                  32 * sizeX + (sizeX-1)*3,
-		                                  world_y + backpackOffsetY + invPosY * 32 + invPosY * 3,
-		                                  32 * sizeY + (sizeY-1)*3);
+		                                  world_x + posX + backpackOffsetX + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
+		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
+		                                  world_y + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
+		                                  backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}
 }
 
@@ -153,8 +155,8 @@ void InventoryScreen::drawFloatingSelection( int x, int y )
 		size_t sizeY = floatingItem->getSizeY();
 
 		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0].texture,
-		                                  x, 32 * sizeX + (sizeX-1)*3,
-		                                  y-20, 32 * sizeY + (sizeY-1)*3);
+		                                  x, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
+		                                  y-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}
 }
 
@@ -165,14 +167,12 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 	    Item *floatingItem = floatingSelection->getItem();
 	    Inventory *inventory = player->getInventory();
 	    GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
-	    size_t backpackOffsetX = 96;
-        size_t backpackOffsetY = 112;
-        size_t sizeX = floatingItem->getSizeX();
+	    size_t sizeX = floatingItem->getSizeX();
 		size_t sizeY = floatingItem->getSizeY();
 
         // calculate which backpack-slot we are looking at.
-		int fieldIndexX = ( x - (posX + backpackOffsetX) ) / (32+3);
-        int fieldIndexY = ( y - backpackOffsetY ) / (32+3);
+		int fieldIndexX = ( x - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+        int fieldIndexY = ( y - backpackOffsetY ) / (backpackFieldHeight+backpackSeparatorHeight);
 
         // set the shade-color depending on if the item fits or not.
         if ( inventory->hasSufficientSpaceAt( fieldIndexX, fieldIndexY, sizeX, sizeY ) )
@@ -183,19 +183,25 @@ void InventoryScreen::drawItemPlacement( int x, int y )
         }
 
         // calculate the size of the shade, if too big, we resize it.
-        int shadePosX = world_x + posX + backpackOffsetX + fieldIndexX * 32 + fieldIndexX * 3;
-        int shadePosY = world_y + backpackOffsetY-1 + fieldIndexY * 32 + fieldIndexY * 3;
-        int shadeWidth = 32 * sizeX + (sizeX-1)*3;
-        int shadeHeight = 32 * sizeY + (sizeY-1)*3;
+        int shadePosX = world_x + posX + backpackOffsetX 
+		                + fieldIndexX * backpackFieldWidth
+		                + fieldIndexX * backpackSeparatorWidth;
+        int shadePosY = world_y + backpackOffsetY-1 
+		                + fieldIndexY * backpackFieldHeight
+		                + fieldIndexY * backpackSeparatorHeight;
+        int shadeWidth = backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth;
+        int shadeHeight = backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight;
 
-        if ( sizeY + fieldIndexY > 4 )
+        if ( sizeY + fieldIndexY > numSlotsY )
         {
-            shadeHeight = 32 * ( sizeY - (( sizeY + fieldIndexY ) - 4 )) + ( sizeY - (( sizeY + fieldIndexY ) - 3 ))*3;
+            shadeHeight = backpackFieldWidth * ( sizeY - (( sizeY + fieldIndexY ) - numSlotsY ))
+			              + ( sizeY - (( sizeY + fieldIndexY ) - (numSlotsY-1) ))*backpackSeparatorWidth;
         }
 
-        if ( sizeX + fieldIndexX > 10 )
+        if ( sizeX + fieldIndexX > numSlotsX )
         {
-            shadeWidth = 32 * ( sizeX - (( sizeX + fieldIndexX ) - 10 )) + ( sizeX - (( sizeX + fieldIndexX ) - 9 ))*3;
+            shadeWidth = backpackFieldHeight * ( sizeX - (( sizeX + fieldIndexX ) - numSlotsX ))
+			             + ( sizeX - (( sizeX + fieldIndexX ) - (numSlotsX-1) ))*backpackSeparatorHeight;
         }
 
         glColor4fv(shade);
@@ -230,12 +236,10 @@ bool InventoryScreen::isOnThisScreen( int x, int y ) const
 
 bool InventoryScreen::isOnBackpackScreen( int x, int y ) const
 {
-    int slotPosX = posX + 96;
-    int slotPosY = posY + 11;
-    if ( x < slotPosX
-	     || y < slotPosY
-	     || x > slotPosX + 347
-	     || y > slotPosY+ 137 ) {
+	if ( x < posX + backpackOffsetX
+	     || y < backpackOffsetY
+	     || x > posX + backpackOffsetX + backpackFieldWidth * numSlotsX + (numSlotsX-1)*backpackSeparatorWidth
+	     || y > backpackOffsetY + backpackFieldHeight * numSlotsY + (numSlotsY-1)*backpackSeparatorHeight ) {
 		return false;
 	}
 	return true;
