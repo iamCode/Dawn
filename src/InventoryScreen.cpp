@@ -90,7 +90,7 @@ InventoryScreen::InventoryScreen( Player *player_ )
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::MAIN_HAND, 11, 369, 67, 102 );
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::OFF_HAND, 96, 369, 67, 102 );
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::BELT, 96, 319, 67, 32 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::LEGGING, 96, 199, 67, 102 );
+	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::LEGS, 96, 199, 67, 102 );
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::SHOULDER, 376, 504, 67, 67 );
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::CHEST, 376, 419, 67, 67 );
 	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::GLOVES, 376, 334, 67, 67 );
@@ -170,7 +170,7 @@ void InventoryScreen::clicked( int clickX, int clickY )
 			return;
 		}
 	}
-	
+
 	// calculate field index under mouse
 	if ( ! isOnBackpackScreen( clickX, clickY ) ) {
 		return;
@@ -264,10 +264,10 @@ void InventoryScreen::drawItemPlacement( int x, int y )
         }
 
         // calculate the size of the shade, if too big, we resize it.
-        int shadePosX = world_x + posX + backpackOffsetX 
+        int shadePosX = world_x + posX + backpackOffsetX
 		                + fieldIndexX * backpackFieldWidth
 		                + fieldIndexX * backpackSeparatorWidth;
-        int shadePosY = world_y + posY + backpackOffsetY-1 
+        int shadePosY = world_y + posY + backpackOffsetY-1
 		                + fieldIndexY * backpackFieldHeight
 		                + fieldIndexY * backpackSeparatorHeight;
         int shadeWidth = backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth;
@@ -294,7 +294,7 @@ void InventoryScreen::drawItemPlacement( int x, int y )
         glColor4f(1.0f,1.0f,1.0f,1.0f);
 		return;
 	}
-	
+
 	for ( size_t curSlotNr=0; curSlotNr<static_cast<size_t>(ItemSlot::COUNT); ++curSlotNr )
 	{
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
@@ -309,7 +309,7 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 			} else {
 				shade[0] = 1.0f; // red color
 			}
-		
+
 			InventoryScreenSlot *curScreenSlot = mySlots[ curSlotNr ];
 			glColor4fv(shade);
 			DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
@@ -342,15 +342,15 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
 	if ( invItem != NULL ) {
 		Item *item = invItem->getItem();
 		CTexture *symbolTexture = item->getSymbolTexture();
-		
+
 		InventoryScreenSlot *curScreenSlot = mySlots[ static_cast<size_t>( curSlot ) ];
-	
+
 		double stretchX = ((double)curScreenSlot->getSizeX()) / ((double)symbolTexture->texture[0].width);
 		double stretchY = ((double)curScreenSlot->getSizeY()) / ((double)symbolTexture->texture[0].height);
-		
+
 		size_t drawSizeX;
 		size_t drawSizeY;
-		
+
 		if ( stretchX < stretchY ) {
 			drawSizeX = curScreenSlot->getSizeX();
 			drawSizeY = symbolTexture->texture[0].height * stretchX;
@@ -420,4 +420,66 @@ void InventoryScreen::selectFloating( InventoryItem *item )
 	floatingSelection = item;
 }
 
+void InventoryScreen::drawItemTooltip( int x, int y )
+{
+    // draws tooltip over item in the backpack
+    if ( isOnBackpackScreen(x,y) && isVisible() && floatingSelection == NULL ) {
+        Inventory *inventory = player->getInventory();
+        InventoryItem *tooltipItem;
+        int fieldIndexX = ( x - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+        int fieldIndexY = ( y - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
+        if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
+            tooltipItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
+            tooltipItem->tt->draw( x, y );
+        }
+    }
+
+    // draws tooltip over equipped item
+    if ( isVisible() && floatingSelection == NULL && !isOnBackpackScreen( x, y ) )
+    {
+        ItemSlot::ItemSlot tooltipslot = getMouseOverSlot( x, y );
+
+        if ( tooltipslot )
+        {
+            Inventory *inventory = player->getInventory();
+            InventoryItem *tooltipItem;
+
+            tooltipItem = inventory->getItemAtSlot( tooltipslot );
+            if ( tooltipItem )
+            {
+                tooltipItem->tt->draw( x, y );
+            }
+        }
+    }
+}
+
+ItemSlot::ItemSlot InventoryScreen::getMouseOverSlot( int x, int y ) const
+{
+    if ( isOverSlot( ItemSlot::AMULET, x, y ) )
+        return ItemSlot::AMULET;
+    if ( isOverSlot( ItemSlot::BELT, x, y ) )
+        return ItemSlot::BELT;
+    if ( isOverSlot( ItemSlot::BOOTS, x, y ) )
+        return ItemSlot::BOOTS;
+    if ( isOverSlot( ItemSlot::CHEST, x, y ) )
+        return ItemSlot::CHEST;
+    if ( isOverSlot( ItemSlot::CLOAK, x, y ) )
+        return ItemSlot::CLOAK;
+    if ( isOverSlot( ItemSlot::GLOVES, x, y ) )
+        return ItemSlot::GLOVES;
+    if ( isOverSlot( ItemSlot::HEAD, x, y ) )
+        return ItemSlot::HEAD;
+    if ( isOverSlot( ItemSlot::LEGS, x, y ) )
+        return ItemSlot::LEGS;
+    if ( isOverSlot( ItemSlot::MAIN_HAND, x, y ) )
+        return ItemSlot::MAIN_HAND;
+    if ( isOverSlot( ItemSlot::OFF_HAND, x, y ) )
+        return ItemSlot::OFF_HAND;
+    if ( isOverSlot( ItemSlot::RING_ONE, x, y ) )
+        return ItemSlot::RING_ONE;
+    if ( isOverSlot( ItemSlot::RING_TWO, x, y ) )
+        return ItemSlot::RING_TWO;
+    if ( isOverSlot( ItemSlot::SHOULDER, x, y ) )
+        return ItemSlot::SHOULDER;
+}
