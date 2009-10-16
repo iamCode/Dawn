@@ -62,6 +62,9 @@ class CCharacter
 			curSpellAction = NULL;
 			experience = 0;
 		}
+		
+		virtual bool isPlayer() const;
+		
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
@@ -229,6 +232,7 @@ class Player : public CCharacter
 
 	public:
 		Player();
+		bool isPlayer() const;
 		void Move();
 		void Draw();
 		CCharacter* getTarget() const;

@@ -124,13 +124,33 @@ class AttackAction : public CAction
 
 			degrees += curArc + 90;
 
+			CTexture *usedTexture = actionTexture;
+			size_t xoffset = creator->getWidth() / 2;
+			size_t yoffset = 0;
+			size_t itemWidth = 50;
+			size_t itemHeight = 10;
+
+			if ( creator->isPlayer() ) {
+				Player *player = dynamic_cast<Player*>(creator);
+				Inventory *inventory = player->getInventory();
+				InventoryItem *invItem = inventory->getItemAtSlot( ItemSlot::MAIN_HAND );
+				if ( invItem != NULL ) {
+					Item *item = invItem->getItem();
+					usedTexture = item->getSymbolTexture();
+					degrees -= 90;
+					xoffset = 0;
+					yoffset = creator->getWidth() / 2;
+					itemWidth = item->getSizeX() * 20;
+					itemHeight = item->getSizeY() * 20;
+				}
+			}
 			glPushMatrix();
 			glTranslatef(creator->getXPos() + (creator->getWidth() / 2), creator->getYPos() + (creator->getHeight() / 2), 0.0f);
 			glRotatef(degrees,0.0f,0.0f,1.0f);
 
-			DrawingHelpers::mapTextureToRect( actionTexture->texture[0].texture,
-			                                  creator->getWidth() / 2, 50,
-			                                  0, 10 );
+			DrawingHelpers::mapTextureToRect( usedTexture->texture[0].texture,
+			                                  xoffset, itemWidth,
+			                                  yoffset, itemHeight );
 			glPopMatrix();
 		}
 
