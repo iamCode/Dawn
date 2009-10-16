@@ -27,6 +27,7 @@
 namespace dawn_configuration
 {
 	extern int screenWidth;
+	extern int screenHeight;
 }
 
 struct sTooltipText
@@ -42,7 +43,6 @@ struct sTooltipText
         color[1] = color_[1];
         color[2] = color_[2];
         color[3] = 1.0f;
-        std::cout << "Color_[0] = " << color_[0] << " and color[0] = " << color[0] << std::endl;
         font = new GLFT_Font("data/verdana.ttf",fontsize);
     }
 };

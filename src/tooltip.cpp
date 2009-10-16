@@ -60,14 +60,19 @@ void Tooltip::loadTextures()
 
 void Tooltip::draw( int x, int y )
 {
-    // set the first font Y-position on the top of the tooltip.
-    int font_y = y + world_y + height;
-
     // make sure the tooltip doesnt go "off screen"
     if ( width + x + 32 > dawn_configuration::screenWidth )
     {
         x = dawn_configuration::screenWidth - width - 32;
     }
+
+    if ( height + y + 32 > dawn_configuration::screenHeight )
+    {
+        y = dawn_configuration::screenHeight - height - 32;
+    }
+
+    // set the first font Y-position on the top of the tooltip.
+    int font_y = y + world_y + height;
 
     // set the correct position based on where we are
     x += world_x;
