@@ -191,7 +191,7 @@ std::vector<InventoryItem*> Inventory::getBackpackItems() const
 
 void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *item )
 {
-	assert( item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse ) );
+	assert( (item == NULL) || (item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse )) );
 	equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
 }
 
