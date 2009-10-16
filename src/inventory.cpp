@@ -65,6 +65,12 @@ Item* InventoryItem::getItem() const
 
 Inventory::Inventory( size_t sizeX_, size_t sizeY_ )
 {
+	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
+	equippedItems = new InventoryItem* [ numEquippable ];
+	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
+		equippedItems[ curEquippable ] = NULL;
+	}
+	
 	sizeX = sizeX_;
 	sizeY = sizeY_;
 
@@ -79,6 +85,8 @@ Inventory::Inventory( size_t sizeX_, size_t sizeY_ )
 
 Inventory::~Inventory()
 {
+	delete[] equippedItems;
+
 	for ( size_t curX=0; curX<sizeX; ++curX ) {
 		delete[] slotUsed[ curX ];
 	}
@@ -132,9 +140,64 @@ bool Inventory::hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY
 	return true;
 }
 
+bool Inventory::hasSufficientSpaceWithExchangeAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY )
+{
+	size_t inventoryMaxX = inventoryPosX + itemSizeX - 1;
+	size_t inventoryMaxY = inventoryPosY + itemSizeY - 1;
+	InventoryItem* firstBlockingItemFound = NULL;
+	if ( (inventoryMaxX >= sizeX) || (inventoryMaxY >= sizeY) ) {
+		return false;
+	}
+ 
+	for ( size_t curX=inventoryPosX; curX<=inventoryMaxX; ++curX ) {
+		for ( size_t curY=inventoryPosY; curY<=inventoryMaxY; ++curY ) {
+			if ( slotUsed[ curX ][ curY ] ) {
+				InventoryItem* curBlockinItemFound = getItemAt( curX, curY );
+				if ( firstBlockingItemFound == NULL ) {
+					firstBlockingItemFound = curBlockinItemFound;
+				}
+				else if ( firstBlockingItemFound != curBlockinItemFound ) {
+					return false;
+				}
+			}
+		}
+	}
+	
+	return true;
+}
+
+InventoryItem* Inventory::findFirstBlockingItem( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY )
+{
+	size_t inventoryMaxX = inventoryPosX + itemSizeX - 1;
+	size_t inventoryMaxY = inventoryPosY + itemSizeY - 1;
+	assert ( (inventoryMaxX < sizeX) && (inventoryMaxY < sizeY) );
+ 
+	for ( size_t curX=inventoryPosX; curX<=inventoryMaxX; ++curX ) {
+		for ( size_t curY=inventoryPosY; curY<=inventoryMaxY; ++curY ) {
+			if ( slotUsed[ curX ][ curY ] ) {
+				InventoryItem *curBlockinItemFound = getItemAt( curX, curY );
+				return curBlockinItemFound;
+			}
+		}
+	}
+	
+	return NULL;
+}
+
 std::vector<InventoryItem*> Inventory::getBackpackItems() const
 {
 	return backpackItems;
+}
+
+void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *item )
+{
+	assert( item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse ) );
+	equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
+}
+
+InventoryItem* Inventory::getItemAtSlot( ItemSlot::ItemSlot slotToUse )
+{
+	return equippedItems[ static_cast<size_t>( slotToUse ) ];
 }
 
 bool Inventory::isPositionFree( size_t invPosX, size_t invPosY ) const
@@ -208,3 +271,62 @@ void Inventory::insertItemAt( InventoryItem *inventoryItem, size_t invPosX, size
 		}
 	}
 }
+
+InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY )
+{
+	assert( hasSufficientSpaceWithExchangeAt( invPosX, invPosY, inventoryItem->getSizeX(), inventoryItem->getSizeY() ) );
+	InventoryItem *blockingItem = findFirstBlockingItem( invPosX, invPosY, inventoryItem->getSizeX(), inventoryItem->getSizeY() );
+	
+	if ( blockingItem != NULL ) {
+		removeItem( blockingItem );
+	}
+	
+	inventoryItem->setInventoryPos( invPosX, invPosY );
+	backpackItems.push_back( inventoryItem );
+	
+	size_t inventoryMaxX = invPosX + inventoryItem->getSizeX() - 1;
+	size_t inventoryMaxY = invPosY + inventoryItem->getSizeY() - 1;
+	
+	for ( size_t curX=invPosX; curX<=inventoryMaxX; ++curX ) {
+		for ( size_t curY=invPosY; curY<=inventoryMaxY; ++curY ) {
+			slotUsed[ curX ][ curY ] = true;
+		}
+	}
+	
+	return blockingItem;
+}
+
+EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlot )
+{
+	switch ( itemSlot ) {
+		case ItemSlot::HEAD:
+			return EquipPosition::HEAD;
+		case ItemSlot::AMULET:
+			return EquipPosition::AMULET;
+		case ItemSlot::MAIN_HAND:
+			return EquipPosition::MAIN_HAND;
+		case ItemSlot::OFF_HAND:
+			return EquipPosition::OFF_HAND;
+		case ItemSlot::BELT:
+			return EquipPosition::BELT;
+		case ItemSlot::LEGGING:
+			return EquipPosition::LEGGING;
+		case ItemSlot::SHOULDER:
+			return EquipPosition::SHOULDER;
+		case ItemSlot::CHEST:
+			return EquipPosition::CHEST;
+		case ItemSlot::GLOVES:
+			return EquipPosition::GLOVES;
+		case ItemSlot::CLOAK:
+			return EquipPosition::CLOAK;
+		case ItemSlot::BOOTS:
+			return EquipPosition::BOOTS;
+		case ItemSlot::RING_ONE:
+			return EquipPosition::RING;
+		case ItemSlot::RING_TWO:
+			return EquipPosition::RING;
+		case ItemSlot::COUNT:
+			return EquipPosition::NONE;
+	}
+}
+

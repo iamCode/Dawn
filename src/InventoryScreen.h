@@ -20,9 +20,29 @@
 #define __INVENTORYSCREEN_H__
 
 #include "CTexture.h"
+#include "item.h" // for EquipPosition
 
 class Player;
 class InventoryItem;
+
+class InventoryScreenSlot
+{
+	private:
+		ItemSlot::ItemSlot itemSlot;
+		size_t offsetX;
+		size_t offsetY;
+		size_t sizeX;
+		size_t sizeY;
+
+	public:
+		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY );
+		size_t getOffsetX() const;
+		size_t getOffsetY() const;
+		size_t getSizeX() const;
+		size_t getSizeY() const;
+		
+		ItemSlot::ItemSlot getItemSlot() const;
+};
 
 class InventoryScreen
 {
@@ -33,6 +53,8 @@ class InventoryScreen
 		CTexture textures;
 
 		InventoryItem *floatingSelection;
+		
+		InventoryScreenSlot **mySlots;
 
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
@@ -45,7 +67,7 @@ class InventoryScreen
 		size_t backpackOffsetY;
 		size_t numSlotsX;
 		size_t numSlotsY;
-
+		
 	public:
 		InventoryScreen( Player *player_ );
 		~InventoryScreen();
@@ -58,11 +80,13 @@ class InventoryScreen
 		void LoadTextures();
 
 		void draw();
+		void drawSlot( ItemSlot::ItemSlot curSlot );
 		void drawFloatingSelection( int x, int y );
 		void drawItemPlacement( int x, int y );
 
 		bool isOnThisScreen( int x, int y ) const;
 		bool isOnBackpackScreen( int x, int y ) const;
+		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const;
 		bool hasFloatingSelection() const;
 
 		void selectFloating( InventoryItem *item );

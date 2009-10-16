@@ -18,10 +18,11 @@
 
 #include "item.h"
 
-Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolFile )
+Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolFile, EquipPosition::EquipPosition equipPosition_ )
 	:	name( name_ ),
 		sizeX( sizeX_ ),
-		sizeY( sizeY_ )
+		sizeY( sizeY_ ),
+		equipPosition( equipPosition_ )
 {
 	symbolTexture.texture.reserve(1);
 	symbolTexture.LoadIMG( symbolFile, 0 );
@@ -46,3 +47,10 @@ CTexture* Item::getSymbolTexture()
 {
 	return &symbolTexture;
 }
+
+EquipPosition::EquipPosition Item::getEquipPosition() const
+{
+	return equipPosition;
+}
+
+

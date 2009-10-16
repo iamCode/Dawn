@@ -352,8 +352,8 @@ void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &q
 void initializePlayerDebugInventory()
 {
 	Inventory *playerInventory = character.getInventory();
-	Item *shield = new Item("shield", 2, 2, "data/items/shield.tga");
-	Item *sword =  new Item("sword", 1, 3, "data/items/sword.tga");
+	Item *shield = new Item("shield", 2, 2, "data/items/shield.tga", EquipPosition::OFF_HAND);
+	Item *sword =  new Item("sword", 1, 3, "data/items/sword.tga", EquipPosition::MAIN_HAND);
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
 }

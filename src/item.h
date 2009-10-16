@@ -22,10 +22,51 @@
 #include <string>
 #include "CTexture.h"
 
+namespace ItemSlot
+{
+	enum ItemSlot
+	{
+		HEAD,
+		AMULET,
+		MAIN_HAND,
+		OFF_HAND,
+		BELT,
+		LEGGING,
+		SHOULDER,
+		CHEST,
+		GLOVES,
+		CLOAK,
+		BOOTS,
+		RING_ONE,
+		RING_TWO,
+		COUNT // this is always the las and gives the size of the enum
+	};
+}
+
+namespace EquipPosition
+{
+	enum EquipPosition
+	{
+		HEAD,
+		AMULET,
+		MAIN_HAND,
+		OFF_HAND,
+		BELT,
+		LEGGING,
+		SHOULDER,
+		CHEST,
+		GLOVES,
+		CLOAK,
+		BOOTS,
+		RING,
+		NONE
+	};
+}
+
 class Item
 {
 	public:
-		Item( std::string name, size_t sizeX, size_t sizeY, std::string symbolFile );
+		Item( std::string name, size_t sizeX, size_t sizeY, std::string symbolFile, EquipPosition::EquipPosition equipPosition );
 		// probably like CCharacter: baseOnType
 		
 		std::string getName() const;
@@ -35,12 +76,16 @@ class Item
 		
 		CTexture* getSymbolTexture();
 		
+		EquipPosition::EquipPosition getEquipPosition() const;
+		
 	private:
 		std::string name;
 		size_t sizeX;
 		size_t sizeY;
 		
 		CTexture symbolTexture;
+		
+		EquipPosition::EquipPosition equipPosition;
 };
 
 #endif // __ITEM_H__
