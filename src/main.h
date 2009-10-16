@@ -48,6 +48,7 @@
 #include "InventoryScreen.h"
 #include "cameraFocusHandler.h"
 #include "utils.h"
+#include "tooltip.h"
 
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
