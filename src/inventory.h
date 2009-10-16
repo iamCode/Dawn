@@ -20,12 +20,14 @@
 #define __INVENTORY_H__
 
 #include <vector>
+#include "tooltip.h"
 #include "item.h"
 
 class InventoryItem
 {
 	public:
 		InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY );
+		~InventoryItem();
 		size_t getInventoryPosX() const;
 		size_t getInventoryPosY() const;
 		void setInventoryPos( size_t inventoryPosX, size_t inventoryPosY );
@@ -34,17 +36,18 @@ class InventoryItem
 		size_t getSizeY() const;
 
 		Item* getItem() const;
-		
+        itemTooltip *tt;
 		// TODO: set this
+
 		EquipPosition::EquipPosition getEquippedPosition() const;
 		bool isEquipped() const;
 
 	private:
 		Item *item;
-		
+
 		size_t inventoryPosX;
 		size_t inventoryPosY;
-		
+
 		EquipPosition::EquipPosition equippedPosition;
 };
 
@@ -56,16 +59,16 @@ class Inventory
 		bool insertItem( Item *item );
 		bool hasSufficientSpaceAt( size_t invPosX, size_t invPosY, size_t itemSizeX, size_t itemSizeY ) const;
 		bool hasSufficientSpaceWithExchangeAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY );
-		
+
 		std::vector<InventoryItem*> getEquippedItems() const;
 		std::vector<InventoryItem*> getBackpackItems() const;
-		
+
 		void wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *item );
 		InventoryItem* getItemAtSlot( ItemSlot::ItemSlot slotToUse );
-		
+
 		bool isPositionFree( size_t invPosX, size_t invPosY ) const;
 		InventoryItem* getItemAt( size_t invPosX, size_t invPosY );
-		
+
 		InventoryItem* insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		bool containsItem( InventoryItem *inventoryItem ) const;
 		void removeItem( InventoryItem *inventoryItem );
@@ -74,7 +77,7 @@ class Inventory
 	private:
 		void insertItemAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		InventoryItem* findFirstBlockingItem( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY );
-		
+
 		size_t sizeX;
 		size_t sizeY;
 		bool **slotUsed;

@@ -38,7 +38,7 @@ namespace dawn_configuration {
 	int screenHeight = 768;
 	int bpp = 32;
 }
-// FIXME: This is a temp hack until the 
+// FIXME: This is a temp hack until the
 // 	objects dont need those variables.
 //	david: I'll have this sorted pretty
 //	quick.
@@ -165,20 +165,20 @@ void DrawScene()
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
 	zone1.DrawZone();
-	
+
 	// draw items on the ground
 	for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
 		Item *curItem = groundItems[ curItemNr ];
 		int posX = groundPositions[ curItemNr ].first;
 		int posY = groundPositions[ curItemNr ].second;
-		
+
 		DrawingHelpers::mapTextureToRect( curItem->getSymbolTexture()->texture[0].texture,
 		                                  posX,
 		                                  curItem->getSizeX() * 32,
 		                                  posY,
 		                                  curItem->getSizeY() * 32 );
 	}
-	
+
 	character.Draw();
 	for (unsigned int x=0; x<NPC.size(); x++) {
 		NPC[x]->Draw();
@@ -223,9 +223,15 @@ void DrawScene()
 	if ( inventoryScreen->isVisible() ) {
 	    inventoryScreen->draw();
 	}
+
 	if ( inventoryScreen->hasFloatingSelection() ) {
 	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
 		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+	}
+
+	if ( inventoryScreen->isVisible() )
+	{
+	    inventoryScreen->drawItemTooltip( mouseX, mouseY );
 	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
@@ -243,18 +249,18 @@ void DrawScene()
 }
 
 bool dawn_init(int argc, char** argv)
-{		
+{
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
-		
+
 		dawn_debug_info("Initializing...");
 		dawn_debug_info("Checking if the game data exists");
-		
+
 		if(!utils::file_exists("data/mobdata.all"))
-			dawn_debug_fatal("The LUA script \"mobdata.all\", " 
+			dawn_debug_fatal("The LUA script \"mobdata.all\", "
 				"Could not be found");
 		if(!utils::file_exists("data/verdana.ttf"))
-			dawn_debug_fatal("Font  \"verdana.ttf\", " 
+			dawn_debug_fatal("Font  \"verdana.ttf\", "
 				"Could not be found");
 
 		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
@@ -263,16 +269,16 @@ bool dawn_init(int argc, char** argv)
 		atexit(SDL_Quit);
 
 		if (dawn_configuration::fullscreenenabled)
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth, 
-				dawn_configuration::screenHeight, dawn_configuration::bpp, 
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
+				dawn_configuration::screenHeight, dawn_configuration::bpp,
 				SDL_OPENGL | SDL_FULLSCREEN);
 		else
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth, 
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
 				dawn_configuration::screenHeight, dawn_configuration::bpp, SDL_OPENGL);
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
-		
+
 		glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -292,7 +298,7 @@ bool dawn_init(int argc, char** argv)
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
 		dawn_debug_info("Loading the game data files and objects");
-		
+
 		LuaFunctions::executeLuaFile("data/mobdata.all");
 
 		zone1.LoadZone("data/zone1");
@@ -346,16 +352,33 @@ void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &q
 	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
 	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
 	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
-	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );	
+	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
 }
 
 void initializePlayerDebugInventory()
 {
 	Inventory *playerInventory = character.getInventory();
-	Item *shield = new Item("shield", 2, 2, "data/items/shield.tga", EquipPosition::OFF_HAND);
-	Item *sword =  new Item("sword", 1, 3, "data/items/sword.tga", EquipPosition::MAIN_HAND);
+	Item *shield = new Item("A wooden shield", 2, 2, "data/items/shield.tga", ItemQuality::NORMAL, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
+	Item *sword =  new Item("A rusty sword", 1, 3, "data/items/sword.tga", ItemQuality::POOR, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
+	Item *swordOfKhazom = new Item("Sword of Khazom", 1, 3, "data/items/SwordOfKhazom.tga", ItemQuality::LORE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
+	Item *ringOfLicor = new Item("Eye of Licor", 1, 1, "data/items/EyeOfLicor.tga", ItemQuality::RARE, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
+	ringOfLicor->setIntellect( 4 );
+	ringOfLicor->setMana( 15 );
+	ringOfLicor->setStrength ( -1 );
+	swordOfKhazom->setDexterity( 5 );
+	swordOfKhazom->setStrength( 10 );
+	swordOfKhazom->setHealth( 75 );
+	swordOfKhazom->setMinDamage( 10 );
+	swordOfKhazom->setMaxDamage( 25 );
+	swordOfKhazom->setDescription( "Once wielded by Irk the Unholy." );
+	shield->setArmor( 30 );
+	sword->setStrength( -1 );
+	sword->setMinDamage( 3 );
+	sword->setMaxDamage( 6 );
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
+	playerInventory->insertItem( swordOfKhazom );
+	playerInventory->insertItem( ringOfLicor );
 }
 
 void game_loop()
@@ -400,7 +423,7 @@ void game_loop()
 				}
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
-					if ( ( inventoryScreen->isVisible() 
+					if ( ( inventoryScreen->isVisible()
 					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
 						inventoryScreen->clicked( mouseX, mouseY );
@@ -417,7 +440,7 @@ void game_loop()
 										break;
 									}
 								}
-								
+
 								if ( !foundSomething ) {
 									// search for items
 									for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {

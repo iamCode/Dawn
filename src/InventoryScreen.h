@@ -40,7 +40,7 @@ class InventoryScreenSlot
 		size_t getOffsetY() const;
 		size_t getSizeX() const;
 		size_t getSizeY() const;
-		
+
 		ItemSlot::ItemSlot getItemSlot() const;
 };
 
@@ -53,12 +53,14 @@ class InventoryScreen
 		CTexture textures;
 
 		InventoryItem *floatingSelection;
-		
+
+		InventoryScreenSlot **mySlots;
+
 		InventoryScreenSlot **mySlots;
 
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
-		
+
 		size_t backpackFieldWidth;
 		size_t backpackFieldHeight;
 		size_t backpackSeparatorWidth;
@@ -67,7 +69,7 @@ class InventoryScreen
 		size_t backpackOffsetY;
 		size_t numSlotsX;
 		size_t numSlotsY;
-		
+
 	public:
 		InventoryScreen( Player *player_ );
 		~InventoryScreen();
@@ -83,11 +85,14 @@ class InventoryScreen
 		void drawSlot( ItemSlot::ItemSlot curSlot );
 		void drawFloatingSelection( int x, int y );
 		void drawItemPlacement( int x, int y );
+		void drawItemTooltip( int x, int y );
 
 		bool isOnThisScreen( int x, int y ) const;
 		bool isOnBackpackScreen( int x, int y ) const;
 		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const;
 		bool hasFloatingSelection() const;
+
+		ItemSlot::ItemSlot getMouseOverSlot(int x, int y) const;
 
 		void selectFloating( InventoryItem *item );
 };

@@ -27,6 +27,12 @@ InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t invento
 		inventoryPosX( inventoryPosX_ ),
 		inventoryPosY( inventoryPosY_ )
 {
+    tt = new itemTooltip(item_);
+}
+
+InventoryItem::~InventoryItem()
+{
+    delete tt;
 }
 
 size_t InventoryItem::getInventoryPosX() const
@@ -70,7 +76,7 @@ Inventory::Inventory( size_t sizeX_, size_t sizeY_ )
 	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
 		equippedItems[ curEquippable ] = NULL;
 	}
-	
+
 	sizeX = sizeX_;
 	sizeY = sizeY_;
 
@@ -97,7 +103,7 @@ bool Inventory::insertItem( Item *item )
 {
 	size_t itemSizeX = item->getSizeX();
 	size_t itemSizeY = item->getSizeY();
-	
+
 	bool foundPosition = false;
 	size_t foundX;
 	size_t foundY;
@@ -112,11 +118,11 @@ bool Inventory::insertItem( Item *item )
 			}
 		}
 	}
-	
+
 	if ( ! foundPosition ) {
 		return false;
 	}
-	
+
 	InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY );
 	insertItemAt( newInvItem, foundX, foundY );
 }
@@ -128,7 +134,7 @@ bool Inventory::hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY
 	if ( (inventoryMaxX >= sizeX) || (inventoryMaxY >= sizeY) ) {
 		return false;
 	}
- 
+
 	for ( size_t curX=inventoryPosX; curX<=inventoryMaxX; ++curX ) {
 		for ( size_t curY=inventoryPosY; curY<=inventoryMaxY; ++curY ) {
 			if ( slotUsed[ curX ][ curY ] ) {
@@ -136,7 +142,7 @@ bool Inventory::hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -148,7 +154,7 @@ bool Inventory::hasSufficientSpaceWithExchangeAt( size_t inventoryPosX, size_t i
 	if ( (inventoryMaxX >= sizeX) || (inventoryMaxY >= sizeY) ) {
 		return false;
 	}
- 
+
 	for ( size_t curX=inventoryPosX; curX<=inventoryMaxX; ++curX ) {
 		for ( size_t curY=inventoryPosY; curY<=inventoryMaxY; ++curY ) {
 			if ( slotUsed[ curX ][ curY ] ) {
@@ -162,7 +168,7 @@ bool Inventory::hasSufficientSpaceWithExchangeAt( size_t inventoryPosX, size_t i
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -171,7 +177,7 @@ InventoryItem* Inventory::findFirstBlockingItem( size_t inventoryPosX, size_t in
 	size_t inventoryMaxX = inventoryPosX + itemSizeX - 1;
 	size_t inventoryMaxY = inventoryPosY + itemSizeY - 1;
 	assert ( (inventoryMaxX < sizeX) && (inventoryMaxY < sizeY) );
- 
+
 	for ( size_t curX=inventoryPosX; curX<=inventoryMaxX; ++curX ) {
 		for ( size_t curY=inventoryPosY; curY<=inventoryMaxY; ++curY ) {
 			if ( slotUsed[ curX ][ curY ] ) {
@@ -180,7 +186,7 @@ InventoryItem* Inventory::findFirstBlockingItem( size_t inventoryPosX, size_t in
 			}
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -220,13 +226,13 @@ InventoryItem* Inventory::getItemAt( size_t invPosX, size_t invPosY )
 		size_t itemPosY = curItem->getInventoryPosY();
 		size_t itemSizeX = curItem->getItem()->getSizeX();
 		size_t itemSizeY = curItem->getItem()->getSizeY();
-		
+
 		if ( itemPosX <= invPosX && itemPosX + itemSizeX > invPosX
 		     && itemPosY <= invPosY && itemPosY + itemSizeY > invPosY ) {
 			return curItem;
 		}
 	}
-	
+
 	// should have found an item so should never reach here
 	abort();
 }
@@ -261,10 +267,10 @@ void Inventory::insertItemAt( InventoryItem *inventoryItem, size_t invPosX, size
 	assert( hasSufficientSpaceAt( invPosX, invPosY, inventoryItem->getSizeX(), inventoryItem->getSizeY() ) );
 	inventoryItem->setInventoryPos( invPosX, invPosY );
 	backpackItems.push_back( inventoryItem );
-	
+
 	size_t inventoryMaxX = invPosX + inventoryItem->getSizeX() - 1;
 	size_t inventoryMaxY = invPosY + inventoryItem->getSizeY() - 1;
-	
+
 	for ( size_t curX=invPosX; curX<=inventoryMaxX; ++curX ) {
 		for ( size_t curY=invPosY; curY<=inventoryMaxY; ++curY ) {
 			slotUsed[ curX ][ curY ] = true;
@@ -276,23 +282,23 @@ InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem
 {
 	assert( hasSufficientSpaceWithExchangeAt( invPosX, invPosY, inventoryItem->getSizeX(), inventoryItem->getSizeY() ) );
 	InventoryItem *blockingItem = findFirstBlockingItem( invPosX, invPosY, inventoryItem->getSizeX(), inventoryItem->getSizeY() );
-	
+
 	if ( blockingItem != NULL ) {
 		removeItem( blockingItem );
 	}
-	
+
 	inventoryItem->setInventoryPos( invPosX, invPosY );
 	backpackItems.push_back( inventoryItem );
-	
+
 	size_t inventoryMaxX = invPosX + inventoryItem->getSizeX() - 1;
 	size_t inventoryMaxY = invPosY + inventoryItem->getSizeY() - 1;
-	
+
 	for ( size_t curX=invPosX; curX<=inventoryMaxX; ++curX ) {
 		for ( size_t curY=invPosY; curY<=inventoryMaxY; ++curY ) {
 			slotUsed[ curX ][ curY ] = true;
 		}
 	}
-	
+
 	return blockingItem;
 }
 
@@ -309,8 +315,8 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 			return EquipPosition::OFF_HAND;
 		case ItemSlot::BELT:
 			return EquipPosition::BELT;
-		case ItemSlot::LEGGING:
-			return EquipPosition::LEGGING;
+		case ItemSlot::LEGS:
+			return EquipPosition::LEGS;
 		case ItemSlot::SHOULDER:
 			return EquipPosition::SHOULDER;
 		case ItemSlot::CHEST:
@@ -329,4 +335,3 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 			return EquipPosition::NONE;
 	}
 }
-
