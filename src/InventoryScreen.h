@@ -56,8 +56,6 @@ class InventoryScreen
 
 		InventoryScreenSlot **mySlots;
 
-		InventoryScreenSlot **mySlots;
-
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
 
