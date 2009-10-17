@@ -73,11 +73,6 @@ ItemQuality::ItemQuality Item::getItemQuality() const
     return itemQuality;
 }
 
-ItemSlot::ItemSlot Item::getItemSlot() const
-{
-    return itemSlot;
-}
-
 ItemType::ItemType Item::getItemType() const
 {
     return itemType;
@@ -289,7 +284,7 @@ std::string Item::getWeaponTypeText() const
 
 std::string Item::getEquipPositionText() const
 {
-    switch ( itemSlot )
+    switch ( equipPosition )
     {
         case EquipPosition::MAIN_HAND:
             return "Main hand";

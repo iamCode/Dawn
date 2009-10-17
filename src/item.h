@@ -188,7 +188,6 @@ class Item
 		size_t sizeY;
 
 		ItemQuality::ItemQuality itemQuality;
-		ItemSlot::ItemSlot itemSlot;
 		ItemType::ItemType itemType;
 		ArmorType::ArmorType armorType;
 		WeaponType::WeaponType weaponType;

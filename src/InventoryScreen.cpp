@@ -67,6 +67,11 @@ ItemSlot::ItemSlot InventoryScreenSlot::getItemSlot() const
 	return itemSlot;
 }
 
+void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot slotToUse, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY )
+{
+	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY );
+}
+
 InventoryScreen::InventoryScreen( Player *player_ )
 	:	player( player_ ),
 		posX(0),
@@ -84,21 +89,36 @@ InventoryScreen::InventoryScreen( Player *player_ )
 		numSlotsX( 10 ),
 		numSlotsY( 4 ) {
 	mySlots = new InventoryScreenSlot*[ static_cast<size_t>( ItemSlot::COUNT )];
-	size_t curEntry = 0;
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::HEAD, 96, 539, 67, 67 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::AMULET, 131, 489, 32, 32 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::MAIN_HAND, 11, 369, 67, 102 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::OFF_HAND, 96, 369, 67, 102 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::BELT, 96, 319, 67, 32 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::LEGS, 96, 199, 67, 102 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::SHOULDER, 376, 504, 67, 67 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::CHEST, 376, 419, 67, 67 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::GLOVES, 376, 334, 67, 67 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::CLOAK, 461, 369, 67, 102 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::RING_ONE, 376, 284, 32, 32 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::RING_TWO, 411, 284, 32, 32 );
-	mySlots[ curEntry++ ] = new InventoryScreenSlot( ItemSlot::BOOTS, 376, 199, 67, 67 );
-	assert( curEntry == static_cast<size_t>( ItemSlot::COUNT ) );
+	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
+		mySlots[curSlotNr] = NULL;
+	}
+	
+	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 96, 539, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 131, 489, 32, 32 );
+	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 11, 369, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 96, 369, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 96, 319, 67, 32 );
+	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 96, 199, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 376, 504, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 376, 419, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 376, 334, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 461, 369, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 376, 284, 32, 32 );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 411, 284, 32, 32 );
+	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 376, 199, 67, 67 );
+	
+	// check that all slots were set
+	bool allSlotsFilled = true;
+	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
+		if ( mySlots[curSlotNr] == NULL ) {
+			allSlotsFilled = false;
+			dawn_debug_warn( "InventoryScreenSlot for position %d missing. You have to look up the %dth ItemSlot in ItemSlot::ItemSlot to find out which it is", curSlotNr, curSlotNr + 1 );
+		}
+	}
+	if ( ! allSlotsFilled ) {
+		dawn_debug_warn( "I don't have InventoryScreenSlots for all items... aborting" );
+		abort();
+	}
 };
 
 InventoryScreen::~InventoryScreen()
@@ -440,7 +460,7 @@ void InventoryScreen::drawItemTooltip( int x, int y )
     {
         ItemSlot::ItemSlot tooltipslot = getMouseOverSlot( x, y );
 
-        if ( tooltipslot )
+        if ( tooltipslot != ItemSlot::COUNT )
         {
             Inventory *inventory = player->getInventory();
             InventoryItem *tooltipItem;
@@ -482,4 +502,5 @@ ItemSlot::ItemSlot InventoryScreen::getMouseOverSlot( int x, int y ) const
         return ItemSlot::RING_TWO;
     if ( isOverSlot( ItemSlot::SHOULDER, x, y ) )
         return ItemSlot::SHOULDER;
+	return ItemSlot::COUNT;
 }
