@@ -36,3 +36,4 @@ enum Direction {
 };
 
 #endif // __C_DIRECTION_H
+
