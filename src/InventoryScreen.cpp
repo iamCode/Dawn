@@ -92,21 +92,21 @@ InventoryScreen::InventoryScreen( Player *player_ )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		mySlots[curSlotNr] = NULL;
 	}
-	
+
 	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 96, 539, 67, 67 );
 	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 131, 489, 32, 32 );
 	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 11, 369, 67, 102 );
-	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 96, 369, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 96, 369, 67, 102 );
 	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 96, 319, 67, 32 );
 	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 96, 199, 67, 102 );
 	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 376, 504, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 376, 419, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 376, 419, 67, 67 );
 	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 376, 334, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 461, 369, 67, 102 );
+	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 461, 369, 67, 102 );
 	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 376, 284, 32, 32 );
 	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 411, 284, 32, 32 );
 	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 376, 199, 67, 67 );
-	
+
 	// check that all slots were set
 	bool allSlotsFilled = true;
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
