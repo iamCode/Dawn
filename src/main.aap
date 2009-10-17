@@ -10,9 +10,10 @@ OPTIMIZE = 3
 CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -ggdb
 LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image
 
-# rule for generation tolua-headers from package files
-:rule %Generated.cpp %Generated.h : %.pkg
-    :sys tolua++ -o $(target[0]) -H $(target[1]) $source
+# rule for generation tolua-headers from package files 
+# (only enable if you are working on the .pkg file because it would be checked too often otherwise)
+#:rule %Generated.cpp %Generated.h : %.pkg
+#    :sys tolua++ -o $(target[0]) -H $(target[1]) $source
 
 :program dawn : 
         *.cpp
