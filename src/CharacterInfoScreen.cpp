@@ -64,25 +64,60 @@ void CharacterInfoScreen::initFonts()
 void CharacterInfoScreen::drawScreen()
 {
 	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-									  world_x + posX, width, world_y + posY, height );
+	                                  world_x + posX, width, world_y + posY, height );
+	
+	size_t descriptionTextStart = 20;
+	size_t valueFieldStart = 160;
+	size_t topBorderDistance = 20;
+	size_t lineDistance = 30;
+	
 	int curLine = 0;
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Level" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d", player->getLevel() );
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Level" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%d", player->getLevel() );
 	curLine++;
+
 	uint64_t nextXP = (player->getExpNeededForLevel(player->getLevel()+1));
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "EXP" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%jd / %jd", player->getExperience(), nextXP );
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "EXP" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%jd / %jd", player->getExperience(), nextXP );
 	curLine++;
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Health" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d / %d", player->getCurrentHealth(), player->getMaxHealth() );
+
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Health" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%d / %d", player->getCurrentHealth(), player->getMaxHealth() );
 	curLine++;
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Mana" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d / %d", player->getCurrentMana(), player->getMaxMana() );
+
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Mana" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%d / %d", player->getCurrentMana(), player->getMaxMana() );
 	curLine++;
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Strength" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d", player->getStrength() );
+
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Strength" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%d", player->getStrength() );
 	curLine++;
-	infoFont->drawText( world_x + posX + 20, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "Damage" );
-	infoFont->drawText( world_x + posX + 160, world_y + posY + height - (20 + curLine*30 + infoFont->getHeight()), "%d", player->getStrength() );
+
+	infoFont->drawText( world_x + posX + descriptionTextStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Damage" );
+	infoFont->drawText( world_x + posX + valueFieldStart,
+	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "%d", player->getStrength() );
 	curLine++;
 }
