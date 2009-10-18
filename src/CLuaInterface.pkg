@@ -59,6 +59,12 @@ class CCharacter {
 
     void setLevel( int newLevel );
     uint8_t getLevel() const;
+
+    void setMinDamage( int newMinDamage );
+    uint16_t getMinDamage();
+
+    void setMaxDamage( int newMaxDamage );
+    uint16_t getMaxDamage();
 };
 
 namespace DawnInterface

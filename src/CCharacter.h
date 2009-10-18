@@ -102,6 +102,7 @@ class CCharacter
 
 		void setStrength( uint16_t newStrength );
 		uint16_t getStrength() const;
+		virtual uint16_t getModifiedStrength() const;
 		void modifyStrength( int16_t strengthModifier );
 
 		void setDexterity( uint16_t newDexterity );
@@ -156,15 +157,23 @@ class CCharacter
 		bool isAlive() const {
 			return alive;
 		}
+
+		double getDamageModifier() const;
+
+		void setMinDamage( uint16_t newMinDamage );
+		uint16_t getMinDamage() const;
+		virtual uint16_t getModifiedMinDamage() const;
 		
-		virtual size_t getMinDamage() const;
-		virtual size_t getMaxDamage() const;
+		void setMaxDamage( uint16_t newMaxDamage );
+		uint16_t getMaxDamage() const;
+		virtual uint16_t getModifiedMaxDamage() const;
 
 		// NPC attributes
 		std::string name;
 		uint16_t strength, dexterity, vitality, intellect, wisdom;
 		uint16_t wander_radius;
 		uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
+		uint16_t min_damage, max_damage;
 		uint8_t alignment, level;
 
 		void DrawLifebar();
@@ -244,8 +253,8 @@ class Player : public CCharacter
 		Direction GetDirection();
 		
 		uint16_t getModifiedStrength() const;
-		size_t getMinDamage() const;
-		size_t getMaxDamage() const;
+		uint16_t getModifiedMinDamage() const;
+		uint16_t getModifiedMaxDamage() const;
 		
 		Inventory* getInventory();
 };

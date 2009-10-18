@@ -118,6 +118,6 @@ void CharacterInfoScreen::drawScreen()
 	                    "Damage" );
 	infoFont->drawText( world_x + posX + valueFieldStart,
 	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "%d-%d", player->getMinDamage(), player->getMaxDamage() );
+	                    "%d-%d", player->getModifiedMinDamage(), player->getModifiedMaxDamage() );
 	curLine++;
 }

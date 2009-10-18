@@ -61,6 +61,8 @@ void CCharacter::baseOnType( std::string otherName )
 	setMaxHealth( other->getMaxHealth() );
 	setMaxMana( other->getMaxMana() );
 	setMaxEnergy( other->getMaxEnergy() );
+	setMinDamage( other->getMinDamage() );
+	setMaxDamage( other->getMaxDamage() );
 	setTexture( other->getTexture() );
 	setLifebar( other->getLifebar() );
 	setWanderRadius ( other->getWanderRadius() );
@@ -87,6 +89,11 @@ void CCharacter::modifyStrength( int16_t strengthModifier )
 		setStrength( std::numeric_limits<uint16_t>::max() );
 	else
 		setStrength( getStrength() + strengthModifier );
+}
+
+uint16_t CCharacter::getModifiedStrength() const
+{
+	return getStrength();
 }
 
 void CCharacter::setDexterity( uint16_t newDexterity )
@@ -314,6 +321,43 @@ void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
             current_energy += currentEnergyModifier;
         }
     }
+}
+
+double CCharacter::getDamageModifier() const
+{
+	return (1 + static_cast<double>(getModifiedStrength()) / 100);
+}
+
+void CCharacter::setMinDamage( uint16_t newMinDamage )
+{
+	min_damage = newMinDamage;
+}
+
+uint16_t CCharacter::getMinDamage() const
+{
+	return min_damage;
+}
+
+uint16_t CCharacter::getModifiedMinDamage() const
+{
+	double modifier = getDamageModifier();
+	return getMinDamage() * modifier;
+}
+
+void CCharacter::setMaxDamage( uint16_t newMaxDamage )
+{
+	max_damage = newMaxDamage;
+}
+
+uint16_t CCharacter::getMaxDamage() const
+{
+	return max_damage;
+}
+
+uint16_t CCharacter::getModifiedMaxDamage() const
+{
+	double modifier = getDamageModifier();
+	return getMaxDamage() * modifier;
 }
 
 uint64_t CCharacter::getExperience() const
@@ -1123,19 +1167,9 @@ uint16_t Player::getModifiedStrength() const
 	return myStrength;
 }
 
-size_t CCharacter::getMinDamage() const
+uint16_t Player::getModifiedMinDamage() const
 {
-	return getStrength();
-}
-
-size_t CCharacter::getMaxDamage() const
-{
-	return getStrength();
-}
-
-size_t Player::getMinDamage() const
-{
-	size_t minDamage = 0;
+	uint16_t minDamage = 0;
 	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
 	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
 		Item *curItem = equippedItems[ curItemNr ]->getItem();
@@ -1147,15 +1181,15 @@ size_t Player::getMinDamage() const
 	}
 	
 	// multiply with strength modifier
-	double modifier = 1 + static_cast<double>(getModifiedStrength()) / 100;
+	double modifier = getDamageModifier();
 	minDamage = minDamage * modifier;
 	
 	return minDamage;
 }
 
-size_t Player::getMaxDamage() const
+uint16_t Player::getModifiedMaxDamage() const
 {
-	size_t maxDamage = 0;
+	uint16_t maxDamage = 0;
 	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
 	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
 		Item *curItem = equippedItems[ curItemNr ]->getItem();
@@ -1167,7 +1201,7 @@ size_t Player::getMaxDamage() const
 	}
 	
 	// multiply with strength modifier
-	double modifier = 1 + static_cast<double>(getModifiedStrength()) / 100;
+	double modifier = getDamageModifier();
 	maxDamage = maxDamage * modifier;
 
 	return maxDamage;
