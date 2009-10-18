@@ -156,6 +156,9 @@ class CCharacter
 		bool isAlive() const {
 			return alive;
 		}
+		
+		virtual size_t getMinDamage() const;
+		virtual size_t getMaxDamage() const;
 
 		// NPC attributes
 		std::string name;
@@ -239,6 +242,10 @@ class Player : public CCharacter
 		void setTarget(CCharacter *newTarget);
         void regenerateLifeMana(uint32_t regenPoints);
 		Direction GetDirection();
+		
+		uint16_t getModifiedStrength() const;
+		size_t getMinDamage() const;
+		size_t getMaxDamage() const;
 		
 		Inventory* getInventory();
 };

@@ -190,6 +190,17 @@ InventoryItem* Inventory::findFirstBlockingItem( size_t inventoryPosX, size_t in
 	return NULL;
 }
 
+std::vector<InventoryItem*> Inventory::getEquippedItems() const
+{
+	std::vector<InventoryItem*> allEquippedItems;
+	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
+		if ( equippedItems[ curSlotNr ] != NULL ) {
+			allEquippedItems.push_back( equippedItems[ curSlotNr ] );
+		}
+	}
+	return allEquippedItems;
+}
+
 std::vector<InventoryItem*> Inventory::getBackpackItems() const
 {
 	return backpackItems;

@@ -334,6 +334,9 @@ bool dawn_init(int argc, char** argv)
 
 		SpellCreation::initSpells();
 		ActionCreation::initActions();
+		
+		// initialize random number generator
+		srand( time( 0 ) );
 
 		return true;
 }

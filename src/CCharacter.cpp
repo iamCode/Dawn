@@ -1100,3 +1100,76 @@ bool Player::isPlayer() const
 	return true;
 }
 
+uint16_t Player::getModifiedStrength() const
+{
+	uint16_t myStrength = this->strength;
+	int32_t strengthModifier = 0;
+	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
+	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
+		Item *curItem = equippedItems[ curItemNr ]->getItem();
+		assert( curItem != NULL );
+		strengthModifier += curItem->getStrength();
+	}
+	if ( strengthModifier < 0 && -strengthModifier > static_cast<int32_t>(myStrength) ) {
+		myStrength = 0;
+	} else if ( strengthModifier > std::numeric_limits<uint16_t>::max()
+		        || (strengthModifier > 0 
+		            && strengthModifier + static_cast<int32_t>( myStrength ) > std::numeric_limits<uint16_t>::max() ) ) {
+		myStrength = std::numeric_limits<uint16_t>::max();
+	} else {
+		myStrength += strengthModifier;
+	}
+	
+	return myStrength;
+}
+
+size_t CCharacter::getMinDamage() const
+{
+	return getStrength();
+}
+
+size_t CCharacter::getMaxDamage() const
+{
+	return getStrength();
+}
+
+size_t Player::getMinDamage() const
+{
+	size_t minDamage = 0;
+	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
+	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
+		Item *curItem = equippedItems[ curItemNr ]->getItem();
+		assert( curItem != NULL );
+		minDamage += curItem->getMinDamage();
+	}
+	if ( minDamage == 0 ) {
+		minDamage = 1; // default weapon damage
+	}
+	
+	// multiply with strength modifier
+	double modifier = 1 + static_cast<double>(getModifiedStrength()) / 100;
+	minDamage = minDamage * modifier;
+	
+	return minDamage;
+}
+
+size_t Player::getMaxDamage() const
+{
+	size_t maxDamage = 0;
+	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
+	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
+		Item *curItem = equippedItems[ curItemNr ]->getItem();
+		assert( curItem != NULL );
+		maxDamage += curItem->getMaxDamage();
+	}
+	if ( maxDamage == 0 ) {
+		maxDamage = 1; // default weapon damage
+	}
+	
+	// multiply with strength modifier
+	double modifier = 1 + static_cast<double>(getModifiedStrength()) / 100;
+	maxDamage = maxDamage * modifier;
+
+	return maxDamage;
+}
+

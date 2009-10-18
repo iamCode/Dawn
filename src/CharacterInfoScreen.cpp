@@ -110,7 +110,7 @@ void CharacterInfoScreen::drawScreen()
 	                    "Strength" );
 	infoFont->drawText( world_x + posX + valueFieldStart,
 	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "%d", player->getStrength() );
+	                    "%d", player->getModifiedStrength() );
 	curLine++;
 
 	infoFont->drawText( world_x + posX + descriptionTextStart,
@@ -118,6 +118,6 @@ void CharacterInfoScreen::drawScreen()
 	                    "Damage" );
 	infoFont->drawText( world_x + posX + valueFieldStart,
 	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "%d", player->getStrength() );
+	                    "%d-%d", player->getMinDamage(), player->getMaxDamage() );
 	curLine++;
 }

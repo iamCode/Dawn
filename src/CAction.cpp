@@ -22,6 +22,10 @@
 #include "CTexture.h"
 #include "CCharacter.h"
 
+size_t randomSizeT( size_t min, size_t max ) {
+	return min + ( rand() % (max - min + 1) );
+}
+
 /// melee attack
 
 class AttackAction : public CAction
@@ -94,7 +98,7 @@ class AttackAction : public CAction
 			if ( curArc >= 0 && !damageCaused ) {
 				double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
 				if ( distance <= 120 ) {
-					int damage = creator->getStrength();
+					int damage = randomSizeT( creator->getMinDamage(), creator->getMaxDamage() );
 					target->Damage( damage );
 					if ( ! target->isAlive() ) {
 						creator->gainExperience( target->getMaxHealth() / 10 );
