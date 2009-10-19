@@ -1,0 +1,24 @@
+# texture-id filename also_add_collision_box(cb) cb_x cb_y cb_w cb_h
+1 data/tree/tree1.tga 1 70 70 70 70
+2 data/tree/tree2.tga 1 70 70 70 70
+3 data/stone/stone1.tga 1 0 0 10 10
+4 data/stone/stone2.tga 1 0 0 15 15
+5 data/tile.tga 1 0 0 40 40
+6 data/cliffs/cliff1/1.tga 0 0 0 0 0
+7 data/cliffs/cliff1/2.tga 0 0 0 0 0
+8 data/cliffs/cliff1/3.tga 0 0 0 0 0
+9 data/cliffs/cliff1/4.tga 0 0 0 0 0
+10 data/cliffs/cliff1/5.tga 0 0 0 0 0
+11 data/cliffs/cliff1/6.tga 0 0 0 0 0
+12 data/cliffs/cliff1/7.tga 0 0 0 0 0
+13 data/cliffs/cliff1/8.tga 0 0 0 0 0
+14 data/cliffs/cliff1/9.tga 0 0 0 0 0
+15 data/cliffs/cliff1/10.tga 0 0 0 0 0
+16 data/cliffs/cliff1/11.tga 0 0 0 0 0
+17 data/cliffs/cliff1/12.tga 0 0 0 0 0
+18 data/cliffs/cliff1/13.tga 0 0 0 0 0
+19 data/cliffs/cliff1/14.tga 0 0 0 0 0
+20 data/cliffs/cliff1/15.tga 0 0 0 0 0
+21 data/cliffs/cliff1/16.tga 0 0 0 0 0
+22 data/cliffs/cliff1/17.tga 0 0 0 0 0
+23 data/cliffs/cliff1/18.tga 0 0 0 0 0

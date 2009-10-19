@@ -1,0 +1,6 @@
+# texture-id filename
+00 data/tiles/black.tga
+01 data/tiles/johnbayly/snow_tile-64x64.tga
+02 data/tiles/johnbayly/grass_tile-64x64_new.tga
+03 data/tiles/johnbayly/sand_tile-64x64.tga
+04 data/tiles/johnbayly/grass_tile-64x64_old.tga

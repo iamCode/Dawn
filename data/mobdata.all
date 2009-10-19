@@ -1,0 +1,38 @@
+wolfbase = DawnInterface.createNewMobType("Wolf")
+wolfbase:setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
+wolfbase:setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
+wolfbase:setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
+wolfbase:setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
+wolfbase:setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
+wolfbase:setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
+wolfbase:setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
+wolfbase:setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
+wolfbase:setLifeTexture( "data/lifebar.tga" );
+
+wolfbase:setStrength( 15 )
+wolfbase:setDexterity( 15 )
+wolfbase:setVitality( 15 )
+wolfbase:setIntellect( 10 )
+wolfbase:setWisdom( 10 )
+wolfbase:setMaxHealth( 250 )
+wolfbase:setMaxMana( 0 )
+wolfbase:setMaxEnergy( 0 )
+wolfbase:setMinDamage( 5 )
+wolfbase:setMaxDamage( 10 )
+wolfbase:setName("A wolf")
+wolfbase:setWanderRadius( 250 )
+wolfbase:setLevel( 2 )
+
+wolfpup = DawnInterface.createNewMobType("Wolf Pup")
+wolfpup:baseOnType("Wolf")
+wolfpup:modifyStrength( -2 )
+wolfpup:modifyDexterity( -2 )
+wolfpup:modifyVitality( -1 )
+wolfpup:modifyIntellect( -5 )
+wolfpup:modifyWisdom( -5 )
+wolfpup:modifyMaxHealth( -100 )
+wolfpup:setMinDamage( 3 )
+wolfpup:setMaxDamage( 6 )
+wolfpup:setName("A wolf pup")
+wolfpup:setWanderRadius( 250 )
+wolfpup:setLevel( 1 )
