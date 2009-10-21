@@ -101,43 +101,56 @@ class CCharacter
 		void baseOnType( std::string otherType );
 
 		void setStrength( uint16_t newStrength );
-		uint16_t getStrength() const;
 		virtual uint16_t getModifiedStrength() const;
+		uint16_t getStrength() const;
 		void modifyStrength( int16_t strengthModifier );
-
+		
 		void setDexterity( uint16_t newDexterity );
+		virtual uint16_t getModifiedDexterity() const;
 		uint16_t getDexterity() const;
 		void modifyDexterity( int16_t dexterityModifier );
-
+		
 		void setVitality( uint16_t newVitality );
+		virtual uint16_t getModifiedVitality() const;
 		uint16_t getVitality() const;
 		void modifyVitality( int16_t vitalityModifier );
-
+		
 		void setIntellect( uint16_t newIntellect );
+		virtual uint16_t getModifiedIntellect() const;
 		uint16_t getIntellect() const;
 		void modifyIntellect( int16_t intellectModifier );
-
+		
 		void setWisdom( uint16_t newWisdom );
+		virtual uint16_t getModifiedWisdom() const;
 		uint16_t getWisdom() const;
 		void modifyWisdom( int16_t wisdomModifier );
-
-		void setMaxHealth( uint16_t newMaxHealth );
+		
 		uint16_t getMaxHealth() const;
-		uint16_t getCurrentHealth() const;
+		virtual uint16_t getModifiedMaxHealth() const;
+		void setMaxHealth( uint16_t newMaxHealth );
 		void modifyMaxHealth( int16_t maxHealthModifier );
-        void modifyCurrentHealth( int16_t currentHealthModifier);
+		
+		uint16_t getCurrentHealth() const;
+		void setCurrentHealth( uint16_t newCurrentHealth );
+		void modifyCurrentHealth( int16_t currentHealthModifier);
 
-		void setMaxMana( uint16_t newMaxMana );
 		uint16_t getMaxMana() const;
-		uint16_t getCurrentMana() const;
+		virtual uint16_t getModifiedMaxMana() const;
+		void setMaxMana( uint16_t newMaxMana );
 		void modifyMaxMana( int16_t maxManaModifier );
+		
+		uint16_t getCurrentMana() const;
+		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
 
-		void setMaxEnergy( uint16_t newMaxEnergy );
 		uint16_t getMaxEnergy() const;
-		uint16_t getCurrentEnergy() const;
+		virtual uint16_t getModifiedMaxEnergy() const;
+		void setMaxEnergy( uint16_t newMaxEnergy );
 		void modifyMaxEnergy( int16_t maxEnergyModifier );
-        void modifyCurrentEnergy( int16_t currentEnergyModifier);
+
+		uint16_t getCurrentEnergy() const;
+		void setCurrentEnergy( uint16_t newCurrentEnergy );
+		void modifyCurrentEnergy( int16_t currentEnergyModifier);
 
 		uint64_t getExperience() const;
 		void gainExperience( uint64_t addExp );

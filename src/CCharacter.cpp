@@ -70,9 +70,23 @@ void CCharacter::baseOnType( std::string otherName )
 	setLevel( other->getLevel() );
 }
 
-void CCharacter::setStrength( uint16_t newStrength )
+const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
+const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
+
+template <class AttributeType, class ModifierType> 
+AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierType modifier,
+                                         AttributeType minValue = std::numeric_limits<AttributeType>::min(),
+                                         AttributeType maxValue = std::numeric_limits<AttributeType>::max() )
 {
-	strength = newStrength;
+	assert( attributeValue >= minValue && attributeValue <= maxValue );
+	// is modified value < minValue? => set to minValue
+	if ( modifier < 0 && static_cast<AttributeType>(-modifier) > attributeValue - minValue )
+		return minValue;
+	// is modified value > maxValue? => set to maxValue
+	else if ( modifier > 0 && (maxValue - attributeValue) < modifier )
+		return maxValue;
+	else
+		return (attributeValue + modifier);
 }
 
 uint16_t CCharacter::getStrength() const
@@ -80,25 +94,20 @@ uint16_t CCharacter::getStrength() const
 	return strength;
 }
 
-void CCharacter::modifyStrength( int16_t strengthModifier )
-{
-	if ( strengthModifier < 0 && static_cast<uint16_t>(-strengthModifier) > getStrength() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyStrength." << std::endl;
-	else if ( strengthModifier > 0 && (std::numeric_limits<uint16_t>::max() - strengthModifier) < getStrength() )
-		setStrength( std::numeric_limits<uint16_t>::max() );
-	else
-		setStrength( getStrength() + strengthModifier );
-}
-
 uint16_t CCharacter::getModifiedStrength() const
 {
 	return getStrength();
 }
 
-void CCharacter::setDexterity( uint16_t newDexterity )
+void CCharacter::setStrength( uint16_t newStrength )
 {
-	dexterity = newDexterity;
+	assert( newStrength >= NON_NULLABLE_ATTRIBUTE_MIN );
+	strength = newStrength;
+}
+
+void CCharacter::modifyStrength( int16_t strengthModifier )
+{
+	setStrength( getModifiedAttributeValue( strength, strengthModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getDexterity() const
@@ -106,20 +115,20 @@ uint16_t CCharacter::getDexterity() const
 	return dexterity;
 }
 
-void CCharacter::modifyDexterity( int16_t dexterityModifier )
+uint16_t CCharacter::getModifiedDexterity() const
 {
-	if ( dexterityModifier < 0 && static_cast<uint16_t>(-dexterityModifier) > getDexterity() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyDexterity." << std::endl;
-	else if ( dexterityModifier > 0 && (std::numeric_limits<uint16_t>::max() - dexterityModifier) < getDexterity() )
-		setDexterity( std::numeric_limits<uint16_t>::max() );
-	else
-		setDexterity( getDexterity() + dexterityModifier );
+	return getDexterity();
 }
 
-void CCharacter::setVitality( uint16_t newVitality )
+void CCharacter::setDexterity( uint16_t newDexterity )
 {
-	vitality = newVitality;
+	assert( newDexterity >= NON_NULLABLE_ATTRIBUTE_MIN );
+	dexterity = newDexterity;
+}
+
+void CCharacter::modifyDexterity( int16_t dexterityModifier )
+{
+	setDexterity( getModifiedAttributeValue( dexterity, dexterityModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getVitality() const
@@ -127,20 +136,20 @@ uint16_t CCharacter::getVitality() const
 	return vitality;
 }
 
-void CCharacter::modifyVitality( int16_t vitalityModifier )
+uint16_t CCharacter::getModifiedVitality() const
 {
-	if ( vitalityModifier < 0 && static_cast<uint16_t>(-vitalityModifier) > getVitality() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyVitality." << std::endl;
-	else if ( vitalityModifier > 0 && (std::numeric_limits<uint16_t>::max() - vitalityModifier) < getVitality() )
-		setVitality( std::numeric_limits<uint16_t>::max() );
-	else
-		setVitality( getVitality() + vitalityModifier );
+	return getVitality();
 }
 
-void CCharacter::setIntellect( uint16_t newIntellect )
+void CCharacter::setVitality( uint16_t newVitality )
 {
-	intellect = newIntellect;
+	assert( newVitality >= NON_NULLABLE_ATTRIBUTE_MIN );
+	vitality = newVitality;
+}
+
+void CCharacter::modifyVitality( int16_t vitalityModifier )
+{
+	setVitality( getModifiedAttributeValue( vitality, vitalityModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getIntellect() const
@@ -148,20 +157,20 @@ uint16_t CCharacter::getIntellect() const
 	return intellect;
 }
 
-void CCharacter::modifyIntellect( int16_t intellectModifier )
+uint16_t CCharacter::getModifiedIntellect() const
 {
-	if ( intellectModifier < 0 && static_cast<uint16_t>(-intellectModifier) > getIntellect() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyIntellect." << std::endl;
-	else if ( intellectModifier > 0 && (std::numeric_limits<uint16_t>::max() - intellectModifier) < getIntellect() )
-		setIntellect( std::numeric_limits<uint16_t>::max() );
-	else
-		setIntellect( getIntellect() + intellectModifier );
+	return getIntellect();
 }
 
-void CCharacter::setWisdom( uint16_t newWisdom )
+void CCharacter::setIntellect( uint16_t newIntellect )
 {
-	wisdom = newWisdom;
+	assert( newIntellect >= NON_NULLABLE_ATTRIBUTE_MIN );
+	intellect = newIntellect;
+}
+
+void CCharacter::modifyIntellect( int16_t intellectModifier )
+{
+	setIntellect( getModifiedAttributeValue( intellect, intellectModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getWisdom() const
@@ -169,21 +178,20 @@ uint16_t CCharacter::getWisdom() const
 	return wisdom;
 }
 
-void CCharacter::modifyWisdom( int16_t wisdomModifier )
+uint16_t CCharacter::getModifiedWisdom() const
 {
-	if ( wisdomModifier < 0 && static_cast<uint16_t>(-wisdomModifier) > getWisdom() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyWisdom." << std::endl;
-	else if ( wisdomModifier > 0 && (std::numeric_limits<uint16_t>::max() - wisdomModifier) < getWisdom() )
-		setWisdom( std::numeric_limits<uint16_t>::max() );
-	else
-		setWisdom( getWisdom() + wisdomModifier );
+	return getWisdom();
 }
 
-void CCharacter::setMaxHealth( uint16_t newMaxHealth )
+void CCharacter::setWisdom( uint16_t newWisdom )
 {
-	max_health = newMaxHealth;
-	current_health = newMaxHealth;
+	assert( newWisdom >= NON_NULLABLE_ATTRIBUTE_MIN );
+	wisdom = newWisdom;
+}
+
+void CCharacter::modifyWisdom( int16_t wisdomModifier )
+{
+	setWisdom( getModifiedAttributeValue( wisdom, wisdomModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getMaxHealth() const
@@ -191,48 +199,40 @@ uint16_t CCharacter::getMaxHealth() const
 	return max_health;
 }
 
+uint16_t CCharacter::getModifiedMaxHealth() const
+{
+	return getMaxHealth();
+}
+
+void CCharacter::setMaxHealth( uint16_t newMaxHealth )
+{
+	assert( newMaxHealth >= NON_NULLABLE_ATTRIBUTE_MIN );
+	max_health = newMaxHealth;
+	// if ( current_health > getModifiedMaxHealth() )
+	// {
+		current_health = getModifiedMaxHealth();
+	// }
+}
+
+void CCharacter::modifyMaxHealth( int16_t maxHealthModifier )
+{
+	setMaxHealth( getModifiedAttributeValue( max_health, maxHealthModifier, NON_NULLABLE_ATTRIBUTE_MIN ) );
+}
+
 uint16_t CCharacter::getCurrentHealth() const
 {
 	return current_health;
 }
 
-void CCharacter::modifyMaxHealth( int16_t maxHealthModifier )
+void CCharacter::setCurrentHealth( uint16_t newCurrentHealth )
 {
-	if ( maxHealthModifier < 0 && static_cast<uint16_t>(-maxHealthModifier) > getMaxHealth() ) {
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyMaxHealth." << std::endl;
-	} else if ( maxHealthModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxHealthModifier) < getMaxHealth() ) {
-		setMaxHealth( std::numeric_limits<uint16_t>::max() );
-	} else {
-		setMaxHealth( getMaxHealth() + maxHealthModifier );
-	}
+	assert( newCurrentHealth <= getModifiedMaxHealth() );
+	current_health = newCurrentHealth;
 }
 
 void CCharacter::modifyCurrentHealth( int16_t currentHealthModifier )
 {
-    if ( currentHealthModifier < 0 )
-    {
-        if ( getCurrentHealth() <= currentHealthModifier )
-        {
-            current_health = 0;
-        } else {
-            current_health += currentHealthModifier;
-        }
-    } else {
-        if (( getMaxHealth() - getCurrentHealth() ) < currentHealthModifier )
-        {
-            current_health = getMaxHealth();
-        } else {
-            current_health += currentHealthModifier;
-        }
-    }
-}
-
-
-void CCharacter::setMaxMana( uint16_t newMaxMana )
-{
-	max_mana = newMaxMana;
-	current_mana = newMaxMana;
+	setCurrentHealth( getModifiedAttributeValue( current_health, currentHealthModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxHealth() ) );
 }
 
 uint16_t CCharacter::getMaxMana() const
@@ -240,46 +240,39 @@ uint16_t CCharacter::getMaxMana() const
 	return max_mana;
 }
 
+uint16_t CCharacter::getModifiedMaxMana() const
+{
+	return getMaxMana();
+}
+
+void CCharacter::setMaxMana( uint16_t newMaxMana )
+{
+	max_mana = newMaxMana;
+	// if ( current_mana > getModifiedMaxMana() )
+	// {
+		current_mana = getModifiedMaxMana();
+	// }
+}
+
+void CCharacter::modifyMaxMana( int16_t maxManaModifier )
+{
+	setMaxMana( getModifiedAttributeValue( max_mana, maxManaModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
 uint16_t CCharacter::getCurrentMana() const
 {
 	return current_mana;
 }
 
-void CCharacter::modifyMaxMana( int16_t maxManaModifier )
+void CCharacter::setCurrentMana( uint16_t newCurrentMana )
 {
-	if ( maxManaModifier < 0 && static_cast<uint16_t>(-maxManaModifier) > getMaxMana() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyMaxMana." << std::endl;
-	else if ( maxManaModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxManaModifier) < getMaxMana() )
-		setMaxMana( std::numeric_limits<uint16_t>::max() );
-	else
-		setMaxMana( getMaxMana() + maxManaModifier );
+	assert( newCurrentMana <= getModifiedMaxMana() );
+	current_mana = newCurrentMana;
 }
 
 void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 {
-    if ( currentManaModifier < 0 )
-    {
-        if ( getCurrentMana() <= currentManaModifier)
-        {
-            current_mana = 0;
-        } else {
-            current_mana += currentManaModifier;
-        }
-    } else {
-        if (( getMaxMana() - getCurrentMana() ) < currentManaModifier)
-        {
-            current_mana = getMaxMana();
-        } else {
-            current_mana += currentManaModifier;
-        }
-    }
-}
-
-void CCharacter::setMaxEnergy( uint16_t newMaxEnergy )
-{
-	max_energy = newMaxEnergy;
-	current_energy = newMaxEnergy;
+	setCurrentMana( getModifiedAttributeValue( current_mana, currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
 uint16_t CCharacter::getMaxEnergy() const
@@ -287,40 +280,39 @@ uint16_t CCharacter::getMaxEnergy() const
 	return max_energy;
 }
 
+uint16_t CCharacter::getModifiedMaxEnergy() const
+{
+	return getMaxEnergy();
+}
+
+void CCharacter::setMaxEnergy( uint16_t newMaxEnergy )
+{
+	max_energy = newMaxEnergy;
+	// if ( current_energy > getModifiedMaxEnergy() )
+	// {
+		current_energy = getModifiedMaxEnergy();
+	// }
+}
+
+void CCharacter::modifyMaxEnergy( int16_t maxEnergyModifier )
+{
+	setMaxEnergy( getModifiedAttributeValue( max_energy, maxEnergyModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
 uint16_t CCharacter::getCurrentEnergy() const
 {
 	return current_energy;
 }
 
-void CCharacter::modifyMaxEnergy( int16_t maxEnergyModifier )
+void CCharacter::setCurrentEnergy( uint16_t newCurrentEnergy )
 {
-	if ( maxEnergyModifier < 0 && static_cast<uint16_t>(-maxEnergyModifier) > getMaxEnergy() )
-		// don't modify the max_XXXXX since modifier < maxXXXXX
-		std::cout << "Error during modifyMaxEnergy." << std::endl;
-	else if ( maxEnergyModifier > 0 && (std::numeric_limits<uint16_t>::max() - maxEnergyModifier) < getMaxEnergy() )
-		setMaxEnergy( std::numeric_limits<uint16_t>::max() );
-	else
-		setMaxEnergy( getMaxEnergy() + maxEnergyModifier );
+	assert( newCurrentEnergy <= getModifiedMaxEnergy() );
+	current_energy = newCurrentEnergy;
 }
 
 void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
 {
-    if ( currentEnergyModifier < 0 )
-    {
-        if ( getCurrentEnergy() <= currentEnergyModifier )
-        {
-            current_energy = 0;
-        } else {
-            current_energy += currentEnergyModifier;
-        }
-    } else {
-        if (( getMaxEnergy() - getCurrentEnergy() ) < currentEnergyModifier )
-        {
-            current_energy = getMaxEnergy();
-        } else {
-            current_energy += currentEnergyModifier;
-        }
-    }
+	setCurrentEnergy( getModifiedAttributeValue( current_energy, currentEnergyModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxEnergy() ) );
 }
 
 double CCharacter::getDamageModifier() const
