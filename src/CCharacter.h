@@ -100,6 +100,9 @@ class CCharacter
 
 		void baseOnType( std::string otherType );
 
+		std::string getName() const;
+		void setName( std::string newName );
+
 		void setStrength( uint16_t newStrength );
 		virtual uint16_t getModifiedStrength() const;
 		uint16_t getStrength() const;
@@ -161,9 +164,6 @@ class CCharacter
 		void setWanderRadius( uint16_t newWanderRadius );
 		uint16_t getWanderRadius() const;
 
-		void setName( std::string newName );
-		std::string getName() const;
-
 		void setLevel ( uint8_t newLevel );
 		uint8_t getLevel() const;
 
@@ -180,14 +180,6 @@ class CCharacter
 		void setMaxDamage( uint16_t newMaxDamage );
 		uint16_t getMaxDamage() const;
 		virtual uint16_t getModifiedMaxDamage() const;
-
-		// NPC attributes
-		std::string name;
-		uint16_t strength, dexterity, vitality, intellect, wisdom;
-		uint16_t wander_radius;
-		uint16_t max_health, max_mana, max_energy, current_health, current_mana, current_energy, armor;
-		uint16_t min_damage, max_damage;
-		uint8_t alignment, level;
 
 		void DrawLifebar();
 
@@ -235,6 +227,28 @@ class CCharacter
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
+		// NPC attributes
+		std::string name;
+		
+		uint16_t strength;
+		uint16_t dexterity;
+		uint16_t vitality;
+		uint16_t intellect;
+		uint16_t wisdom;
+		uint16_t max_health;
+		uint16_t current_health;
+		uint16_t max_mana;
+		uint16_t current_mana;
+		uint16_t max_energy;
+		uint16_t current_energy;
+		
+		uint16_t armor;
+		
+	
+		uint16_t wander_radius;
+		uint16_t min_damage, max_damage;
+		uint8_t alignment, level;
+
 		// character attributes
 		uint64_t experience;
 		
@@ -246,72 +260,6 @@ class CCharacter
         CInterface *activeGUI;
 
 
-};
-
-class Player : public CCharacter
-{
-	private:
-
-        uint32_t remainingRegenPoints;
-		Inventory inventory;
-
-	public:
-		Player();
-		bool isPlayer() const;
-		void Move();
-		void Draw();
-		CCharacter* getTarget() const;
-		void setTarget(CCharacter *newTarget);
-        void regenerateLifeMana(uint32_t regenPoints);
-		Direction GetDirection();
-		
-		uint16_t getModifiedStrength() const;
-		uint16_t getModifiedMinDamage() const;
-		uint16_t getModifiedMaxDamage() const;
-		
-		Inventory* getInventory();
-};
-
-class CNPC : public CCharacter
-{
-	private:
-		enum { friendly, neutral, hostile } attitudeTowardsPlayer;
-	public:
-
-		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
-			Init( x_spawn_pos, y_spawn_pos );
-			alive = true;
-			current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
-			respawn_thisframe = 0.0f;
-			respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
-			wander_thisframe = 0.0f;
-			wander_lastframe = 0.0f; // helping us decide when the mob will wander.
-			wander_every_seconds = 1; // this mob wanders every 1 seconds.
-			wandering = false;
-			MovingDirection = STOP;
-
-			remainingMovePoints = 0;
-			direction_texture = S;
-			attitudeTowardsPlayer = neutral;
-		}
-
-		void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
-			x_pos = _x_spawn_pos;
-			y_pos = _y_spawn_pos;
-			x_spawn_pos = _x_spawn_pos;
-			y_spawn_pos = _y_spawn_pos;
-			do_respawn = _do_respawn;
-			seconds_to_respawn = _seconds_to_respawn;
-			zone = _zone;
-		}
-
-		void Draw();
-		void Move();
-		Direction GetDirection();
-		void Respawn();
-		void Wander();
-		
-		void Damage(int amount);
 };
 
 #endif

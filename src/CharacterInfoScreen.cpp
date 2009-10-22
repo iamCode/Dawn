@@ -20,6 +20,7 @@
 
 #include "CDrawingHelpers.h"
 #include "CCharacter.h"
+#include "Player.h"
 #include "GLFT_Font.h"
 
 CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
@@ -94,7 +95,7 @@ void CharacterInfoScreen::drawScreen()
 	                    "Health" );
 	infoFont->drawText( world_x + posX + valueFieldStart,
 	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "%d / %d", player->getCurrentHealth(), player->getMaxHealth() );
+	                    "%d / %d", player->getCurrentHealth(), player->getModifiedMaxHealth() );
 	curLine++;
 
 	infoFont->drawText( world_x + posX + descriptionTextStart,
@@ -102,7 +103,7 @@ void CharacterInfoScreen::drawScreen()
 	                    "Mana" );
 	infoFont->drawText( world_x + posX + valueFieldStart,
 	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "%d / %d", player->getCurrentMana(), player->getMaxMana() );
+	                    "%d / %d", player->getCurrentMana(), player->getModifiedMaxMana() );
 	curLine++;
 
 	infoFont->drawText( world_x + posX + descriptionTextStart,

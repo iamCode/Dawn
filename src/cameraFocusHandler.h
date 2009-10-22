@@ -20,6 +20,8 @@
 #define __CAMERAFOCUSHANDLER_H__
 
 #include "CCharacter.h"
+#include "Player.h"
+#include "CNPC.h"
 #include "debug.h"
 #include <cmath>
 #include <sstream>

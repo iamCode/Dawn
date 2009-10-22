@@ -21,6 +21,7 @@
 
 #include "inventory.h"
 #include "CCharacter.h"
+#include "Player.h"
 #include "item.h"
 
 #include <cassert>

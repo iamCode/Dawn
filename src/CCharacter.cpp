@@ -23,6 +23,9 @@
 #include "CInterface.h"
 #include "CAction.h"
 
+#include "CNPC.h"
+#include "Player.h"
+
 #include <map>
 #include <string>
 #include <limits>
@@ -87,6 +90,16 @@ AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierT
 		return maxValue;
 	else
 		return (attributeValue + modifier);
+}
+
+std::string CCharacter::getName() const
+{
+	return name;
+}
+
+void CCharacter::setName( std::string newName )
+{
+	name = newName;
 }
 
 uint16_t CCharacter::getStrength() const
@@ -221,6 +234,9 @@ void CCharacter::modifyMaxHealth( int16_t maxHealthModifier )
 
 uint16_t CCharacter::getCurrentHealth() const
 {
+	if ( current_health > getModifiedMaxHealth() )
+		return getModifiedMaxHealth();
+
 	return current_health;
 }
 
@@ -232,7 +248,7 @@ void CCharacter::setCurrentHealth( uint16_t newCurrentHealth )
 
 void CCharacter::modifyCurrentHealth( int16_t currentHealthModifier )
 {
-	setCurrentHealth( getModifiedAttributeValue( current_health, currentHealthModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxHealth() ) );
+	setCurrentHealth( getModifiedAttributeValue( getCurrentHealth(), currentHealthModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxHealth() ) );
 }
 
 uint16_t CCharacter::getMaxMana() const
@@ -261,6 +277,9 @@ void CCharacter::modifyMaxMana( int16_t maxManaModifier )
 
 uint16_t CCharacter::getCurrentMana() const
 {
+	if ( current_mana > getModifiedMaxMana() )
+		return getModifiedMaxMana();
+
 	return current_mana;
 }
 
@@ -272,7 +291,7 @@ void CCharacter::setCurrentMana( uint16_t newCurrentMana )
 
 void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 {
-	setCurrentMana( getModifiedAttributeValue( current_mana, currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
+	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
 uint16_t CCharacter::getMaxEnergy() const
@@ -301,6 +320,9 @@ void CCharacter::modifyMaxEnergy( int16_t maxEnergyModifier )
 
 uint16_t CCharacter::getCurrentEnergy() const
 {
+	if ( current_energy > getModifiedMaxEnergy() )
+		return getModifiedMaxEnergy();
+
 	return current_energy;
 }
 
@@ -312,7 +334,7 @@ void CCharacter::setCurrentEnergy( uint16_t newCurrentEnergy )
 
 void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
 {
-	setCurrentEnergy( getModifiedAttributeValue( current_energy, currentEnergyModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxEnergy() ) );
+	setCurrentEnergy( getModifiedAttributeValue( getCurrentEnergy(), currentEnergyModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxEnergy() ) );
 }
 
 double CCharacter::getDamageModifier() const
@@ -400,16 +422,6 @@ void CCharacter::setWanderRadius( uint16_t newWanderRadius )
 uint16_t CCharacter::getWanderRadius() const
 {
 	return wander_radius;
-}
-
-void CCharacter::setName( std::string newName )
-{
-	name = newName;
-}
-
-std::string CCharacter::getName() const
-{
-	return name;
 }
 
 void CCharacter::setLevel ( uint8_t newLevel )
@@ -534,7 +546,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 	}
 	
 	return 0;
-};
+}
 
 int CCharacter::CollisionCheck(Direction direction)
 {
@@ -588,35 +600,35 @@ int CCharacter::CollisionCheck(Direction direction)
 		break;
 	}
 	return 0;
-};
+}
 
 void CCharacter::MoveUp()
 {
 	if (CollisionCheck(N) == 0) {
 		y_pos++;
 	}
-};
+}
 
 void CCharacter::MoveDown()
 {
 	if (CollisionCheck(S) == 0) {
 		y_pos--;
 	}
-};
+}
 
 void CCharacter::MoveLeft()
 {
 	if (CollisionCheck(W) == 0) {
 		x_pos--;
 	}
-};
+}
 
 void CCharacter::MoveRight()
 {
 	if (CollisionCheck(E) == 0) {
 		x_pos++;
 	}
-};
+}
 
 void CCharacter::Move()
 {
@@ -676,27 +688,10 @@ void CCharacter::Move()
 	}
 }
 
-void Player::Move()
-{
-	CCharacter::Move();
-};
-
-void CNPC::Move()
-{
-	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == hostile ) {
-		// check distance to player
-		double distance = sqrt( pow(getXPos() - character.getXPos(),2) + pow(getYPos() - character.getYPos(),2) );
-		if ( distance <= 80 ) {
-			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) ); 
-		}
-	}
-	CCharacter::Move();
-};
-
 void CCharacter::giveMovePoints( uint32_t movePoints )
 {
 	remainingMovePoints += movePoints;
-};
+}
 
 Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 {
@@ -730,60 +725,13 @@ Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 	}
 }
 
-Direction Player::GetDirection()
-{
-	keys = SDL_GetKeyState(NULL);
-
-	if (keys[SDLK_UP]) {
-		if (keys[SDLK_LEFT]) {
-			return NW;
-		} else if (keys[SDLK_RIGHT]) {
-			return NE;
-		} else {
-			return N;
-		}
-	}
-
-	if (keys[SDLK_DOWN]) {
-		if (keys[SDLK_LEFT]) {
-			return SW;
-		} else if (keys[SDLK_RIGHT]) {
-			return SE;
-		} else {
-			return S;
-		}
-	}
-
-	if (keys[SDLK_LEFT]) {
-		return W;
-	}
-
-	if (keys[SDLK_RIGHT]) {
-		return E;
-	}
-
-	return STOP;
-};
-
-Direction CNPC::GetDirection()
-{
-	if ( attitudeTowardsPlayer == hostile ) {
-		return getDirectionTowards( character.x_pos, character.y_pos );
-	}
-	if ( wandering ) {
-		return WanderDirection;
-	} else {
-		return MovingDirection;
-	}
-}
-
 int CCharacter::GetDirectionTexture()
 {
 	int direction = GetDirection();
 	if ( direction == STOP )
 		return direction_texture;
 	return static_cast<int>(direction);
-};
+}
 
 // since we dont have any combat class, im putting this spellcasting here.
 // in the future we could probably benefit from putting this into the combat class,
@@ -821,7 +769,7 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 		preparationStartTime = SDL_GetTicks();
 		continuePreparing();
 	}
-};
+}
 
 bool CCharacter::continuePreparing()
 {
@@ -840,7 +788,7 @@ bool CCharacter::continuePreparing()
 	}
 
 	return isPreparing;
-};
+}
 
 void CCharacter::startSpellAction()
 {
@@ -854,7 +802,7 @@ void CCharacter::startSpellAction()
 
 	enqueueActiveSpellAction( curSpellAction );
 	curSpellAction->startEffect();
-};
+}
 
 void CCharacter::abortCurrentSpellAction()
 {
@@ -871,7 +819,7 @@ void CCharacter::CastingAborted()
 	// if we moved, got stunned, or in some way unable to complete the spell ritual, spellcasting will fail.
 	// If we are following the above instructions to use a pointer to a spell and so on, we should clear that pointer here.
 	abortCurrentSpellAction();
-};
+}
 
 void CCharacter::CastingInterrupted()
 {
@@ -882,7 +830,7 @@ void CCharacter::CastingInterrupted()
 	if (preparationStartTime > preparationCurrentTime) {
 		preparationStartTime = preparationCurrentTime;
 	}
-};
+}
 
 float CCharacter::getPreparationPercentage() const
 {
@@ -903,124 +851,10 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 	return ( curSpellAction == NULL || isPreparing );
 }
 
-
-void CNPC::Wander()
-{
-	if (wandering) {
-		if (wander_points_left > 0) {
-			// checking if character is moving more than the wander_radius. if he does we'll stop him.
-			// probably is some other function we could use here that doesnt require as much power... /arnestig
-			if (sqrt((pow(x_pos - x_spawn_pos,2)+pow(y_pos - y_spawn_pos,2))) < wander_radius) {
-				wander_points_left--;
-			} else {
-				wander_lastframe = SDL_GetTicks();
-				wandering = false;
-				WanderDirection = STOP;
-			}
-		} else {
-			wander_lastframe = SDL_GetTicks();
-			wandering = false;
-			WanderDirection = STOP;
-		}
-	} else {
-		wander_thisframe = SDL_GetTicks();
-		if ((wander_thisframe-wander_lastframe) > (wander_every_seconds*1000)) {
-			wandering = true;
-			wander_points_left = rand() % 50 + 10;  // how far will the NPC wander?
-			WanderDirection = static_cast<Direction>( rand() % 8 + 1 );  // random at which direction NPC will go.
-		}
-	}
-};
-
 void CCharacter::Die()
 {
 	alive = false;
 	respawn_lastframe = SDL_GetTicks();
-};
-
-void CNPC::Respawn()
-{
-	if (alive == false && do_respawn == true) {
-		respawn_thisframe = SDL_GetTicks();
-		if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
-			Init( x_spawn_pos, y_spawn_pos );
-			alive = true;
-			x_pos = x_spawn_pos;
-			y_pos = y_spawn_pos;
-			respawn_thisframe = 0.0f;
-			respawn_lastframe = 0.0f;
-			current_health = max_health;
-			current_mana = max_mana;
-			current_energy = max_energy;
-			attitudeTowardsPlayer = neutral;
-		}
-	}
-}
-
-void CNPC::Draw()
-{
-	CalculateStats(); // always calculate the stats of the NPC.
-	direction_texture = GetDirectionTexture();
-	if (alive == true) {
-		texture->DrawTexture(x_pos,y_pos,direction_texture);
-	}
-};
-
-void Player::Draw()
-{
-	CalculateStats();
-	direction_texture = GetDirectionTexture();
-	if (alive == true) {
-		texture->DrawTexture(x_pos,y_pos,direction_texture);
-	}
-	
-	InventoryItem *equippedShield = getInventory()->getItemAtSlot( ItemSlot::OFF_HAND );
-	if ( equippedShield != NULL ) {
-		Item *itemShield = equippedShield->getItem();
-		float degrees = 0;
-		CTexture *usedTexture = itemShield->getSymbolTexture();
-		size_t itemWidth = itemShield->getSizeX() * 30;
-		size_t itemHeight = 10;
-		size_t xoffset = - (itemWidth/2);
-		size_t yoffset = getWidth() / 2 - 5;
-		
-		switch( GetDirectionTexture() ) {
-			case N:
-			break;
-			case NW:
-				degrees += 45;
-			break;
-			case W:
-				degrees += 90;
-			break;
-			case SW:
-				degrees += 135;
-			break;
-			case S:
-				degrees += 180;
-			break;
-			case SE:
-				degrees -= 135;
-			break;
-			case E:
-				degrees -= 90;
-			break;
-			case NE:
-				degrees -= 45;
-			break;
-			default:
-			break;
-		}
-
-		glPushMatrix();
-		glTranslatef(getXPos() + (getWidth() / 2), getYPos() + (getHeight() / 2), 0.0f);
-		glRotatef(degrees,0.0f,0.0f,1.0f);
-
-		DrawingHelpers::mapTextureToRect( usedTexture->texture[0].texture,
-										  xoffset, itemWidth,
-										  yoffset, itemHeight );
-		glPopMatrix();
-	}
 }
 
 void CCharacter::DrawLifebar()
@@ -1030,16 +864,6 @@ void CCharacter::DrawLifebar()
 	                                  x_pos, 64*life_percentage,
 	                                  y_pos+texture->texture[current_texture].height, 8 );
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
-};
-
-Player::Player()
-	:	inventory( Inventory( 10, 4 ) )
-{
-}
-
-Inventory* Player::getInventory()
-{
-	return &inventory;
 }
 
 void CCharacter::Damage(int amount)
@@ -1053,12 +877,6 @@ void CCharacter::Damage(int amount)
 			modifyCurrentHealth( -amount );
 		}
 	}
-};
-
-void CNPC::Damage(int amount)
-{
-	attitudeTowardsPlayer = hostile;
-	CCharacter::Damage( amount );
 }
 
 void CCharacter::Heal(int amount)
@@ -1071,7 +889,7 @@ void CCharacter::Heal(int amount)
 			modifyCurrentHealth ( amount );
 		}
 	}
-};
+}
 
 void CCharacter::setActiveGUI( CInterface *GUI_ )
 {
@@ -1088,7 +906,7 @@ void CCharacter::CalculateStats()
 	life_percentage = static_cast<float>(current_health) / static_cast<float>(max_health);
 	mana_percentage = static_cast<float>(current_mana) / static_cast<float>(max_mana);
 	energy_percentage = static_cast<float>(current_energy) / static_cast<float>(max_energy);
-};
+}
 
 bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
 {
@@ -1098,104 +916,9 @@ bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
 	} else {
 		return false;
 	}
-};
-
-CCharacter* Player::getTarget() const
-{
-	return Target;
-}
-
-void Player::setTarget(CCharacter *newTarget)
-{
-	Target = newTarget;
-}
-
-void Player::regenerateLifeMana(uint32_t regenPoints)
-{
-    /** Regenerate life, mana and energy every 500 ms.
-    For now, we're regenerating a static amount.
-    In the future this will be calculated based on characters stats. **/
-
-    remainingRegenPoints += regenPoints;
-
-    if ( remainingRegenPoints > 500 ) {
-        modifyCurrentMana( 1 );
-        modifyCurrentHealth( 1 );
-        modifyCurrentEnergy( 1 );
-        remainingRegenPoints -= 500;
-    }
 }
 
 bool CCharacter::isPlayer() const
 {
 	return false;
 }
-
-bool Player::isPlayer() const
-{
-	return true;
-}
-
-uint16_t Player::getModifiedStrength() const
-{
-	uint16_t myStrength = this->strength;
-	int32_t strengthModifier = 0;
-	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
-	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
-		Item *curItem = equippedItems[ curItemNr ]->getItem();
-		assert( curItem != NULL );
-		strengthModifier += curItem->getStrength();
-	}
-	if ( strengthModifier < 0 && -strengthModifier > static_cast<int32_t>(myStrength) ) {
-		myStrength = 0;
-	} else if ( strengthModifier > std::numeric_limits<uint16_t>::max()
-		        || (strengthModifier > 0 
-		            && strengthModifier + static_cast<int32_t>( myStrength ) > std::numeric_limits<uint16_t>::max() ) ) {
-		myStrength = std::numeric_limits<uint16_t>::max();
-	} else {
-		myStrength += strengthModifier;
-	}
-	
-	return myStrength;
-}
-
-uint16_t Player::getModifiedMinDamage() const
-{
-	uint16_t minDamage = 0;
-	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
-	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
-		Item *curItem = equippedItems[ curItemNr ]->getItem();
-		assert( curItem != NULL );
-		minDamage += curItem->getMinDamage();
-	}
-	if ( minDamage == 0 ) {
-		minDamage = 1; // default weapon damage
-	}
-	
-	// multiply with strength modifier
-	double modifier = getDamageModifier();
-	minDamage = minDamage * modifier;
-	
-	return minDamage;
-}
-
-uint16_t Player::getModifiedMaxDamage() const
-{
-	uint16_t maxDamage = 0;
-	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
-	for ( size_t curItemNr=0; curItemNr < equippedItems.size(); ++curItemNr ) {
-		Item *curItem = equippedItems[ curItemNr ]->getItem();
-		assert( curItem != NULL );
-		maxDamage += curItem->getMaxDamage();
-	}
-	if ( maxDamage == 0 ) {
-		maxDamage = 1; // default weapon damage
-	}
-	
-	// multiply with strength modifier
-	double modifier = getDamageModifier();
-	maxDamage = maxDamage * modifier;
-
-	return maxDamage;
-}
-

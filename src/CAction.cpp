@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "CTexture.h"
 #include "CCharacter.h"
+#include "Player.h"
 
 size_t randomSizeT( size_t min, size_t max ) {
 	return min + ( rand() % (max - min + 1) );
