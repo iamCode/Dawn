@@ -882,12 +882,12 @@ void CCharacter::Damage(int amount)
 void CCharacter::Heal(int amount)
 {
 	if (alive) {
-	    addDamageDisplayToGUI( amount, false, 1 );
-		if ((max_health - current_health) <= amount) {
-			current_health = max_health;
-		} else {
-			modifyCurrentHealth ( amount );
+		uint16_t modifiedDiff = getModifiedMaxHealth() - getCurrentHealth();
+	    if ( modifiedDiff <= amount ) {
+			amount = modifiedDiff;
 		}
+		addDamageDisplayToGUI( amount, false, 1 );
+		modifyCurrentHealth( amount );
 	}
 }
 
