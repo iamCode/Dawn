@@ -99,8 +99,8 @@ void CInterface::DrawInterface()
     /** drawing the procentual display of characters life and mana.
     starts of at an Y-offset of 31, this is where the transparent part of the lifebar starts.
     The "bar" is 91 pixels wide, that means 100% life/mana = 91 pixels of bar. **/
-    int lifeBarWidth = static_cast<float>(player->getCurrentHealth()) / player->getMaxHealth() * 91;
-    int manaBarWidth = static_cast<float>(player->getCurrentMana()) / player->getMaxMana() * 91;
+    int lifeBarWidth = static_cast<float>(player->getCurrentHealth()) / player->getModifiedMaxHealth() * 91;
+    int manaBarWidth = static_cast<float>(player->getCurrentMana()) / player->getModifiedMaxMana() * 91;
 
     DrawingHelpers::mapTextureToRect( interfacetextures.texture[6].texture,
 	                                  world_x+31, lifeBarWidth,

@@ -903,9 +903,9 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 
 void CCharacter::CalculateStats()
 {
-	life_percentage = static_cast<float>(current_health) / static_cast<float>(max_health);
-	mana_percentage = static_cast<float>(current_mana) / static_cast<float>(max_mana);
-	energy_percentage = static_cast<float>(current_energy) / static_cast<float>(max_energy);
+	life_percentage = static_cast<float>(getCurrentHealth()) / static_cast<float>(getModifiedMaxHealth());
+	mana_percentage = static_cast<float>(getCurrentMana()) / static_cast<float>(getModifiedMaxMana());
+	energy_percentage = static_cast<float>(getCurrentEnergy()) / static_cast<float>(getModifiedMaxEnergy());
 }
 
 bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
