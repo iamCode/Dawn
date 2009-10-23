@@ -24,14 +24,23 @@
 class Player;
 class GLFT_Font;
 
+struct sTabs
+{
+    int posX, posY, width, height;
+    CTexture tabimage;
+};
+
 class CharacterInfoScreen
 {
 	private:
 		Player *player;
 		bool visible;
 		int posX, posY, width, height;
+		uint8_t currentTab;
 		CTexture textures;
 		GLFT_Font *infoFont;
+		sTabs tabs[3];
+
 
 	public:
 		CharacterInfoScreen( Player *player_ );
@@ -39,11 +48,16 @@ class CharacterInfoScreen
 
 		void setVisible( bool newVisible );
 		bool isVisible() const;
+		bool isOnThisScreen( int x, int y );
+
+		void clicked( int clickX, int clickY );
 
 		void LoadTextures();
 		void initFonts();
 
 		void drawScreen();
+		void drawExpBar();
+		void drawTabs();
 };
 
 #endif // _CharacterInfoScreen_h_

@@ -430,7 +430,10 @@ void game_loop()
 					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
 						inventoryScreen->clicked( mouseX, mouseY );
-					} else {
+					} else if ( characterInfoScreen->isVisible()
+                            && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
+                        characterInfoScreen->clicked( mouseX, mouseY );
+                    } else {
 						switch (event.button.button) {
 							case 1:
 								// search for new target
