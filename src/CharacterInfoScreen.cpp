@@ -33,26 +33,26 @@ CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
 {
 	infoFont = NULL;
 	currentTab = 0;
-    tabs[0].tabimage.texture.reserve(1);
-    tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
-    tabs[0].height = 32;
-    tabs[0].width = 64;
-    tabs[0].posX = 33 + posX;
-    tabs[0].posY = 190 + posY;
+	tabs[0].tabimage.texture.reserve(1);
+	tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
+	tabs[0].height = 32;
+	tabs[0].width = 64;
+	tabs[0].posX = 33 + posX;
+	tabs[0].posY = 190 + posY;
 
-    tabs[1].tabimage.texture.reserve(1);
-    tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
-    tabs[1].height = 32;
-    tabs[1].width = 64;
-    tabs[1].posX = 106 + posX;
-    tabs[1].posY = 190 + posY;
+	tabs[1].tabimage.texture.reserve(1);
+	tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
+	tabs[1].height = 32;
+	tabs[1].width = 64;
+	tabs[1].posX = 106 + posX;
+	tabs[1].posY = 190 + posY;
 
-    tabs[2].tabimage.texture.reserve(1);
-    tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
-    tabs[2].height = 32;
-    tabs[2].width = 64;
-    tabs[2].posX = 179 + posX;
-    tabs[2].posY = 190 + posY;
+	tabs[2].tabimage.texture.reserve(1);
+	tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
+	tabs[2].height = 32;
+	tabs[2].width = 64;
+	tabs[2].posX = 179 + posX;
+	tabs[2].posY = 190 + posY;
 
 }
 
@@ -96,71 +96,71 @@ void CharacterInfoScreen::drawScreen()
 	size_t lineDistance = 15;
 
 	int curLine = 0;
-	infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Enylyn" /** name of the character **/ );
-    infoFont->drawText( world_x + posX + valueFieldStart,
-                        world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                        "Exp" );
-    curLine++;
-	infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	                    "Exp" );
+	curLine++;
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Level %d %s", player->getLevel(), /** should be player->getClass()/getClassText()**/ "Wizard");
 	curLine += 2;
 
-	infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Health" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d / %d", player->getCurrentHealth(), player->getModifiedMaxHealth() );
 	curLine++;
 
-	infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Mana" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d / %d", player->getCurrentMana(), player->getModifiedMaxMana() );
 	curLine += 2;
 
-    infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Dexterity" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d", player->getModifiedDexterity() );
 	curLine++;
 
-    infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Intellect" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d", player->getModifiedIntellect() );
 	curLine++;
 
-    infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Strength" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d", player->getModifiedStrength() );
 	curLine++;
 
-    infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Vitality" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d", player->getModifiedVitality() );
 	curLine++;
 
-    infoFont->drawText( world_x + posX + descriptionTextStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Wisdom" );
-	infoFont->drawText( world_x + posX + valueFieldStart,
-	                    world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "%d", player->getModifiedWisdom() );
 	curLine++;
 
@@ -225,131 +225,131 @@ void CharacterInfoScreen::drawTabs()
     switch ( currentTab )
     {
         case 0: // draws melee tab
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Damage" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d-%d", player->getModifiedMinDamage(), player->getModifiedMaxDamage() );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Chance to hit" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Critical strike" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
         break;
         case 1: // draws defense tab
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Armor" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Chance to block" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Dodge" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Parry" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
         break;
         case 2: // draws spells tab
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Spell damage bonus" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Critical strike" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Life regen" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d/sec", 0 );
             curLine++;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Mana regen" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d/sec", 0 );
             curLine += 2;
 
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Resists" );
             curLine++;
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Air" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.0f%%", 0 );
             curLine++;
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Disease" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.0f%%", 0 );
             curLine++;
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Fire" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.0f%%", 0 );
             curLine++;
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Frost" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.0f%%", 0 );
             curLine++;
-            infoFont->drawText( world_x + posX + descriptionTextStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Holy" );
-            infoFont->drawText( world_x + posX + valueFieldStart,
-                                world_y + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.0f%%", 0 );
         break;
     }
