@@ -102,7 +102,7 @@ class AttackAction : public CAction
 					int damage = randomSizeT( creator->getModifiedMinDamage(), creator->getModifiedMaxDamage() );
 					target->Damage( damage );
 					if ( ! target->isAlive() ) {
-						creator->gainExperience( target->getMaxHealth() / 10 );
+						creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 					}
 				}
 				damageCaused = true;
