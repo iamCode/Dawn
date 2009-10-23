@@ -235,6 +235,16 @@ uint16_t Player::getModifiedMaxHealth() const
 	return getModifiedAttribute( inventory, getMaxHealth(), &getHealthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
+uint16_t Player::getModifiedMaxMana() const
+{
+	return getModifiedAttribute( inventory, getMaxMana(), &getManaHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
+uint16_t Player::getModifiedMaxEnergy() const
+{
+	return getModifiedAttribute( inventory, getMaxEnergy(), &getEnergyHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
 uint16_t Player::getModifiedMinDamage() const
 {
 	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, 0, &getMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
