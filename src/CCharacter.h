@@ -62,9 +62,9 @@ class CCharacter
 			curSpellAction = NULL;
 			experience = 0;
 		}
-		
+
 		virtual bool isPlayer() const;
-		
+
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
@@ -86,7 +86,7 @@ class CCharacter
 
 		virtual Direction GetDirection() = 0;
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
-		
+
 		Direction WanderDirection, MovingDirection;
 
 		Uint8 *keys;
@@ -103,36 +103,41 @@ class CCharacter
 		std::string getName() const;
 		void setName( std::string newName );
 
+		void setArmor( uint16_t newArmor );
+		virtual uint16_t getModifiedArmor() const;
+		uint16_t getArmor() const;
+		void modifyArmor( int16_t armorModifier );
+
 		void setStrength( uint16_t newStrength );
 		virtual uint16_t getModifiedStrength() const;
 		uint16_t getStrength() const;
 		void modifyStrength( int16_t strengthModifier );
-		
+
 		void setDexterity( uint16_t newDexterity );
 		virtual uint16_t getModifiedDexterity() const;
 		uint16_t getDexterity() const;
 		void modifyDexterity( int16_t dexterityModifier );
-		
+
 		void setVitality( uint16_t newVitality );
 		virtual uint16_t getModifiedVitality() const;
 		uint16_t getVitality() const;
 		void modifyVitality( int16_t vitalityModifier );
-		
+
 		void setIntellect( uint16_t newIntellect );
 		virtual uint16_t getModifiedIntellect() const;
 		uint16_t getIntellect() const;
 		void modifyIntellect( int16_t intellectModifier );
-		
+
 		void setWisdom( uint16_t newWisdom );
 		virtual uint16_t getModifiedWisdom() const;
 		uint16_t getWisdom() const;
 		void modifyWisdom( int16_t wisdomModifier );
-		
+
 		uint16_t getMaxHealth() const;
 		virtual uint16_t getModifiedMaxHealth() const;
 		void setMaxHealth( uint16_t newMaxHealth );
 		void modifyMaxHealth( int16_t maxHealthModifier );
-		
+
 		uint16_t getCurrentHealth() const;
 		void setCurrentHealth( uint16_t newCurrentHealth );
 		void modifyCurrentHealth( int16_t currentHealthModifier);
@@ -141,7 +146,7 @@ class CCharacter
 		virtual uint16_t getModifiedMaxMana() const;
 		void setMaxMana( uint16_t newMaxMana );
 		void modifyMaxMana( int16_t maxManaModifier );
-		
+
 		uint16_t getCurrentMana() const;
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
@@ -176,7 +181,7 @@ class CCharacter
 		void setMinDamage( uint16_t newMinDamage );
 		uint16_t getMinDamage() const;
 		virtual uint16_t getModifiedMinDamage() const;
-		
+
 		void setMaxDamage( uint16_t newMaxDamage );
 		uint16_t getMaxDamage() const;
 		virtual uint16_t getModifiedMaxDamage() const;
@@ -229,7 +234,7 @@ class CCharacter
 	private:
 		// NPC attributes
 		std::string name;
-		
+
 		uint16_t strength;
 		uint16_t dexterity;
 		uint16_t vitality;
@@ -241,17 +246,17 @@ class CCharacter
 		uint16_t current_mana;
 		uint16_t max_energy;
 		uint16_t current_energy;
-		
+
 		uint16_t armor;
-		
-	
+
+
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;
 		uint8_t alignment, level;
 
 		// character attributes
 		uint64_t experience;
-		
+
 		// casting spells / executing actions
 		bool isPreparing;
 		CSpellActionBase *curSpellAction;

@@ -76,7 +76,7 @@ void CCharacter::baseOnType( std::string otherName )
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
-template <class AttributeType, class ModifierType> 
+template <class AttributeType, class ModifierType>
 AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierType modifier,
                                          AttributeType minValue = std::numeric_limits<AttributeType>::min(),
                                          AttributeType maxValue = std::numeric_limits<AttributeType>::max() )
@@ -100,6 +100,27 @@ std::string CCharacter::getName() const
 void CCharacter::setName( std::string newName )
 {
 	name = newName;
+}
+
+void CCharacter::setArmor( uint16_t newArmor )
+{
+    assert( newArmor >= getModifiedArmor() );
+    armor = newArmor;
+}
+
+uint16_t CCharacter::getArmor() const
+{
+    return armor;
+}
+
+uint16_t CCharacter::getModifiedArmor() const
+{
+    return getArmor();
+}
+
+void CCharacter::modifyArmor( int16_t armorModifier )
+{
+    setArmor( getModifiedAttributeValue( armor, armorModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getStrength() const
@@ -387,7 +408,7 @@ void CCharacter::gainExperience( uint64_t addExp )
 	} else {
 		experience += addExp;
 	}
-	
+
 	while ( canRaiseLevel() ) {
 		raiseLevel();
 	}
@@ -517,7 +538,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 			}
 		}
 	}
-	
+
 	// check for collision with other characters
 	for ( size_t curNPCNr=0; curNPCNr < NPC.size(); ++curNPCNr )
 	{
@@ -530,9 +551,9 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 				return 1;
 			}
 		}
-		
+
 	}
-	
+
 	// check for collision with player
 	{
 		CCharacter *curNPC = &character;
@@ -544,7 +565,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 			}
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -639,7 +660,7 @@ void CCharacter::Move()
 			return;
 		}
 	}
-	
+
 	Direction movingDirection = GetDirection();
 	if (( movingDirection != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		CastingAborted();
@@ -697,7 +718,7 @@ Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 {
 	int dx = x_pos - this->x_pos;
 	int dy = y_pos - this->y_pos;
-	
+
 	if ( dx > 0 ) {
 		if ( dy > 0 ) {
 			return NE;

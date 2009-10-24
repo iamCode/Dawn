@@ -37,20 +37,22 @@ class Player : public CCharacter
 		void setTarget(CCharacter *newTarget);
 		void regenerateLifeMana(uint32_t regenPoints);
 		Direction GetDirection();
-		
+
+		uint16_t getModifiedArmor() const;
+
 		uint16_t getModifiedStrength() const;
 		uint16_t getModifiedDexterity() const;
 		uint16_t getModifiedVitality() const;
 		uint16_t getModifiedIntellect() const;
 		uint16_t getModifiedWisdom() const;
-		
+
 		uint16_t getModifiedMaxHealth() const;
 		uint16_t getModifiedMaxMana() const;
 		uint16_t getModifiedMaxEnergy() const;
-		
+
 		uint16_t getModifiedMinDamage() const;
 		uint16_t getModifiedMaxDamage() const;
-		
+
 		Inventory* getInventory();
 };
 

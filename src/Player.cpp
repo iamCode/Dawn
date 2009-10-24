@@ -28,6 +28,7 @@ const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 Player::Player()
 	:	inventory( Inventory( 10, 4 ) )
 {
+    setName("Enylyn");
 }
 
 CCharacter* Player::getTarget() const
@@ -42,7 +43,7 @@ void Player::Draw()
 	if (alive == true) {
 		texture->DrawTexture(x_pos,y_pos,direction_texture);
 	}
-	
+
 	InventoryItem *equippedShield = getInventory()->getItemAtSlot( ItemSlot::OFF_HAND );
 	if ( equippedShield != NULL ) {
 		Item *itemShield = equippedShield->getItem();
@@ -52,7 +53,7 @@ void Player::Draw()
 		size_t itemHeight = 10;
 		size_t xoffset = - (itemWidth/2);
 		size_t yoffset = getWidth() / 2 - 5;
-		
+
 		switch( GetDirectionTexture() ) {
 			case N:
 				break;
@@ -205,6 +206,11 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basic
 	}
 }
 
+uint16_t Player::getModifiedArmor() const
+{
+    return getModifiedAttribute( inventory, getArmor(), &getArmorHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
 uint16_t Player::getModifiedStrength() const
 {
 	return getModifiedAttribute( inventory, getStrength(), &getStrengthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
@@ -248,22 +254,22 @@ uint16_t Player::getModifiedMaxEnergy() const
 uint16_t Player::getModifiedMinDamage() const
 {
 	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, 0, &getMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
-	
+
 	// multiply with strength modifier
 	double modifier = getDamageModifier();
 	inventoryMinDamage *= modifier;
-	
+
 	return inventoryMinDamage;
 }
 
 uint16_t Player::getModifiedMaxDamage() const
 {
 	uint16_t inventoryMaxDamage = getModifiedAttribute( inventory, 0, &getMaxDamageHelper, getModifiedMinDamage() );
-	
+
 	// multiply with strength modifier
 	double modifier = getDamageModifier();
 	inventoryMaxDamage *= modifier;
-	
+
 	return inventoryMaxDamage;
 }
 

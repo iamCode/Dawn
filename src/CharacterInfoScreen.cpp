@@ -98,7 +98,7 @@ void CharacterInfoScreen::drawScreen()
 	int curLine = 0;
 	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
 	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "Enylyn" /** name of the character **/ );
+	                    player->getName() );
 	infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
 	                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 	                    "Exp" );
@@ -254,7 +254,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Armor" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%d", 0 );
+                                "%d", player->getModifiedArmor() );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
