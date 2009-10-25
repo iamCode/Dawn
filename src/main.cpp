@@ -334,7 +334,7 @@ bool dawn_init(int argc, char** argv)
 
 		SpellCreation::initSpells();
 		ActionCreation::initActions();
-		
+
 		// initialize random number generator
 		srand( time( 0 ) );
 
@@ -365,6 +365,7 @@ void initializePlayerDebugInventory()
 	Item *sword =  new Item("A rusty sword", 1, 3, "data/items/sword.tga", ItemQuality::POOR, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
 	Item *swordOfKhazom = new Item("Sword of Khazom", 1, 3, "data/items/SwordOfKhazom.tga", ItemQuality::LORE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
 	Item *ringOfLicor = new Item("Eye of Licor", 1, 1, "data/items/EyeOfLicor.tga", ItemQuality::RARE, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
+	Item *gnollshield = new Item("Gnoll shield", 2, 2, "data/items/shield0.tga", ItemQuality::ENHANCED, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
 	ringOfLicor->setIntellect( 4 );
 	ringOfLicor->setMana( 15 );
 	ringOfLicor->setStrength ( -1 );
@@ -378,10 +379,13 @@ void initializePlayerDebugInventory()
 	sword->setStrength( -1 );
 	sword->setMinDamage( 3 );
 	sword->setMaxDamage( 6 );
+	gnollshield->setArmor( 70 );
+	gnollshield->setVitality( 3 );
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
 	playerInventory->insertItem( swordOfKhazom );
 	playerInventory->insertItem( ringOfLicor );
+	playerInventory->insertItem( gnollshield );
 }
 
 void game_loop()
