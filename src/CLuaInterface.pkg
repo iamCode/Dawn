@@ -65,6 +65,8 @@ class CCharacter {
 
     void setMaxDamage( int newMaxDamage );
     uint16_t getMaxDamage();
+    
+    void setArmor( int newArmor );
 };
 
 namespace DawnInterface
