@@ -22,6 +22,7 @@
 #include "CSpell.h"
 #include "CInterface.h"
 #include "CAction.h"
+#include "StatsSystem.h"
 
 #include "CNPC.h"
 #include "Player.h"
@@ -360,7 +361,7 @@ void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
 
 double CCharacter::getDamageModifier() const
 {
-	return (1 + static_cast<double>(getModifiedStrength()) / 100);
+	return StatsSystem::getStatsSystem()->getDamageModifier( this, getLevel() );
 }
 
 void CCharacter::setMinDamage( uint16_t newMinDamage )
@@ -375,8 +376,7 @@ uint16_t CCharacter::getMinDamage() const
 
 uint16_t CCharacter::getModifiedMinDamage() const
 {
-	double modifier = getDamageModifier();
-	return getMinDamage() * modifier;
+	return getMinDamage();
 }
 
 void CCharacter::setMaxDamage( uint16_t newMaxDamage )
@@ -391,8 +391,7 @@ uint16_t CCharacter::getMaxDamage() const
 
 uint16_t CCharacter::getModifiedMaxDamage() const
 {
-	double modifier = getDamageModifier();
-	return getMaxDamage() * modifier;
+	return getMaxDamage();
 }
 
 uint64_t CCharacter::getExperience() const

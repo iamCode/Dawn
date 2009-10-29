@@ -254,22 +254,12 @@ uint16_t Player::getModifiedMaxEnergy() const
 uint16_t Player::getModifiedMinDamage() const
 {
 	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, 0, &getMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
-
-	// multiply with strength modifier
-	double modifier = getDamageModifier();
-	inventoryMinDamage *= modifier;
-
 	return inventoryMinDamage;
 }
 
 uint16_t Player::getModifiedMaxDamage() const
 {
 	uint16_t inventoryMaxDamage = getModifiedAttribute( inventory, 0, &getMaxDamageHelper, getModifiedMinDamage() );
-
-	// multiply with strength modifier
-	double modifier = getDamageModifier();
-	inventoryMaxDamage *= modifier;
-
 	return inventoryMaxDamage;
 }
 

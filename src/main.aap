@@ -8,7 +8,7 @@
 
 OPTIMIZE = 3
 CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -ggdb
-LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image
+LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm
 
 # rule for generation tolua-headers from package files 
 # (only enable if you are working on the .pkg file because it would be checked too often otherwise)

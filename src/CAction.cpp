@@ -22,6 +22,7 @@
 #include "CTexture.h"
 #include "CCharacter.h"
 #include "Player.h"
+#include "StatsSystem.h"
 
 size_t randomSizeT( size_t min, size_t max ) {
 	return min + ( rand() % (max - min + 1) );
@@ -99,10 +100,29 @@ class AttackAction : public CAction
 			if ( curArc >= 0 && !damageCaused ) {
 				double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
 				if ( distance <= 120 ) {
-					int damage = randomSizeT( creator->getModifiedMinDamage(), creator->getModifiedMaxDamage() );
-					target->Damage( damage );
-					if ( ! target->isAlive() ) {
-						creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+					const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
+					
+					double minDamage = creator->getModifiedMinDamage() * statsSystem->getDamageModifier( creator, target->getLevel() );
+					double maxDamage = creator->getModifiedMaxDamage() * statsSystem->getDamageModifier( creator, target->getLevel() );
+					int damage = randomSizeT( minDamage, maxDamage );
+					
+					double hitChance = statsSystem->getHitChance( creator, target->getLevel() );
+					double targetEvadeChance = statsSystem->getEvadeChance( target, creator->getLevel() );
+					double damageReduction = statsSystem->getDamageReductionModifier( target, creator->getLevel() );
+					
+					// TODO: switch to double random value...
+					bool hasHit = randomSizeT( 0, 100 ) <= hitChance * 100;
+					bool targetEvaded = randomSizeT( 0, 100 ) <= targetEvadeChance * 100;
+					
+					if ( hasHit && !targetEvaded ) {
+						int damageDone = damage * (1.0-damageReduction);
+						if ( damageDone < 1 ) {
+							damageDone = 1;
+						}
+						target->Damage( damageDone );
+						if ( ! target->isAlive() ) {
+							creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+						}
 					}
 				}
 				damageCaused = true;
