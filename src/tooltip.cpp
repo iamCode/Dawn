@@ -25,15 +25,17 @@ itemTooltip::itemTooltip(Item *parent_)
 {
     height = 0;
     width = 0;
+    smallTooltip = false;
     loadTextures();
     getParentText();
 }
 
-spellTooltip::spellTooltip(CSpellActionBase *parent_)
+spellTooltip::spellTooltip(CActionFactory *parent_)
             : parent( parent_ )
 {
     height = 0;
     width = 0;
+    smallTooltip = false;
     loadTextures();
     getParentText();
 }
@@ -48,6 +50,21 @@ Tooltip::~Tooltip()
     }
 }
 
+void Tooltip::enableSmallTooltip()
+{
+    smallTooltip = true;
+}
+
+void Tooltip::disableSmallTooltip()
+{
+    smallTooltip = false;
+}
+
+bool Tooltip::isTooltipSmall()
+{
+    return smallTooltip;
+}
+
 void Tooltip::loadTextures()
 {
     textures.texture.reserve( 5 );
@@ -60,6 +77,14 @@ void Tooltip::loadTextures()
 
 void Tooltip::draw( int x, int y )
 {
+    // ugly hack, couldn't be arsed to fix this inside this function.
+    // if we want a small tooltip, call drawSmallTooltip() instead.
+    if ( isTooltipSmall() == true )
+    {
+        drawSmallTooltip( x, y );
+        return;
+    }
+
     // make sure the tooltip doesnt go "off screen"
     if ( width + x + 32 > dawn_configuration::screenWidth )
     {
@@ -93,6 +118,7 @@ void Tooltip::draw( int x, int y )
     // draw the background
     DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+16,height);
 
+
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
@@ -103,6 +129,42 @@ void Tooltip::draw( int x, int y )
     }
 }
 
+void Tooltip::drawSmallTooltip( int x, int y )
+{
+    // make sure the tooltip doesnt go "off screen"
+    if ( width + x + 32 > dawn_configuration::screenWidth )
+    {
+        x = dawn_configuration::screenWidth - width - 32;
+    }
+
+    if ( height + y + 32 > dawn_configuration::screenHeight )
+    {
+        y = dawn_configuration::screenHeight - height - 32;
+    }
+
+    // set the first font Y-position on the top of the tooltip.
+    int font_y = y + world_y + height - 16;
+
+    // set the correct position based on where we are
+    x += world_x;
+    y += world_y;
+
+    // draw the corners
+    DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, 16, y, 16); // lower left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+width+16, 16, y, 16); // lower right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, 16, y+16, 16); // upper left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+width+16, 16, y+16, 16); // upper right corner
+
+    // draw the borders
+    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y,16); // bottom border
+    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+16,16); // top border
+
+    // draw the name of the tooltip, since it's a small tooltip.
+    glColor4fv(tooltipText[0].color);
+    tooltipText[0].font->drawText(x+15,font_y,tooltipText[0].text);
+    glColor4f(1.0f,1.0f,1.0f,1.0f);
+}
+
 void Tooltip::addTooltipText(std::string text, GLfloat color[], uint8_t fontSize)
 {
     // push the data to the vector.
@@ -110,6 +172,7 @@ void Tooltip::addTooltipText(std::string text, GLfloat color[], uint8_t fontSize
 
     // adjust width and height depending on the content of the tooltip.
     int newHeight = 0;
+
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
         if ( width < tooltipText[i].font->calcStringWidth(tooltipText[i].text) ) {
@@ -117,7 +180,6 @@ void Tooltip::addTooltipText(std::string text, GLfloat color[], uint8_t fontSize
         }
         newHeight += tooltipText[i].font->getHeight()+10;
     }
-
     height = newHeight;
 }
 
@@ -229,5 +291,4 @@ void itemTooltip::getParentText()
 
 void spellTooltip::getParentText()
 {
-
 }

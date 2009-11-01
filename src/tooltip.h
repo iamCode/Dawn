@@ -55,23 +55,28 @@ class Tooltip
     public:
         ~Tooltip();
         void draw( int x, int y );
+        void enableSmallTooltip();
+        void disableSmallTooltip();
+        bool isTooltipSmall();
 
     private:
+        bool smallTooltip; // with this true, tooltip will merely display the name of things.
         int width;
         int height;
         CTexture textures;
         std::vector<sTooltipText> tooltipText;
         void loadTextures();
         void addTooltipText(std::string text, GLfloat color[], uint8_t fontSize);
+        void drawSmallTooltip( int x, int y );
 };
 
 class spellTooltip : public Tooltip
 {
     public:
-        spellTooltip(CSpellActionBase *parent);
+        spellTooltip(CActionFactory *parent);
 
     private:
-        CSpellActionBase *parent;
+        CActionFactory *parent;
         void getParentText();
 };
 
