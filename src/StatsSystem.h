@@ -30,6 +30,7 @@ class StatsSystem
 
 		int maxLevel;
 		int *maxStatsPointsForLevel;
+		int *maxArmorPointsForLevel;
 		double maxDamageModifier;
 		double maxHitChance;
 		double maxEvadeChance;

@@ -63,11 +63,14 @@ void StatsSystem::calculateTables( int maxLevel, double relativeIncreasePerLevel
 	
 	// calculate the stats points needed for each level
 	maxStatsPointsForLevel = new int[ maxLevel + 1 ];
+	maxArmorPointsForLevel = new int[ maxLevel + 1 ];
 	
 	maxStatsPointsForLevel[0] = 100;
+	maxArmorPointsForLevel[0] = 300;
 	
 	for ( size_t curLevel=1; curLevel<=maxLevel; ++curLevel ) {
 		maxStatsPointsForLevel[ curLevel ] = maxStatsPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
+		maxArmorPointsForLevel[ curLevel ] = maxArmorPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
 	}
 	
 	// set the allowed maximal percentages for different attributes
@@ -153,8 +156,8 @@ double StatsSystem::complexGetDamageReductionModifier( int myLevel, int myDamage
 	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
 
 	return getModifierCommon( myDamageReductionPoints,
-	                          maxStatsPointsForLevel[ myLevel ],
-	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxArmorPointsForLevel[ myLevel ],
+	                          maxArmorPointsForLevel[ opponentLevel ],
 	                          maxDamageReductionModifier );
 }
 
@@ -165,7 +168,7 @@ int StatsSystem::calculateDamageModifierPoints( const CCharacter *character ) co
 
 int StatsSystem::calculateHitModifierPoints( const CCharacter *character ) const
 {
-	return ( character->getModifiedDexterity() * 10 );
+	return ( character->getModifiedDexterity() * 4 );
 }
 
 int StatsSystem::calculateEvadeModifierPoints( const CCharacter *character ) const

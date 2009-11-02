@@ -322,7 +322,11 @@ bool dawn_init(int argc, char** argv)
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);
 		character.setMaxMana(250);
-		character.setStrength(40);
+		character.setStrength(15);
+		character.setVitality(15);
+		character.setDexterity(20);
+		character.setWisdom(10);
+		character.setIntellect(10);
 
 		Editor.LoadTextures();
 		GUI.LoadTextures();
