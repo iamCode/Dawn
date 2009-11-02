@@ -541,10 +541,15 @@ class CActionFactoryImpl : public CActionFactory
 			DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
 												left, width, bottom, height );
 		}
-		
+
 		EffectType::EffectType getEffectType() const
 		{
 			return ActionType::getStaticEffectType();
+		}
+
+		std::string getName() const
+		{
+		    return ActionType::getStaticName();
 		}
 };
 

@@ -72,6 +72,7 @@ int ff, fps;                         // FPS Stuff
 std::auto_ptr<GLFT_Font> fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
 std::auto_ptr<InventoryScreen> inventoryScreen;
+std::auto_ptr<ActionBar> actionBar;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -213,6 +214,7 @@ void DrawScene()
 	if (Editor.isEnabled() ) {
 		Editor.DrawEditor();
 	} else {
+		actionBar->draw();
 		GUI.DrawInterface();
 	}
 
@@ -232,6 +234,11 @@ void DrawScene()
 	if ( inventoryScreen->isVisible() )
 	{
 	    inventoryScreen->drawItemTooltip( mouseX, mouseY );
+	}
+
+	if ( actionBar->isMouseOver( mouseX, mouseY ) )
+	{
+	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
@@ -323,14 +330,17 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
 		characterInfoScreen->LoadTextures();
 		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
-		inventoryScreen->LoadTextures();
+		inventoryScreen->loadTextures();
+		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
+		actionBar->loadTextures();
+
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
 		message.initFonts();
 		Editor.initFonts();
-		GUI.initFonts();
 		characterInfoScreen->initFonts();
+        actionBar->initFonts();
 
 		SpellCreation::initSpells();
 		ActionCreation::initActions();
@@ -339,23 +349,6 @@ bool dawn_init(int argc, char** argv)
 		srand( time( 0 ) );
 
 		return true;
-}
-
-void initQuickSlotBar( const int nrOfQuickSlots, std::vector<CActionFactory*> &quickSlots, std::vector<bool> &wasPressed )
-{
-	// initialize quick slot bar.
-	// this should be done dynamically in the future as set by the player
-	quickSlots.reserve( nrOfQuickSlots ); // one for each key [0-9], + Space (last)
-	wasPressed.reserve( nrOfQuickSlots );
-
-	for ( size_t curQuickSlotNr = 0; curQuickSlotNr < nrOfQuickSlots; ++curQuickSlotNr ) {
-		quickSlots[ curQuickSlotNr ] = NULL;
-		wasPressed[ curQuickSlotNr ] = false;
-	}
-	quickSlots[1] = SpellCreation::createActionFactoryByName( "Lightning", &character );
-	quickSlots[2] = SpellCreation::createActionFactoryByName( "Healing", &character );
-	quickSlots[3] = SpellCreation::createActionFactoryByName( "Heal Other", &character );
-	quickSlots[4] = SpellCreation::createActionFactoryByName( "Magic Missile", &character );
 }
 
 void initializePlayerDebugInventory()
@@ -398,13 +391,9 @@ void game_loop()
 	Uint32 curTicks  = lastTicks;
 	Uint32 ticksDiff = 0;
 	Uint8 *keys;
-	bool done = false;
+    bool done = false;
 
-	std::vector<bool> wasPressed;
-	const int nrOfQuickSlots = 11;
-	initQuickSlotBar( nrOfQuickSlots, quickSlots, wasPressed );
-
-	focus.setFocus(&character);
+    focus.setFocus(&character);
 
 	while (!done) {
 
@@ -437,6 +426,8 @@ void game_loop()
 					} else if ( characterInfoScreen->isVisible()
                             && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
                         characterInfoScreen->clicked( mouseX, mouseY );
+                    } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
+                        actionBar->clicked( mouseX, mouseY );
                     } else {
 						switch (event.button.button) {
 							case 1:
@@ -600,35 +591,7 @@ void game_loop()
 			    KP_toggle_showInventory = false;
 			}
 
-			for ( size_t curQuickSlotIndex = 0; curQuickSlotIndex < nrOfQuickSlots; ++ curQuickSlotIndex ) {
-				// TODO: use a conversion table here from quickslot nr to keycode
-				if ( keys[ SDLK_0 + curQuickSlotIndex ] && ! wasPressed[ curQuickSlotIndex ] ) {
-					if ( quickSlots[ curQuickSlotIndex ] != NULL ) {
-						CSpellActionBase *curAction = NULL;
-
-						EffectType::EffectType effectType = quickSlots[ curQuickSlotIndex ]->getEffectType();
-
-						if ( effectType == EffectType::SingleTargetSpell
-						         && character.getTarget() != NULL ) {
-							curAction = quickSlots[ curQuickSlotIndex ]->create( character.getTarget() );
-						} else if ( effectType == EffectType::SelfAffectingSpell ) {
-							curAction = quickSlots[ curQuickSlotIndex ]->create( &character );
-						}
-
-						if ( curAction != NULL ) {
-							// TODO: This is a hack. just create a single type of action
-							if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-								character.castSpell( dynamic_cast<CSpell*>( curAction ) );
-							} else {
-								character.executeAction( dynamic_cast<CAction*>( curAction ) );
-							}
-						}
-					}
-				}
-				if ( ! keys[ SDLK_0 + curQuickSlotIndex ] ) {
-					wasPressed[ curQuickSlotIndex ] = false;
-				}
-			}
+			actionBar->handleKeys();
 
 			if (keys[SDLK_5] && !KP_interrupt) {
 				KP_interrupt = true;

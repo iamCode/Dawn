@@ -77,7 +77,9 @@ class CCharacter
 		void CastingAborted();
 		void CastingInterrupted();
 		void abortCurrentSpellAction();
+		std::string getCurrentSpellActionName() const;
 		float getPreparationPercentage() const;
+		bool getIsPreparing() const;
 
 		// position access functions
 		int getXPos() const;

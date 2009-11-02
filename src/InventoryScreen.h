@@ -77,7 +77,7 @@ class InventoryScreen
 
 		void clicked( int clickX, int clickY );
 
-		void LoadTextures();
+		void loadTextures();
 
 		void draw();
 		void drawSlot( ItemSlot::ItemSlot curSlot );

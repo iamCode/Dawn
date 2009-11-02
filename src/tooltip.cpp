@@ -77,6 +77,11 @@ void Tooltip::loadTextures()
 
 void Tooltip::draw( int x, int y )
 {
+    if ( tooltipText.empty() )
+    {
+        return;
+    }
+
     // ugly hack, couldn't be arsed to fix this inside this function.
     // if we want a small tooltip, call drawSmallTooltip() instead.
     if ( isTooltipSmall() == true )
@@ -131,6 +136,13 @@ void Tooltip::draw( int x, int y )
 
 void Tooltip::drawSmallTooltip( int x, int y )
 {
+    // since this is a tooltip, we could almost assume that we have a tooltiptext.
+    // i did, but spent 15 minutes searching for this error made me add this check:
+    if ( tooltipText.empty() )
+    {
+        return;
+    }
+
     // make sure the tooltip doesnt go "off screen"
     if ( width + x + 32 > dawn_configuration::screenWidth )
     {
@@ -291,4 +303,6 @@ void itemTooltip::getParentText()
 
 void spellTooltip::getParentText()
 {
+    GLfloat white[] = { 1.0f, 1.0f, 1.0f };
+    addTooltipText( parent->getName(), white, 12 );
 }

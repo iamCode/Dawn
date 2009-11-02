@@ -132,7 +132,7 @@ InventoryScreen::~InventoryScreen()
 	delete[] mySlots;
 }
 
-void InventoryScreen::LoadTextures()
+void InventoryScreen::loadTextures()
 {
 	textures.texture.reserve(2);
 	textures.LoadIMG("data/interface/inventory_base.tga",0);

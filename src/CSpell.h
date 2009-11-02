@@ -83,6 +83,7 @@ class CActionFactory
 		virtual CSpellActionBase* create( CCharacter *target ) = 0;
 		virtual void draw( int left, int width, int bottom, int height ) = 0;
 		virtual EffectType::EffectType getEffectType() const = 0;
+		virtual std::string getName() const = 0;
 };
 
 namespace SpellCreation

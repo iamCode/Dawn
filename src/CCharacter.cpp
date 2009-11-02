@@ -850,6 +850,16 @@ void CCharacter::abortCurrentSpellAction()
 	}
 }
 
+bool CCharacter::getIsPreparing() const
+{
+    return isPreparing;
+}
+
+std::string CCharacter::getCurrentSpellActionName() const
+{
+    return curSpellAction->getName();
+}
+
 void CCharacter::CastingAborted()
 {
 	// if we moved, got stunned, or in some way unable to complete the spell ritual, spellcasting will fail.

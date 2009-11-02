@@ -49,6 +49,7 @@
 #include "cameraFocusHandler.h"
 #include "utils.h"
 #include "tooltip.h"
+#include "ActionBar.h"
 
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;

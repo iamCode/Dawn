@@ -49,9 +49,6 @@ struct sDamageDisplay {
 class CInterface
 {
 	public:
-		CInterface();
-		~CInterface();
-
 		void LoadTextures();
 		bool enabled;
 		void DrawInterface();
@@ -59,9 +56,6 @@ class CInterface
 		void SetPlayer(CCharacter *player_);
 
 		void addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos);
-
-
-		void initFonts();
 
 	private:
 		CTexture interfacetextures;
