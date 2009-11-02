@@ -69,6 +69,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setMaxDamage( other->getMaxDamage() );
 	setTexture( other->getTexture() );
 	setLifebar( other->getLifebar() );
+	setArmor( other->getArmor() );
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
@@ -105,7 +106,6 @@ void CCharacter::setName( std::string newName )
 
 void CCharacter::setArmor( uint16_t newArmor )
 {
-    assert( newArmor >= getModifiedArmor() );
     armor = newArmor;
 }
 
@@ -493,6 +493,22 @@ void CCharacter::setLifeTexture( std::string filename )
 }
 
 // end of Dawn LUA Interface
+
+CCharacter::CCharacter()
+	: strength( 1 ),
+	  dexterity( 1 ),
+	  vitality( 1 ),
+	  intellect( 1 ),
+	  wisdom( 1 ),
+	  max_health( 1 ),
+	  current_health( 1 ),
+	  max_mana( 0 ),
+	  current_mana( 0 ),
+	  max_energy( 0 ),
+	  current_energy( 0 ),
+	  armor( 0 )
+{
+}
 
 CCharacter::~CCharacter()
 {

@@ -40,6 +40,7 @@ class CCharacter
 		friend class CSpellActionBase;
 
 	public:
+		CCharacter();
 		virtual ~CCharacter();
 
 		GLuint frame;
