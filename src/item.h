@@ -148,9 +148,9 @@ class Item
         int16_t getMana() const;
         int16_t getEnergy() const;
         int16_t getArmor() const;
-
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
+        uint8_t getLevelReq() const;
 
         void setStrength( int16_t strength );
 		void setDexterity( int16_t dexterity );
@@ -163,6 +163,7 @@ class Item
 		void setArmor( int16_t armor );
         void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
+        void setLevelReq( uint8_t levelReq );
 
 		size_t getSizeX() const;
 		size_t getSizeY() const;
@@ -205,6 +206,8 @@ class Item
 
         uint8_t minDamage;
         uint8_t maxDamage;
+
+        uint8_t levelReq;
 
 		CTexture symbolTexture;
 };

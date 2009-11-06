@@ -24,6 +24,8 @@
 #include "item.h"
 #include "GLFT_Font.h"
 
+class Player;
+
 namespace dawn_configuration
 {
 	extern int screenWidth;
@@ -83,10 +85,11 @@ class spellTooltip : public Tooltip
 class itemTooltip : public Tooltip
 {
     public:
-        itemTooltip(Item *parent);
+        itemTooltip(Item *parent, Player *player);
 
     private:
         Item *parent;
+        Player *player;
         void getParentText();
 };
 

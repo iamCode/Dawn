@@ -42,7 +42,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		equipPosition ( equipPosition_ ),
 		itemType ( itemType_ ),
 		armorType ( armorType_ ),
-		weaponType ( weaponType_ )
+		weaponType ( weaponType_ ),
+		levelReq( 0 )
 {
 	symbolTexture.texture.reserve(1);
 	symbolTexture.LoadIMG( symbolFile, 0 );
@@ -153,6 +154,11 @@ uint8_t Item::getMaxDamage() const
     return maxDamage;
 }
 
+uint8_t Item::getLevelReq() const
+{
+    return levelReq;
+}
+
 void Item::setStrength( int16_t strength )
 {
     strengthModifier = strength;
@@ -207,6 +213,11 @@ void Item::setMinDamage( uint8_t minDamage_ )
 void Item::setMaxDamage( uint8_t maxDamage_ )
 {
     maxDamage = maxDamage_;
+}
+
+void Item::setLevelReq( uint8_t levelReq_ )
+{
+    levelReq = levelReq_;
 }
 
 void Item::setDescription ( std::string description_ )

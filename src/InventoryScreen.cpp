@@ -171,7 +171,7 @@ void InventoryScreen::clicked( int clickX, int clickY )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, clickX, clickY ) ) {
-			if ( floatingSelection != NULL ) {
+			if ( floatingSelection != NULL && floatingSelection->isEquippable() ) {
 				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
 					if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {

@@ -23,10 +23,12 @@
 #include "tooltip.h"
 #include "item.h"
 
+class Player;
+
 class InventoryItem
 {
 	public:
-		InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY );
+		InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player );
 		~InventoryItem();
 		size_t getInventoryPosX() const;
 		size_t getInventoryPosY() const;
@@ -41,9 +43,11 @@ class InventoryItem
 
 		EquipPosition::EquipPosition getEquippedPosition() const;
 		bool isEquipped() const;
+		bool isEquippable() const;
 
 	private:
 		Item *item;
+		Player *player;
 
 		size_t inventoryPosX;
 		size_t inventoryPosY;
@@ -54,7 +58,7 @@ class InventoryItem
 class Inventory
 {
 	public:
-		Inventory( size_t sizeX, size_t sizeY );
+		Inventory( size_t sizeX, size_t sizeY, Player *player );
 		~Inventory();
 		bool insertItem( Item *item );
 		bool hasSufficientSpaceAt( size_t invPosX, size_t invPosY, size_t itemSizeX, size_t itemSizeY ) const;
@@ -81,6 +85,7 @@ class Inventory
 		size_t sizeX;
 		size_t sizeY;
 		bool **slotUsed;
+		Player *player;
 		std::vector<InventoryItem*> backpackItems;
 		InventoryItem **equippedItems;
 };

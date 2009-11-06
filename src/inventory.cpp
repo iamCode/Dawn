@@ -19,15 +19,18 @@
 #include "inventory.h"
 
 #include "item.h"
+#include "CCharacter.h"
+#include "Player.h"
 #include <cassert>
 
 
-InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t inventoryPosY_ )
+InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t inventoryPosY_, Player *player_ )
 	:	item( item_ ),
 		inventoryPosX( inventoryPosX_ ),
-		inventoryPosY( inventoryPosY_ )
+		inventoryPosY( inventoryPosY_ ),
+		player( player_ )
 {
-    tt = new itemTooltip(item_);
+    tt = new itemTooltip(item_, player);
 }
 
 InventoryItem::~InventoryItem()
@@ -69,7 +72,8 @@ Item* InventoryItem::getItem() const
 
 /// Class Inventory
 
-Inventory::Inventory( size_t sizeX_, size_t sizeY_ )
+Inventory::Inventory( size_t sizeX_, size_t sizeY_, Player *player_ )
+        :   player( player_ )
 {
 	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
 	equippedItems = new InventoryItem* [ numEquippable ];
@@ -123,7 +127,7 @@ bool Inventory::insertItem( Item *item )
 		return false;
 	}
 
-	InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY );
+	InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY, player );
 	insertItemAt( newInvItem, foundX, foundY );
 }
 
@@ -208,8 +212,8 @@ std::vector<InventoryItem*> Inventory::getBackpackItems() const
 
 void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *item )
 {
-	assert( (item == NULL) || (item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse )) );
-	equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
+    assert( (item == NULL) || (item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse )) );
+    equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
 }
 
 InventoryItem* Inventory::getItemAtSlot( ItemSlot::ItemSlot slotToUse )
@@ -345,4 +349,14 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 		case ItemSlot::COUNT:
 			return EquipPosition::NONE;
 	}
+}
+
+bool InventoryItem::isEquippable() const
+{
+    if ( player->getLevel() < item->getLevelReq() )
+    {
+        return false;
+    } else {
+        return true;
+    }
 }

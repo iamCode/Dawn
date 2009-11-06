@@ -26,7 +26,7 @@ const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
 Player::Player()
-	:	inventory( Inventory( 10, 4 ) )
+	:	inventory( Inventory( 10, 4, this ) )
 {
     setName("Enylyn");
 }

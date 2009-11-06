@@ -19,9 +19,12 @@
 #include "tooltip.h"
 #include "GLFT_Font.h"
 #include "CDrawingHelpers.h"
+#include "CCharacter.h"
+#include "Player.h"
 
-itemTooltip::itemTooltip(Item *parent_)
-            : parent( parent_ )
+itemTooltip::itemTooltip( Item *parent_, Player *player_ )
+            :   parent( parent_ ),
+                player( player_ )
 {
     height = 0;
     width = 0;
@@ -30,7 +33,7 @@ itemTooltip::itemTooltip(Item *parent_)
     getParentText();
 }
 
-spellTooltip::spellTooltip(CActionFactory *parent_)
+spellTooltip::spellTooltip(CActionFactory *parent_ )
             : parent( parent_ )
 {
     height = 0;
@@ -298,6 +301,16 @@ void itemTooltip::getParentText()
     if ( !parent->getDescription().empty() )
     {
         addTooltipText( parent->getDescription(), brownish, 10 );
+    }
+
+    // display item level requirements if player's level is too low.
+    if ( parent->getLevelReq() > player->getLevel() )
+    {
+        std::string input;
+        char tempchar[200];
+        sprintf(tempchar, "Requires level %d", parent->getLevelReq());
+        input.assign(tempchar);
+        addTooltipText( input, red, 12 );
     }
 }
 

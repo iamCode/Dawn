@@ -361,17 +361,29 @@ void initializePlayerDebugInventory()
 	Item *shield = new Item("A wooden shield", 2, 2, "data/items/shield.tga", ItemQuality::NORMAL, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
 	Item *sword =  new Item("A rusty sword", 1, 3, "data/items/sword.tga", ItemQuality::POOR, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
 	Item *swordOfKhazom = new Item("Sword of Khazom", 1, 3, "data/items/SwordOfKhazom.tga", ItemQuality::LORE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
+	Item *shortSword = new Item("Shortsword",1,3, "data/items/Sword1.tga", ItemQuality::NORMAL, EquipPosition::MAIN_HAND,ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
 	Item *ringOfLicor = new Item("Eye of Licor", 1, 1, "data/items/EyeOfLicor.tga", ItemQuality::RARE, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
 	Item *gnollshield = new Item("Gnoll shield", 2, 2, "data/items/shield0.tga", ItemQuality::ENHANCED, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
+	Item *gutteraxe= new Item("Gutteraxe", 2, 3, "data/items/Axe1.tga", ItemQuality::RARE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::TWOHAND_AXE);
+	Item *snakeloop= new Item("Snakeloop", 1, 1, "data/items/Ring1.tga", ItemQuality::ENHANCED, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
 	ringOfLicor->setIntellect( 4 );
 	ringOfLicor->setMana( 15 );
 	ringOfLicor->setStrength ( -1 );
+	snakeloop->setVitality( 2 );
+	snakeloop->setLevelReq( 2 );
 	swordOfKhazom->setDexterity( 5 );
 	swordOfKhazom->setStrength( 10 );
 	swordOfKhazom->setHealth( 75 );
 	swordOfKhazom->setMinDamage( 10 );
 	swordOfKhazom->setMaxDamage( 25 );
 	swordOfKhazom->setDescription( "Once wielded by Irk the Unholy." );
+    shortSword->setMinDamage( 6 );
+    shortSword->setMaxDamage( 10 );
+	gutteraxe->setDexterity( 10 );
+	gutteraxe->setStrength( 10 );
+	gutteraxe->setLevelReq( 5 );
+	gutteraxe->setMinDamage( 32 );
+	gutteraxe->setMaxDamage( 81 );
 	shield->setArmor( 30 );
 	sword->setStrength( -1 );
 	sword->setMinDamage( 3 );
@@ -381,8 +393,11 @@ void initializePlayerDebugInventory()
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
 	playerInventory->insertItem( swordOfKhazom );
+	playerInventory->insertItem( shortSword );
 	playerInventory->insertItem( ringOfLicor );
 	playerInventory->insertItem( gnollshield );
+	playerInventory->insertItem( gutteraxe );
+	playerInventory->insertItem( snakeloop );
 }
 
 void game_loop()
@@ -461,7 +476,7 @@ void game_loop()
 										     && worldMouseY <= posY + curItem->getSizeY() * 32 ) {
 											foundSomething = true;
 											if ( inventoryScreen->isVisible() ) {
-												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0 ) );
+												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0, &character ) );
 												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
 												groundItems.resize( groundItems.size() - 1 );
 												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
