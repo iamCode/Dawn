@@ -115,7 +115,7 @@ class MagicMissileSpell : public CSpell
 		}
 
 		static std::string getStaticSpellInfo() {
-			return "Causes 5 + (1 to 5) points of lightning damage to the target.\n";
+			return "Causes 5 + (1 to 5) points of lightning damage to the target.";
 		}
 
 		static CTexture *spellTexture;
@@ -239,7 +239,7 @@ class LightningSpell : public CSpell
 		}
 
 		static std::string getStaticSpellInfo() {
-			return "Causes 30 + (1 to 60) points of lightning damage to the target.\n";
+			return "Causes 30 + (1 to 60) points of lightning damage to the target.";
 		}
 
 		static CTexture *spellTexture;
@@ -393,7 +393,7 @@ class HealOtherSpell : public CSpell
 		}
 
 		static std::string getStaticSpellInfo() {
-			return "Heals 50 points of damage on the target.\n";
+			return "Heals 50 points of damage on the target.";
 		}
 
 		static CTexture *spellSymbol;
@@ -464,7 +464,7 @@ class HealingSpell : public CSpell
 		}
 
 		static std::string getStaticSpellInfo() {
-			return "Heals 100 points of damage on self.\n";
+			return "Heals 100 points of damage on self.";
 		}
 
 		static CTexture *spellSymbol;
@@ -550,6 +550,21 @@ class CActionFactoryImpl : public CActionFactory
 		std::string getName() const
 		{
 		    return ActionType::getStaticName();
+		}
+
+		std::string getSpellInfo() const
+		{
+		    return ActionType::getStaticSpellInfo();
+		}
+
+		uint16_t getCastTime() const
+		{
+		    return ActionType::getStaticCastTime();
+		}
+
+		uint16_t getManaCost() const
+		{
+		    return ActionType::getStaticManaCost();
 		}
 };
 

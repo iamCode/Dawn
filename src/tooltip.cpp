@@ -146,6 +146,9 @@ void Tooltip::drawSmallTooltip( int x, int y )
         return;
     }
 
+    height = tooltipText[0].font->getHeight()+9;
+    width = tooltipText[0].font->calcStringWidth( tooltipText[0].text );
+
     // make sure the tooltip doesnt go "off screen"
     if ( width + x + 32 > dawn_configuration::screenWidth )
     {
@@ -180,10 +183,17 @@ void Tooltip::drawSmallTooltip( int x, int y )
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
-void Tooltip::addTooltipText(std::string text, GLfloat color[], uint8_t fontSize)
+void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...)
 {
+    std::va_list args;
+	char buf[1024];
+
+	va_start(args,str.c_str());
+	vsnprintf(buf, 1024, str.c_str(), args);
+	va_end(args);
+
     // push the data to the vector.
-    tooltipText.push_back(sTooltipText(text, color, fontSize));
+    tooltipText.push_back(sTooltipText(buf, color, fontSize));
 
     // adjust width and height depending on the content of the tooltip.
     int newHeight = 0;
@@ -214,56 +224,52 @@ void itemTooltip::getParentText()
     switch ( parent->getItemQuality() )
     {
         case ItemQuality::POOR:
-            addTooltipText(parent->getName(), grey, 14);
+            addTooltipText( grey, 14, parent->getName() );
         break;
         case ItemQuality::NORMAL:
-            addTooltipText(parent->getName(), white, 14);
+            addTooltipText( white, 14, parent->getName() );
         break;
         case ItemQuality::ENHANCED:
-            addTooltipText(parent->getName(), yellow, 14);
+            addTooltipText( yellow, 14, parent->getName() );
         break;
         case ItemQuality::RARE:
-            addTooltipText(parent->getName(), orange, 14);
+            addTooltipText( orange, 14, parent->getName() );
         break;
         case ItemQuality::LORE:
-            addTooltipText(parent->getName(), red, 14);
+            addTooltipText( red, 14, parent->getName() );
         break;
     }
 
     // add an extra linefeed after the title
-    addTooltipText("", white, 14);
+    addTooltipText( white, 14, "" );
 
     // displaying which type of item it is.
     switch ( parent->getItemType() )
     {
         case ItemType::QUESTITEM:
-            addTooltipText( "Quest item", white, 12 );
+            addTooltipText( white, 12, "Quest item" );
         break;
         case ItemType::MISCELLANEOUS:
             // nothing here so far...
         break;
         case ItemType::ARMOR:
-            addTooltipText( parent->getArmorTypeText(), white, 12 );
+            addTooltipText( white, 12, parent->getArmorTypeText() );
         break;
         case ItemType::WEAPON:
-            addTooltipText( parent->getWeaponTypeText(), white, 12 );
+            addTooltipText( white, 12, parent->getWeaponTypeText() );
         break;
     }
 
     // displaying where the item fits.
     if ( parent->getEquipPosition() != EquipPosition::NONE )
     {
-        addTooltipText( parent->getEquipPositionText(), white, 12 );
+        addTooltipText( white, 12, parent->getEquipPositionText() );
     }
 
     // displaying damage if it's a weapon.
     if ( parent->getItemType() == ItemType::WEAPON && parent->getWeaponType() != WeaponType::SHIELD )
     {
-        std::string input;
-        char tempchar[200];
-        sprintf(tempchar,"Damage: %d-%d",parent->getMinDamage(),parent->getMaxDamage());
-        input.assign(tempchar);
-        addTooltipText( input, white, 12 );
+        addTooltipText( white, 12, "Damage: %d-%d", parent->getMinDamage(),parent->getMaxDamage() );
     }
 
     // display stats given from the item
@@ -286,13 +292,9 @@ void itemTooltip::getParentText()
 
             if ( attribute_values[i] > 0 )
             {
-                sprintf(tempchar,"+%d %s",attribute_values[i],attribute_string[i].c_str());
-                input.assign(tempchar);
-                addTooltipText( input, green, 12 );
+                addTooltipText( green, 12, "+%d %s", attribute_values[i], attribute_string[i].c_str() );
             } else {
-                sprintf(tempchar,"%d %s",attribute_values[i],attribute_string[i].c_str());
-                input.assign(tempchar);
-                addTooltipText( input, red, 12 );
+                addTooltipText( red, 12, "%d %s", attribute_values[i], attribute_string[i].c_str() );
             }
         }
     }
@@ -300,22 +302,36 @@ void itemTooltip::getParentText()
     // display the item description, if any
     if ( !parent->getDescription().empty() )
     {
-        addTooltipText( parent->getDescription(), brownish, 10 );
+        addTooltipText( brownish, 10, parent->getDescription() );
     }
 
     // display item level requirements if player's level is too low.
     if ( parent->getLevelReq() > player->getLevel() )
     {
-        std::string input;
-        char tempchar[200];
-        sprintf(tempchar, "Requires level %d", parent->getLevelReq());
-        input.assign(tempchar);
-        addTooltipText( input, red, 12 );
+        addTooltipText( red, 12, "Requires level %d", parent->getLevelReq() );
     }
 }
 
 void spellTooltip::getParentText()
 {
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
-    addTooltipText( parent->getName(), white, 12 );
+    GLfloat blue[] = { 0.3f, 0.3f, 1.0f };
+
+    // name of the spell
+    addTooltipText( white, 14, parent->getName() );
+    addTooltipText( white, 12, "" );
+
+    // display healing (direct and healing over time,
+    //damage, damagetype (direct damage, damage over time) and damageschool (physical, fire, etc..)
+    // not added yet.
+
+    // display mana-cost
+    addTooltipText( blue, 12, "Mana: %d", parent->getManaCost() );
+
+    // display cast time
+    addTooltipText( white, 12, "Casttime: %.2f sec",static_cast<float>( parent->getCastTime() ) / 1000 );
+
+    // display description. This shouldnt say "does x amount of damage" but more of a general description.
+    addTooltipText( white, 12, "" ); // newline
+    addTooltipText( white, 12, parent->getSpellInfo() );
 }

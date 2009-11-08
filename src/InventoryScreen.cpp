@@ -34,13 +34,16 @@ namespace dawn_configuration
 extern std::vector<Item*> groundItems;
 extern std::vector<std::pair<int,int> > groundPositions;
 
-InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_ )
+InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string shader_file, std::string plain_file)
 	: itemSlot( itemSlot_ ),
 	  offsetX( offsetX_ ),
 	  offsetY( offsetY_ ),
 	  sizeX( sizeX_ ),
 	  sizeY( sizeY_ )
 {
+    textures.texture.reserve( 2 );
+    textures.LoadIMG( shader_file, 0 );
+    textures.LoadIMG( plain_file, 1 );
 }
 
 size_t InventoryScreenSlot::getOffsetX() const
@@ -68,9 +71,14 @@ ItemSlot::ItemSlot InventoryScreenSlot::getItemSlot() const
 	return itemSlot;
 }
 
-void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot slotToUse, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY )
+CTexture* InventoryScreenSlot::getTexture()
 {
-	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY );
+    return &textures;
+}
+
+void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot slotToUse, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string shader_file, std::string plain_file )
+{
+	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY, shader_file, plain_file );
 }
 
 InventoryScreen::InventoryScreen( Player *player_ )
@@ -94,19 +102,19 @@ InventoryScreen::InventoryScreen( Player *player_ )
 		mySlots[curSlotNr] = NULL;
 	}
 
-	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 96, 539, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 131, 489, 32, 32 );
-	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 11, 369, 67, 102 );
-	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 96, 369, 67, 102 );
-	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 96, 319, 67, 32 );
-	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 96, 199, 67, 102 );
-	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 376, 504, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 376, 419, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 376, 334, 67, 67 );
-	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 461, 369, 67, 102 );
-	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 376, 284, 32, 32 );
-	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 411, 284, 32, 32 );
-	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 376, 199, 67, 67 );
+	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 96, 539, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/head.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 131, 489, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/amulet.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 11, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/main_hand.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 96, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/chest.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 96, 319, 67, 32, "data/interface/inventory/1x2_shader.tga", "data/interface/inventory/belt.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 96, 199, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/legs.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 376, 504, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/shoulder.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 376, 419, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/cloak.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 376, 334, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/gloves.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 461, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/off_hand.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 376, 284, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/ring_one.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 411, 284, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/ring_two.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 376, 199, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/boots.tga" );
 
 	// check that all slots were set
 	bool allSlotsFilled = true;
@@ -135,8 +143,9 @@ InventoryScreen::~InventoryScreen()
 void InventoryScreen::loadTextures()
 {
 	textures.texture.reserve(2);
-	textures.LoadIMG("data/interface/inventory_base.tga",0);
+	textures.LoadIMG("data/interface/inventory/base.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
+
 	posX = dawn_configuration::screenWidth - textures.texture[0].width - 50;
 }
 
@@ -388,6 +397,50 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
 		size_t centerOffsetX = (curScreenSlot->getSizeX() - drawSizeX) / 2;
 		size_t centerOffsetY = (curScreenSlot->getSizeY() - drawSizeY) / 2;
 
+        // draw the plain background image of the item, hiding the item placeholder.
+        DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[1].texture,
+                                          world_x + posX + curScreenSlot->getOffsetX(),
+                                          curScreenSlot->getTexture()->texture[1].width,
+                                          world_y + posY + curScreenSlot->getOffsetY(),
+                                          curScreenSlot->getTexture()->texture[1].height );
+
+        // draw the shading image below the item, and color it with the item quality color.
+        GLfloat shadeColor[5][3] = {
+             { 0.0f, 0.0f, 0.0f }, // grey
+             { 1.0f, 1.0f, 1.0f }, // white
+             { 1.0f, 1.0f, 0.0f }, // yellow
+             { 1.0f, 0.5f, 0.0f }, // orange
+             { 1.0f, 0.0f, 0.0f } // red
+        };
+        GLfloat shadeColorRed[] = { 1.0f, 0.0f, 0.0f };
+
+        switch ( item->getItemQuality() )
+        {
+            case ItemQuality::POOR:
+                glColor3fv( shadeColor[0] );
+            break;
+            case ItemQuality::NORMAL:
+                glColor3fv( shadeColor[1] );
+            break;
+            case ItemQuality::ENHANCED:
+                glColor3fv( shadeColor[2] );
+            break;
+            case ItemQuality::RARE:
+                glColor3fv( shadeColor[3] );
+            break;
+            case ItemQuality::LORE:
+                glColor3fv( shadeColor[4] );
+            break;
+        }
+
+        DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[0].texture,
+                                          world_x + posX + curScreenSlot->getOffsetX(),
+                                          curScreenSlot->getTexture()->texture[0].width,
+                                          world_y + posY + curScreenSlot->getOffsetY(),
+                                          curScreenSlot->getTexture()->texture[0].height );
+        glColor3f( 1.0f, 1.0f, 1.0f );
+
+        // draw the actual item image
 		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
 										  world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
 										  drawSizeX,

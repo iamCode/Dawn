@@ -83,16 +83,10 @@ void ActionBar::draw()
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
 	{
-	    shortcutFont->drawText( world_x + 300 + buttonId * 70 - 10, world_y + 50, button[buttonId].number.c_str() );
+	    shortcutFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 - 10,
+                                static_cast<float>( world_y ) + 50, button[buttonId].number.c_str() );
 
-	    if ( button[buttonId].action != NULL )
-	    {
-	        glColor3f( 1.0f, 1.0f, 1.0f );
-	        button[buttonId].action->draw( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
-	    }
-
-
-        glColor3f( 0.4f, 0.4f, 0.4f );
+	    glColor3f( 0.4f, 0.4f, 0.4f );
 	    if ( player->getIsPreparing() && button[buttonId].action != NULL )
 	    {
 	        if ( player->getCurrentSpellActionName() == button[buttonId].action->getName() )
@@ -105,7 +99,14 @@ void ActionBar::draw()
 	    DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
 		                                  world_x+ 300 + buttonId * 70, 50,
 		                                  world_y+ 8, 50 );
+
         glColor3f( 1.0f, 1.0f, 1.0f );
+        if ( button[buttonId].action != NULL )
+	    {
+	        button[buttonId].action->draw( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
+	    }
+
+
 	}
 }
 

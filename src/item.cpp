@@ -278,6 +278,12 @@ std::string Item::getWeaponTypeText() const
         case WeaponType::TWOHAND_MACE:
             return "Two handed mace";
         break;
+        case WeaponType::ONEHAND_AXE:
+            return "One handed axe";
+        break;
+        case WeaponType::TWOHAND_AXE:
+            return "Two handed axe";
+        break;
         case WeaponType::BOW:
             return "Bow";
         break;

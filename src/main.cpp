@@ -63,6 +63,7 @@ std::vector<std::pair<int,int> > groundPositions;
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
+bool KP_toggle_showSpellbook = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -73,6 +74,7 @@ std::auto_ptr<GLFT_Font> fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
 std::auto_ptr<InventoryScreen> inventoryScreen;
 std::auto_ptr<ActionBar> actionBar;
+std::auto_ptr<Spellbook> spellbook;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -241,6 +243,16 @@ void DrawScene()
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
 
+	if ( spellbook->isVisible() )
+	{
+	    spellbook->draw();
+	}
+
+	if ( spellbook->isMouseOver( mouseX, mouseY ) )
+	{
+	    spellbook->drawSpellTooltip( mouseX, mouseY );
+	}
+
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -337,6 +349,8 @@ bool dawn_init(int argc, char** argv)
 		inventoryScreen->loadTextures();
 		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
 		actionBar->loadTextures();
+		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
+		spellbook->loadTextures();
 
 
 		// initialize fonts where needed
@@ -599,6 +613,15 @@ void game_loop()
 
 			if ( !keys[SDLK_c] ) {
 				KP_toggle_showCharacterInfo = false;
+			}
+
+			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
+				KP_toggle_showSpellbook = true;
+				spellbook->setVisible( ! spellbook->isVisible() );
+			}
+
+			if ( !keys[SDLK_b] ) {
+				KP_toggle_showSpellbook = false;
 			}
 
 			if ( keys[SDLK_i] && !KP_toggle_showInventory ) {

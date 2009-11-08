@@ -64,6 +64,7 @@ class CSpellActionBase
 	private:
 		uint16_t castTime;
 		uint16_t manaCost;
+
 		std::string name;
 		std::string info;
 		bool boundToCreator;
@@ -84,6 +85,9 @@ class CActionFactory
 		virtual void draw( int left, int width, int bottom, int height ) = 0;
 		virtual EffectType::EffectType getEffectType() const = 0;
 		virtual std::string getName() const = 0;
+		virtual std::string getSpellInfo() const = 0;
+		virtual uint16_t getCastTime() const = 0;
+		virtual uint16_t getManaCost() const = 0;
 };
 
 namespace SpellCreation

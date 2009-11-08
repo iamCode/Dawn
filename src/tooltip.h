@@ -68,7 +68,7 @@ class Tooltip
         CTexture textures;
         std::vector<sTooltipText> tooltipText;
         void loadTextures();
-        void addTooltipText(std::string text, GLfloat color[], uint8_t fontSize);
+        void addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...);
         void drawSmallTooltip( int x, int y );
 };
 

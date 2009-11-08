@@ -33,13 +33,15 @@ class InventoryScreenSlot
 		size_t offsetY;
 		size_t sizeX;
 		size_t sizeY;
+		CTexture textures;
 
 	public:
-		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY );
+		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string shader_file, std::string plain_file );
 		size_t getOffsetX() const;
 		size_t getOffsetY() const;
 		size_t getSizeX() const;
 		size_t getSizeY() const;
+		CTexture *getTexture();
 
 		ItemSlot::ItemSlot getItemSlot() const;
 };
