@@ -246,13 +246,12 @@ void DrawScene()
 	if ( spellbook->isVisible() )
 	{
 	    spellbook->draw();
+		if ( spellbook->isMouseOver( mouseX, mouseY ) )
+		{
+			spellbook->drawSpellTooltip( mouseX, mouseY );
+		}
 	}
-
-	if ( spellbook->isMouseOver( mouseX, mouseY ) )
-	{
-	    spellbook->drawSpellTooltip( mouseX, mouseY );
-	}
-
+	
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
