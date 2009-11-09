@@ -36,7 +36,7 @@ struct sSpellSlot
     int width;
     int height;
 
-    void sSpellSlot::initFont();
+    void initFont();
 
     sSpellSlot(int posX_, int posY_, int width_, int height_)
     {
