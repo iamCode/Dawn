@@ -10,7 +10,7 @@ wolfbase:setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
 wolfbase:setLifeTexture( "data/lifebar.tga" );
 
 wolfbase:setStrength( 15 )
-wolfbase:setDexterity( 15 )
+wolfbase:setDexterity( 25 )
 wolfbase:setVitality( 15 )
 wolfbase:setIntellect( 10 )
 wolfbase:setWisdom( 10 )
@@ -27,7 +27,7 @@ wolfbase:setLevel( 2 )
 wolfpup = DawnInterface.createNewMobType("Wolf Pup")
 wolfpup:baseOnType("Wolf")
 wolfpup:modifyStrength( -2 )
-wolfpup:modifyDexterity( -2 )
+wolfpup:modifyDexterity( -5 )
 wolfpup:modifyVitality( -1 )
 wolfpup:modifyIntellect( -5 )
 wolfpup:modifyWisdom( -5 )

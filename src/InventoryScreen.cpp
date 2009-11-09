@@ -193,7 +193,7 @@ void InventoryScreen::clicked( int clickX, int clickY )
 					}
 				}
 			}
-			else if ( inventory->getItemAtSlot( curSlotEnum ) != NULL ) {
+			else if ( floatingSelection == NULL && inventory->getItemAtSlot( curSlotEnum ) != NULL ) {
 				floatingSelection = inventory->getItemAtSlot( curSlotEnum );
 				inventory->wieldItemAtSlot( curSlotEnum, NULL );
 			}
@@ -333,7 +333,8 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
-			if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
+			if ( floatingSelection->isEquippable()
+			     && floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
 				shade[1] = 1.0f; // green color
 			} else {

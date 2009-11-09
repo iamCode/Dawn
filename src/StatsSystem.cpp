@@ -41,19 +41,23 @@ const StatsSystem *StatsSystem::getStatsSystem()
 StatsSystem::StatsSystem()
 {
 	maxStatsPointsForLevel = NULL;
+	maxArmorPointsForLevel = NULL;
 }
 
 StatsSystem::~StatsSystem()
 {
-	if ( maxStatsPointsForLevel != NULL )
-	{
+	if ( maxStatsPointsForLevel != NULL ) {
 		delete[] maxStatsPointsForLevel;
+	}
+	if ( maxArmorPointsForLevel != NULL ) {
+		delete[] maxArmorPointsForLevel;
 	}
 }
 
 void StatsSystem::calculateTables( int maxLevel, double relativeIncreasePerLevel )
 {
 	if ( maxStatsPointsForLevel != NULL ) {
+		assert( maxArmorPointsForLevel != NULL );
 		return;
 	}
 	
