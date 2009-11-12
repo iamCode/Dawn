@@ -84,7 +84,7 @@ namespace ArmorType
         CLOTH,
         LEATHER,
         MAIL,
-        PLATE,
+        PLATE
     };
 }
 
@@ -108,7 +108,7 @@ namespace WeaponType
         BOW,
         SLINGSHOT,
         CROSSBOW,
-        SHIELD,
+        SHIELD
     };
 }
 
@@ -120,7 +120,7 @@ namespace ItemQuality
         NORMAL,
         ENHANCED,
         RARE,
-        LORE,
+        LORE
     };
 }
 

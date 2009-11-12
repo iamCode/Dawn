@@ -323,9 +323,8 @@ class LightningSpell : public CSpell
 		}
 
 		virtual void drawEffect() {
-			double percentageTodo = static_cast<double>(continuousDamageCaused)/30;
 			float degrees;
-			degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57,296;
+			degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57.296;
 			degrees += 90;
 
 			animationTimerStop = SDL_GetTicks();

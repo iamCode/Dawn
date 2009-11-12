@@ -26,6 +26,11 @@ namespace dawn_configuration {
 	bool show_warn_messages = false; // show or hide warnings
 }
 
+static bool log_started = false; /* This gets set to true
+	after the first write (so that the log file is
+	cleared on the the first log) */
+
+
 static std::string date_time_string()
 {
 	std::string _datetime;
@@ -40,7 +45,7 @@ static std::string date_time_string()
 	return _datetime;
 }
 
-static char* debug_args(const char* message, std::va_list ap, debug_message_type debug)
+static void debug_args(const char* message, std::va_list ap, debug_message_type debug)
 {
 	char buf[1024];
 	std::string output_string;

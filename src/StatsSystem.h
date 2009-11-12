@@ -21,12 +21,14 @@
 
 class CCharacter;
 
+#include <cstring> // size_t
+
 class StatsSystem
 {
 	private:
 		// thought as a singleton. created by getStatsSystem
 		StatsSystem();
-		void calculateTables( int maxLevel, double relativeIncreasePerLevel );
+		void calculateTables( size_t maxLevel, double relativeIncreasePerLevel );
 
 		int maxLevel;
 		int *maxStatsPointsForLevel;

@@ -164,27 +164,18 @@ bool Player::isPlayer() const
 	return true;
 }
 
-// GETTER_HELPER_MACRO( XXX ) creates a function XXXHelper that
-// returns the attribute XXX from an item.
-// this is needed for unifying the code for the getModfiedXXX functions
-#define GETTER_HELPER_MACRO( GETFUNCNAME ) \
-	static int16_t GETFUNCNAME##Helper( Item *item ) \
-{ \
-		return item->GETFUNCNAME(); \
-}
+static int16_t getStrengthHelper( Item * item ) { return item->getStrength(); }
+static int16_t getDexterityHelper( Item * item ) { return item->getDexterity(); }
+static int16_t getVitalityHelper( Item * item ) { return item->getVitality(); }
+static int16_t getIntellectHelper( Item * item ) { return item->getIntellect(); }
+static int16_t getWisdomHelper( Item * item ) { return item->getWisdom(); }
+static int16_t getHealthHelper( Item * item ) { return item->getHealth(); }
+static int16_t getManaHelper( Item * item ) { return item->getMana(); }
+static int16_t getEnergyHelper( Item * item ) { return item->getEnergy(); }
+static int16_t getArmorHelper( Item * item ) { return item->getArmor(); }
 
-GETTER_HELPER_MACRO( getStrength );
-GETTER_HELPER_MACRO( getDexterity );
-GETTER_HELPER_MACRO( getVitality );
-GETTER_HELPER_MACRO( getIntellect );
-GETTER_HELPER_MACRO( getWisdom );
-GETTER_HELPER_MACRO( getHealth );
-GETTER_HELPER_MACRO( getMana );
-GETTER_HELPER_MACRO( getEnergy );
-GETTER_HELPER_MACRO( getArmor );
-
-GETTER_HELPER_MACRO( getMinDamage );
-GETTER_HELPER_MACRO( getMaxDamage );
+static int16_t getMinDamageHelper( Item * item ) { return item->getMinDamage(); }
+static int16_t getMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
 
 static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( Item* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
 {

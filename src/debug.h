@@ -27,9 +27,6 @@
 #include <cstdarg>
 #include <sstream>
 
-static bool log_started = false; /* This gets set to true
-	after the first write (so that the log file is
-	cleared on the the first log) */
 namespace dawn_configuration {
 	extern std::string logfile; // The logfile
 	extern bool debug_stdout; // Write messages to stdout

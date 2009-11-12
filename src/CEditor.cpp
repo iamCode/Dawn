@@ -122,7 +122,7 @@ int CEditor::SaveZone()
 	fclose(fp);
 	/////////////////////////////////////////////////////////
 	return 0;
-};
+}
 
 void CEditor::setEditZone( CZone *zoneToEdit_ )
 {
@@ -501,7 +501,7 @@ void CEditor::HandleKeys()
 		KP_save_zone = false;
 	}
 
-};
+}
 
 void CEditor::DrawEditor()
 {
@@ -615,7 +615,7 @@ void CEditor::DrawEditor()
 			}
 		break;
 	}
-};
+}
 
 void CEditor::LoadTextures()
 {

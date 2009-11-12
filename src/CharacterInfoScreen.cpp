@@ -26,11 +26,11 @@
 
 CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
 	:	player( player_ ),
+		visible(false),
 		posX(50),
 		posY(100),
 		width(331),
-		height(445),
-		visible(false)
+		height(445)
 {
 	infoFont = NULL;
 	currentTab = 0;

@@ -26,9 +26,9 @@
 
 InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t inventoryPosY_, Player *player_ )
 	:	item( item_ ),
+		player( player_ ),
 		inventoryPosX( inventoryPosX_ ),
-		inventoryPosY( inventoryPosY_ ),
-		player( player_ )
+		inventoryPosY( inventoryPosY_ )
 {
     tt = new itemTooltip(item_, player);
 }
@@ -109,8 +109,8 @@ bool Inventory::insertItem( Item *item )
 	size_t itemSizeY = item->getSizeY();
 
 	bool foundPosition = false;
-	size_t foundX;
-	size_t foundY;
+	size_t foundX = 0;
+	size_t foundY = 0;
 
 	// look for next free position
 	for ( size_t freeX=0; freeX<sizeX-itemSizeX+1 && !foundPosition; ++freeX ) {
@@ -350,6 +350,8 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 		case ItemSlot::COUNT:
 			return EquipPosition::NONE;
 	}
+	dawn_debug_fatal("Reached end of Inventory::getEquipType without finding the given ItemSlot. This should not be.");
+	abort();
 }
 
 bool InventoryItem::isEquippable() const

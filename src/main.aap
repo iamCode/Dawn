@@ -7,7 +7,7 @@
 @LUA_LIBS=Popen(["pkg-config", "--libs", "lua5.1"], stdout=PIPE).communicate()[0]
 
 OPTIMIZE = 3
-CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -ggdb
+CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -ggdb -Wall
 LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm
 
 # rule for generation tolua-headers from package files 

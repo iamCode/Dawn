@@ -83,11 +83,11 @@ void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot s
 
 InventoryScreen::InventoryScreen( Player *player_ )
 	:	player( player_ ),
+		visible(false),
 		posX(0),
 		posY(100),
 		width(350),
 		height(400),
-		visible(false),
 		floatingSelection( NULL ),
 		backpackFieldWidth( 32 ),
 		backpackFieldHeight( 32 ),
@@ -128,7 +128,7 @@ InventoryScreen::InventoryScreen( Player *player_ )
 		dawn_debug_warn( "I don't have InventoryScreenSlots for all items... aborting" );
 		abort();
 	}
-};
+}
 
 InventoryScreen::~InventoryScreen()
 {
@@ -329,7 +329,6 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 	{
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, x,y) ) {
-			Inventory *inventory = player->getInventory();
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
@@ -413,7 +412,6 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
              { 1.0f, 0.5f, 0.0f }, // orange
              { 1.0f, 0.0f, 0.0f } // red
         };
-        GLfloat shadeColorRed[] = { 1.0f, 0.0f, 0.0f };
 
         switch ( item->getItemQuality() )
         {
@@ -463,10 +461,10 @@ bool InventoryScreen::isOnThisScreen( int x, int y ) const
 
 bool InventoryScreen::isOnBackpackScreen( int x, int y ) const
 {
-	if ( x < posX + backpackOffsetX
-	     || y < posY + backpackOffsetY
-	     || x > posX + backpackOffsetX + backpackFieldWidth * numSlotsX + (numSlotsX-1)*backpackSeparatorWidth
-	     || y > posY + backpackOffsetY + backpackFieldHeight * numSlotsY + (numSlotsY-1)*backpackSeparatorHeight ) {
+	if ( x < static_cast<int>(posX + backpackOffsetX)
+	     || y < static_cast<int>(posY + backpackOffsetY)
+	     || x > static_cast<int>(posX + backpackOffsetX + backpackFieldWidth * numSlotsX + (numSlotsX-1)*backpackSeparatorWidth)
+	     || y > static_cast<int>(posY + backpackOffsetY + backpackFieldHeight * numSlotsY + (numSlotsY-1)*backpackSeparatorHeight) ) {
 		return false;
 	}
 	return true;
@@ -475,10 +473,10 @@ bool InventoryScreen::isOnBackpackScreen( int x, int y ) const
 bool InventoryScreen::isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const
 {
 	InventoryScreenSlot *curSlot = mySlots[ static_cast<size_t>( itemSlot ) ];
-	if ( x < posX + curSlot->getOffsetX()
-		 || y < posY + curSlot->getOffsetY()
-		 || x > posX + curSlot->getOffsetX() + curSlot->getSizeX()
-		 || y > posY + curSlot->getOffsetY() + curSlot->getSizeY() ) {
+	if ( x < static_cast<int>(posX + curSlot->getOffsetX())
+		 || y < static_cast<int>(posY + curSlot->getOffsetY())
+		 || x > static_cast<int>(posX + curSlot->getOffsetX() + curSlot->getSizeX())
+		 || y > static_cast<int>(posY + curSlot->getOffsetY() + curSlot->getSizeY()) ) {
 		return false;
 	}
 	return true;

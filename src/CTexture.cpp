@@ -143,9 +143,16 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 	}
 
 	while (!feof(fp)) {
-		fgets(buf, 255, fp);
-		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-			highest_texture++;
+		if ( fgets(buf, 255, fp) != NULL ) {
+			if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
+				highest_texture++;
+			}
+		} else {
+			// fgets returned NULL. Either end of file or error. check for error
+			if ( int errorcode = ferror(fp ) ) {
+				dawn_debug_fatal( "Error reading from file %s. ferror returned code %d", file.c_str(), errorcode );
+				abort();
+			}
 		}
 	}
 
@@ -159,23 +166,37 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 	texture.reserve(200/**highest_texture+1**/);
 	if (!try_load_collision_box) {
 		while (!feof(fp)) {
-			fgets(buf, 255, fp);
-			if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-				sscanf(buf, "%d %s", &loaded_texture_id, filename); // search for the texture id and the filename for the texture.
-				LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
+			if ( fgets(buf, 255, fp) != NULL ) {
+				if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
+					sscanf(buf, "%d %s", &loaded_texture_id, filename); // search for the texture id and the filename for the texture.
+					LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
+				}
+			} else {
+				// fgets returned NULL. Either end of file or error. check for error
+				if ( int errorcode = ferror(fp ) ) {
+					dawn_debug_fatal( "Error reading from file %s. ferror returned code %d", file.c_str(), errorcode );
+					abort();
+				}
 			}
 		}
 	} else {
 		while (!feof(fp)) {
-			fgets(buf, 255, fp);
-			if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
-				sscanf(buf, "%d %s %d %d %d %d %d", &loaded_texture_id, filename, &contains_collision_box, &CR_x, &CR_y, &CR_w, &CR_h); // search for the texture id and the filename for the texture.
-				LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
-				texture[loaded_texture_id].contains_collision_box = contains_collision_box;
-				texture[loaded_texture_id].collision_box.x = CR_x;
-				texture[loaded_texture_id].collision_box.y = CR_y;
-				texture[loaded_texture_id].collision_box.w = CR_w;
-				texture[loaded_texture_id].collision_box.h = CR_h;
+			if ( fgets(buf, 255, fp) != NULL ) {
+				if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
+					sscanf(buf, "%d %s %d %d %d %d %d", &loaded_texture_id, filename, &contains_collision_box, &CR_x, &CR_y, &CR_w, &CR_h); // search for the texture id and the filename for the texture.
+					LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
+					texture[loaded_texture_id].contains_collision_box = contains_collision_box;
+					texture[loaded_texture_id].collision_box.x = CR_x;
+					texture[loaded_texture_id].collision_box.y = CR_y;
+					texture[loaded_texture_id].collision_box.w = CR_w;
+					texture[loaded_texture_id].collision_box.h = CR_h;
+				}
+			} else {
+				// fgets returned NULL. Either end of file or error. check for error
+				if ( int errorcode = ferror(fp ) ) {
+					dawn_debug_fatal( "Error reading from file %s. ferror returned code %d", file.c_str(), errorcode );
+					abort();
+				}
 			}
 		}
 	}

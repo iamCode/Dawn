@@ -484,9 +484,9 @@ void game_loop()
 										int worldMouseX = world_x + mouseX;
 										int worldMouseY = world_y + mouseY;
 										if ( worldMouseX >= posX
-										     && worldMouseX <= posX + curItem->getSizeX() * 32
+										     && worldMouseX <= static_cast<int>(posX + curItem->getSizeX() * 32)
 										     && worldMouseY >= posY
-										     && worldMouseY <= posY + curItem->getSizeY() * 32 ) {
+										     && worldMouseY <= static_cast<int>(posY + curItem->getSizeY() * 32) ) {
 											foundSomething = true;
 											if ( inventoryScreen->isVisible() ) {
 												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0, &character ) );

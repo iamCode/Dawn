@@ -59,7 +59,7 @@ void CMessage::DrawAll()
 		messageFont->drawText(MessageBook[book].x_pos,MessageBook[book].y_pos,MessageBook[book].string);
 	}
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
-};
+}
 
 void CMessage::AddText(int x, int y, float red, float green, float blue, float transparency, int decayrate, float lifetime, const char *text, ...)
 {
@@ -73,7 +73,7 @@ void CMessage::AddText(int x, int y, float red, float green, float blue, float t
 
 	// push everything to our vector.
 	MessageBook.push_back(sBook(std::string(buffer), x, y, red, green, blue, transparency, decayrate, lifetime));
-};
+}
 
 void CMessage::DeleteDecayed()
 {
@@ -82,4 +82,4 @@ void CMessage::DeleteDecayed()
 			MessageBook.erase(MessageBook.begin()+book);
 		}
 	}
-};
+}

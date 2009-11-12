@@ -41,7 +41,7 @@ void CInterface::LoadTextures()
 	damageDisplayTextures.LoadIMG("data/interface/combattext/7.tga",7);
 	damageDisplayTextures.LoadIMG("data/interface/combattext/8.tga",8);
 	damageDisplayTextures.LoadIMG("data/interface/combattext/9.tga",9);
-};
+}
 
 extern std::vector<CActionFactory*> quickSlots;
 
@@ -79,12 +79,12 @@ void CInterface::DrawInterface()
 
     // drawing damage / healing text floating upwards fading away.
 	drawCombatText();
-};
+}
 
 void CInterface::SetPlayer(CCharacter *player_)
 {
 	player = player_;
-};
+}
 
 void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos )
 {
@@ -103,7 +103,7 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
         damageStream >> damageNumber;
         damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*16)+rand_x, y_pos ));
     }
-};
+}
 
 void CInterface::drawCombatText()
 {
@@ -136,4 +136,4 @@ void CInterface::drawCombatText()
         //reset color back to default.
         glColor4f(1.0f,1.0f,1.0f,1.0f);
     }
-};
+}

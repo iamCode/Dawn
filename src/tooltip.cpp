@@ -198,7 +198,7 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     std::va_list args;
 	char buf[1024];
 
-	va_start(args,str.c_str());
+	va_start(args,str);
 	vsnprintf(buf, 1024, str.c_str(), args);
 	va_end(args);
 
@@ -210,7 +210,7 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
 
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
-        if ( width < tooltipText[i].font->calcStringWidth(tooltipText[i].text) ) {
+        if ( width < static_cast<int>(tooltipText[i].font->calcStringWidth(tooltipText[i].text)) ) {
             width = tooltipText[i].font->calcStringWidth(tooltipText[i].text);
         }
         newHeight += tooltipText[i].font->getHeight()+10;
@@ -271,6 +271,12 @@ void itemTooltip::getParentText()
         case ItemType::WEAPON:
             addTooltipText( white, 12, parent->getWeaponTypeText() );
         break;
+        case ItemType::JEWELRY:
+        break;
+        case ItemType::COUNT:
+            dawn_debug_fatal("ItemType::COUNT found in getParentText(). This should not be.");
+            abort();
+        break;
     }
 
     // displaying where the item fits.
@@ -301,8 +307,6 @@ void itemTooltip::getParentText()
         if ( attribute_values[i] != 0 )
         {
             std::string input;
-            char tempchar[200];
-
             if ( attribute_values[i] > 0 )
             {
                 addTooltipText( green, 12, "+%d %s", attribute_values[i], attribute_string[i].c_str() );

@@ -139,7 +139,7 @@ class AttackAction : public CAction
 
 		virtual void drawEffect() {
 			float degrees;
-			degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57,296;
+			degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57.296;
 
 			degrees += 90;
 

@@ -27,10 +27,10 @@ void sSpellSlot::initFont()
 }
 
 Spellbook::Spellbook( Player *player_ )
-        :   posX( 200 ),
-            posY( 150 ),
-            visible ( false ),
-            player( player_ )
+        :   player( player_ ),
+            visible( false ),
+            posX( 200 ),
+            posY( 150 )
 {
     // spellslots on the left side of the book.
     spellSlot.push_back(sSpellSlot(100,400,50,50));
@@ -122,7 +122,13 @@ void Spellbook::setVisible( bool newVisible )
 
 bool Spellbook::isMouseOver( int x, int y ) const
 {
-
+	if ( x < posX
+	     || y < posY
+	     || x > posX + textures.texture[0].width
+	     || y > posY + textures.texture[0].height ) {
+	    return false;
+	}
+	return true;
 }
 
 void Spellbook::clicked( int clickX, int clickY )

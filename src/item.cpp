@@ -27,22 +27,22 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	:	name( name_ ),
 		sizeX( sizeX_ ),
 		sizeY( sizeY_ ),
-		armorModifier( 0 ),
-		minDamage( 0 ),
-		maxDamage( 0 ),
+		itemQuality ( itemQuality_ ),
+		itemType ( itemType_ ),
+		armorType ( armorType_ ),
+		weaponType ( weaponType_ ),
+		equipPosition ( equipPosition_ ),
+		strengthModifier( 0 ),
 		dexterityModifier( 0 ),
 		intellectModifier( 0 ),
-		strengthModifier( 0 ),
 		vitalityModifier( 0 ),
 		wisdomModifier( 0 ),
 		healthModifier( 0 ),
 		manaModifier( 0 ),
 		energyModifier( 0 ),
-		itemQuality ( itemQuality_ ),
-		equipPosition ( equipPosition_ ),
-		itemType ( itemType_ ),
-		armorType ( armorType_ ),
-		weaponType ( weaponType_ ),
+		armorModifier( 0 ),
+		minDamage( 0 ),
+		maxDamage( 0 ),
 		levelReq( 0 )
 {
 	symbolTexture.texture.reserve(1);
@@ -241,7 +241,13 @@ std::string Item::getArmorTypeText() const
         case ArmorType::PLATE:
             return "Plate";
         break;
+        case ArmorType::NO_ARMOR: 
+            dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
+            abort();
+        break;
     }
+    dawn_debug_fatal("Reached end of Item::getArmorTypeText without finding a suitable armor type. This should not be." );
+	abort();
 }
 
 std::string Item::getWeaponTypeText() const
@@ -296,7 +302,13 @@ std::string Item::getWeaponTypeText() const
         case WeaponType::SHIELD:
             return "Shield";
         break;
+		case WeaponType::NO_WEAPON:
+			dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
+			abort();
+		break;
     }
+	dawn_debug_fatal( "Reached end of getWeaponTypeText without finding a suitable weapon type. This should not be." );
+	abort();
 }
 
 std::string Item::getEquipPositionText() const
@@ -314,6 +326,9 @@ std::string Item::getEquipPositionText() const
         break;
         case EquipPosition::LEGS:
             return "Legs";
+        break;
+        case EquipPosition::BELT:
+            return "Belt";
         break;
         case EquipPosition::BOOTS:
             return "Boots";
@@ -336,5 +351,10 @@ std::string Item::getEquipPositionText() const
         case EquipPosition::SHOULDER:
             return "Shoulder";
         break;
+        case EquipPosition::NONE:
+            return "Unequippable";
+        break;
     }
+	dawn_debug_fatal("Reached end of Item::getEquipPositionText without finding a suitable position. This should not be");
+    abort();
 }

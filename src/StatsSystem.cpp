@@ -54,7 +54,7 @@ StatsSystem::~StatsSystem()
 	}
 }
 
-void StatsSystem::calculateTables( int maxLevel, double relativeIncreasePerLevel )
+void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLevel )
 {
 	if ( maxStatsPointsForLevel != NULL ) {
 		assert( maxArmorPointsForLevel != NULL );
