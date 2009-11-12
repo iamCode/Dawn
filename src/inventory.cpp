@@ -129,6 +129,7 @@ bool Inventory::insertItem( Item *item )
 
 	InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY, player );
 	insertItemAt( newInvItem, foundX, foundY );
+	return true;
 }
 
 bool Inventory::hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY ) const
