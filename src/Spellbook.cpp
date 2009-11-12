@@ -47,13 +47,13 @@ Spellbook::Spellbook( Player *player_ )
 
     // do this in a learnSpell / scribeSpell / memorizeSpell function later.
     spellSlot[0].action = SpellCreation::createActionFactoryByName( "Lightning", player );
-    spellSlot[0].tooltip = new spellTooltip( spellSlot[0].action );
+    spellSlot[0].tooltip = new spellTooltip( spellSlot[0].action, player );
     spellSlot[1].action = SpellCreation::createActionFactoryByName( "Heal Other", player );
-    spellSlot[1].tooltip = new spellTooltip( spellSlot[1].action );
+    spellSlot[1].tooltip = new spellTooltip( spellSlot[1].action, player );
     spellSlot[2].action = SpellCreation::createActionFactoryByName( "Healing", player );
-    spellSlot[2].tooltip = new spellTooltip( spellSlot[2].action );
+    spellSlot[2].tooltip = new spellTooltip( spellSlot[2].action, player );
     spellSlot[3].action = SpellCreation::createActionFactoryByName( "Magic Missile", player );
-    spellSlot[3].tooltip = new spellTooltip( spellSlot[3].action );
+    spellSlot[3].tooltip = new spellTooltip( spellSlot[3].action, player );
 }
 
 Spellbook::~Spellbook()

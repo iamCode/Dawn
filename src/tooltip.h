@@ -60,12 +60,15 @@ class Tooltip
         void enableSmallTooltip();
         void disableSmallTooltip();
         bool isTooltipSmall();
+        virtual void getParentText() = 0;
 
     private:
         bool smallTooltip; // with this true, tooltip will merely display the name of things.
         int width;
         int height;
+        int loadedAtLevel;
         CTexture textures;
+        Player *player;
         std::vector<sTooltipText> tooltipText;
         void loadTextures();
         void addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...);
@@ -75,7 +78,7 @@ class Tooltip
 class spellTooltip : public Tooltip
 {
     public:
-        spellTooltip(CActionFactory *parent);
+        spellTooltip(CActionFactory *parent, Player *player);
 
     private:
         CActionFactory *parent;
@@ -89,7 +92,6 @@ class itemTooltip : public Tooltip
 
     private:
         Item *parent;
-        Player *player;
         void getParentText();
 };
 

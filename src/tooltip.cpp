@@ -23,9 +23,9 @@
 #include "Player.h"
 
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
-            :   parent( parent_ ),
-                player( player_ )
+            :   parent( parent_ )
 {
+    player = player_;
     height = 0;
     width = 0;
     smallTooltip = false;
@@ -33,9 +33,10 @@ itemTooltip::itemTooltip( Item *parent_, Player *player_ )
     getParentText();
 }
 
-spellTooltip::spellTooltip(CActionFactory *parent_ )
-            : parent( parent_ )
+spellTooltip::spellTooltip(CActionFactory *parent_, Player *player_ )
+            :   parent( parent_ )
 {
+    player = player_;
     height = 0;
     width = 0;
     smallTooltip = false;
@@ -83,6 +84,15 @@ void Tooltip::draw( int x, int y )
     if ( tooltipText.empty() )
     {
         return;
+    }
+
+    // check to see if the player's level is the same since he loaded the parentText to the tooltip.
+    // if not, we clear the tooltip and get the parent text again.
+    if ( loadedAtLevel != player->getLevel() )
+    {
+        loadedAtLevel = player->getLevel();
+        tooltipText.clear();
+        getParentText();
     }
 
     // ugly hack, couldn't be arsed to fix this inside this function.
@@ -210,6 +220,9 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
 
 void itemTooltip::getParentText()
 {
+    // remember what level we generated this tooltip
+    loadedAtLevel = player->getLevel();
+
     GLfloat grey[] = { 0.5f, 0.5f, 0.5f };
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
     GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
@@ -314,6 +327,9 @@ void itemTooltip::getParentText()
 
 void spellTooltip::getParentText()
 {
+    // remember what level we generated this tooltip
+    loadedAtLevel = player->getLevel();
+
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
     GLfloat blue[] = { 0.3f, 0.3f, 1.0f };
 

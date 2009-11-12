@@ -191,7 +191,7 @@ int8_t ActionBar::getMouseOverButtonId( int x, int y )
 void ActionBar::bindAction( sButton *button, std::string action )
 {
     button->action = SpellCreation::createActionFactoryByName( action , player );
-    button->tooltip = new spellTooltip( button->action );
+    button->tooltip = new spellTooltip( button->action, player );
 
     /** this could be added to game settings, making the player choose to
     display a full tooltip when hoovering spells in the actionbar.**/
