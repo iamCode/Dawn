@@ -43,11 +43,6 @@ class StatsSystem
 
 		static const StatsSystem *getStatsSystem();
 		
-		double getDamageModifier( const CCharacter *character, int opponentLevel ) const;
-		double getHitChance( const CCharacter *character, int opponentLevel ) const;
-		double getEvadeChance( const CCharacter *character, int opponentLevel ) const;
-		double getDamageReductionModifier( const CCharacter *character, int opponentLevel ) const;
-		
 		double complexGetDamageModifier( int myLevel, int myDamageModifierPoints, int opponentLevel ) const;
 		double complexGetHitChance( int myLevel, int myHitModifierPoints, int opponentLevel ) const;
 		double complexGetEvadeChance( int myLevel, int myEvadeModifierPoints, int opponentLevel ) const;

@@ -39,6 +39,9 @@ class Player : public CCharacter
 		Direction GetDirection();
 
 		uint16_t getModifiedArmor() const;
+		uint16_t getModifiedDamageModifierPoints() const;
+		uint16_t getModifiedHitModifierPoints() const;
+		uint16_t getModifiedEvadeModifierPoints() const;
 
 		uint16_t getModifiedStrength() const;
 		uint16_t getModifiedDexterity() const;

@@ -84,30 +84,6 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 	maxDamageReductionModifier = 0.75;
 }
 
-double StatsSystem::getDamageModifier( const CCharacter *character, int opponentLevel ) const
-{
-	int modifierPoints = calculateDamageModifierPoints( character );
-	return complexGetDamageModifier( character->getLevel(), modifierPoints, opponentLevel );
-}
-
-double StatsSystem::getHitChance( const CCharacter *character, int opponentLevel ) const
-{
-	int modifierPoints = calculateHitModifierPoints( character );
-	return complexGetHitChance( character->getLevel(), modifierPoints, opponentLevel );
-}
-
-double StatsSystem::getEvadeChance( const CCharacter *character, int opponentLevel ) const
-{
-	int modifierPoints = calculateEvadeModifierPoints( character );
-	return complexGetEvadeChance( character->getLevel(), modifierPoints, opponentLevel );
-}
-
-double StatsSystem::getDamageReductionModifier( const CCharacter *character, int opponentLevel ) const
-{
-	int modifierPoints = calculateDamageReductionPoints( character );
-	return complexGetDamageReductionModifier( character->getLevel(), modifierPoints, opponentLevel );
-}
-
 static double getModifierCommon( int myModifierPoints, int maxModifierPointsOwn, int maxModifierPointsOpponent, double maxModifierValue )
 {
 	int usePoints = myModifierPoints;
@@ -182,6 +158,6 @@ int StatsSystem::calculateEvadeModifierPoints( const CCharacter *character ) con
 
 int StatsSystem::calculateDamageReductionPoints( const CCharacter *character ) const
 {
-	return ( character->getModifiedArmor() );
+	return 0;
 }
 

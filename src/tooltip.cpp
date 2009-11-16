@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "CCharacter.h"
 #include "Player.h"
+#include "StatsSystem.h"
 
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
             :   parent( parent_ )
@@ -218,6 +219,17 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     height = newHeight;
 }
 
+void itemTooltip::addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage )
+{
+	GLfloat red[] = { 1.0f, 0.0f, 0.0f };
+	GLfloat green[] = { 0.0f, 1.0f, 0.0f };
+	if ( attributePercentage > 0 ) {
+		addTooltipText( green, 12, "+%.2f%% %s", attributePercentage, attributeName.c_str() );
+	} else {
+		addTooltipText( red, 12, "%.2f%% %s", attributePercentage, attributeName.c_str() );
+	}
+}
+
 void itemTooltip::getParentText()
 {
     // remember what level we generated this tooltip
@@ -315,6 +327,24 @@ void itemTooltip::getParentText()
             }
         }
     }
+	
+	int16_t damageModifier = parent->getDamageModifierPoints();
+	if ( damageModifier != 0 ) {
+		double damageBonus = (StatsSystem::getStatsSystem()->complexGetDamageModifier( player->getLevel(), damageModifier, player->getLevel() ) - 1) * 100;
+		addTooltipTextForPercentageAttribute( "damage bonus", damageBonus );
+	}
+	
+	int16_t hitModifier = parent->getHitModifierPoints();
+	if ( hitModifier != 0 ) {
+		double hitBonus = (StatsSystem::getStatsSystem()->complexGetHitChance( player->getLevel(), hitModifier, player->getLevel() )) * 100;
+		addTooltipTextForPercentageAttribute( "hit bonus", hitBonus );
+	}
+	
+	int16_t evadeModifier = parent->getEvadeModifierPoints();
+	if ( evadeModifier != 0 ) {
+		double evadeBonus = (StatsSystem::getStatsSystem()->complexGetEvadeChance( player->getLevel(), evadeModifier, player->getLevel() )) * 100;
+		addTooltipTextForPercentageAttribute( "evade bonus", evadeBonus );
+	}
 
     // display the item description, if any
     if ( !parent->getDescription().empty() )

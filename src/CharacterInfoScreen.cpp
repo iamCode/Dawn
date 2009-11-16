@@ -234,8 +234,8 @@ void CharacterInfoScreen::drawTabs()
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
 			                    "%d-%d", 
-			                    static_cast<size_t>(player->getModifiedMinDamage() * statsSystem->getDamageModifier(player, player->getLevel())),
-			                    static_cast<size_t>(player->getModifiedMaxDamage() * statsSystem->getDamageModifier(player, player->getLevel())) );
+			                    static_cast<size_t>(player->getModifiedMinDamage() * statsSystem->complexGetDamageModifier(player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel())),
+			                    static_cast<size_t>(player->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier(player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel())) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -243,7 +243,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Chance to hit" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", ( statsSystem->getHitChance( player, player->getLevel() ) * 100.0 ) );
+                                "%.2f%%", ( statsSystem->complexGetHitChance( player->getLevel(), player->getModifiedHitModifierPoints(), player->getLevel() ) * 100.0 ) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -267,7 +267,7 @@ void CharacterInfoScreen::drawTabs()
 			                    "Damage Reduction" );
 			infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
 			                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-			                    "%.2f%%", (statsSystem->getDamageReductionModifier( player, player->getLevel() ) * 100.0) );
+			                    "%.2f%%", (statsSystem->complexGetDamageReductionModifier( player->getLevel(), player->getModifiedArmor(), player->getLevel() ) * 100.0) );
 			curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -283,7 +283,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Dodge" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->getEvadeChance( player, player->getLevel() ) * 100.0) );
+                                "%.2f%%", (statsSystem->complexGetEvadeChance( player->getLevel(), player->getModifiedEvadeModifierPoints(), player->getLevel() ) * 100.0) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,

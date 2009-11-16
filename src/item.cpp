@@ -41,6 +41,9 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		manaModifier( 0 ),
 		energyModifier( 0 ),
 		armorModifier( 0 ),
+		damageModifier( 0 ),
+		hitModifier( 0 ),
+		evadeModifier( 0 ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 )
@@ -144,6 +147,21 @@ int16_t Item::getArmor() const
     return armorModifier;
 }
 
+int16_t Item::getDamageModifierPoints() const
+{
+	return damageModifier;
+}
+
+int16_t Item::getHitModifierPoints() const
+{
+	return hitModifier;
+}
+
+int16_t Item::getEvadeModifierPoints() const
+{
+	return evadeModifier;
+}
+
 uint8_t Item::getMinDamage() const
 {
     return minDamage;
@@ -203,6 +221,21 @@ void Item::setEnergy( int16_t energy )
 void Item::setArmor( int16_t armor )
 {
     armorModifier = armor;
+}
+
+void Item::setDamageModifierPoints( int16_t damageModifierPoints )
+{
+	this->damageModifier = damageModifierPoints;
+}
+
+void Item::setHitModifierPoints( int16_t hitModifierPoints )
+{
+	this->hitModifier = hitModifierPoints;
+}
+
+void Item::setEvadeModifierPoints( int16_t evadeModifierPoints )
+{
+	this->evadeModifier = evadeModifierPoints;
 }
 
 void Item::setMinDamage( uint8_t minDamage_ )

@@ -389,6 +389,8 @@ void initializePlayerDebugInventory()
 	swordOfKhazom->setHealth( 75 );
 	swordOfKhazom->setMinDamage( 10 );
 	swordOfKhazom->setMaxDamage( 25 );
+	swordOfKhazom->setDamageModifierPoints( 10 );
+	swordOfKhazom->setHitModifierPoints( 30 );
 	swordOfKhazom->setDescription( "Once wielded by Irk the Unholy." );
     shortSword->setMinDamage( 6 );
     shortSword->setMaxDamage( 10 );
@@ -403,6 +405,7 @@ void initializePlayerDebugInventory()
 	sword->setMaxDamage( 6 );
 	gnollshield->setArmor( 70 );
 	gnollshield->setVitality( 3 );
+	gnollshield->setEvadeModifierPoints( 20 );
 	playerInventory->insertItem( shield );
 	playerInventory->insertItem( sword );
 	playerInventory->insertItem( swordOfKhazom );

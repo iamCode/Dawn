@@ -111,6 +111,21 @@ class CCharacter
 		uint16_t getArmor() const;
 		void modifyArmor( int16_t armorModifier );
 
+		void setDamageModifierPoints( uint16_t newDamageModifierPoints );
+		virtual uint16_t getModifiedDamageModifierPoints() const;
+		uint16_t getDamageModifierPoints() const;
+		void modifyDamageModifierPoints( int16_t damageModifierModifierPoints );
+
+		void setHitModifierPoints( uint16_t newHitModifierPoints );
+		virtual uint16_t getModifiedHitModifierPoints() const;
+		uint16_t getHitModifierPoints() const;
+		void modifyHitModifierPoints( int16_t hitModifierModifierPoints );
+
+		void setEvadeModifierPoints( uint16_t newEvadeModifierPoints );
+		virtual uint16_t getModifiedEvadeModifierPoints() const;
+		uint16_t getEvadeModifierPoints() const;
+		void modifyEvadeModifierPoints( int16_t evadeModifierModifierPoints );
+
 		void setStrength( uint16_t newStrength );
 		virtual uint16_t getModifiedStrength() const;
 		uint16_t getStrength() const;
@@ -178,8 +193,6 @@ class CCharacter
 		bool isAlive() const {
 			return alive;
 		}
-
-		double getDamageModifier() const;
 
 		void setMinDamage( uint16_t newMinDamage );
 		uint16_t getMinDamage() const;
@@ -251,7 +264,9 @@ class CCharacter
 		uint16_t current_energy;
 
 		uint16_t armor;
-
+		uint16_t damageModifierPoints;
+		uint16_t hitModifierPoints;
+		uint16_t evadeModifierPoints;
 
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;

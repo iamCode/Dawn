@@ -70,6 +70,9 @@ void CCharacter::baseOnType( std::string otherName )
 	setTexture( other->getTexture() );
 	setLifebar( other->getLifebar() );
 	setArmor( other->getArmor() );
+	setDamageModifierPoints( other->getDamageModifierPoints() );
+	setHitModifierPoints( other->getHitModifierPoints() );
+	setEvadeModifierPoints( other->getEvadeModifierPoints() );
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
@@ -116,12 +119,72 @@ uint16_t CCharacter::getArmor() const
 
 uint16_t CCharacter::getModifiedArmor() const
 {
-    return getArmor();
+	return getArmor() + StatsSystem::getStatsSystem()->calculateDamageReductionPoints( this );
 }
 
 void CCharacter::modifyArmor( int16_t armorModifier )
 {
     setArmor( getModifiedAttributeValue( armor, armorModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setDamageModifierPoints( uint16_t newDamageModifierPoints )
+{
+	damageModifierPoints = newDamageModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedDamageModifierPoints() const
+{
+	return getDamageModifierPoints() + StatsSystem::getStatsSystem()->calculateDamageModifierPoints( this );
+}
+
+uint16_t CCharacter::getDamageModifierPoints() const
+{
+	return damageModifierPoints;
+}
+
+void CCharacter::modifyDamageModifierPoints( int16_t damageModifierPointsModifier )
+{
+	setDamageModifierPoints( getModifiedAttributeValue( damageModifierPoints, damageModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setHitModifierPoints( uint16_t newHitModifierPoints )
+{
+	hitModifierPoints = newHitModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedHitModifierPoints() const
+{
+	return getHitModifierPoints() + StatsSystem::getStatsSystem()->calculateHitModifierPoints( this );
+}
+
+uint16_t CCharacter::getHitModifierPoints() const
+{
+	return hitModifierPoints;
+}
+
+void CCharacter::modifyHitModifierPoints( int16_t hitModifierPointsModifier )
+{
+	setHitModifierPoints( getModifiedAttributeValue( hitModifierPoints, hitModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setEvadeModifierPoints( uint16_t newEvadeModifierPoints )
+{
+	evadeModifierPoints = newEvadeModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedEvadeModifierPoints() const
+{
+	return getEvadeModifierPoints() + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
+}
+
+uint16_t CCharacter::getEvadeModifierPoints() const
+{
+	return evadeModifierPoints;
+}
+
+void CCharacter::modifyEvadeModifierPoints( int16_t evadeModifierPointsModifier )
+{
+	setEvadeModifierPoints( getModifiedAttributeValue( evadeModifierPoints, evadeModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getStrength() const
@@ -357,11 +420,6 @@ void CCharacter::setCurrentEnergy( uint16_t newCurrentEnergy )
 void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
 {
 	setCurrentEnergy( getModifiedAttributeValue( getCurrentEnergy(), currentEnergyModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxEnergy() ) );
-}
-
-double CCharacter::getDamageModifier() const
-{
-	return StatsSystem::getStatsSystem()->getDamageModifier( this, getLevel() );
 }
 
 void CCharacter::setMinDamage( uint16_t newMinDamage )

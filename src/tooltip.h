@@ -93,6 +93,7 @@ class itemTooltip : public Tooltip
     private:
         Item *parent;
         void getParentText();
+		void addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage );
 };
 
 #endif

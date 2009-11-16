@@ -102,13 +102,13 @@ class AttackAction : public CAction
 				if ( distance <= 120 ) {
 					const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
 					
-					double minDamage = creator->getModifiedMinDamage() * statsSystem->getDamageModifier( creator, target->getLevel() );
-					double maxDamage = creator->getModifiedMaxDamage() * statsSystem->getDamageModifier( creator, target->getLevel() );
+					double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
+					double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
 					int damage = randomSizeT( minDamage, maxDamage );
 					
-					double hitChance = statsSystem->getHitChance( creator, target->getLevel() );
-					double targetEvadeChance = statsSystem->getEvadeChance( target, creator->getLevel() );
-					double damageReduction = statsSystem->getDamageReductionModifier( target, creator->getLevel() );
+					double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
+					double targetEvadeChance = statsSystem->complexGetEvadeChance( target->getLevel(), target->getModifiedEvadeModifierPoints(), creator->getLevel() );
+					double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
 					
 					// TODO: switch to double random value...
 					bool hasHit = randomSizeT( 0, 100 ) <= hitChance * 100;

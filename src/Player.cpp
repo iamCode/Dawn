@@ -18,6 +18,7 @@
 
 #include "Player.h"
 #include "inventory.h"
+#include "StatsSystem.h"
 
 #include <limits>
 #include <cassert>
@@ -173,6 +174,9 @@ static int16_t getHealthHelper( Item * item ) { return item->getHealth(); }
 static int16_t getManaHelper( Item * item ) { return item->getMana(); }
 static int16_t getEnergyHelper( Item * item ) { return item->getEnergy(); }
 static int16_t getArmorHelper( Item * item ) { return item->getArmor(); }
+static int16_t getDamageModifierPointsHelper( Item * item ) { return item->getDamageModifierPoints(); }
+static int16_t getHitModifierPointsHelper( Item * item ) { return item->getHitModifierPoints(); }
+static int16_t getEvadeModifierPointsHelper( Item * item ) { return item->getEvadeModifierPoints(); }
 
 static int16_t getMinDamageHelper( Item * item ) { return item->getMinDamage(); }
 static int16_t getMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
@@ -199,7 +203,22 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basic
 
 uint16_t Player::getModifiedArmor() const
 {
-    return getModifiedAttribute( inventory, getArmor(), &getArmorHelper, NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, getArmor(), &getArmorHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageReductionPoints( this );
+}
+
+uint16_t Player::getModifiedDamageModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getDamageModifierPoints(), &getDamageModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageModifierPoints( this );
+}
+
+uint16_t Player::getModifiedHitModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getHitModifierPoints(), &getHitModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateHitModifierPoints( this );
+}
+
+uint16_t Player::getModifiedEvadeModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getEvadeModifierPoints(), &getEvadeModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
 }
 
 uint16_t Player::getModifiedStrength() const

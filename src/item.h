@@ -148,6 +148,9 @@ class Item
         int16_t getMana() const;
         int16_t getEnergy() const;
         int16_t getArmor() const;
+		int16_t getDamageModifierPoints() const;
+		int16_t getHitModifierPoints() const;
+		int16_t getEvadeModifierPoints() const;
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
         uint8_t getLevelReq() const;
@@ -161,7 +164,10 @@ class Item
 		void setMana( int16_t mana );
 		void setEnergy( int16_t energy );
 		void setArmor( int16_t armor );
-        void setMinDamage( uint8_t minDamage );
+		void setDamageModifierPoints( int16_t damageModifierPoints );
+		void setHitModifierPoints( int16_t hitModifierPoints );
+		void setEvadeModifierPoints( int16_t evadeModifierPoints ); 
+		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
         void setLevelReq( uint8_t levelReq );
 
@@ -203,6 +209,9 @@ class Item
         int16_t manaModifier;
         int16_t energyModifier;
         int16_t armorModifier;
+		int16_t damageModifier;
+		int16_t hitModifier;
+		int16_t evadeModifier;
 
         uint8_t minDamage;
         uint8_t maxDamage;
