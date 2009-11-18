@@ -18,6 +18,26 @@
 
 #include "item.h"
 
+std::vector<Item*> allItems;
+
+namespace DawnInterface
+{
+	Item* createNewItem(std::string name,
+	                    int sizeX,
+	                    int sizeY,
+	                    std::string symbolFile,
+	                    ItemQuality::ItemQuality itemQuality,
+	                    EquipPosition::EquipPosition equipPos,
+	                    ItemType::ItemType itemType,
+	                    ArmorType::ArmorType armorType,
+	                    WeaponType::WeaponType weaponType )
+	{
+		Item *newItem = new Item( name, sizeX, sizeY, symbolFile, itemQuality, equipPos, itemType, armorType, weaponType );
+		allItems.push_back( newItem );
+		return newItem;
+	}
+}
+
 Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolFile,
         ItemQuality::ItemQuality itemQuality_,
         EquipPosition::EquipPosition equipPosition_,

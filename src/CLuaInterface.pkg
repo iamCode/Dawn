@@ -72,9 +72,140 @@ class CCharacter {
     void setEvadeModifierPoints( int newEvadeModifierPoints );
 };
 
+namespace ItemQuality
+{
+	enum ItemQuality
+	{
+		POOR,
+		NORMAL,
+		ENHANCED,
+		RARE,
+	LORE
+	};
+}
+namespace ItemSlot
+{
+    enum ItemSlot
+{
+        HEAD,
+        AMULET,
+        MAIN_HAND,
+        OFF_HAND,
+        BELT,
+        LEGS,
+        SHOULDER,
+        CHEST,
+        GLOVES,
+        CLOAK,
+        BOOTS,
+        RING_ONE,
+        RING_TWO,
+        COUNT // this is always the last and gives the size of the enum
+};
+}
+
+namespace EquipPosition
+{
+	enum EquipPosition
+	{
+		MAIN_HAND,
+		OFF_HAND,
+		CHEST,
+		LEGS,
+		BELT,
+		BOOTS,
+		RING,
+		GLOVES,
+		HEAD,
+		CLOAK,
+		AMULET,
+		SHOULDER,
+		NONE
+	};
+}
+
+namespace ItemType
+{
+	enum ItemType
+	{
+		QUESTITEM,
+		MISCELLANEOUS,
+		ARMOR,
+		WEAPON,
+		JEWELRY,
+		COUNT
+	};
+}
+
+namespace ArmorType
+{
+	enum ArmorType
+	{
+		NO_ARMOR,
+		CLOTH,
+		LEATHER,
+		MAIL,
+		PLATE
+	};
+}
+
+namespace WeaponType
+{
+	enum WeaponType
+	{
+		NO_WEAPON,
+		ONEHAND_SWORD,
+		TWOHAND_SWORD,
+		DAGGER,
+		STAFF,
+		ONEHAND_CLUB,
+		TWOHAND_CLUB,
+		WAND,
+		SPELLBOOK, // offhand spellbooks for caster classes.
+		ONEHAND_MACE,
+		TWOHAND_MACE,
+		ONEHAND_AXE,
+		TWOHAND_AXE,
+		BOW,
+		SLINGSHOT,
+		CROSSBOW,
+		SHIELD
+	};
+}
+
+class Item
+{
+	void setDescription( std::string description );
+	void setStrength( int strength );
+	void setDexterity( int dexterity );
+	void setIntellect( int intellect );
+	void setVitality( int vitality );
+	void setWisdom( int wisdom );
+	void setHealth( int health );
+	void setMana( int mana );
+	void setEnergy( int energy );
+	void setArmor( int armor );
+	void setDamageModifierPoints( int damageModifierPoints );
+	void setHitModifierPoints( int hitModifierPoints );
+	void setEvadeModifierPoints( int evadeModifierPoints ); 
+	void setMinDamage( int minDamage );
+	void setMaxDamage( int maxDamage );
+	void setLevelReq( int levelReq );
+};
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
+	Item* createNewItem(std::string name,
+		                int sizeX,
+		                int sizeY,
+		                std::string symbolFile,
+		                ItemQuality::ItemQuality itemQuality,
+		                EquipPosition::EquipPosition equipPosition,
+		                ItemType::ItemType itemType,
+		                ArmorType::ArmorType armorType,
+		                WeaponType::WeaponType weaponType );
+	void giveItemToPlayer( Item* item );
     CZone* getCurrentZone();
     void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 }

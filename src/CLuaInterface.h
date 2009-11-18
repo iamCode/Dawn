@@ -25,5 +25,15 @@ namespace DawnInterface
 	CCharacter* createNewMobType( std::string typeID );
 	CZone* getCurrentZone();
 	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	Item* createNewItem(std::string name,
+	                    int sizeX,
+	                    int sizeY,
+	                    std::string symbolFile,
+	                    ItemQuality::ItemQuality itemQuality,
+	                    EquipPosition::EquipPosition equipPosition,
+	                    ItemType::ItemType itemType,
+	                    ArmorType::ArmorType armorType,
+	                    WeaponType::WeaponType weaponType );
+	void giveItemToPlayer( Item* item );
 }
 

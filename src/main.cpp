@@ -277,6 +277,12 @@ bool dawn_init(int argc, char** argv)
 		if(!utils::file_exists("data/mobdata.all"))
 			dawn_debug_fatal("The LUA script \"mobdata.all\", "
 				"Could not be found");
+		if(!utils::file_exists("data/itemdatabase.lua"))
+			dawn_debug_fatal("The LUA script \"itemdatabase.lua\", "
+				"Could not be found");
+		if(!utils::file_exists("data/gameinit.lua"))
+			dawn_debug_fatal("The LUA script \"gameinit.lua\", "
+					"Could not be found");
 		if(!utils::file_exists("data/verdana.ttf"))
 			dawn_debug_fatal("Font  \"verdana.ttf\", "
 				"Could not be found");
@@ -318,6 +324,7 @@ bool dawn_init(int argc, char** argv)
 		dawn_debug_info("Loading the game data files and objects");
 
 		LuaFunctions::executeLuaFile("data/mobdata.all");
+		LuaFunctions::executeLuaFile("data/itemdatabase.lua");
 
 		zone1.LoadZone("data/zone1");
 		character.setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
@@ -338,6 +345,8 @@ bool dawn_init(int argc, char** argv)
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		
+		LuaFunctions::executeLuaFile("data/gameinit.lua");
 
 		Editor.LoadTextures();
 		GUI.LoadTextures();
@@ -368,58 +377,9 @@ bool dawn_init(int argc, char** argv)
 		return true;
 }
 
-void initializePlayerDebugInventory()
-{
-	Inventory *playerInventory = character.getInventory();
-	Item *shield = new Item("A wooden shield", 2, 2, "data/items/shield.tga", ItemQuality::NORMAL, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
-	Item *sword =  new Item("A rusty sword", 1, 3, "data/items/sword.tga", ItemQuality::POOR, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
-	Item *swordOfKhazom = new Item("Sword of Khazom", 1, 3, "data/items/SwordOfKhazom.tga", ItemQuality::LORE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
-	Item *shortSword = new Item("Shortsword",1,3, "data/items/Sword1.tga", ItemQuality::NORMAL, EquipPosition::MAIN_HAND,ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::ONEHAND_SWORD );
-	Item *ringOfLicor = new Item("Eye of Licor", 1, 1, "data/items/EyeOfLicor.tga", ItemQuality::RARE, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
-	Item *gnollshield = new Item("Gnoll shield", 2, 2, "data/items/shield0.tga", ItemQuality::ENHANCED, EquipPosition::OFF_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::SHIELD );
-	Item *gutteraxe= new Item("Gutteraxe", 2, 3, "data/items/Axe1.tga", ItemQuality::RARE, EquipPosition::MAIN_HAND, ItemType::WEAPON, ArmorType::NO_ARMOR, WeaponType::TWOHAND_AXE);
-	Item *snakeloop= new Item("Snakeloop", 1, 1, "data/items/Ring1.tga", ItemQuality::ENHANCED, EquipPosition::RING, ItemType::JEWELRY, ArmorType::NO_ARMOR, WeaponType::NO_WEAPON );
-	ringOfLicor->setIntellect( 4 );
-	ringOfLicor->setMana( 15 );
-	ringOfLicor->setStrength ( -1 );
-	snakeloop->setVitality( 2 );
-	snakeloop->setLevelReq( 2 );
-	swordOfKhazom->setDexterity( 5 );
-	swordOfKhazom->setStrength( 10 );
-	swordOfKhazom->setHealth( 75 );
-	swordOfKhazom->setMinDamage( 10 );
-	swordOfKhazom->setMaxDamage( 25 );
-	swordOfKhazom->setDamageModifierPoints( 10 );
-	swordOfKhazom->setHitModifierPoints( 30 );
-	swordOfKhazom->setDescription( "Once wielded by Irk the Unholy." );
-    shortSword->setMinDamage( 6 );
-    shortSword->setMaxDamage( 10 );
-	gutteraxe->setDexterity( 10 );
-	gutteraxe->setStrength( 10 );
-	gutteraxe->setLevelReq( 5 );
-	gutteraxe->setMinDamage( 32 );
-	gutteraxe->setMaxDamage( 81 );
-	shield->setArmor( 30 );
-	sword->setStrength( -1 );
-	sword->setMinDamage( 3 );
-	sword->setMaxDamage( 6 );
-	gnollshield->setArmor( 70 );
-	gnollshield->setVitality( 3 );
-	gnollshield->setEvadeModifierPoints( 20 );
-	playerInventory->insertItem( shield );
-	playerInventory->insertItem( sword );
-	playerInventory->insertItem( swordOfKhazom );
-	playerInventory->insertItem( shortSword );
-	playerInventory->insertItem( ringOfLicor );
-	playerInventory->insertItem( gnollshield );
-	playerInventory->insertItem( gutteraxe );
-	playerInventory->insertItem( snakeloop );
-}
-
 void game_loop()
 {
 
-	initializePlayerDebugInventory();
 	// TODO: Break this down into subroutines
 
 	Uint32 lastTicks = SDL_GetTicks();

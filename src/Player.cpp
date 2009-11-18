@@ -26,6 +26,24 @@
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
+extern Player character;
+extern std::vector<Item*> groundItems;
+extern std::vector<std::pair<int,int> > groundPositions;
+
+namespace DawnInterface
+{
+	void giveItemToPlayer( Item *item )
+	{
+		Inventory *playerInventory = character.getInventory();
+		bool wasInserted = playerInventory->insertItem( item );
+		if ( ! wasInserted )
+		{
+			groundItems.push_back( item );
+			groundPositions.push_back( std::pair<int,int>( character.getXPos(), character.getYPos() ) );
+		}
+	}
+}
+
 Player::Player()
 	:	inventory( Inventory( 10, 4, this ) )
 {
