@@ -186,7 +186,7 @@ void DrawScene()
 	for (unsigned int x=0; x<NPC.size(); x++) {
 		NPC[x]->Draw();
 		if ( character.getTarget() == NPC[x] )
-			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+100 - static_cast<int>(fpsFont->getHeight()), "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
 	}
 
 	// draws the character's target's lifebar, if we have any target.
@@ -327,15 +327,15 @@ bool dawn_init(int argc, char** argv)
 		LuaFunctions::executeLuaFile("data/itemdatabase.lua");
 
 		zone1.LoadZone("data/zone1");
-		character.setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
-		character.setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
-		character.setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
-		character.setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
-		character.setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
-		character.setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
-		character.setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
-		character.setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
-		character.setMoveTexture( STOP, "data/character/pacman/pacman_s.tga" );
+		character.setMoveTexture( N, "data/character/swordsman/swordsman_n.tga" );
+		character.setMoveTexture( NE, "data/character/swordsman/swordsman_ne.tga" );
+		character.setMoveTexture( E, "data/character/swordsman/swordsman_e.tga" );
+		character.setMoveTexture( SE, "data/character/swordsman/swordsman_se.tga" );
+		character.setMoveTexture( S, "data/character/swordsman/swordsman_s.tga" );
+		character.setMoveTexture( SW, "data/character/swordsman/swordsman_sw.tga" );
+		character.setMoveTexture( W, "data/character/swordsman/swordsman_w.tga" );
+		character.setMoveTexture( NW, "data/character/swordsman/swordsman_nw.tga" );
+		character.setMoveTexture( STOP, "data/character/swordsman/swordsman_s.tga" );
 		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);

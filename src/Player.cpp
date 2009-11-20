@@ -62,54 +62,6 @@ void Player::Draw()
 	if (alive == true) {
 		texture->DrawTexture(x_pos,y_pos,direction_texture);
 	}
-
-	InventoryItem *equippedShield = getInventory()->getItemAtSlot( ItemSlot::OFF_HAND );
-	if ( equippedShield != NULL ) {
-		Item *itemShield = equippedShield->getItem();
-		float degrees = 0;
-		CTexture *usedTexture = itemShield->getSymbolTexture();
-		size_t itemWidth = itemShield->getSizeX() * 30;
-		size_t itemHeight = 10;
-		size_t xoffset = - (itemWidth/2);
-		size_t yoffset = getWidth() / 2 - 5;
-
-		switch( GetDirectionTexture() ) {
-			case N:
-				break;
-			case NW:
-				degrees += 45;
-				break;
-			case W:
-				degrees += 90;
-				break;
-			case SW:
-				degrees += 135;
-				break;
-			case S:
-				degrees += 180;
-				break;
-			case SE:
-				degrees -= 135;
-				break;
-			case E:
-				degrees -= 90;
-				break;
-			case NE:
-				degrees -= 45;
-				break;
-			default:
-				break;
-		}
-
-		glPushMatrix();
-		glTranslatef(getXPos() + (getWidth() / 2), getYPos() + (getHeight() / 2), 0.0f);
-		glRotatef(degrees,0.0f,0.0f,1.0f);
-
-		DrawingHelpers::mapTextureToRect( usedTexture->texture[0].texture,
-										  xoffset, itemWidth,
-			yoffset, itemHeight );
-		glPopMatrix();
-	}
 }
 
 Direction Player::GetDirection()

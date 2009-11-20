@@ -1,12 +1,12 @@
 wolfbase = DawnInterface.createNewMobType("Wolf")
-wolfbase:setMoveTexture( N, "data/character/pacman/pacman_n.tga" );
-wolfbase:setMoveTexture( NE, "data/character/pacman/pacman_ne.tga" );
-wolfbase:setMoveTexture( E, "data/character/pacman/pacman_e.tga" );
-wolfbase:setMoveTexture( SE, "data/character/pacman/pacman_se.tga" );
-wolfbase:setMoveTexture( S, "data/character/pacman/pacman_s.tga" );
-wolfbase:setMoveTexture( SW, "data/character/pacman/pacman_sw.tga" );
-wolfbase:setMoveTexture( W, "data/character/pacman/pacman_w.tga" );
-wolfbase:setMoveTexture( NW, "data/character/pacman/pacman_nw.tga" );
+wolfbase:setMoveTexture( N, "data/character/wolf/wolf_n.tga" );
+wolfbase:setMoveTexture( NE, "data/character/wolf/wolf_ne.tga" );
+wolfbase:setMoveTexture( E, "data/character/wolf/wolf_e.tga" );
+wolfbase:setMoveTexture( SE, "data/character/wolf/wolf_se.tga" );
+wolfbase:setMoveTexture( S, "data/character/wolf/wolf_s.tga" );
+wolfbase:setMoveTexture( SW, "data/character/wolf/wolf_sw.tga" );
+wolfbase:setMoveTexture( W, "data/character/wolf/wolf_w.tga" );
+wolfbase:setMoveTexture( NW, "data/character/wolf/wolf_nw.tga" );
 wolfbase:setLifeTexture( "data/lifebar.tga" );
 
 wolfbase:setStrength( 15 )
