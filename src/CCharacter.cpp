@@ -602,13 +602,20 @@ extern std::vector <CNPC*> NPC;
 
 extern Player character;
 
+static bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
+{
+	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
+}
+
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
+	int character_l = x_pos, character_r = x_pos + getWidth(), character_b = y_pos, character_t = y_pos + getHeight();
 	for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
-		if ((zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w >= x_pos) && (zone1.CollisionMap[t].CR.x <= x_pos)) {
-			if ((zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h >= y_pos) && (zone1.CollisionMap[t].CR.y <= y_pos)) {
-				return 1;
-			}
+		int other_l = zone1.CollisionMap[t].CR.x, other_r = zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w;
+		int other_b = zone1.CollisionMap[t].CR.y, other_t = zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h;
+		if ( hasIntersection( other_l, other_r, other_b, other_t,
+		                      character_l, character_r, character_b, character_t )) {
+			return 1;
 		}
 	}
 
@@ -618,11 +625,13 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 		CCharacter *curNPC = NPC[ curNPCNr ];
 		if ( curNPC == this || ! curNPC->isAlive() )
 			continue;
+		
+		int other_l = curNPC->getXPos(), other_r = curNPC->getXPos() + curNPC->getWidth();
+		int other_b = curNPC->getYPos(), other_t = curNPC->getYPos() + curNPC->getHeight();
 
-		if (( curNPC->getXPos() + curNPC->getWidth() >= x_pos ) && ( curNPC->getXPos() <= x_pos) ) {
-			if ( ( curNPC->getYPos() + curNPC->getHeight() >= y_pos ) && ( curNPC->getYPos() <= y_pos ) ) {
+		if ( hasIntersection( other_l, other_r, other_b, other_t,
+		                      character_l, character_r, character_b, character_t ) ) {
 				return 1;
-			}
 		}
 
 	}
@@ -631,10 +640,12 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 	{
 		CCharacter *curNPC = &character;
 		if ( curNPC != this && curNPC->isAlive() ) {
-			if (( curNPC->getXPos() + curNPC->getWidth() >= x_pos ) && ( curNPC->getXPos() <= x_pos) ) {
-				if ( ( curNPC->getYPos() + curNPC->getHeight() >= y_pos ) && ( curNPC->getYPos() <= y_pos ) ) {
-					return 1;
-				}
+			int other_l = curNPC->getXPos(), other_r = curNPC->getXPos() + curNPC->getWidth();
+			int other_b = curNPC->getYPos(), other_t = curNPC->getYPos() + curNPC->getHeight();
+
+			if ( hasIntersection( other_l, other_r, other_b, other_t,
+			                      character_l, character_r, character_b, character_t ) ) {
+				return 1;
 			}
 		}
 	}
@@ -648,44 +659,28 @@ int CCharacter::CollisionCheck(Direction direction)
 	switch (direction) {
 		case N:
 			// check upper left corner
-			if (CheckForCollision(x_pos+1,y_pos+40) == 1) {
-				return 1;
-			}
-			// check upper right corner
-			if (CheckForCollision(x_pos+39,y_pos+40) == 1) {
+			if (CheckForCollision(x_pos,y_pos+1) == 1) {
 				return 1;
 			}
 		break;
 
 		case E:
 			// check upper right corner
-			if (CheckForCollision(x_pos+40,y_pos+39) == 1) {
-				return 1;
-			}
-			// check lower right corner
-			if (CheckForCollision(x_pos+40,y_pos+1) == 1) {
+			if (CheckForCollision(x_pos+1,y_pos) == 1) {
 				return 1;
 			}
 		break;
 
 		case S:
 			// check lower left corner
-			if (CheckForCollision(x_pos+1,y_pos+1) == 1) {
-				return 1;
-			}
-			// check lower right corner
-			if (CheckForCollision(x_pos+39,y_pos) == 1) {
+			if (CheckForCollision(x_pos,y_pos-1) == 1) {
 				return 1;
 			}
 		break;
 
 		case W:
 			// check upper left corner
-			if (CheckForCollision(x_pos,y_pos+39) == 1) {
-				return 1;
-			}
-			// check lower left corner
-			if (CheckForCollision(x_pos,y_pos) == 1) {
+			if (CheckForCollision(x_pos-1,y_pos) == 1) {
 				return 1;
 			}
 		break;
@@ -789,8 +784,8 @@ void CCharacter::giveMovePoints( uint32_t movePoints )
 
 Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 {
-	int dx = x_pos - this->x_pos;
-	int dy = y_pos - this->y_pos;
+	int dx = x_pos - (this->x_pos + this->getWidth()) / 2;
+	int dy = y_pos - (this->y_pos + this->getHeight()) / 2;
 
 	if ( dx > 0 ) {
 		if ( dy > 0 ) {
@@ -965,8 +960,8 @@ void CCharacter::DrawLifebar()
 {
 	glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
 	DrawingHelpers::mapTextureToRect( lifebar->texture[1].texture,
-	                                  x_pos, 64*life_percentage,
-	                                  y_pos+texture->texture[current_texture].height, 8 );
+	                                  x_pos, getWidth()*life_percentage,
+	                                  y_pos+getHeight(), 8 );
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 

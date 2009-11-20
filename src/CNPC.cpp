@@ -25,7 +25,7 @@ extern Player character;
 Direction CNPC::GetDirection()
 {
 	if ( attitudeTowardsPlayer == hostile ) {
-		return getDirectionTowards( character.x_pos, character.y_pos );
+		return getDirectionTowards( (character.x_pos + character.getWidth()) / 2, (character.y_pos + character.getHeight()) / 2 );
 	}
 	if ( wandering ) {
 		return WanderDirection;
@@ -100,9 +100,10 @@ void CNPC::Wander()
 void CNPC::Move()
 {
 	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == hostile ) {
-		// check distance to player
-		double distance = sqrt( pow(getXPos() - character.getXPos(),2) + pow(getYPos() - character.getYPos(),2) );
-		if ( distance <= 80 ) {
+		// check distance to player (not exact, but acceptable, need a better function soon...)
+		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2) 
+		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 30 ) {
 			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) ); 
 		}
 	}
