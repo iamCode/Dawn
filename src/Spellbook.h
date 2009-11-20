@@ -60,17 +60,22 @@ class Spellbook
         void draw();
         void setVisible( bool newVisible );
         void drawSpellTooltip( int x, int y );
+        void drawFloatingSpell( int x, int y );
         void clicked( int clickX, int clickY );
 
         bool isVisible() const;
-        bool isMouseOver( int x, int y ) const;
+        bool isOnThisScreen( int x, int y ) const;
+        bool hasFloatingSpell() const;
 
         int8_t getMouseOverSpellSlotId( int x, int y ) const;
+        sSpellSlot *getFloatingSpell() const;
+        void unsetFloatingSpell();
 
     private:
         CTexture textures;
         std::vector<sSpellSlot> spellSlot;
         Player *player;
+        sSpellSlot *floatingSpell;
         bool visible;
         int posX;
         int posY;

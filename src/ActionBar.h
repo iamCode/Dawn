@@ -21,6 +21,7 @@
 #define __ACTIONBAR_H__
 
 #include "tooltip.h"
+#include "Spellbook.h"
 
 class Player;
 
@@ -57,9 +58,11 @@ class ActionBar
         ~ActionBar();
 
         bool isMouseOver( int x, int y );
+        bool isButtonUsed( sButton *button ) const;
         void draw();
         void drawSpellTooltip( int x, int y );
         void clicked( int clickX, int clickY );
+        void clicked( int clickX, int clickY, std::string floatingSpellName );
         void handleKeys();
         int8_t getMouseOverButtonId( int x, int y );
         void bindAction ( sButton *button, std::string action );

@@ -28,6 +28,7 @@ void sSpellSlot::initFont()
 
 Spellbook::Spellbook( Player *player_ )
         :   player( player_ ),
+            floatingSpell( NULL ),
             visible( false ),
             posX( 200 ),
             posY( 150 )
@@ -110,6 +111,26 @@ void Spellbook::drawSpellTooltip( int x, int y )
     }
 }
 
+void Spellbook::drawFloatingSpell( int x, int y )
+{
+    if ( floatingSpell != NULL )
+    {
+        // draw background and borders
+        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+                                          world_x + x, 50,
+                                          world_y + y + 20, 50 );
+
+        // draw the spell icon
+        floatingSpell->action->draw( world_x + x + 2, 46,
+                                   world_y + y + 20 + 2, 46 );
+
+        // draw the spell name
+        floatingSpell->font->drawText( static_cast<float>( world_x ) + x,
+                                     static_cast<float>( world_y ) + y + 20 - floatingSpell->font->getHeight()-5,
+                                     floatingSpell->action->getName() );
+    }
+}
+
 bool Spellbook::isVisible() const
 {
     return visible;
@@ -120,7 +141,7 @@ void Spellbook::setVisible( bool newVisible )
     visible = newVisible;
 }
 
-bool Spellbook::isMouseOver( int x, int y ) const
+bool Spellbook::isOnThisScreen( int x, int y ) const
 {
 	if ( x < posX
 	     || y < posY
@@ -133,6 +154,13 @@ bool Spellbook::isMouseOver( int x, int y ) const
 
 void Spellbook::clicked( int clickX, int clickY )
 {
+    int spellSlotIndex = getMouseOverSpellSlotId( clickX, clickY );
+    if (  spellSlotIndex >= 0 )
+    {
+        floatingSpell = &spellSlot[spellSlotIndex];
+    } else {
+        floatingSpell = NULL;
+    }
 }
 
 int8_t Spellbook::getMouseOverSpellSlotId( int x, int y ) const
@@ -148,4 +176,24 @@ int8_t Spellbook::getMouseOverSpellSlotId( int x, int y ) const
         }
     }
     return -1;
+}
+
+sSpellSlot *Spellbook::getFloatingSpell() const
+{
+    return floatingSpell;
+}
+
+void Spellbook::unsetFloatingSpell()
+{
+    floatingSpell = NULL;
+}
+
+bool Spellbook::hasFloatingSpell() const
+{
+    if ( floatingSpell == NULL )
+    {
+        return false;
+    } else {
+        return true;
+    }
 }

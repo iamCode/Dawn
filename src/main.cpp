@@ -238,7 +238,7 @@ void DrawScene()
 	    inventoryScreen->drawItemTooltip( mouseX, mouseY );
 	}
 
-	if ( actionBar->isMouseOver( mouseX, mouseY ) )
+	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
 	{
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
@@ -246,12 +246,16 @@ void DrawScene()
 	if ( spellbook->isVisible() )
 	{
 	    spellbook->draw();
-		if ( spellbook->isMouseOver( mouseX, mouseY ) )
+		if ( spellbook->isOnThisScreen( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
 		{
 			spellbook->drawSpellTooltip( mouseX, mouseY );
 		}
 	}
-	
+
+    if ( spellbook->hasFloatingSpell() ) {
+	    spellbook->drawFloatingSpell( mouseX, mouseY );
+	}
+
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -345,7 +349,7 @@ bool dawn_init(int argc, char** argv)
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
-		
+
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
 
 		Editor.LoadTextures();
@@ -422,7 +426,17 @@ void game_loop()
                             && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
                         characterInfoScreen->clicked( mouseX, mouseY );
                     } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
-                        actionBar->clicked( mouseX, mouseY );
+                        if ( spellbook->hasFloatingSpell() )
+                        {
+                            actionBar->clicked( mouseX, mouseY, spellbook->getFloatingSpell()->action->getName() );
+                            spellbook->unsetFloatingSpell();
+                        } else {
+                            actionBar->clicked( mouseX, mouseY );
+                        }
+                    } else if ( spellbook->isVisible()
+                                && spellbook->isOnThisScreen( mouseX, mouseY )
+                                || spellbook->hasFloatingSpell() ) {
+                        spellbook->clicked( mouseX, mouseY );
                     } else {
 						switch (event.button.button) {
 							case 1:

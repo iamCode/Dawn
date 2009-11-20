@@ -137,6 +137,22 @@ void ActionBar::clicked( int clickX, int clickY )
     }
 }
 
+void ActionBar::clicked( int clickX, int clickY, std::string floatingSpellName )
+{
+    int buttonId = getMouseOverButtonId( clickX, clickY );
+    if ( buttonId >= 0 )
+    {
+        if ( isButtonUsed( &button[buttonId] ) )
+        {
+            unbindAction( &button[buttonId] );
+        }
+        bindAction( &button[buttonId], floatingSpellName );
+    }
+
+    dawn_debug_info("YEAH!!");
+
+}
+
 void ActionBar::handleKeys()
 {
     Uint8 *keys = SDL_GetKeyState(NULL);
@@ -202,6 +218,16 @@ void ActionBar::unbindAction( sButton *button )
 {
     button->action = NULL;
     delete button->tooltip;
+}
+
+bool ActionBar::isButtonUsed( sButton *button ) const
+{
+    if ( button->action == NULL )
+    {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void ActionBar::drawSpellTooltip( int x, int y )

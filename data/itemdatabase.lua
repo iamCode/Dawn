@@ -1,22 +1,26 @@
 --[[
-itemdatabase.lua generated 2009-11-18 23:11:58 by arnestig.
+itemdatabase.lua generated 2009-11-20 23:11:06 by arnestig.
 --]]
 
 itemDatabase = {};
 
-itemDatabase["awoodenshield"]=DawnInterface.createNewItem( "A wooden shield", 2, 2, "data/items/shield.tga", ItemQuality.NORMAL, EquipPosition.OFF_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.SHIELD );
-curItem = itemDatabase["awoodenshield"];
-curItem:setArmor( 30 );
+itemDatabase["axeofanguish"]=DawnInterface.createNewItem( "Axe of Anguish", 2, 3, "data/items/Axe2.tga", ItemQuality.ENHANCED, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.TWOHAND_AXE );
+curItem = itemDatabase["axeofanguish"];
+curItem:setStrength( 2 );
+curItem:setHitModifierPoints( 5 );
+curItem:setMinDamage( 7 );
+curItem:setMaxDamage( 15 );
+curItem:setLevelReq( 1 );
 
 
-itemDatabase["arustysword"]=DawnInterface.createNewItem( "A rusty sword", 1, 3, "data/items/sword.tga", ItemQuality.POOR, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
+itemDatabase["arustysword"]=DawnInterface.createNewItem( "A rusty sword", 1, 3, "data/items/Sword1.tga", ItemQuality.POOR, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
 curItem = itemDatabase["arustysword"];
 curItem:setStrength( -1 );
 curItem:setMinDamage( 3 );
 curItem:setMaxDamage( 6 );
 
 
-itemDatabase["swordofkhazom"]=DawnInterface.createNewItem( "Sword of Khazom", 1, 3, "data/items/SwordOfKhazom.tga", ItemQuality.LORE, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
+itemDatabase["swordofkhazom"]=DawnInterface.createNewItem( "Sword of Khazom", 1, 3, "data/items/Sword1.tga", ItemQuality.LORE, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
 curItem = itemDatabase["swordofkhazom"];
 curItem:setDexterity( 5 );
 curItem:setStrength( 10 );
@@ -32,14 +36,14 @@ curItem:setMinDamage( 6 );
 curItem:setMaxDamage( 10 );
 
 
-itemDatabase["eyeoflicor"]=DawnInterface.createNewItem( "Eye of Licor", 1, 1, "data/items/EyeOfLicor.tga", ItemQuality.RARE, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+itemDatabase["eyeoflicor"]=DawnInterface.createNewItem( "Eye of Licor", 1, 1, "data/items/Ring3.tga", ItemQuality.RARE, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["eyeoflicor"];
 curItem:setIntellect( 4 );
 curItem:setStrength( -1 );
 curItem:setDescription( "No'dre entoras lictor." );
 
 
-itemDatabase["gnollshield"]=DawnInterface.createNewItem( "Gnoll shield", 2, 2, "data/items/shield0.tga", ItemQuality.ENHANCED, EquipPosition.OFF_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.SHIELD );
+itemDatabase["gnollshield"]=DawnInterface.createNewItem( "Gnoll shield", 2, 2, "data/items/Shield1.tga", ItemQuality.ENHANCED, EquipPosition.OFF_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.SHIELD );
 curItem = itemDatabase["gnollshield"];
 curItem:setVitality( 3 );
 curItem:setArmor( 70 );
@@ -75,10 +79,9 @@ curItem:setArmor( 30 );
 curItem:setEvadeModifierPoints( 5 );
 
 
-itemDatabase["shadering"]=DawnInterface.createNewItem( "Shade ring", 1, 1, "data/items/Ring1.tga", ItemQuality.ENHANCED, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+itemDatabase["shadering"]=DawnInterface.createNewItem( "Shade ring", 1, 1, "data/items/Ring2.tga", ItemQuality.ENHANCED, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["shadering"];
 curItem:setDexterity( 2 );
 curItem:setEvadeModifierPoints( 10 );
 curItem:setLevelReq( 3 );
-
 

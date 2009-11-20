@@ -1,7 +1,7 @@
 --note: this is just for debug the items need to be copied not accessed directly else the same reference is used!!!
 
 
-DawnInterface.giveItemToPlayer( itemDatabase["awoodenshield"] );
+DawnInterface.giveItemToPlayer( itemDatabase["axeofanguish"] );
 DawnInterface.giveItemToPlayer( itemDatabase["arustysword"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["swordofkhazom"] );
