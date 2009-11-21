@@ -251,7 +251,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Critical strike" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", 0.0 );
+                                "%.2f%%", ( statsSystem->complexGetMeleeCriticalStrikeChance( player->getLevel(), player->getModifiedMeleeCriticalModifierPoints(), player->getLevel() ) * 100.0 ) );
         break;
         case 1: // draws defense tab
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -275,7 +275,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Chance to block" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetBlockChance( player->getLevel(), player->getModifiedBlockModifierPoints(), player->getLevel() ) * 100.0 ) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -296,10 +296,10 @@ void CharacterInfoScreen::drawTabs()
         case 2: // draws spells tab
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Spell damage bonus" );
+                                "Spell damage (fire)" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%d", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( ElementType::Fire ), player->getLevel() ) * 100.0) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -307,7 +307,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Critical strike" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", 0.0 );
+                                "%.2f%%", ( statsSystem->complexGetSpellCriticalStrikeChance( player->getLevel(), player->getModifiedSpellCriticalModifierPoints(), player->getLevel() ) * 100.0) );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -332,38 +332,38 @@ void CharacterInfoScreen::drawTabs()
             curLine++;
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Air" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.0f%%", 0.0 );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Disease" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.0f%%", 0.0 );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "Fire" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.0f%%", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Fire ), player->getLevel() ) * 100.0 ) );
             curLine++;
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Frost" );
+                                "Water" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.0f%%", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Water ), player->getLevel() ) * 100.0 ) );
             curLine++;
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Holy" );
+                                "Air" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.0f%%", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Air ), player->getLevel() ) * 100.0 ) );
+            curLine++;
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+                                "Earth" );
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Earth ), player->getLevel() ) * 100.0 ) );
+            curLine++;
+            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+                                "Light" );
+            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Light ), player->getLevel() ) * 100.0 ) );
         break;
     }
 }

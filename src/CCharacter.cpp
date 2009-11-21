@@ -73,6 +73,16 @@ void CCharacter::baseOnType( std::string otherName )
 	setDamageModifierPoints( other->getDamageModifierPoints() );
 	setHitModifierPoints( other->getHitModifierPoints() );
 	setEvadeModifierPoints( other->getEvadeModifierPoints() );
+	setBlockModifierPoints( other->getBlockModifierPoints() );
+	setMeleeCriticalModifierPoints( other->getMeleeCriticalModifierPoints() );
+	setResistAllModifierPoints( other->getResistAllModifierPoints() );
+	setSpellEffectAllModifierPoints( other->getSpellEffectAllModifierPoints() );
+	for ( size_t curElement=0; curElement<static_cast<size_t>(ElementType::Count); ++curElement ) {
+		ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
+		setResistElementModifierPoints( curElementType, other->getResistElementModifierPoints( curElementType ) );
+		setSpellEffectElementModifierPoints( curElementType, other->getSpellEffectElementModifierPoints( curElementType ) );
+	}
+	setSpellCriticalModifierPoints( other->getSpellCriticalModifierPoints() );
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
@@ -185,6 +195,136 @@ uint16_t CCharacter::getEvadeModifierPoints() const
 void CCharacter::modifyEvadeModifierPoints( int16_t evadeModifierPointsModifier )
 {
 	setEvadeModifierPoints( getModifiedAttributeValue( evadeModifierPoints, evadeModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setBlockModifierPoints( uint16_t newBlockModifierPoints )
+{
+	blockModifierPoints = newBlockModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedBlockModifierPoints() const
+{
+	return getBlockModifierPoints() + StatsSystem::getStatsSystem()->calculateBlockModifierPoints( this );
+}
+
+uint16_t CCharacter::getBlockModifierPoints() const
+{
+	return blockModifierPoints;
+}
+
+void CCharacter::modifyBlockModifierPoints( int16_t blockModifierPointsModifier )
+{
+	setBlockModifierPoints( getModifiedAttributeValue( blockModifierPoints, blockModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setMeleeCriticalModifierPoints( uint16_t newMeleeCriticalModifierPoints )
+{
+	meleeCriticalModifierPoints = newMeleeCriticalModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedMeleeCriticalModifierPoints() const
+{
+	return getMeleeCriticalModifierPoints() + StatsSystem::getStatsSystem()->calculateMeleeCriticalModifierPoints( this );
+}
+
+uint16_t CCharacter::getMeleeCriticalModifierPoints() const
+{
+	return meleeCriticalModifierPoints;
+}
+
+void CCharacter::modifyMeleeCriticalModifierPoints( int16_t meleeCriticalModifierPointsModifier )
+{
+	setMeleeCriticalModifierPoints( getModifiedAttributeValue( meleeCriticalModifierPoints, meleeCriticalModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setResistElementModifierPoints( ElementType::ElementType elementType, uint16_t newResistElementModifierPoints )
+{
+	resistElementModifierPoints[ static_cast<size_t>(elementType) ] = newResistElementModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return getResistElementModifierPoints( elementType ) + getResistAllModifierPoints() +  StatsSystem::getStatsSystem()->calculateResistElementModifierPoints( elementType, this );
+}
+
+uint16_t CCharacter::getResistElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return resistElementModifierPoints[ static_cast<size_t>(elementType) ];
+}
+
+void CCharacter::modifyResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistElementModifierPointsModifier )
+{
+	setResistElementModifierPoints( elementType, getModifiedAttributeValue( resistElementModifierPoints[ static_cast<size_t>(elementType) ], resistElementModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setResistAllModifierPoints( uint16_t newResistAllModifierPoints )
+{
+	resistAllModifierPoints = newResistAllModifierPoints;
+}
+
+uint16_t CCharacter::getResistAllModifierPoints() const
+{
+	return resistAllModifierPoints;
+}
+
+void CCharacter::modifyResistAllModifierPoints( int16_t resistAllModifierPointsModifier )
+{
+	setResistAllModifierPoints( getModifiedAttributeValue( resistAllModifierPoints, resistAllModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, uint16_t newSpellEffectElementModifierPoints )
+{
+	spellEffectElementModifierPoints[ static_cast<size_t>(elementType) ] = newSpellEffectElementModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return getSpellEffectElementModifierPoints( elementType ) + getSpellEffectAllModifierPoints() +  StatsSystem::getStatsSystem()->calculateSpellEffectElementModifierPoints( elementType, this );
+}
+
+uint16_t CCharacter::getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return spellEffectElementModifierPoints[ static_cast<size_t>(elementType) ];
+}
+
+void CCharacter::modifySpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPointsModifier )
+{
+	setSpellEffectElementModifierPoints( elementType, getModifiedAttributeValue( spellEffectElementModifierPoints[ static_cast<size_t>(elementType) ], spellEffectElementModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setSpellEffectAllModifierPoints( uint16_t newSpellEffectAllModifierPoints )
+{
+	spellEffectAllModifierPoints = newSpellEffectAllModifierPoints;
+}
+
+uint16_t CCharacter::getSpellEffectAllModifierPoints() const
+{
+	return spellEffectAllModifierPoints;
+}
+
+void CCharacter::modifySpellEffectAllModifierPoints( int16_t spellEffectAllModifierPointsModifier )
+{
+	setSpellEffectAllModifierPoints( getModifiedAttributeValue( spellEffectAllModifierPoints, spellEffectAllModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setSpellCriticalModifierPoints( uint16_t newSpellCriticalModifierPoints )
+{
+	spellCriticalModifierPoints = newSpellCriticalModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedSpellCriticalModifierPoints() const
+{
+	return getSpellCriticalModifierPoints() + StatsSystem::getStatsSystem()->calculateSpellCriticalModifierPoints( this );
+}
+
+uint16_t CCharacter::getSpellCriticalModifierPoints() const
+{
+	return spellCriticalModifierPoints;
+}
+
+void CCharacter::modifySpellCriticalModifierPoints( int16_t spellCriticalModifierPointsModifier )
+{
+	setSpellCriticalModifierPoints( getModifiedAttributeValue( spellCriticalModifierPoints, spellCriticalModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 uint16_t CCharacter::getStrength() const
@@ -564,8 +704,24 @@ CCharacter::CCharacter()
 	  current_mana( 0 ),
 	  max_energy( 0 ),
 	  current_energy( 0 ),
-	  armor( 0 )
+	  armor( 0 ),
+	  damageModifierPoints( 0 ),
+	  hitModifierPoints( 0 ),
+	  evadeModifierPoints( 0 ),
+	  blockModifierPoints( 0 ),
+	  meleeCriticalModifierPoints( 0 ),
+	  resistElementModifierPoints( NULL ),
+	  resistAllModifierPoints( 0 ),
+	  spellEffectElementModifierPoints( NULL ),
+	  spellEffectAllModifierPoints( 0 ),
+	  spellCriticalModifierPoints( 0 )
 {
+	resistElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
+	spellEffectElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
+	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+		resistElementModifierPoints[ curElement ] = 0;
+		spellEffectElementModifierPoints[ curElement ] = 0;
+	}
 }
 
 CCharacter::~CCharacter()

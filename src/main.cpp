@@ -434,8 +434,8 @@ void game_loop()
                             actionBar->clicked( mouseX, mouseY );
                         }
                     } else if ( spellbook->isVisible()
-                                && spellbook->isOnThisScreen( mouseX, mouseY )
-                                || spellbook->hasFloatingSpell() ) {
+                                && (spellbook->isOnThisScreen( mouseX, mouseY )
+                                || spellbook->hasFloatingSpell()) ) {
                         spellbook->clicked( mouseX, mouseY );
                     } else {
 						switch (event.button.button) {

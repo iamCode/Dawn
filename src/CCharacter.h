@@ -126,6 +126,39 @@ class CCharacter
 		uint16_t getEvadeModifierPoints() const;
 		void modifyEvadeModifierPoints( int16_t evadeModifierModifierPoints );
 
+		void setBlockModifierPoints( uint16_t newBlockModifierPoints );
+		virtual uint16_t getModifiedBlockModifierPoints() const;
+		uint16_t getBlockModifierPoints() const;
+		void modifyBlockModifierPoints( int16_t blockModifierPoints );
+
+		void setMeleeCriticalModifierPoints( uint16_t newMeleeCriticalModifierPoints );
+		virtual uint16_t getModifiedMeleeCriticalModifierPoints() const;
+		uint16_t getMeleeCriticalModifierPoints() const;
+		void modifyMeleeCriticalModifierPoints( int16_t meleeCriticalModifierPoints );
+
+		void setResistElementModifierPoints( ElementType::ElementType elementType, uint16_t newResistElementModifierPoints );
+		virtual uint16_t getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const;
+		uint16_t getResistElementModifierPoints( ElementType::ElementType elementType ) const;
+		void modifyResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistElementModifierPoints );
+
+		void setResistAllModifierPoints( uint16_t newResistAllModifierPoints );
+		uint16_t getResistAllModifierPoints() const;
+		void modifyResistAllModifierPoints( int16_t resistAllModifierPoints );
+
+		void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, uint16_t newSpellEffectElementModifierPoints );
+		virtual uint16_t getModifiedSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
+		uint16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
+		void modifySpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints );
+
+		void setSpellEffectAllModifierPoints( uint16_t newSpellEffectAllModifierPoints );
+		uint16_t getSpellEffectAllModifierPoints() const;
+		void modifySpellEffectAllModifierPoints( int16_t spellEffectAllModifierPoints );
+
+		void setSpellCriticalModifierPoints( uint16_t newSpellCriticalModifierPoints );
+		virtual uint16_t getModifiedSpellCriticalModifierPoints() const;
+		uint16_t getSpellCriticalModifierPoints() const;
+		void modifySpellCriticalModifierPoints( int16_t spellCriticalModifierPoints );
+
 		void setStrength( uint16_t newStrength );
 		virtual uint16_t getModifiedStrength() const;
 		uint16_t getStrength() const;
@@ -267,6 +300,13 @@ class CCharacter
 		uint16_t damageModifierPoints;
 		uint16_t hitModifierPoints;
 		uint16_t evadeModifierPoints;
+		uint16_t blockModifierPoints;
+		uint16_t meleeCriticalModifierPoints;
+		uint16_t *resistElementModifierPoints;
+		uint16_t resistAllModifierPoints;
+		uint16_t *spellEffectElementModifierPoints;
+		uint16_t spellEffectAllModifierPoints;
+		uint16_t spellCriticalModifierPoints;
 
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;

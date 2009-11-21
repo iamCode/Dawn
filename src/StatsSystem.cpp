@@ -141,6 +141,53 @@ double StatsSystem::complexGetDamageReductionModifier( int myLevel, int myDamage
 	                          maxDamageReductionModifier );
 }
 
+double StatsSystem::complexGetBlockChance( int myLevel, int myBlockModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return getModifierCommon( myBlockModifierPoints,
+	                          maxStatsPointsForLevel[ myLevel ],
+	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxBlockChance );
+}
+
+double StatsSystem::complexGetMeleeCriticalStrikeChance( int myLevel, int myMeleeCriticalModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return getModifierCommon( myMeleeCriticalModifierPoints,
+	                          maxStatsPointsForLevel[ myLevel ],
+	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxMeleeCriticalChance );
+}
+
+double StatsSystem::complexGetResistElementChance( int myLevel, int myResistElementModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return getModifierCommon( myResistElementModifierPoints,
+	                          maxStatsPointsForLevel[ myLevel ],
+	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxResistElementChance );
+}
+
+double StatsSystem::complexGetSpellEffectElementModifier( int myLevel, int mySpellEffectElementModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return 1 + (static_cast<double>(mySpellEffectElementModifierPoints) / 100.0);
+}
+
+double StatsSystem::complexGetSpellCriticalStrikeChance( int myLevel, int mySpellCriticalModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return getModifierCommon( mySpellCriticalModifierPoints,
+	                          maxStatsPointsForLevel[ myLevel ],
+	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxSpellCriticalChance );
+}
+
 int StatsSystem::calculateDamageModifierPoints( const CCharacter *character ) const
 {
 	return ( character->getModifiedStrength() );
@@ -161,3 +208,27 @@ int StatsSystem::calculateDamageReductionPoints( const CCharacter *character ) c
 	return 0;
 }
 
+int StatsSystem::calculateBlockModifierPoints( const CCharacter *character ) const
+{
+	return ( (character->getModifiedDexterity() + character->getModifiedStrength()) / 5 );
+}
+
+int StatsSystem::calculateMeleeCriticalModifierPoints( const CCharacter *character ) const
+{
+	return ( (character->getModifiedIntellect() + character->getModifiedWisdom()) / 5 );
+}
+
+int StatsSystem::calculateResistElementModifierPoints( ElementType::ElementType elementType, const CCharacter *character ) const
+{
+	return character->getModifiedWisdom() / 4;
+}
+
+int StatsSystem::calculateSpellEffectElementModifierPoints( ElementType::ElementType elementType, const CCharacter *character ) const
+{
+	return character->getModifiedIntellect();
+}
+
+int StatsSystem::calculateSpellCriticalModifierPoints( const CCharacter *character ) const
+{
+	return ( (character->getModifiedIntellect() + character->getModifiedWisdom()) / 5 );
+}

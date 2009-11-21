@@ -147,6 +147,11 @@ static int16_t getArmorHelper( Item * item ) { return item->getArmor(); }
 static int16_t getDamageModifierPointsHelper( Item * item ) { return item->getDamageModifierPoints(); }
 static int16_t getHitModifierPointsHelper( Item * item ) { return item->getHitModifierPoints(); }
 static int16_t getEvadeModifierPointsHelper( Item * item ) { return item->getEvadeModifierPoints(); }
+static int16_t getBlockModifierPointsHelper( Item * item ) { return item->getBlockModifierPoints(); }
+static int16_t getMeleeCriticalModifierPointsHelper( Item * item ) { return item->getMeleeCriticalModifierPoints(); }
+static int16_t getResistElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getResistElementModifierPoints( elementType ) + item->getResistAllModifierPoints(); }
+static int16_t getSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getSpellEffectElementModifierPoints( elementType ) + item->getSpellEffectAllModifierPoints(); }
+static int16_t getSpellCriticalModifierPointsHelper( Item * item ) { return item->getSpellCriticalModifierPoints(); }
 
 static int16_t getMinDamageHelper( Item * item ) { return item->getMinDamage(); }
 static int16_t getMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
@@ -171,6 +176,27 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basic
 	}
 }
 
+static uint16_t getModifiedAttribute( ElementType::ElementType elementType, const Inventory &inventory, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( ElementType::ElementType, Item* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
+{
+	int32_t attributeModifier = 0;
+	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
+	size_t numItems = equippedItems.size();
+	for ( size_t curItemNr=0; curItemNr<numItems; ++curItemNr ) {
+		Item *curItem = equippedItems[ curItemNr ]->getItem();
+		assert( curItem != NULL );
+		attributeModifier += getItemAttribute( elementType, curItem );
+	}
+	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {
+		return minValue;
+	}
+	else if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier > static_cast<int32_t>( maxValue ) ) {
+		return maxValue;
+	} else {
+		return basicAttributeValue + attributeModifier;
+	}
+}
+
+
 uint16_t Player::getModifiedArmor() const
 {
 	return getModifiedAttribute( inventory, getArmor(), &getArmorHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageReductionPoints( this );
@@ -189,6 +215,31 @@ uint16_t Player::getModifiedHitModifierPoints() const
 uint16_t Player::getModifiedEvadeModifierPoints() const
 {
 	return getModifiedAttribute( inventory, getEvadeModifierPoints(), &getEvadeModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
+}
+
+uint16_t Player::getModifiedBlockModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getBlockModifierPoints(), &getBlockModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateBlockModifierPoints( this );
+}
+
+uint16_t Player::getModifiedMeleeCriticalModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getMeleeCriticalModifierPoints(), &getMeleeCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateMeleeCriticalModifierPoints( this );
+}
+
+uint16_t Player::getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return getModifiedAttribute( elementType, inventory, getResistElementModifierPoints( elementType ) + getResistAllModifierPoints(), &getResistElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateResistElementModifierPoints( elementType, this );
+}
+
+uint16_t Player::getModifiedSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return getModifiedAttribute( elementType, inventory, getSpellEffectElementModifierPoints( elementType ) + getSpellEffectAllModifierPoints(), &getSpellEffectElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellEffectElementModifierPoints( elementType, this );
+}
+
+uint16_t Player::getModifiedSpellCriticalModifierPoints() const
+{
+	return getModifiedAttribute( inventory, getSpellCriticalModifierPoints(), &getSpellCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellCriticalModifierPoints( this );
 }
 
 uint16_t Player::getModifiedStrength() const

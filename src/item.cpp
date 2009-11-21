@@ -64,10 +64,23 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		damageModifier( 0 ),
 		hitModifier( 0 ),
 		evadeModifier( 0 ),
+		blockModifier( 0 ),
+		meleeCriticalModifier( 0 ),
+		resistElementModifier( NULL ),
+		resistAllModifier( 0 ),
+		spellEffectElementModifier( NULL ),
+		spellEffectAllModifier( 0 ),
+		spellCriticalModifier( 0 ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 )
 {
+	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+		resistElementModifier[ curElement ] = 0;
+		spellEffectElementModifier[ curElement ] = 0;
+	}
 	symbolTexture.texture.reserve(1);
 	symbolTexture.LoadIMG( symbolFile, 0 );
 }
@@ -182,6 +195,41 @@ int16_t Item::getEvadeModifierPoints() const
 	return evadeModifier;
 }
 
+int16_t Item::getBlockModifierPoints() const
+{
+	return blockModifier;
+}
+
+int16_t Item::getMeleeCriticalModifierPoints() const
+{
+	return meleeCriticalModifier;
+}
+
+int16_t Item::getResistElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return resistElementModifier[ static_cast<size_t>(elementType) ];
+}
+
+int16_t Item::getResistAllModifierPoints() const
+{
+	return resistAllModifier;
+}
+
+int16_t Item::getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return spellEffectElementModifier[ static_cast<size_t>(elementType) ];
+}
+
+int16_t Item::getSpellEffectAllModifierPoints() const
+{
+	return spellEffectAllModifier;
+}
+
+int16_t Item::getSpellCriticalModifierPoints() const
+{
+	return spellCriticalModifier;
+}
+
 uint8_t Item::getMinDamage() const
 {
     return minDamage;
@@ -206,7 +254,6 @@ void Item::setDexterity( int16_t dexterity )
 {
     dexterityModifier = dexterity;
 }
-
 
 void Item::setIntellect( int16_t intellect )
 {
@@ -256,6 +303,41 @@ void Item::setHitModifierPoints( int16_t hitModifierPoints )
 void Item::setEvadeModifierPoints( int16_t evadeModifierPoints )
 {
 	this->evadeModifier = evadeModifierPoints;
+}
+
+void Item::setBlockModifierPoints( int16_t blockModifierPoints )
+{
+	this->blockModifier = blockModifierPoints;
+}
+
+void Item::setMeleeCriticalModifierPoints( int16_t meleeCriticalModifierPoints )
+{
+	this->meleeCriticalModifier = meleeCriticalModifierPoints;
+}
+
+void Item::setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints )
+{
+	this->resistElementModifier[ static_cast<size_t>( elementType ) ] = resistModifierPoints;
+}
+
+void Item::setResistAllModifierPoints( int16_t resistAllModifierPoints )
+{
+	this->resistAllModifier = resistAllModifierPoints;
+}
+
+void Item::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints )
+{
+	this->spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
+}
+
+void Item::setSpellEffectAllModifierPoints( int16_t spellEffectAllModifierPoints )
+{
+	this->spellEffectAllModifier = spellEffectAllModifierPoints;
+}
+
+void Item::setSpellCriticalModifierPoints( int16_t spellCriticalModifierPoints )
+{
+	this->spellCriticalModifier = spellCriticalModifierPoints;
 }
 
 void Item::setMinDamage( uint8_t minDamage_ )

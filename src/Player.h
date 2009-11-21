@@ -42,7 +42,12 @@ class Player : public CCharacter
 		uint16_t getModifiedDamageModifierPoints() const;
 		uint16_t getModifiedHitModifierPoints() const;
 		uint16_t getModifiedEvadeModifierPoints() const;
-
+		uint16_t getModifiedBlockModifierPoints() const;
+		uint16_t getModifiedMeleeCriticalModifierPoints() const;
+		uint16_t getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const;
+		uint16_t getModifiedSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
+		uint16_t getModifiedSpellCriticalModifierPoints() const;
+		
 		uint16_t getModifiedStrength() const;
 		uint16_t getModifiedDexterity() const;
 		uint16_t getModifiedVitality() const;

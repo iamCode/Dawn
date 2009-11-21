@@ -22,6 +22,7 @@
 class CCharacter;
 
 #include <cstring> // size_t
+#include "elements.h"
 
 class StatsSystem
 {
@@ -37,6 +38,11 @@ class StatsSystem
 		double maxHitChance;
 		double maxEvadeChance;
 		double maxDamageReductionModifier;
+		double maxBlockChance;
+		double maxMeleeCriticalChance;
+		double maxResistElementChance;
+		double maxSpellEffectElementModifier;
+		double maxSpellCriticalChance;
 		
 	public:
 		~StatsSystem();
@@ -47,11 +53,21 @@ class StatsSystem
 		double complexGetHitChance( int myLevel, int myHitModifierPoints, int opponentLevel ) const;
 		double complexGetEvadeChance( int myLevel, int myEvadeModifierPoints, int opponentLevel ) const;
 		double complexGetDamageReductionModifier( int myLevel, int myDamageReductionPoints, int opponentLevel ) const;
+		double complexGetBlockChance( int myLevel, int myBlockModifierPoints, int opponentLevel ) const;
+		double complexGetMeleeCriticalStrikeChance( int myLevel, int myMeleeCriticalModifierPoints, int opponentLevel ) const;
+		double complexGetResistElementChance( int myLevel, int myResistElementModifierPoints, int opponentLevel ) const;
+		double complexGetSpellEffectElementModifier( int myLevel, int mySpellEffectElementModifierPoints, int opponentLevel ) const;
+		double complexGetSpellCriticalStrikeChance( int myLevel, int mySpellCriticalModifierPoints, int opponentLevel ) const;
 		
 		int calculateDamageModifierPoints( const CCharacter *character ) const;
 		int calculateHitModifierPoints( const CCharacter *character ) const;
 		int calculateEvadeModifierPoints( const CCharacter *character ) const;
 		int calculateDamageReductionPoints( const CCharacter *character ) const;
+		int calculateBlockModifierPoints( const CCharacter *character ) const;
+		int calculateMeleeCriticalModifierPoints( const CCharacter *character ) const;
+		int calculateResistElementModifierPoints( ElementType::ElementType elementType, const CCharacter *character ) const;
+		int calculateSpellEffectElementModifierPoints( ElementType::ElementType elementType, const CCharacter *character ) const;
+		int calculateSpellCriticalModifierPoints( const CCharacter *character ) const;
 };
 
 #endif // STATS_SYSTEM_H
