@@ -155,7 +155,7 @@ bool Spellbook::isOnThisScreen( int x, int y ) const
 void Spellbook::clicked( int clickX, int clickY )
 {
     int spellSlotIndex = getMouseOverSpellSlotId( clickX, clickY );
-    if (  spellSlotIndex >= 0 )
+    if (  spellSlotIndex >= 0 && spellSlot[spellSlotIndex].action != NULL )
     {
         floatingSpell = &spellSlot[spellSlotIndex];
     } else {

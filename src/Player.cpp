@@ -111,7 +111,7 @@ void Player::setTarget(CCharacter *newTarget)
 
 void Player::regenerateLifeMana(uint32_t regenPoints)
 {
-    /** Regenerate life, mana and energy every 500 ms.
+    /** Regenerate life and mana every 500 ms.
 	For now, we're regenerating a static amount.
 	In the future this will be calculated based on characters stats. **/
 
@@ -120,7 +120,6 @@ void Player::regenerateLifeMana(uint32_t regenPoints)
 	if ( remainingRegenPoints > 500 ) {
 		modifyCurrentMana( 1 );
 		modifyCurrentHealth( 1 );
-		modifyCurrentEnergy( 1 );
 		remainingRegenPoints -= 500;
 	}
 }
@@ -128,6 +127,11 @@ void Player::regenerateLifeMana(uint32_t regenPoints)
 void Player::Move()
 {
 	CCharacter::Move();
+}
+
+void Player::Die()
+{
+    alive = false;
 }
 
 bool Player::isPlayer() const
@@ -142,7 +146,6 @@ static int16_t getIntellectHelper( Item * item ) { return item->getIntellect(); 
 static int16_t getWisdomHelper( Item * item ) { return item->getWisdom(); }
 static int16_t getHealthHelper( Item * item ) { return item->getHealth(); }
 static int16_t getManaHelper( Item * item ) { return item->getMana(); }
-static int16_t getEnergyHelper( Item * item ) { return item->getEnergy(); }
 static int16_t getArmorHelper( Item * item ) { return item->getArmor(); }
 static int16_t getDamageModifierPointsHelper( Item * item ) { return item->getDamageModifierPoints(); }
 static int16_t getHitModifierPointsHelper( Item * item ) { return item->getHitModifierPoints(); }
@@ -275,11 +278,6 @@ uint16_t Player::getModifiedMaxHealth() const
 uint16_t Player::getModifiedMaxMana() const
 {
 	return getModifiedAttribute( inventory, getMaxMana(), &getManaHelper, NULLABLE_ATTRIBUTE_MIN );
-}
-
-uint16_t Player::getModifiedMaxEnergy() const
-{
-	return getModifiedAttribute( inventory, getMaxEnergy(), &getEnergyHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedMinDamage() const

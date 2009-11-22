@@ -40,6 +40,13 @@ void CNPC::Damage(int amount)
 	CCharacter::Damage( amount );
 }
 
+void CNPC::Die()
+{
+    dropItems();
+    alive = false;
+	respawn_lastframe = SDL_GetTicks();
+}
+
 void CNPC::Draw()
 {
 	CalculateStats(); // always calculate the stats of the NPC.
@@ -62,7 +69,6 @@ void CNPC::Respawn()
 			respawn_lastframe = 0.0f;
 			setCurrentHealth( getModifiedMaxHealth() );
 			setCurrentMana( getModifiedMaxMana() );
-			setCurrentEnergy( getModifiedMaxEnergy() );
 			attitudeTowardsPlayer = neutral;
 		}
 	}
@@ -101,10 +107,10 @@ void CNPC::Move()
 {
 	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == hostile ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
-		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2) 
+		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 30 ) {
-			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) ); 
+			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
 		}
 	}
 	CCharacter::Move();

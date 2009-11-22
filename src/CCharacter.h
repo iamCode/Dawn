@@ -35,6 +35,17 @@ class CSpell;
 class CAction;
 class CInterface;
 
+struct sLootTable
+{
+    Item *item;
+    double dropChance;
+    sLootTable( Item *item_, double dropChance_ )
+    {
+        item = item_;
+        dropChance = dropChance_;
+    }
+};
+
 class CCharacter
 {
 		friend class CSpellActionBase;
@@ -202,14 +213,7 @@ class CCharacter
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
 
-		uint16_t getMaxEnergy() const;
-		virtual uint16_t getModifiedMaxEnergy() const;
-		void setMaxEnergy( uint16_t newMaxEnergy );
-		void modifyMaxEnergy( int16_t maxEnergyModifier );
-
-		uint16_t getCurrentEnergy() const;
-		void setCurrentEnergy( uint16_t newCurrentEnergy );
-		void modifyCurrentEnergy( int16_t currentEnergyModifier);
+		void addItemToLootTable( Item *item, double dropChance );
 
 		uint64_t getExperience() const;
 		void gainExperience( uint64_t addExp );
@@ -222,6 +226,9 @@ class CCharacter
 
 		void setLevel ( uint8_t newLevel );
 		uint8_t getLevel() const;
+
+        std::vector<sLootTable> getLootTable() const;
+        void setLootTable( std::vector<sLootTable> newLootTable );
 
 		bool isAlive() const {
 			return alive;
@@ -240,7 +247,8 @@ class CCharacter
 		bool CheckMouseOver(int _x_pos, int _y_pos);
 		virtual void Damage(int amount);
 		void Heal(int amount);
-		void Die();
+		virtual void Die();
+		void dropItems();
 
 		void setTexture( CTexture *newTexture );
 		CTexture *getTexture() const;
@@ -265,7 +273,7 @@ class CCharacter
 		float respawn_thisframe, respawn_lastframe;
 
 		// stats
-		float life_percentage, mana_percentage, energy_percentage;
+		float life_percentage, mana_percentage;
 		void CalculateStats();
 
 		int wander_every_seconds, wander_points_left;
@@ -293,8 +301,6 @@ class CCharacter
 		uint16_t current_health;
 		uint16_t max_mana;
 		uint16_t current_mana;
-		uint16_t max_energy;
-		uint16_t current_energy;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;
@@ -321,8 +327,7 @@ class CCharacter
 		uint32_t preparationStartTime, preparationCurrentTime;
 		float preparationPercentage;
         CInterface *activeGUI;
-
-
+        std::vector<sLootTable> lootTable;
 };
 
 #endif

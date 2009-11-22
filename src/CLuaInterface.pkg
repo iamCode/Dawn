@@ -44,10 +44,6 @@ class CCharacter {
     uint16_t getMaxMana() const;
     void modifyMaxMana( int maxManaModifier );
 
-    void setMaxEnergy( int newMaxEnergy );
-    uint16_t getMaxEnergy() const;
-    void modifyMaxEnergy( int maxEnergyModifier );
-
     void setMoveTexture( int direction, std::string filename );
     void setLifeTexture( std::string filename );
 
@@ -70,6 +66,8 @@ class CCharacter {
     void setDamageModifierPoints( int newDamageModifierPoints );
     void setHitModifierPoints( int newHitModifierPoints );
     void setEvadeModifierPoints( int newEvadeModifierPoints );
+
+    void addItemToLootTable( Item *item, double dropChance );
 };
 
 namespace ItemQuality
@@ -183,7 +181,6 @@ class Item
 	void setWisdom( int wisdom );
 	void setHealth( int health );
 	void setMana( int mana );
-	void setEnergy( int energy );
 	void setArmor( int armor );
 	void setDamageModifierPoints( int damageModifierPoints );
 	void setHitModifierPoints( int hitModifierPoints );
@@ -192,6 +189,7 @@ class Item
 	void setMaxDamage( int maxDamage );
 	void setLevelReq( int levelReq );
 };
+
 
 namespace DawnInterface
 {

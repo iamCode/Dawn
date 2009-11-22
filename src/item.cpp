@@ -59,7 +59,6 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		wisdomModifier( 0 ),
 		healthModifier( 0 ),
 		manaModifier( 0 ),
-		energyModifier( 0 ),
 		armorModifier( 0 ),
 		damageModifier( 0 ),
 		hitModifier( 0 ),
@@ -170,11 +169,6 @@ int16_t Item::getMana() const
     return manaModifier;
 }
 
-int16_t Item::getEnergy() const
-{
-    return energyModifier;
-}
-
 int16_t Item::getArmor() const
 {
     return armorModifier;
@@ -280,11 +274,6 @@ void Item::setMana( int16_t mana )
     manaModifier = mana;
 }
 
-void Item::setEnergy( int16_t energy )
-{
-    energyModifier = energy;
-}
-
 void Item::setArmor( int16_t armor )
 {
     armorModifier = armor;
@@ -376,7 +365,7 @@ std::string Item::getArmorTypeText() const
         case ArmorType::PLATE:
             return "Plate";
         break;
-        case ArmorType::NO_ARMOR: 
+        case ArmorType::NO_ARMOR:
             dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
             abort();
         break;

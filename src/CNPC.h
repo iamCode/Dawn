@@ -25,6 +25,7 @@ class CNPC : public CCharacter
 {
 	private:
 		enum { friendly, neutral, hostile } attitudeTowardsPlayer;
+		std::vector<sLootTable> lootTable;
 	public:
 
 		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
@@ -59,7 +60,7 @@ class CNPC : public CCharacter
 		Direction GetDirection();
 		void Respawn();
 		void Wander();
-		
+        void Die();
 		void Damage(int amount);
 };
 

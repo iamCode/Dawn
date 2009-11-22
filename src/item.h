@@ -148,7 +148,6 @@ class Item
         int16_t getWisdom() const;
         int16_t getHealth() const;
         int16_t getMana() const;
-        int16_t getEnergy() const;
         int16_t getArmor() const;
 		int16_t getDamageModifierPoints() const;
 		int16_t getHitModifierPoints() const;
@@ -171,7 +170,6 @@ class Item
 		void setWisdom( int16_t wisdom );
 		void setHealth( int16_t health );
 		void setMana( int16_t mana );
-		void setEnergy( int16_t energy );
 		void setArmor( int16_t armor );
 		void setDamageModifierPoints( int16_t damageModifierPoints );
 		void setHitModifierPoints( int16_t hitModifierPoints );
@@ -223,7 +221,6 @@ class Item
         int16_t wisdomModifier;
         int16_t healthModifier;
         int16_t manaModifier;
-        int16_t energyModifier;
         int16_t armorModifier;
 		int16_t damageModifier;
 		int16_t hitModifier;

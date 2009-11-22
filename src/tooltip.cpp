@@ -242,7 +242,7 @@ void itemTooltip::getParentText()
     GLfloat red[] = { 1.0f, 0.0f, 0.0f };
     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
     GLfloat brownish[] = { 0.7f, 0.7f, 0.0f };
-    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana", "energy" };
+    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana" };
     int8_t attribute_values[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     // setting the title of the tooltip based on item quality
@@ -312,9 +312,8 @@ void itemTooltip::getParentText()
     attribute_values[5] = parent->getWisdom();
     attribute_values[6] = parent->getHealth();
     attribute_values[7] = parent->getMana();
-    attribute_values[8] = parent->getEnergy();
 
-    for (unsigned int i = 0; i < 9; i++ )
+    for (unsigned int i = 0; i < 8; i++ )
     {
         if ( attribute_values[i] != 0 )
         {
@@ -327,19 +326,19 @@ void itemTooltip::getParentText()
             }
         }
     }
-	
+
 	int16_t damageModifier = parent->getDamageModifierPoints();
 	if ( damageModifier != 0 ) {
 		double damageBonus = (StatsSystem::getStatsSystem()->complexGetDamageModifier( player->getLevel(), damageModifier, player->getLevel() ) - 1) * 100;
 		addTooltipTextForPercentageAttribute( "damage bonus", damageBonus );
 	}
-	
+
 	int16_t hitModifier = parent->getHitModifierPoints();
 	if ( hitModifier != 0 ) {
 		double hitBonus = (StatsSystem::getStatsSystem()->complexGetHitChance( player->getLevel(), hitModifier, player->getLevel() )) * 100;
 		addTooltipTextForPercentageAttribute( "hit bonus", hitBonus );
 	}
-	
+
 	int16_t evadeModifier = parent->getEvadeModifierPoints();
 	if ( evadeModifier != 0 ) {
 		double evadeBonus = (StatsSystem::getStatsSystem()->complexGetEvadeChance( player->getLevel(), evadeModifier, player->getLevel() )) * 100;

@@ -33,6 +33,7 @@ class Player : public CCharacter
 		bool isPlayer() const;
 		void Move();
 		void Draw();
+		void Die();
 		CCharacter* getTarget() const;
 		void setTarget(CCharacter *newTarget);
 		void regenerateLifeMana(uint32_t regenPoints);
@@ -56,7 +57,6 @@ class Player : public CCharacter
 
 		uint16_t getModifiedMaxHealth() const;
 		uint16_t getModifiedMaxMana() const;
-		uint16_t getModifiedMaxEnergy() const;
 
 		uint16_t getModifiedMinDamage() const;
 		uint16_t getModifiedMaxDamage() const;

@@ -327,8 +327,9 @@ bool dawn_init(int argc, char** argv)
 
 		dawn_debug_info("Loading the game data files and objects");
 
-		LuaFunctions::executeLuaFile("data/mobdata.all");
 		LuaFunctions::executeLuaFile("data/itemdatabase.lua");
+		LuaFunctions::executeLuaFile("data/mobdata.all");
+
 
 		zone1.LoadZone("data/zone1");
 		character.setMoveTexture( N, "data/character/swordsman/swordsman_n.tga" );

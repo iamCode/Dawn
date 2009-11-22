@@ -35,6 +35,8 @@
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
+extern std::vector<Item*> groundItems;
+extern std::vector<std::pair<int,int> > groundPositions;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -64,7 +66,6 @@ void CCharacter::baseOnType( std::string otherName )
 	setWisdom( other->getWisdom() );
 	setMaxHealth( other->getMaxHealth() );
 	setMaxMana( other->getMaxMana() );
-	setMaxEnergy( other->getMaxEnergy() );
 	setMinDamage( other->getMinDamage() );
 	setMaxDamage( other->getMaxDamage() );
 	setTexture( other->getTexture() );
@@ -86,6 +87,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
+	setLootTable( other->getLootTable() );
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
@@ -519,49 +521,6 @@ void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
-uint16_t CCharacter::getMaxEnergy() const
-{
-	return max_energy;
-}
-
-uint16_t CCharacter::getModifiedMaxEnergy() const
-{
-	return getMaxEnergy();
-}
-
-void CCharacter::setMaxEnergy( uint16_t newMaxEnergy )
-{
-	max_energy = newMaxEnergy;
-	// if ( current_energy > getModifiedMaxEnergy() )
-	// {
-		current_energy = getModifiedMaxEnergy();
-	// }
-}
-
-void CCharacter::modifyMaxEnergy( int16_t maxEnergyModifier )
-{
-	setMaxEnergy( getModifiedAttributeValue( max_energy, maxEnergyModifier, NULLABLE_ATTRIBUTE_MIN ) );
-}
-
-uint16_t CCharacter::getCurrentEnergy() const
-{
-	if ( current_energy > getModifiedMaxEnergy() )
-		return getModifiedMaxEnergy();
-
-	return current_energy;
-}
-
-void CCharacter::setCurrentEnergy( uint16_t newCurrentEnergy )
-{
-	assert( newCurrentEnergy <= getModifiedMaxEnergy() );
-	current_energy = newCurrentEnergy;
-}
-
-void CCharacter::modifyCurrentEnergy( int16_t currentEnergyModifier )
-{
-	setCurrentEnergy( getModifiedAttributeValue( getCurrentEnergy(), currentEnergyModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxEnergy() ) );
-}
-
 void CCharacter::setMinDamage( uint16_t newMinDamage )
 {
 	min_damage = newMinDamage;
@@ -590,6 +549,11 @@ uint16_t CCharacter::getMaxDamage() const
 uint16_t CCharacter::getModifiedMaxDamage() const
 {
 	return getMaxDamage();
+}
+
+void CCharacter::addItemToLootTable(Item *item, double dropChance )
+{
+    lootTable.push_back( sLootTable( item, dropChance ) );
 }
 
 uint64_t CCharacter::getExperience() const
@@ -652,6 +616,16 @@ uint8_t CCharacter::getLevel() const
 	return level;
 }
 
+void CCharacter::setLootTable( std::vector<sLootTable> newLootTable )
+{
+    lootTable = newLootTable;
+}
+
+std::vector<sLootTable> CCharacter::getLootTable() const
+{
+    return lootTable;
+}
+
 void CCharacter::setTexture( CTexture *newTexture )
 {
 	this->texture = newTexture;
@@ -702,8 +676,6 @@ CCharacter::CCharacter()
 	  current_health( 1 ),
 	  max_mana( 0 ),
 	  current_mana( 0 ),
-	  max_energy( 0 ),
-	  current_energy( 0 ),
 	  armor( 0 ),
 	  damageModifierPoints( 0 ),
 	  hitModifierPoints( 0 ),
@@ -781,7 +753,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 		CCharacter *curNPC = NPC[ curNPCNr ];
 		if ( curNPC == this || ! curNPC->isAlive() )
 			continue;
-		
+
 		int other_l = curNPC->getXPos(), other_r = curNPC->getXPos() + curNPC->getWidth();
 		int other_b = curNPC->getYPos(), other_t = curNPC->getYPos() + curNPC->getHeight();
 
@@ -1106,12 +1078,6 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 	return ( curSpellAction == NULL || isPreparing );
 }
 
-void CCharacter::Die()
-{
-	alive = false;
-	respawn_lastframe = SDL_GetTicks();
-}
-
 void CCharacter::DrawLifebar()
 {
 	glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
@@ -1132,6 +1098,26 @@ void CCharacter::Damage(int amount)
 			modifyCurrentHealth( -amount );
 		}
 	}
+}
+
+void CCharacter::dropItems()
+{
+    // iterate through the loot table and see if we should drop any items.
+    for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
+    {
+        double dropChance = (double)rand()/(double)RAND_MAX;
+        if ( dropChance <= lootTable[tableID].dropChance )
+        {
+            groundItems.push_back( lootTable[tableID].item );
+            groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
+        }
+    }
+}
+
+void CCharacter::Die()
+{
+
+
 }
 
 void CCharacter::Heal(int amount)
@@ -1160,7 +1146,6 @@ void CCharacter::CalculateStats()
 {
 	life_percentage = static_cast<float>(getCurrentHealth()) / static_cast<float>(getModifiedMaxHealth());
 	mana_percentage = static_cast<float>(getCurrentMana()) / static_cast<float>(getModifiedMaxMana());
-	energy_percentage = static_cast<float>(getCurrentEnergy()) / static_cast<float>(getModifiedMaxEnergy());
 }
 
 bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)

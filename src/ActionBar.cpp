@@ -148,9 +148,6 @@ void ActionBar::clicked( int clickX, int clickY, std::string floatingSpellName )
         }
         bindAction( &button[buttonId], floatingSpellName );
     }
-
-    dawn_debug_info("YEAH!!");
-
 }
 
 void ActionBar::handleKeys()
