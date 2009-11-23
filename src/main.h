@@ -34,7 +34,7 @@
 #include <SDL/SDL_image.h> // SDL Image library (image formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV)
 
 #include <GL/gl.h> // OpenGL
-#include <GL/glu.h> // OpenGL Utility Library
+#include <GL/glu.h> // OpenGL Utility Library. This will have to be changed in updated versions, as it changes for different OS's
 
 #include "CTexture.h"
 
