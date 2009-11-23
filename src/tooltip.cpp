@@ -29,6 +29,10 @@ itemTooltip::itemTooltip( Item *parent_, Player *player_ )
     player = player_;
     height = 0;
     width = 0;
+    blockWidth = 32;
+    blockHeight = 32;
+    blockNumberWidth = 1;
+    blockNumberHeight = 1;
     smallTooltip = false;
     loadTextures();
     getParentText();
@@ -40,6 +44,8 @@ spellTooltip::spellTooltip(CActionFactory *parent_, Player *player_ )
     player = player_;
     height = 0;
     width = 0;
+    blockWidth = 32;
+    blockHeight = 32;
     smallTooltip = false;
     loadTextures();
     getParentText();
@@ -72,12 +78,16 @@ bool Tooltip::isTooltipSmall()
 
 void Tooltip::loadTextures()
 {
-    textures.texture.reserve( 5 );
-    textures.LoadIMG( "data/interface/tooltip/lower_left.tga", 0 );
-    textures.LoadIMG( "data/interface/tooltip/lower_right.tga", 1 );
-    textures.LoadIMG( "data/interface/tooltip/upper_left.tga", 2 );
-    textures.LoadIMG( "data/interface/tooltip/upper_right.tga", 3 );
-    textures.LoadIMG( "data/interface/tooltip/background.tga", 4 );
+    textures.texture.reserve( 9 );
+    textures.LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
+    textures.LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
+    textures.LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
+    textures.LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
+    textures.LoadIMG( "data/interface/tooltip/background2.tga", 4 );
+    textures.LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
+    textures.LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
+    textures.LoadIMG( "data/interface/tooltip/left2.tga", 7 );
+    textures.LoadIMG( "data/interface/tooltip/right2.tga", 8 );
 }
 
 void Tooltip::draw( int x, int y )
@@ -105,44 +115,58 @@ void Tooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( width + x + 32 > dawn_configuration::screenWidth )
+    if ( width + x + 16 > dawn_configuration::screenWidth )
     {
-        x = dawn_configuration::screenWidth - width - 32;
+        x = dawn_configuration::screenWidth - width - 16;
     }
 
-    if ( height + y + 32 > dawn_configuration::screenHeight )
+    if ( height + y + 16 > dawn_configuration::screenHeight )
     {
-        y = dawn_configuration::screenHeight - height - 32;
+        y = dawn_configuration::screenHeight - height - 16;
     }
 
     // set the first font Y-position on the top of the tooltip.
-    int font_y = y + world_y + height;
+    int font_y = y + world_y + blockNumberHeight*blockHeight;
 
     // set the correct position based on where we are
     x += world_x;
     y += world_y;
 
     // draw the corners
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, 16, y, 16); // lower left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+width+16, 16, y, 16); // lower right corner
-    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, 16, y+height+16, 16); // upper left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+width+16, 16, y+height+16, 16); // upper right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, blockWidth, y, blockHeight); // lower left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y, blockHeight); // lower right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, blockWidth, y+blockHeight+(blockNumberHeight*blockWidth), blockHeight); // upper left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y+(blockNumberHeight*blockHeight)+blockHeight, blockHeight); // upper right corner
 
-    // draw the borders
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x,16,y+16,height); // left border
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+width+16,16,y+16,height); // right border
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y,16); // bottom border
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+height+16,16); // top border
+    // draw the top and bottom borders
+    for ( size_t blockX = 0; blockX < blockNumberWidth; blockX++ )
+    {
+        DrawingHelpers::mapTextureToRect( textures.texture[5].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+(blockNumberHeight*blockHeight)+blockHeight,blockHeight); // top border
+        DrawingHelpers::mapTextureToRect( textures.texture[6].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y,blockHeight); // bottom border
+    }
+
+    // draw the right and left borders
+    for ( size_t blockY = 0; blockY < blockNumberHeight; blockY++ )
+    {
+        DrawingHelpers::mapTextureToRect( textures.texture[7].texture, x,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // left border
+        DrawingHelpers::mapTextureToRect( textures.texture[8].texture, x+(blockNumberWidth*blockWidth)+blockWidth,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // right border
+    }
 
     // draw the background
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+16,height);
+    for ( size_t blockY = 0; blockY < blockNumberHeight; blockY++ )
+    {
+        for ( size_t blockX = 0; blockX < blockNumberWidth; blockX++ )
+        {
+            DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight);
+        }
+    }
 
 
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
         glColor4fv(tooltipText[i].color);
-        tooltipText[i].font->drawText(x+15,font_y,tooltipText[i].text);
+        tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
         glColor4f(1.0f,1.0f,1.0f,1.0f);
         font_y -= tooltipText[i].font->getHeight()+10;
     }
@@ -212,11 +236,17 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
         if ( width < static_cast<int>(tooltipText[i].font->calcStringWidth(tooltipText[i].text)) ) {
-            width = tooltipText[i].font->calcStringWidth(tooltipText[i].text);
+            width = tooltipText[i].font->calcStringWidth(tooltipText[i].text) + 40 + blockWidth*2;
         }
-        newHeight += tooltipText[i].font->getHeight()+10;
+        newHeight += tooltipText[i].font->getHeight()+19;
+
     }
     height = newHeight;
+
+    blockNumberHeight = ceil( ( height - blockHeight ) / blockHeight );
+    blockNumberWidth = ceil( ( width - blockHeight) / blockHeight );
+    std::cout << "Height:" << blockNumberHeight << std::endl;
+    std::cout << "Width:" << blockNumberWidth << std::endl;
 }
 
 void itemTooltip::addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage )

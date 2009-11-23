@@ -66,6 +66,10 @@ class Tooltip
         bool smallTooltip; // with this true, tooltip will merely display the name of things.
         int width;
         int height;
+        int blockWidth;
+        int blockHeight;
+        int blockNumberWidth;
+        int blockNumberHeight;
         int loadedAtLevel;
         CTexture textures;
         Player *player;
