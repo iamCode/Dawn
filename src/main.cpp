@@ -341,6 +341,8 @@ bool dawn_init(int argc, char** argv)
 		character.setMoveTexture( W, "data/character/swordsman/swordsman_w.tga" );
 		character.setMoveTexture( NW, "data/character/swordsman/swordsman_nw.tga" );
 		character.setMoveTexture( STOP, "data/character/swordsman/swordsman_s.tga" );
+		character.setBoundingBox( 18, 20, 64, 64 );
+		character.setUseBoundingBox( true );
 		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);

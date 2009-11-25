@@ -60,7 +60,13 @@ void Player::Draw()
 	CalculateStats();
 	direction_texture = GetDirectionTexture();
 	if (alive == true) {
-		texture->DrawTexture(x_pos,y_pos,direction_texture);
+		int drawX = x_pos;
+		int drawY = y_pos;
+		if ( getUseBoundingBox() ) {
+			drawX -= getBoundingBoxX();
+			drawY -= getBoundingBoxY();
+		}
+		texture->DrawTexture(drawX,drawY,direction_texture);
 	}
 }
 

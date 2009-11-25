@@ -88,6 +88,8 @@ void CCharacter::baseOnType( std::string otherName )
 	setName( other->getName() );
 	setLevel( other->getLevel() );
 	setLootTable( other->getLootTable() );
+	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
+	setUseBoundingBox( other->getUseBoundingBox() );
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
@@ -686,7 +688,12 @@ CCharacter::CCharacter()
 	  resistAllModifierPoints( 0 ),
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
-	  spellCriticalModifierPoints( 0 )
+	  spellCriticalModifierPoints( 0 ),
+	  boundingBoxX( 0 ),
+	  boundingBoxY( 0 ),
+	  boundingBoxW( 0 ),
+	  boundingBoxH( 0 ),
+	  useBoundingBox( false )
 {
 	resistElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -718,12 +725,12 @@ int CCharacter::getYPos() const
 
 int CCharacter::getWidth() const
 {
-	return texture->texture[1].width;
+	return useBoundingBox ? boundingBoxW : texture->texture[1].width;
 }
 
 int CCharacter::getHeight() const
 {
-	return texture->texture[1].height;
+	return useBoundingBox ? boundingBoxH : texture->texture[1].height;
 }
 
 extern std::vector <CNPC*> NPC;
@@ -1082,8 +1089,8 @@ void CCharacter::DrawLifebar()
 {
 	glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
 	DrawingHelpers::mapTextureToRect( lifebar->texture[1].texture,
-	                                  x_pos, getWidth()*life_percentage,
-	                                  y_pos+getHeight(), 8 );
+	                                  getXPos(), getWidth()*life_percentage,
+	                                  getYPos()+getHeight(), 8 );
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
@@ -1142,6 +1149,44 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
     activeGUI->addCombatText(amount, critical, damageType, getXPos(), getYPos()+getHeight()+20);
 }
 
+void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )
+{
+	boundingBoxX = bbx;
+	boundingBoxY = bby;
+	boundingBoxW = bbw;
+	boundingBoxH = bbh;
+}
+
+void CCharacter::setUseBoundingBox( bool use )
+{
+	useBoundingBox = use;
+}
+
+int CCharacter::getBoundingBoxX() const
+{
+	return boundingBoxX;
+}
+
+int CCharacter::getBoundingBoxY() const
+{
+	return boundingBoxY;
+}
+
+int CCharacter::getBoundingBoxW() const
+{
+	return boundingBoxW;
+}
+
+int CCharacter::getBoundingBoxH() const
+{
+	return boundingBoxH;
+}
+
+bool CCharacter::getUseBoundingBox() const
+{
+	return useBoundingBox;
+}
+
 void CCharacter::CalculateStats()
 {
 	life_percentage = static_cast<float>(getCurrentHealth()) / static_cast<float>(getModifiedMaxHealth());
@@ -1150,8 +1195,10 @@ void CCharacter::CalculateStats()
 
 bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
 {
-	if (((x_pos < _x_pos) && ((x_pos+texture->texture[current_texture].width ) > _x_pos))
-	        && (( y_pos < _y_pos) && ((y_pos+texture->texture[current_texture].height) > _y_pos))) {
+	int myWidth = getWidth();
+	int myHeight = getHeight();
+	if (((x_pos < _x_pos) && ((x_pos+myWidth) > _x_pos))
+	        && (( y_pos < _y_pos) && ((y_pos+myHeight) > _y_pos))) {
 		return true;
 	} else {
 		return false;

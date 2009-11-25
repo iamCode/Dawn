@@ -261,6 +261,14 @@ class CCharacter
 
 		void setActiveGUI( CInterface *GUI_ );
 		void addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType );
+		
+		void setBoundingBox( int bbx, int bby, int bbw, int bbh );
+		void setUseBoundingBox( bool use );
+		int getBoundingBoxX() const;
+		int getBoundingBoxY() const;
+		int getBoundingBoxW() const;
+		int getBoundingBoxH() const;
+		bool getUseBoundingBox() const;
 
 
 		bool alive;
@@ -327,6 +335,13 @@ class CCharacter
 		uint32_t preparationStartTime, preparationCurrentTime;
 		float preparationPercentage;
         CInterface *activeGUI;
+
+		int boundingBoxX;
+		int boundingBoxY;
+		int boundingBoxW;
+		int boundingBoxH;
+		bool useBoundingBox;
+
         std::vector<sLootTable> lootTable;
 };
 

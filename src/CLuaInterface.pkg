@@ -66,6 +66,9 @@ class CCharacter {
     void setDamageModifierPoints( int newDamageModifierPoints );
     void setHitModifierPoints( int newHitModifierPoints );
     void setEvadeModifierPoints( int newEvadeModifierPoints );
+    
+    void setBoundingBox( int bbx, int bby, int bbw, int bbh );
+    void setUseBoundingBox( bool use );
 
     void addItemToLootTable( Item *item, double dropChance );
 };
