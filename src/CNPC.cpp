@@ -109,7 +109,7 @@ void CNPC::Move()
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
-		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 30 ) {
+		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
 			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
 		}
 	}
