@@ -106,42 +106,35 @@ void Tooltip::draw( int x, int y )
         getParentText();
     }
 
-    // ugly hack, couldn't be arsed to fix this inside this function.
-    // if we want a small tooltip, call drawSmallTooltip() instead.
-    if ( isTooltipSmall() == true )
-    {
-        drawSmallTooltip( x, y );
-        return;
-    }
-
     // make sure the tooltip doesnt go "off screen"
-    if ( width + x + 16 > dawn_configuration::screenWidth )
+    if ( x + (blockNumberWidth + 2) * blockWidth > dawn_configuration::screenWidth )
     {
-        x = dawn_configuration::screenWidth - width - 16;
+        x = dawn_configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
     }
 
-    if ( height + y + 16 > dawn_configuration::screenHeight )
+    if ( y + (blockNumberHeight + 2) * blockHeight > dawn_configuration::screenHeight )
     {
-        y = dawn_configuration::screenHeight - height - 16;
+        y = dawn_configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
     }
-
-    // set the first font Y-position on the top of the tooltip.
-    int font_y = y + world_y + blockNumberHeight*blockHeight;
 
     // set the correct position based on where we are
     x += world_x;
     y += world_y;
 
+	// set the first font Y-position on the top of the first tooltip block excluding topborder
+    // (we could also center the text in the tooltip, but topaligned is probably bestlooking
+    int font_y = y + blockHeight + (blockNumberHeight) * blockHeight - toplineHeight;
+
     // draw the corners
     DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, blockWidth, y, blockHeight); // lower left corner
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y, blockHeight); // lower right corner
-    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, blockWidth, y+blockHeight+(blockNumberHeight*blockWidth), blockHeight); // upper left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y+(blockNumberHeight*blockHeight)+blockHeight, blockHeight); // upper right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, blockWidth, y+blockHeight+(blockNumberHeight*blockHeight), blockHeight); // upper left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y+blockHeight+(blockNumberHeight*blockHeight), blockHeight); // upper right corner
 
     // draw the top and bottom borders
     for ( size_t blockX = 0; blockX < blockNumberWidth; blockX++ )
     {
-        DrawingHelpers::mapTextureToRect( textures.texture[5].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+(blockNumberHeight*blockHeight)+blockHeight,blockHeight); // top border
+        DrawingHelpers::mapTextureToRect( textures.texture[5].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+blockHeight+(blockNumberHeight*blockHeight),blockHeight); // top border
         DrawingHelpers::mapTextureToRect( textures.texture[6].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y,blockHeight); // bottom border
     }
 
@@ -149,7 +142,7 @@ void Tooltip::draw( int x, int y )
     for ( size_t blockY = 0; blockY < blockNumberHeight; blockY++ )
     {
         DrawingHelpers::mapTextureToRect( textures.texture[7].texture, x,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // left border
-        DrawingHelpers::mapTextureToRect( textures.texture[8].texture, x+(blockNumberWidth*blockWidth)+blockWidth,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // right border
+        DrawingHelpers::mapTextureToRect( textures.texture[8].texture, x+blockWidth+(blockNumberWidth*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // right border
     }
 
     // draw the background
@@ -168,7 +161,7 @@ void Tooltip::draw( int x, int y )
         glColor4fv(tooltipText[i].color);
         tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
         glColor4f(1.0f,1.0f,1.0f,1.0f);
-        font_y -= tooltipText[i].font->getHeight()+10;
+        font_y -= tooltipText[i].font->getHeight()+19;
     }
 }
 
@@ -231,22 +224,29 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     tooltipText.push_back(sTooltipText(buf, color, fontSize));
 
     // adjust width and height depending on the content of the tooltip.
+    width = 0;
     int newHeight = 0;
+    toplineHeight = 0;
+	if ( tooltipText.size() > 0 ) {
+		toplineHeight = tooltipText[0].font->getHeight();
+	}
 
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
-        if ( width < static_cast<int>(tooltipText[i].font->calcStringWidth(tooltipText[i].text)) ) {
-            width = tooltipText[i].font->calcStringWidth(tooltipText[i].text) + 40 + blockWidth*2;
+    	int neededWidth = tooltipText[i].font->calcStringWidth(tooltipText[i].text);
+        if ( width < neededWidth ) {
+            width = neededWidth;
         }
-        newHeight += tooltipText[i].font->getHeight()+19;
-
+        // add line and line distance
+        newHeight += tooltipText[i].font->getHeight();
+        if ( i+1 < tooltipText.size() ) {
+        	newHeight += 19;
+        }
     }
     height = newHeight;
 
-    blockNumberHeight = ceil( ( height - blockHeight ) / blockHeight );
-    blockNumberWidth = ceil( ( width - blockHeight) / blockHeight );
-    std::cout << "Height:" << blockNumberHeight << std::endl;
-    std::cout << "Width:" << blockNumberWidth << std::endl;
+    blockNumberHeight = ceil( static_cast<double>(height) / blockHeight );
+    blockNumberWidth = ceil( static_cast<double>(width) / blockWidth );
 }
 
 void itemTooltip::addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage )

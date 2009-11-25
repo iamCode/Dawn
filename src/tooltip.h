@@ -66,6 +66,7 @@ class Tooltip
         bool smallTooltip; // with this true, tooltip will merely display the name of things.
         int width;
         int height;
+        int toplineHeight;
         int blockWidth;
         int blockHeight;
         int blockNumberWidth;
