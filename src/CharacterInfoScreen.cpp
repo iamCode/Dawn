@@ -292,19 +292,24 @@ void CharacterInfoScreen::drawTabs()
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", 0.0 );
+			curLine++;
+			
+			for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {
+				ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
+				infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+				                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+				                    std::string("Resist ").append( ElementType::getElementName( curElementType )) );
+				infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+				                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+				                    "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( curElementType ), player->getLevel() ) * 100.0) );
+            	curLine++;
+            }
+
         break;
         case 2: // draws spells tab
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Spell damage (fire)" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( ElementType::Fire ), player->getLevel() ) * 100.0) );
-            curLine++;
-
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Critical strike" );
+                                "Spell critical strike" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%.2f%%", ( statsSystem->complexGetSpellCriticalStrikeChance( player->getLevel(), player->getModifiedSpellCriticalModifierPoints(), player->getLevel() ) * 100.0) );
@@ -326,44 +331,17 @@ void CharacterInfoScreen::drawTabs()
                                 "%d/sec", 0.0 );
             curLine += 2;
 
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Resists" );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Fire" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Fire ), player->getLevel() ) * 100.0 ) );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Water" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Water ), player->getLevel() ) * 100.0 ) );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Air" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Air ), player->getLevel() ) * 100.0 ) );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Earth" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Earth ), player->getLevel() ) * 100.0 ) );
-            curLine++;
-            infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Light" );
-            infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
-                                static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", (statsSystem->complexGetResistElementChance( player->getLevel(), player->getModifiedResistElementModifierPoints( ElementType::Light ), player->getLevel() ) * 100.0 ) );
+			for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {
+				ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
+				infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
+				                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+				                    std::string(ElementType::getElementName( curElementType ).append(" spell effect") ) );
+				infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
+				                    static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
+				                    "%.2f%%", (statsSystem->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curElementType ), player->getLevel() ) * 100.0) );
+            	curLine++;
+            }
+
         break;
     }
 }
