@@ -73,6 +73,20 @@ class CCharacter {
     void addItemToLootTable( Item *item, double dropChance );
 };
 
+namespace ElementType
+{
+	enum ElementType
+	{
+		Fire,
+		Water,
+		Air,
+		Earth,
+		Light,
+		Dark,
+		Count
+	};
+}
+
 namespace ItemQuality
 {
 	enum ItemQuality
@@ -188,6 +202,13 @@ class Item
 	void setDamageModifierPoints( int damageModifierPoints );
 	void setHitModifierPoints( int hitModifierPoints );
 	void setEvadeModifierPoints( int evadeModifierPoints ); 
+	void setBlockModifierPoints( int blockModifierPoints );
+	void setMeleeCriticalModifierPoints( int meleeCriticalModifierPoints );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int resistModifierPoints );
+	void setResistAllModifierPoints( int resistAllModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
+	void setSpellEffectAllModifierPoints( int spellEffectAllModifierPoints );
+	void setSpellCriticalModifierPoints( int spellCriticalModifierPoints );
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
 	void setLevelReq( int levelReq );

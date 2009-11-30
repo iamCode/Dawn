@@ -82,6 +82,11 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 	maxHitChance = 1.0;
 	maxEvadeChance = 0.5;
 	maxDamageReductionModifier = 0.75;
+	maxBlockChance = 0.6;
+	maxMeleeCriticalChance = 0.5;
+	maxResistElementChance = 0.75;
+	maxSpellEffectElementModifier = std::numeric_limits<double>::max();
+	maxSpellCriticalChance = 0.5;
 }
 
 static double getModifierCommon( int myModifierPoints, int maxModifierPointsOwn, int maxModifierPointsOpponent, double maxModifierValue )
