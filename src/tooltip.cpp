@@ -140,16 +140,16 @@ void Tooltip::draw( int x, int y )
     }
 
     // draw the right and left borders
-    for ( size_t blockY = 0; blockY < blockNumberHeight; blockY++ )
+    for ( int blockY = 0; blockY < blockNumberHeight; blockY++ )
     {
         DrawingHelpers::mapTextureToRect( textures.texture[7].texture, x,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // left border
         DrawingHelpers::mapTextureToRect( textures.texture[8].texture, x+blockWidth+(blockNumberWidth*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // right border
     }
 
     // draw the background
-    for ( size_t blockY = 0; blockY < blockNumberHeight; blockY++ )
+    for ( int blockY = 0; blockY < blockNumberHeight; blockY++ )
     {
-        for ( size_t blockX = 0; blockX < blockNumberWidth; blockX++ )
+        for ( int blockX = 0; blockX < blockNumberWidth; blockX++ )
         {
             DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight);
         }
