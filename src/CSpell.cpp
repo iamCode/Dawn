@@ -22,8 +22,12 @@
 #include <cstdlib>
 #include "CCharacter.h"
 #include "CTexture.h"
+#include "StatsSystem.h"
+#include "elements.h"
 
 #include <cassert>
+
+size_t randomSizeT( size_t min, size_t max );
 
 /// Implementation of class CSpellActionBase
 
@@ -195,8 +199,17 @@ class MagicMissileSpell : public CSpell
 
 		void finishEffect() {
 			int damage = 1 + rand() % 5 + 5;
+			// element type is Air
+			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
+			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
+			double realDamage = damage * damageFactor * (1-resist);
+			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
+			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+				int criticalDamageMultiplier = 2;
+				realDamage *= criticalDamageMultiplier;
+			}
 
-			target->Damage( damage );
+			target->Damage( round( realDamage ) );
 			if ( ! target->isAlive() ) {
 				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 			}
@@ -279,13 +292,24 @@ class LightningSpell : public CSpell
 				          getStaticName(),
 				          getStaticSpellInfo() ),
 				target( target_ ),
-				continuousDamageCaused( 0 ) {
+				continuousDamageCaused( 0 ),
+				remainingEffect( 0.0 ) {
 		}
 
 		virtual void startEffect() {
+			remainingEffect = 0.0;
 			int damage = 1 + rand() % 60;
+			// element type is Air
+			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
+			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
+			double realDamage = damage * damageFactor * (1-resist);
+			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
+			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+				int criticalDamageMultiplier = 2;
+				realDamage *= criticalDamageMultiplier;
+			}
 
-			target->Damage( damage );
+			target->Damage( round(realDamage) );
 			if ( ! target->isAlive() ) {
 				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 			}
@@ -297,20 +321,28 @@ class LightningSpell : public CSpell
 		virtual void inEffect() {
 			uint32_t curTime = SDL_GetTicks();
 			int curDamage = static_cast<int>( (curTime - lastEffect) / 50 );
+            // element type is Air
+			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
+			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
+			double realDamage = curDamage * damageFactor * (1-resist) + remainingEffect;
+			// no critical damage in this phase so far
+			
 			bool callFinish = false;
+			double topLimit = 30.0 * damageFactor * (1-resist);
 
-			if ( continuousDamageCaused + curDamage >= 30 ) {
-				curDamage = 30 - continuousDamageCaused;
+			if ( continuousDamageCaused + realDamage >= topLimit ) {
+				realDamage = topLimit - continuousDamageCaused;
 				callFinish = true;
 			}
 
-			if ( curDamage > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
-				target->Damage( curDamage );
+			if ( floor(realDamage) > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
+				target->Damage( floor(realDamage) );
+				remainingEffect = realDamage - floor( realDamage );
 				if ( ! target->isAlive() ) {
 					creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 				}
 				lastEffect += curDamage * 50;
-				continuousDamageCaused += curDamage;
+				continuousDamageCaused += floor(realDamage);
 			}
 
 			if ( callFinish || ! target->isAlive() ) {
@@ -368,7 +400,8 @@ class LightningSpell : public CSpell
 		uint32_t lastEffect;
 		uint32_t animationTimerStart;
 		uint32_t animationTimerStop;
-		int continuousDamageCaused;
+		double continuousDamageCaused;
+		double remainingEffect;
 };
 
 CTexture *LightningSpell::spellTexture = NULL;
@@ -427,8 +460,17 @@ class HealOtherSpell : public CSpell
 
 		virtual void startEffect() {
 			int healEffect = 50;
+			// element type is Light
+			double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Light ), creator->getLevel() );
+			double realEffect = healEffect * effectFactor;
+			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
+			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+				int criticalEffectMultiplier = 2;
+				realEffect *= criticalEffectMultiplier;
+			}
+			int healEffectCaused = round( realEffect );
 
-			target->Heal( healEffect );
+			target->Heal( healEffectCaused );
 			unbindFromCreator();
 			markSpellActionAsFinished();
 		}
@@ -500,8 +542,19 @@ class HealingSpell : public CSpell
 
 		virtual void startEffect() {
 			int healing = 100;
+			
+			// element type is Light
+			double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Light ), creator->getLevel() );
+			double realEffect = healing * effectFactor;
+			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
+			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+				int criticalEffectMultiplier = 2;
+				realEffect *= criticalEffectMultiplier;
+			}
+			int healEffectCaused = round( realEffect );
 
-			creator->Heal( healing );
+
+			creator->Heal( healEffectCaused );
 			unbindFromCreator();
 			markSpellActionAsFinished();
 		}

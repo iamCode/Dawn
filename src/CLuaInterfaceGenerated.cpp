@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Nov 30 20:54:34 2009.
+** Generated automatically by tolua++-1.0.92 on Mon Nov 30 21:57:08 2009.
 */
 
 #ifndef __cplusplus
@@ -1398,6 +1398,241 @@ static int tolua_CLuaInterface_CCharacter_setEvadeModifierPoints00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setBlockModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setBlockModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setBlockModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newBlockModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBlockModifierPoints'", NULL);
+#endif
+  {
+   self->setBlockModifierPoints(newBlockModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setBlockModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMeleeCriticalModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setMeleeCriticalModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setMeleeCriticalModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newMeleeCriticalModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMeleeCriticalModifierPoints'", NULL);
+#endif
+  {
+   self->setMeleeCriticalModifierPoints(newMeleeCriticalModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMeleeCriticalModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setResistElementModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setResistElementModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setResistElementModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
+  int newResistElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'", NULL);
+#endif
+  {
+   self->setResistElementModifierPoints(elementType,newResistElementModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setResistElementModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setResistAllModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setResistAllModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setResistAllModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newResistAllModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistAllModifierPoints'", NULL);
+#endif
+  {
+   self->setResistAllModifierPoints(newResistAllModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setResistAllModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSpellEffectElementModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setSpellEffectElementModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setSpellEffectElementModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
+  int newSpellEffectElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'", NULL);
+#endif
+  {
+   self->setSpellEffectElementModifierPoints(elementType,newSpellEffectElementModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpellEffectElementModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSpellEffectAllModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setSpellEffectAllModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setSpellEffectAllModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newSpellEffectAllModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectAllModifierPoints'", NULL);
+#endif
+  {
+   self->setSpellEffectAllModifierPoints(newSpellEffectAllModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpellEffectAllModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSpellCriticalModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newSpellCriticalModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCriticalModifierPoints'", NULL);
+#endif
+  {
+   self->setSpellCriticalModifierPoints(newSpellCriticalModifierPoints);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpellCriticalModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setBoundingBox of class  CCharacter */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setBoundingBox00
 static int tolua_CLuaInterface_CCharacter_setBoundingBox00(lua_State* tolua_S)
@@ -2458,6 +2693,13 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setDamageModifierPoints",tolua_CLuaInterface_CCharacter_setDamageModifierPoints00);
    tolua_function(tolua_S,"setHitModifierPoints",tolua_CLuaInterface_CCharacter_setHitModifierPoints00);
    tolua_function(tolua_S,"setEvadeModifierPoints",tolua_CLuaInterface_CCharacter_setEvadeModifierPoints00);
+   tolua_function(tolua_S,"setBlockModifierPoints",tolua_CLuaInterface_CCharacter_setBlockModifierPoints00);
+   tolua_function(tolua_S,"setMeleeCriticalModifierPoints",tolua_CLuaInterface_CCharacter_setMeleeCriticalModifierPoints00);
+   tolua_function(tolua_S,"setResistElementModifierPoints",tolua_CLuaInterface_CCharacter_setResistElementModifierPoints00);
+   tolua_function(tolua_S,"setResistAllModifierPoints",tolua_CLuaInterface_CCharacter_setResistAllModifierPoints00);
+   tolua_function(tolua_S,"setSpellEffectElementModifierPoints",tolua_CLuaInterface_CCharacter_setSpellEffectElementModifierPoints00);
+   tolua_function(tolua_S,"setSpellEffectAllModifierPoints",tolua_CLuaInterface_CCharacter_setSpellEffectAllModifierPoints00);
+   tolua_function(tolua_S,"setSpellCriticalModifierPoints",tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00);
    tolua_function(tolua_S,"setBoundingBox",tolua_CLuaInterface_CCharacter_setBoundingBox00);
    tolua_function(tolua_S,"setUseBoundingBox",tolua_CLuaInterface_CCharacter_setUseBoundingBox00);
    tolua_function(tolua_S,"addItemToLootTable",tolua_CLuaInterface_CCharacter_addItemToLootTable00);

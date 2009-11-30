@@ -66,7 +66,14 @@ class CCharacter {
     void setDamageModifierPoints( int newDamageModifierPoints );
     void setHitModifierPoints( int newHitModifierPoints );
     void setEvadeModifierPoints( int newEvadeModifierPoints );
-    
+    void setBlockModifierPoints( int newBlockModifierPoints );
+	void setMeleeCriticalModifierPoints( int newMeleeCriticalModifierPoints );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int newResistElementModifierPoints );
+	void setResistAllModifierPoints( int newResistAllModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int newSpellEffectElementModifierPoints );
+	void setSpellEffectAllModifierPoints( int newSpellEffectAllModifierPoints );
+	void setSpellCriticalModifierPoints( int newSpellCriticalModifierPoints );
+
     void setBoundingBox( int bbx, int bby, int bbw, int bbh );
     void setUseBoundingBox( bool use );
 
