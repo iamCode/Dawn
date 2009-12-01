@@ -1,12 +1,15 @@
 wolfbase = DawnInterface.createNewMobType("Wolf")
-wolfbase:setMoveTexture( N, "data/character/wolf/wolf_n.tga" );
-wolfbase:setMoveTexture( NE, "data/character/wolf/wolf_ne.tga" );
-wolfbase:setMoveTexture( E, "data/character/wolf/wolf_e.tga" );
-wolfbase:setMoveTexture( SE, "data/character/wolf/wolf_se.tga" );
-wolfbase:setMoveTexture( S, "data/character/wolf/wolf_s.tga" );
-wolfbase:setMoveTexture( SW, "data/character/wolf/wolf_sw.tga" );
-wolfbase:setMoveTexture( W, "data/character/wolf/wolf_w.tga" );
-wolfbase:setMoveTexture( NW, "data/character/wolf/wolf_nw.tga" );
+wolfbase:setNumMoveTexturesPerDirection( 8 );
+for index=0,7,1 do
+	wolfbase:setMoveTexture( N, index, "data/character/wolf/running n000"..index..".tga" );
+	wolfbase:setMoveTexture( NW, index, "data/character/wolf/running nw000"..index..".tga" );
+	wolfbase:setMoveTexture( W, index, "data/character/wolf/running w000"..index..".tga" );
+	wolfbase:setMoveTexture( SW, index, "data/character/wolf/running sw000"..index..".tga" );
+	wolfbase:setMoveTexture( S, index, "data/character/wolf/running s000"..index..".tga" );
+	wolfbase:setMoveTexture( SE, index, "data/character/wolf/running se000"..index..".tga" );
+	wolfbase:setMoveTexture( E, index, "data/character/wolf/running e000"..index..".tga" );
+	wolfbase:setMoveTexture( NE, index, "data/character/wolf/running ne000"..index..".tga" );
+end
 wolfbase:setLifeTexture( "data/lifebar.tga" );
 
 wolfbase:setStrength( 15 )
