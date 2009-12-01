@@ -68,6 +68,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setMaxMana( other->getMaxMana() );
 	setMinDamage( other->getMinDamage() );
 	setMaxDamage( other->getMaxDamage() );
+	setNumMoveTexturesPerDirection( other->numMoveTexturesPerDirection );
 	setTexture( other->getTexture() );
 	setLifebar( other->getLifebar() );
 	setArmor( other->getArmor() );
@@ -648,13 +649,23 @@ CTexture* CCharacter::getLifebar() const
 	return this->lifebar;
 }
 
-void CCharacter::setMoveTexture( int direction, std::string filename )
+void CCharacter::setNumMoveTexturesPerDirection( int numTextures )
 {
-	if ( texture == NULL ) {
-		texture = new CTexture();
-		texture->texture.reserve( 10 );
-	}
-	texture->LoadIMG( filename, direction );
+	numMoveTexturesPerDirection = numTextures;
+	assert( texture == NULL );
+
+	texture = new CTexture();
+	texture->texture.reserve( 8 * numTextures + 1 );
+}
+
+void CCharacter::setMoveTexture( int direction, int index, std::string filename )
+{
+	assert( texture != NULL );
+	assert( index < numMoveTexturesPerDirection );
+	
+	std::cout << "index = " << index << ", targetindex = " << direction + 8*index << std::endl;
+
+	texture->LoadIMG( filename, direction + 8*index );
 }
 
 void CCharacter::setLifeTexture( std::string filename )
@@ -954,7 +965,10 @@ int CCharacter::GetDirectionTexture()
 	int direction = GetDirection();
 	if ( direction == STOP )
 		return direction_texture;
-	return static_cast<int>(direction);
+	
+	int msPerDrawFrame = 100;
+	int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection )) / msPerDrawFrame );
+	return static_cast<int>(direction) + 8*index;
 }
 
 // since we dont have any combat class, im putting this spellcasting here.

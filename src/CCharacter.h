@@ -254,7 +254,8 @@ class CCharacter
 		CTexture *getTexture() const;
 		void setLifebar( CTexture *newLifebar );
 		CTexture *getLifebar() const;
-		void setMoveTexture( int direction, std::string filename );
+		void setNumMoveTexturesPerDirection( int numTextures );
+		void setMoveTexture( int direction, int index, std::string filename );
 		void setLifeTexture( std::string filename );
 		CTexture *texture;
 		CTexture *lifebar;
@@ -341,6 +342,8 @@ class CCharacter
 		int boundingBoxW;
 		int boundingBoxH;
 		bool useBoundingBox;
+		
+		int numMoveTexturesPerDirection;
 
         std::vector<sLootTable> lootTable;
 };

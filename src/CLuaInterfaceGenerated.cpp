@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Nov 30 21:57:08 2009.
+** Generated automatically by tolua++-1.0.92 on Tue Dec  1 20:49:08 2009.
 */
 
 #ifndef __cplusplus
@@ -15,33 +15,12 @@ TOLUA_API int  tolua_CLuaInterface_open (lua_State* tolua_S);
 
 #include "CLuaInterface.h"
 
-/* function to release collected object via destructor */
-#ifdef __cplusplus
-
-static int tolua_collect_uint8_t (lua_State* tolua_S)
-{
- uint8_t* self = (uint8_t*) tolua_tousertype(tolua_S,1,0);
-	Mtolua_delete(self);
-	return 0;
-}
-
-static int tolua_collect_uint16_t (lua_State* tolua_S)
-{
- uint16_t* self = (uint16_t*) tolua_tousertype(tolua_S,1,0);
-	Mtolua_delete(self);
-	return 0;
-}
-#endif
-
-
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
+ tolua_usertype(tolua_S,"CZone");
  tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Item");
- tolua_usertype(tolua_S,"uint8_t");
- tolua_usertype(tolua_S,"CZone");
- tolua_usertype(tolua_S,"uint16_t");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -129,18 +108,8 @@ static int tolua_CLuaInterface_CCharacter_getStrength00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getStrength'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getStrength();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getStrength();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -237,18 +206,8 @@ static int tolua_CLuaInterface_CCharacter_getDexterity00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDexterity'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getDexterity();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getDexterity();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -345,18 +304,8 @@ static int tolua_CLuaInterface_CCharacter_getVitality00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVitality'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getVitality();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getVitality();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -453,18 +402,8 @@ static int tolua_CLuaInterface_CCharacter_getIntellect00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getIntellect'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getIntellect();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getIntellect();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -561,18 +500,8 @@ static int tolua_CLuaInterface_CCharacter_getWisdom00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWisdom'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getWisdom();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getWisdom();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -669,18 +598,8 @@ static int tolua_CLuaInterface_CCharacter_getMaxHealth00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxHealth'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getMaxHealth();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getMaxHealth();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -777,18 +696,8 @@ static int tolua_CLuaInterface_CCharacter_getMaxMana00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxMana'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getMaxMana();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getMaxMana();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -833,6 +742,39 @@ static int tolua_CLuaInterface_CCharacter_modifyMaxMana00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setNumMoveTexturesPerDirection of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00
+static int tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int numTextures = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumMoveTexturesPerDirection'", NULL);
+#endif
+  {
+   self->setNumMoveTexturesPerDirection(numTextures);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setNumMoveTexturesPerDirection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setMoveTexture of class  CCharacter */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setMoveTexture00
 static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
@@ -842,8 +784,9 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -851,12 +794,13 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
  {
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int direction = ((int)  tolua_tonumber(tolua_S,2,0));
-  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,3,0));
+  int index = ((int)  tolua_tonumber(tolua_S,3,0));
+  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveTexture'", NULL);
 #endif
   {
-   self->setMoveTexture(direction,filename);
+   self->setMoveTexture(direction,index,filename);
   }
  }
  return 0;
@@ -953,18 +897,8 @@ static int tolua_CLuaInterface_CCharacter_getWanderRadius00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWanderRadius'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getWanderRadius();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getWanderRadius();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1093,18 +1027,8 @@ static int tolua_CLuaInterface_CCharacter_getLevel00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLevel'", NULL);
 #endif
   {
-   uint8_t tolua_ret = (uint8_t)  self->getLevel();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint8_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint8_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint8_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint8_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getLevel();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1168,18 +1092,8 @@ static int tolua_CLuaInterface_CCharacter_getMinDamage00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMinDamage'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getMinDamage();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getMinDamage();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -1243,18 +1157,8 @@ static int tolua_CLuaInterface_CCharacter_getMaxDamage00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxDamage'", NULL);
 #endif
   {
-   uint16_t tolua_ret = (uint16_t)  self->getMaxDamage();
-   {
-#ifdef __cplusplus
-    void* tolua_obj = Mtolua_new((uint16_t)(tolua_ret));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(uint16_t));
-     tolua_pushusertype(tolua_S,tolua_obj,"uint16_t");
-    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
-#endif
-   }
+   int tolua_ret = (int)  self->getMaxDamage();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
   }
  }
  return 1;
@@ -2677,6 +2581,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setMaxMana",tolua_CLuaInterface_CCharacter_setMaxMana00);
    tolua_function(tolua_S,"getMaxMana",tolua_CLuaInterface_CCharacter_getMaxMana00);
    tolua_function(tolua_S,"modifyMaxMana",tolua_CLuaInterface_CCharacter_modifyMaxMana00);
+   tolua_function(tolua_S,"setNumMoveTexturesPerDirection",tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00);
    tolua_function(tolua_S,"setMoveTexture",tolua_CLuaInterface_CCharacter_setMoveTexture00);
    tolua_function(tolua_S,"setLifeTexture",tolua_CLuaInterface_CCharacter_setLifeTexture00);
    tolua_function(tolua_S,"setWanderRadius",tolua_CLuaInterface_CCharacter_setWanderRadius00);

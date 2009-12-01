@@ -17,50 +17,51 @@ class CCharacter {
     void baseOnType( std::string otherType );
 
     void setStrength( int newStrength );
-    uint16_t getStrength() const;
+    int getStrength() const;
     void modifyStrength( int strengthModifier );
     
     void setDexterity( int newDexterity );
-    uint16_t getDexterity() const;
+    int getDexterity() const;
     void modifyDexterity( int dexterityModifier );
     
     void setVitality( int newVitality );
-    uint16_t getVitality() const;
+    int getVitality() const;
     void modifyVitality( int vitalityModifier );
 
     void setIntellect( int newIntellect );
-    uint16_t getIntellect() const;
+    int getIntellect() const;
     void modifyIntellect( int intellectModifier );
 
     void setWisdom( int newWisdom );
-    uint16_t getWisdom() const;
+    int getWisdom() const;
     void modifyWisdom( int wisdomModifier );
 
     void setMaxHealth( int newMaxHealth );
-    uint16_t getMaxHealth() const;
+    int getMaxHealth() const;
     void modifyMaxHealth( int maxHealthModifier );
 
     void setMaxMana( int newMaxMana );
-    uint16_t getMaxMana() const;
+    int getMaxMana() const;
     void modifyMaxMana( int maxManaModifier );
 
-    void setMoveTexture( int direction, std::string filename );
+	void setNumMoveTexturesPerDirection( int numTextures );
+    void setMoveTexture( int direction, int index, std::string filename );
     void setLifeTexture( std::string filename );
 
     void setWanderRadius( int newWanderRadius );
-    uint16_t getWanderRadius() const;
+    int getWanderRadius() const;
 
     void setName( std::string newName );
     std::string getName() const;
 
     void setLevel( int newLevel );
-    uint8_t getLevel() const;
+    int getLevel() const;
 
     void setMinDamage( int newMinDamage );
-    uint16_t getMinDamage();
+    int getMinDamage();
 
     void setMaxDamage( int newMaxDamage );
-    uint16_t getMaxDamage();
+    int getMaxDamage();
     
     void setArmor( int newArmor );
     void setDamageModifierPoints( int newDamageModifierPoints );
