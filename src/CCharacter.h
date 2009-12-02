@@ -35,6 +35,18 @@ class CSpell;
 class CAction;
 class CInterface;
 
+
+namespace ActivityType
+{
+	enum ActivityType
+	{
+		Walking,
+		Casting,
+		Attacking,
+		Count
+	};
+}
+
 struct sLootTable
 {
     Item *item;
@@ -100,6 +112,7 @@ class CCharacter
 
 		virtual Direction GetDirection() = 0;
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
+		ActivityType::ActivityType getCurActivity() const;
 
 		Direction WanderDirection, MovingDirection;
 
@@ -250,14 +263,14 @@ class CCharacter
 		virtual void Die();
 		void dropItems();
 
-		void setTexture( CTexture *newTexture );
-		CTexture *getTexture() const;
+		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
+		CTexture *getTexture( ActivityType::ActivityType activity ) const;
 		void setLifebar( CTexture *newLifebar );
 		CTexture *getLifebar() const;
-		void setNumMoveTexturesPerDirection( int numTextures );
-		void setMoveTexture( int direction, int index, std::string filename );
+		void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
+		void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
 		void setLifeTexture( std::string filename );
-		CTexture *texture;
+		CTexture **texture;
 		CTexture *lifebar;
 
 		void setActiveGUI( CInterface *GUI_ );
@@ -343,7 +356,8 @@ class CCharacter
 		int boundingBoxH;
 		bool useBoundingBox;
 
-		int numMoveTexturesPerDirection;
+		int *numMoveTexturesPerDirection;
+		int activeDirection;
 
         std::vector<sLootTable> lootTable;
 };

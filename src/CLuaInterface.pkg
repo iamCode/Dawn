@@ -13,6 +13,17 @@ enum Direction
     NW   = 8
 };
 
+namespace ActivityType
+{
+	enum ActivityType
+	{
+		Walking,
+		Casting,
+		Attacking,
+		Count
+	};
+}
+
 class CCharacter {
     void baseOnType( std::string otherType );
 
@@ -44,8 +55,8 @@ class CCharacter {
     int getMaxMana() const;
     void modifyMaxMana( int maxManaModifier );
 
-	void setNumMoveTexturesPerDirection( int numTextures );
-    void setMoveTexture( int direction, int index, std::string filename );
+	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
+    void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
     void setLifeTexture( std::string filename );
 
     void setWanderRadius( int newWanderRadius );

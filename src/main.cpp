@@ -147,7 +147,6 @@ namespace DawnInterface
 	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
 	{
 		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
-		newMob->texture = NULL;
 		newMob->lifebar = NULL;
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
@@ -332,22 +331,61 @@ bool dawn_init(int argc, char** argv)
 
 
 		zone1.LoadZone("data/zone1");
-		character.setNumMoveTexturesPerDirection( 8 );
+		ActivityType::ActivityType activity = ActivityType::Walking;
+		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
 			std::ostringstream ostr;
 			ostr << "000" << curIndex;
 			std::string numberString = ostr.str();
-			character.setMoveTexture( N, curIndex, std::string("data/character/swordsman/walking n").append(numberString).append(".tga" ) );
-			character.setMoveTexture( NE, curIndex, std::string("data/character/swordsman/walking ne").append(numberString).append(".tga" ) );
-			character.setMoveTexture( E, curIndex, std::string("data/character/swordsman/walking e").append(numberString).append(".tga" ) );
-			character.setMoveTexture( SE, curIndex, std::string("data/character/swordsman/walking se").append(numberString).append(".tga" ) );
-			character.setMoveTexture( S, curIndex, std::string("data/character/swordsman/walking s").append(numberString).append(".tga" ) );
-			character.setMoveTexture( SW, curIndex, std::string("data/character/swordsman/walking sw").append(numberString).append(".tga" ) );
-			character.setMoveTexture( W, curIndex, std::string("data/character/swordsman/walking w").append(numberString).append(".tga" ) );
-			character.setMoveTexture( NW, curIndex, std::string("data/character/swordsman/walking nw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/walking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/walking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/walking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/walking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/walking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/walking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/walking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/walking nw").append(numberString).append(".tga" ) );
+		}
+		activity = ActivityType::Attacking;
+		character.setNumMoveTexturesPerDirection( activity, 13 );
+		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
+			std::ostringstream ostr;
+			if ( curIndex < 10 )
+				ostr << "000" << curIndex;
+			else
+				ostr << "00" << curIndex;
+
+			std::string numberString = ostr.str();
+			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/attacking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/attacking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/attacking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/attacking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/attacking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/attacking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/attacking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
+		}
+		activity = ActivityType::Casting;
+		character.setNumMoveTexturesPerDirection( activity, 13 );
+		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
+			std::ostringstream ostr;
+			if ( curIndex < 10 )
+				ostr << "000" << curIndex;
+			else
+				ostr << "00" << curIndex;
+
+			std::string numberString = ostr.str();
+			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/attacking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/attacking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/attacking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/attacking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/attacking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/attacking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/attacking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
 		}
 		
-		character.setMoveTexture( STOP, 0, "data/character/swordsman/walking s0000.tga" );
+		character.setMoveTexture( ActivityType::Walking, STOP, 0, "data/character/swordsman/walking s0000.tga" );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
 		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);

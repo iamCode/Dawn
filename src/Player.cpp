@@ -59,6 +59,7 @@ void Player::Draw()
 {
 	CalculateStats();
 	direction_texture = GetDirectionTexture();
+	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {
 		int drawX = x_pos;
 		int drawY = y_pos;
@@ -66,7 +67,7 @@ void Player::Draw()
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
 		}
-		texture->DrawTexture(drawX,drawY,direction_texture);
+		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture);
 	}
 }
 

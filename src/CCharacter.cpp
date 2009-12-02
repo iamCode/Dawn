@@ -44,7 +44,6 @@ namespace DawnInterface
 	CCharacter* createNewMobType( std::string typeID )
 	{
 		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0, NULL);
-		newMobType->texture = NULL;
 		newMobType->lifebar = NULL;
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
@@ -68,8 +67,12 @@ void CCharacter::baseOnType( std::string otherName )
 	setMaxMana( other->getMaxMana() );
 	setMinDamage( other->getMinDamage() );
 	setMaxDamage( other->getMaxDamage() );
-	setNumMoveTexturesPerDirection( other->numMoveTexturesPerDirection );
-	setTexture( other->getTexture() );
+	size_t numActivities=static_cast<size_t>(ActivityType::Count);
+	for ( size_t curActivity=0; curActivity<numActivities; ++curActivity ) {
+		ActivityType::ActivityType curActivityType = static_cast<ActivityType::ActivityType>( curActivity );
+		setNumMoveTexturesPerDirection( curActivityType, other->numMoveTexturesPerDirection[ curActivity ] );
+		setTexture( curActivityType, other->getTexture(curActivityType) );
+	}
 	setLifebar( other->getLifebar() );
 	setArmor( other->getArmor() );
 	setDamageModifierPoints( other->getDamageModifierPoints() );
@@ -629,14 +632,16 @@ std::vector<sLootTable> CCharacter::getLootTable() const
     return lootTable;
 }
 
-void CCharacter::setTexture( CTexture *newTexture )
+void CCharacter::setTexture( ActivityType::ActivityType activity, CTexture *newTexture )
 {
-	this->texture = newTexture;
+	size_t activityNr = static_cast<size_t>( activity );
+	this->texture[ activityNr ] = newTexture;
 }
 
-CTexture* CCharacter::getTexture() const
+CTexture* CCharacter::getTexture( ActivityType::ActivityType activity ) const
 {
-	return this->texture;
+	size_t activityNr = static_cast<size_t>( activity );
+	return this->texture[ activityNr ];
 }
 
 void CCharacter::setLifebar( CTexture *newLifebar )
@@ -649,23 +654,23 @@ CTexture* CCharacter::getLifebar() const
 	return this->lifebar;
 }
 
-void CCharacter::setNumMoveTexturesPerDirection( int numTextures )
+void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures )
 {
-	numMoveTexturesPerDirection = numTextures;
-	assert( texture == NULL );
+	size_t activityNr = static_cast<size_t>(activity);
+	numMoveTexturesPerDirection[ activityNr ] = numTextures;
+	assert( texture[ activityNr ] == NULL );
 
-	texture = new CTexture();
-	texture->texture.reserve( 8 * numTextures + 1 );
+	texture[ activityNr ] = new CTexture();
+	texture[ activityNr ]->texture.reserve( 8 * numTextures + 1 );
 }
 
-void CCharacter::setMoveTexture( int direction, int index, std::string filename )
+void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename )
 {
-	assert( texture != NULL );
-	assert( index < numMoveTexturesPerDirection );
+	size_t activityNr = static_cast<size_t>(activity);
+	assert( texture[activityNr] != NULL );
+	assert( index < numMoveTexturesPerDirection[activityNr] );
 
-	std::cout << "index = " << index << ", targetindex = " << direction + 8*index << std::endl;
-
-	texture->LoadIMG( filename, direction + 8*index );
+	texture[ activityNr ]->LoadIMG( filename, direction + 8*index );
 }
 
 void CCharacter::setLifeTexture( std::string filename )
@@ -712,6 +717,14 @@ CCharacter::CCharacter()
 		resistElementModifierPoints[ curElement ] = 0;
 		spellEffectElementModifierPoints[ curElement ] = 0;
 	}
+	size_t numActivities = static_cast<size_t>( ActivityType::Count );
+	numMoveTexturesPerDirection = new int[ numActivities ];
+	texture = new CTexture* [ numActivities ];
+	for ( size_t curActivity=0; curActivity<numActivities; ++curActivity ) {
+		numMoveTexturesPerDirection[ curActivity ] = 0;
+		texture[ curActivity ] = NULL;
+	}
+	activeDirection = S;
 }
 
 CCharacter::~CCharacter()
@@ -722,6 +735,14 @@ CCharacter::~CCharacter()
 		//       for it.
 		delete curSpellAction;
 	}
+	size_t numActivities = static_cast<size_t>( ActivityType::Count );
+	for ( size_t curActivity=0; curActivity<numActivities; ++curActivity ) {
+		if ( texture[ curActivity ] != NULL ) {
+			delete texture[ curActivity ];
+		}
+	}
+	delete[] numMoveTexturesPerDirection;
+	delete[] texture;
 }
 
 int CCharacter::getXPos() const
@@ -736,12 +757,12 @@ int CCharacter::getYPos() const
 
 int CCharacter::getWidth() const
 {
-	return useBoundingBox ? boundingBoxW : texture->texture[1].width;
+	return useBoundingBox ? boundingBoxW : texture[0]->texture[1].width;
 }
 
 int CCharacter::getHeight() const
 {
-	return useBoundingBox ? boundingBoxH : texture->texture[1].height;
+	return useBoundingBox ? boundingBoxH : texture[0]->texture[1].height;
 }
 
 extern std::vector <CNPC*> NPC;
@@ -960,15 +981,59 @@ Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 	}
 }
 
+ActivityType::ActivityType CCharacter::getCurActivity() const
+{
+	ActivityType::ActivityType curActivity = ActivityType::Walking;
+	if ( curSpellAction != NULL ) {
+		if ( dynamic_cast<CSpell*>( curSpellAction ) != NULL ) {
+			curActivity = ActivityType::Casting;
+		}
+		else if ( dynamic_cast<CAction*>( curSpellAction ) != NULL ) {
+			curActivity = ActivityType::Attacking;
+		}
+	}
+	return curActivity;
+}
+
 int CCharacter::GetDirectionTexture()
 {
 	int direction = GetDirection();
-	if ( direction == STOP )
-		return direction_texture;
+	if ( direction != STOP ) {
+		activeDirection = direction;
+	}
+	ActivityType::ActivityType curActivity = getCurActivity();
 
-	int msPerDrawFrame = 100;
-	int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection )) / msPerDrawFrame );
-	return static_cast<int>(direction) + 8*index;
+	switch ( curActivity ) {
+		case ActivityType::Walking:
+		{
+			if ( direction == STOP )
+				return activeDirection;
+	
+			int msPerDrawFrame = 100;
+			int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection[ curActivity ] )) / msPerDrawFrame );
+			return static_cast<int>(direction) + 8*index;
+		}
+		break;
+		case ActivityType::Casting:
+		case ActivityType::Attacking:
+		{
+			double progress;
+			if ( curActivity == ActivityType::Casting ) {
+				progress = getPreparationPercentage();
+			} else {
+				progress = dynamic_cast<CAction*>(curSpellAction)->getProgress();
+			}
+			int index = progress * numMoveTexturesPerDirection[ curActivity ];
+			if ( index >= numMoveTexturesPerDirection[ curActivity ] ) {
+				index = numMoveTexturesPerDirection[ curActivity ] - 1;
+			}
+			return static_cast<int>(activeDirection) + 8*index;
+		}
+		default:
+			assert( false );
+			return 0;
+		break;
+	}
 }
 
 // since we dont have any combat class, im putting this spellcasting here.

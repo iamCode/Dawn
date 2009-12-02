@@ -51,6 +51,7 @@ void CNPC::Draw()
 {
 	CalculateStats(); // always calculate the stats of the NPC.
 	direction_texture = GetDirectionTexture();
+	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {
 		int drawX = x_pos;
 		int drawY = y_pos;
@@ -58,7 +59,7 @@ void CNPC::Draw()
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
 		}
-		texture->DrawTexture(drawX,drawY,direction_texture);
+		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture);
 	}
 }
 

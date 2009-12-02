@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Dec  1 20:49:08 2009.
+** Generated automatically by tolua++-1.0.92 on Wed Dec  2 22:08:13 2009.
 */
 
 #ifndef __cplusplus
@@ -751,19 +751,21 @@ static int tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00(lua_S
  if (
      !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
-  int numTextures = ((int)  tolua_tonumber(tolua_S,2,0));
+  ActivityType::ActivityType activity = ((ActivityType::ActivityType) (int)  tolua_tonumber(tolua_S,2,0));
+  int numTextures = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumMoveTexturesPerDirection'", NULL);
 #endif
   {
-   self->setNumMoveTexturesPerDirection(numTextures);
+   self->setNumMoveTexturesPerDirection(activity,numTextures);
   }
  }
  return 0;
@@ -785,22 +787,24 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
      !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
-  int direction = ((int)  tolua_tonumber(tolua_S,2,0));
-  int index = ((int)  tolua_tonumber(tolua_S,3,0));
-  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,4,0));
+  ActivityType::ActivityType activity = ((ActivityType::ActivityType) (int)  tolua_tonumber(tolua_S,2,0));
+  int direction = ((int)  tolua_tonumber(tolua_S,3,0));
+  int index = ((int)  tolua_tonumber(tolua_S,4,0));
+  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveTexture'", NULL);
 #endif
   {
-   self->setMoveTexture(direction,index,filename);
+   self->setMoveTexture(activity,direction,index,filename);
   }
  }
  return 0;
@@ -2557,6 +2561,13 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_constant(tolua_S,"SW",SW);
   tolua_constant(tolua_S,"W",W);
   tolua_constant(tolua_S,"NW",NW);
+  tolua_module(tolua_S,"ActivityType",0);
+  tolua_beginmodule(tolua_S,"ActivityType");
+   tolua_constant(tolua_S,"Walking",ActivityType::Walking);
+   tolua_constant(tolua_S,"Casting",ActivityType::Casting);
+   tolua_constant(tolua_S,"Attacking",ActivityType::Attacking);
+   tolua_constant(tolua_S,"Count",ActivityType::Count);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CCharacter","CCharacter","",NULL);
   tolua_beginmodule(tolua_S,"CCharacter");
    tolua_function(tolua_S,"baseOnType",tolua_CLuaInterface_CCharacter_baseOnType00);
