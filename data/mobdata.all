@@ -1,15 +1,36 @@
 wolfbase = DawnInterface.createNewMobType("Wolf")
-wolfbase:setNumMoveTexturesPerDirection( 8 );
+wolfbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
 for index=0,7,1 do
-	wolfbase:setMoveTexture( N, index, "data/character/wolf/running n000"..index..".tga" );
-	wolfbase:setMoveTexture( NW, index, "data/character/wolf/running nw000"..index..".tga" );
-	wolfbase:setMoveTexture( W, index, "data/character/wolf/running w000"..index..".tga" );
-	wolfbase:setMoveTexture( SW, index, "data/character/wolf/running sw000"..index..".tga" );
-	wolfbase:setMoveTexture( S, index, "data/character/wolf/running s000"..index..".tga" );
-	wolfbase:setMoveTexture( SE, index, "data/character/wolf/running se000"..index..".tga" );
-	wolfbase:setMoveTexture( E, index, "data/character/wolf/running e000"..index..".tga" );
-	wolfbase:setMoveTexture( NE, index, "data/character/wolf/running ne000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/wolf/running n000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/wolf/running nw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/wolf/running w000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/wolf/running sw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/wolf/running s000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/wolf/running se000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/wolf/running e000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/wolf/running ne000"..index..".tga" );
 end
+wolfbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 9 );
+for index=0,8,1 do
+	wolfbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/wolf/attacking n000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/wolf/attacking nw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/wolf/attacking w000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/wolf/attacking sw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/wolf/attacking s000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/wolf/attacking se000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/wolf/attacking e000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/wolf/attacking ne000"..index..".tga" );
+end
+wolfbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
+wolfbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/wolf/running n0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/wolf/running nw0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/wolf/running w0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/wolf/running sw0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/wolf/running s0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/wolf/running se0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/wolf/running e0000.tga" );
+wolfbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/wolf/running ne0000.tga" );
+
 wolfbase:setLifeTexture( "data/lifebar.tga" );
 
 wolfbase:setStrength( 15 )
