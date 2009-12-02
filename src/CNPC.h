@@ -61,7 +61,7 @@ class CNPC : public CCharacter
 		void Respawn();
 		void Wander();
         void Die();
-		void Damage(int amount);
+		void Damage(int amount, bool criticalHit);
 };
 
 #endif // __CNPC_H__

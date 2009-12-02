@@ -34,10 +34,10 @@ Direction CNPC::GetDirection()
 	}
 }
 
-void CNPC::Damage(int amount)
+void CNPC::Damage(int amount, bool criticalHit)
 {
 	attitudeTowardsPlayer = hostile;
-	CCharacter::Damage( amount );
+	CCharacter::Damage( amount, criticalHit );
 }
 
 void CNPC::Die()

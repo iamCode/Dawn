@@ -101,30 +101,30 @@ class AttackAction : public CAction
 				double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
 				if ( distance <= 120 ) {
 					const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
-					
+
 					double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
 					double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
 					int damage = randomSizeT( minDamage, maxDamage );
-					
+
 					double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
 					double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
 					double targetEvadeChance = statsSystem->complexGetEvadeChance( target->getLevel(), target->getModifiedEvadeModifierPoints(), creator->getLevel() );
 					double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
 					double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
-					
+
 					bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
 					bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
 					int criticalHitFactor = 2;
 					bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
 					bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
 					double blockFactor = 0.5;
-					
+
 					if ( hasHit && !targetEvaded ) {
 						int damageDone = damage * (1.0-damageReduction) * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
 						if ( damageDone < 1 ) {
 							damageDone = 1;
 						}
-						target->Damage( damageDone );
+						target->Damage( damageDone, criticalHit );
 						if ( ! target->isAlive() ) {
 							creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 						}

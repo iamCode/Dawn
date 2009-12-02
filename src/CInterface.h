@@ -59,7 +59,9 @@ class CInterface
 
 	private:
 		CTexture interfacetextures;
-		CTexture damageDisplayTextures;
+		CTexture damageDisplayTexturesBig;
+		CTexture damageDisplayTexturesSmall;
+
 
 		std::vector<sDamageDisplay> damageDisplay;
 

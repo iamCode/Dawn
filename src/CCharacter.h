@@ -245,7 +245,7 @@ class CCharacter
 		void DrawLifebar();
 
 		bool CheckMouseOver(int _x_pos, int _y_pos);
-		virtual void Damage(int amount);
+		virtual void Damage(int amount, bool criticalHit);
 		void Heal(int amount);
 		virtual void Die();
 		void dropItems();
@@ -262,7 +262,7 @@ class CCharacter
 
 		void setActiveGUI( CInterface *GUI_ );
 		void addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType );
-		
+
 		void setBoundingBox( int bbx, int bby, int bbw, int bbh );
 		void setUseBoundingBox( bool use );
 		int getBoundingBoxX() const;
@@ -342,7 +342,7 @@ class CCharacter
 		int boundingBoxW;
 		int boundingBoxH;
 		bool useBoundingBox;
-		
+
 		int numMoveTexturesPerDirection;
 
         std::vector<sLootTable> lootTable;

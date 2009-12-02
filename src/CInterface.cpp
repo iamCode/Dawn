@@ -30,17 +30,29 @@ void CInterface::LoadTextures()
 	interfacetextures.LoadIMG("data/interface/lifebar.tga",3);
 	interfacetextures.LoadIMG("data/interface/manabar.tga",4);
 
-    damageDisplayTextures.texture.reserve(10);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/0.tga",0);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/1.tga",1);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/2.tga",2);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/3.tga",3);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/4.tga",4);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/5.tga",5);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/6.tga",6);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/7.tga",7);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/8.tga",8);
-	damageDisplayTextures.LoadIMG("data/interface/combattext/9.tga",9);
+    damageDisplayTexturesSmall.texture.reserve(10);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/1small.tga",1);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/2small.tga",2);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/3small.tga",3);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/4small.tga",4);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/5small.tga",5);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/6small.tga",6);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/7small.tga",7);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/8small.tga",8);
+	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/9small.tga",9);
+
+	damageDisplayTexturesBig.texture.reserve(10);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/0big.tga",0);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/1big.tga",1);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/2big.tga",2);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/3big.tga",3);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/4big.tga",4);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/5big.tga",5);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/6big.tga",6);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/7big.tga",7);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/8big.tga",8);
+	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/9big.tga",9);
 }
 
 extern std::vector<CActionFactory*> quickSlots;
@@ -92,8 +104,19 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
     converterStream << amount;
     std::string tempString = converterStream.str();
     int damageNumber;
+    int rand_x = 0;
 
-    int rand_x = (rand() % + 64) - 32;
+    if (!player->isPlayer())
+    {
+        rand_x = (rand() % + 64) - 32;
+    }
+
+    int characterSpace = 16;
+
+    if ( critical == true )
+    {
+        characterSpace = 24; // more space between digits if critical (need more space since bigger font)
+    }
 
     // adding every digit in the amount of damage / heal to our struct.
     // adding a random value (rand_x) to x_pos, to spread the damage out a bit so it wont look too clogged.
@@ -101,7 +124,7 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
         damageStream.clear();
         damageStream << tempString.at(streamCounter);
         damageStream >> damageNumber;
-        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*16)+rand_x, y_pos ));
+        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*characterSpace)+rand_x, y_pos ));
     }
 }
 
@@ -109,6 +132,9 @@ void CInterface::drawCombatText()
 {
     // different color for heal and damage. damage = red, heal = green
     GLfloat damageType[2][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } };
+
+    CTexture *fontTextures;
+    float reduce_amount;
 
     for (size_t currentDamageDisplay = 0; currentDamageDisplay < damageDisplay.size(); currentDamageDisplay++) {
 
@@ -119,19 +145,31 @@ void CInterface::drawCombatText()
                 break;
         }
 
+        if ( damageDisplay[currentDamageDisplay].critical == true )
+        {
+            fontTextures = &damageDisplayTexturesBig;
+            reduce_amount = 0.04;
+        } else {
+            fontTextures = &damageDisplayTexturesSmall;
+            reduce_amount = 0.06;
+        }
+
         // fading and moving text upwards every 50ms
         damageDisplay[currentDamageDisplay].thisFrame = SDL_GetTicks();
         if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50) {
-            damageDisplay[currentDamageDisplay].transparency -= 0.06;
-            damageDisplay[currentDamageDisplay].y_pos++;
+            damageDisplay[currentDamageDisplay].transparency -= reduce_amount;
+            if (!player->isPlayer())
+            {
+                damageDisplay[currentDamageDisplay].y_pos++;
+            }
             damageDisplay[currentDamageDisplay].lastFrame = damageDisplay[currentDamageDisplay].thisFrame;
         }
 
         //sets the color of the text we're drawing based on what type of damage type we're displaying.
         glColor4f(damageType[damageDisplay[currentDamageDisplay].damageType][0],damageType[damageDisplay[currentDamageDisplay].damageType][1],damageType[damageDisplay[currentDamageDisplay].damageType][2],damageDisplay[currentDamageDisplay].transparency);
-        DrawingHelpers::mapTextureToRect( damageDisplayTextures.texture[damageDisplay[currentDamageDisplay].digitToDisplay].texture,
-                                        damageDisplay[currentDamageDisplay].x_pos, damageDisplayTextures.texture[damageDisplay[currentDamageDisplay].digitToDisplay].width,
-                                        damageDisplay[currentDamageDisplay].y_pos, damageDisplayTextures.texture[damageDisplay[currentDamageDisplay].digitToDisplay].height );
+        DrawingHelpers::mapTextureToRect( fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].texture,
+                                        damageDisplay[currentDamageDisplay].x_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].width,
+                                        damageDisplay[currentDamageDisplay].y_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].height );
 
         //reset color back to default.
         glColor4f(1.0f,1.0f,1.0f,1.0f);

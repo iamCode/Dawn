@@ -204,12 +204,13 @@ class MagicMissileSpell : public CSpell
 			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
 			double realDamage = damage * damageFactor * (1-resist);
 			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+			bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
+			if ( criticalHit == true ) {
 				int criticalDamageMultiplier = 2;
 				realDamage *= criticalDamageMultiplier;
 			}
 
-			target->Damage( round( realDamage ) );
+			target->Damage( round( realDamage ),criticalHit );
 			if ( ! target->isAlive() ) {
 				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 			}
@@ -304,12 +305,13 @@ class LightningSpell : public CSpell
 			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
 			double realDamage = damage * damageFactor * (1-resist);
 			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+			bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
+			if ( criticalHit == true ) {
 				int criticalDamageMultiplier = 2;
 				realDamage *= criticalDamageMultiplier;
 			}
 
-			target->Damage( round(realDamage) );
+			target->Damage( round(realDamage), criticalHit );
 			if ( ! target->isAlive() ) {
 				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 			}
@@ -326,7 +328,7 @@ class LightningSpell : public CSpell
 			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
 			double realDamage = curDamage * damageFactor * (1-resist) + remainingEffect;
 			// no critical damage in this phase so far
-			
+
 			bool callFinish = false;
 			double topLimit = 30.0 * damageFactor * (1-resist);
 
@@ -336,7 +338,7 @@ class LightningSpell : public CSpell
 			}
 
 			if ( floor(realDamage) > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
-				target->Damage( floor(realDamage) );
+				target->Damage( floor(realDamage), false );
 				remainingEffect = realDamage - floor( realDamage );
 				if ( ! target->isAlive() ) {
 					creator->gainExperience( target->getModifiedMaxHealth() / 10 );
@@ -542,7 +544,7 @@ class HealingSpell : public CSpell
 
 		virtual void startEffect() {
 			int healing = 100;
-			
+
 			// element type is Light
 			double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Light ), creator->getLevel() );
 			double realEffect = healing * effectFactor;

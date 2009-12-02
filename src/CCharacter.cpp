@@ -662,7 +662,7 @@ void CCharacter::setMoveTexture( int direction, int index, std::string filename 
 {
 	assert( texture != NULL );
 	assert( index < numMoveTexturesPerDirection );
-	
+
 	std::cout << "index = " << index << ", targetindex = " << direction + 8*index << std::endl;
 
 	texture->LoadIMG( filename, direction + 8*index );
@@ -965,7 +965,7 @@ int CCharacter::GetDirectionTexture()
 	int direction = GetDirection();
 	if ( direction == STOP )
 		return direction_texture;
-	
+
 	int msPerDrawFrame = 100;
 	int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection )) / msPerDrawFrame );
 	return static_cast<int>(direction) + 8*index;
@@ -1108,10 +1108,10 @@ void CCharacter::DrawLifebar()
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
-void CCharacter::Damage(int amount)
+void CCharacter::Damage(int amount, bool criticalHit)
 {
 	if (alive) {
-	    addDamageDisplayToGUI( amount, false, 0 );
+        addDamageDisplayToGUI( amount, criticalHit, 0 );
 		if (current_health <= amount) {
 			current_health = 0;
 			Die();
@@ -1160,7 +1160,12 @@ void CCharacter::setActiveGUI( CInterface *GUI_ )
 
 void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType )
 {
-    activeGUI->addCombatText(amount, critical, damageType, getXPos(), getYPos()+getHeight()+20);
+    if (isPlayer())
+	{
+        activeGUI->addCombatText(amount, critical, damageType, world_x+140,dawn_configuration::screenHeight-40+world_y);
+	} else {
+	    activeGUI->addCombatText(amount, critical, damageType, getXPos(), getYPos()+getHeight()+20);
+	}
 }
 
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )
