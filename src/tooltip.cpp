@@ -367,51 +367,51 @@ void itemTooltip::getParentText()
 	int16_t hitModifier = parent->getHitModifierPoints();
 	if ( hitModifier != 0 ) {
 		double hitBonus = (StatsSystem::getStatsSystem()->complexGetHitChance( player->getLevel(), hitModifier, player->getLevel() )) * 100;
-		addTooltipTextForPercentageAttribute( "hit bonus", hitBonus );
+		addTooltipTextForPercentageAttribute( "chance to hit", hitBonus );
 	}
 
 	int16_t evadeModifier = parent->getEvadeModifierPoints();
 	if ( evadeModifier != 0 ) {
 		double evadeBonus = (StatsSystem::getStatsSystem()->complexGetEvadeChance( player->getLevel(), evadeModifier, player->getLevel() )) * 100;
-		addTooltipTextForPercentageAttribute( "evade bonus", evadeBonus );
+		addTooltipTextForPercentageAttribute( "chance to evade", evadeBonus );
 	}
-	
+
 	int16_t blockModifier = parent->getBlockModifierPoints();
 	if ( blockModifier != 0 ) {
 		double blockBonus = (StatsSystem::getStatsSystem()->complexGetEvadeChance( player->getLevel(), blockModifier, player->getLevel() )) * 100;
-		addTooltipTextForPercentageAttribute( "block bonus", blockBonus );
+		addTooltipTextForPercentageAttribute( "chance to block", blockBonus );
 	}
-	
+
 	int16_t meleeCriticalModifier = parent->getMeleeCriticalModifierPoints();
 	if ( meleeCriticalModifier != 0 ) {
 		double meleeCriticalBonus = (StatsSystem::getStatsSystem()->complexGetMeleeCriticalStrikeChance( player->getLevel(), meleeCriticalModifier, player->getLevel() )) * 100;
-		addTooltipTextForPercentageAttribute( "melee critical bonus", meleeCriticalBonus );
+		addTooltipTextForPercentageAttribute( "melee critical chance", meleeCriticalBonus );
 	}
-	
+
 	for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {
 		ElementType::ElementType curElementType = static_cast<ElementType::ElementType>( curElement );
 		int16_t resistElementModifierPoints = parent->getResistElementModifierPoints( curElementType ) + parent->getResistAllModifierPoints();
 		if ( resistElementModifierPoints != 0 ) {
 			double resistBonus = (StatsSystem::getStatsSystem()->complexGetResistElementChance( player->getLevel(), resistElementModifierPoints, player->getLevel() )) * 100;
-			addTooltipTextForPercentageAttribute( std::string("resist ").append(ElementType::getElementNameLowercase(curElementType)).append(" bonus"), resistBonus );
+			addTooltipTextForPercentageAttribute( std::string("resist ").append(ElementType::getElementNameLowercase(curElementType)), resistBonus );
 		}
 	}
-	
+
 	for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {
 		ElementType::ElementType curElementType = static_cast<ElementType::ElementType>( curElement );
 		int16_t spellEffectElementModifierPoints = parent->getSpellEffectElementModifierPoints( curElementType ) + parent->getSpellEffectAllModifierPoints();
 		if ( spellEffectElementModifierPoints != 0 ) {
 			double spellEffectBonus = (StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), spellEffectElementModifierPoints, player->getLevel() ) - 1.00) * 100;
-			addTooltipTextForPercentageAttribute( ElementType::getElementNameLowercase(curElementType).append(" effect bonus"), spellEffectBonus );
+			addTooltipTextForPercentageAttribute( ElementType::getElementNameLowercase(curElementType).append(" magic effect"), spellEffectBonus );
 		}
 	}
-	
+
 	int16_t spellCriticalModifier = parent->getSpellCriticalModifierPoints();
 	if ( spellCriticalModifier != 0 ) {
 		double spellCriticalBonus = (StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( player->getLevel(), spellCriticalModifier, player->getLevel() )) * 100;
-		addTooltipTextForPercentageAttribute( "spell critical bonus", spellCriticalBonus );
+		addTooltipTextForPercentageAttribute( "spell critical chance", spellCriticalBonus );
 	}
-	
+
     // display the item description, if any
     if ( !parent->getDescription().empty() )
     {

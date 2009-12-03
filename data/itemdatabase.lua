@@ -1,5 +1,5 @@
 --[[
-itemdatabase.lua generated 2009-11-20 23:11:06 by arnestig.
+itemdatabase.lua generated 2009-12-03 19:12:33 by arnestig.
 --]]
 
 itemDatabase = {};
@@ -11,6 +11,7 @@ curItem:setHitModifierPoints( 5 );
 curItem:setMinDamage( 7 );
 curItem:setMaxDamage( 15 );
 curItem:setLevelReq( 1 );
+curItem:setMeleeCriticalModifierPoints( 25 );
 
 
 itemDatabase["arustysword"]=DawnInterface.createNewItem( "A rusty sword", 1, 3, "data/items/Sword1.tga", ItemQuality.POOR, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
@@ -28,6 +29,7 @@ curItem:setHealth( 75 );
 curItem:setMinDamage( 10 );
 curItem:setMaxDamage( 25 );
 curItem:setDescription( "Once wielded by Irk the Unholy." );
+curItem:setResistElementModifierPoints( ElementType.Dark, 15 );
 
 
 itemDatabase["shortsword"]=DawnInterface.createNewItem( "Shortsword", 1, 3, "data/items/Sword1.tga", ItemQuality.NORMAL, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
@@ -60,8 +62,9 @@ curItem:setLevelReq( 5 );
 
 itemDatabase["snakeloop"]=DawnInterface.createNewItem( "Snakeloop", 1, 1, "data/items/Ring1.tga", ItemQuality.ENHANCED, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["snakeloop"];
-curItem:setVitality( 2 );
-curItem:setLevelReq( 2 );
+curItem:setIntellect( 3 );
+curItem:setLevelReq( 1 );
+curItem:setSpellEffectElementModifierPoints( ElementType.Light, 20 );
 
 
 itemDatabase["bladeofstrength"]=DawnInterface.createNewItem( "Blade of Strength", 1, 3, "data/items/Sword1.tga", ItemQuality.ENHANCED, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
@@ -77,6 +80,7 @@ itemDatabase["ringofdefense"]=DawnInterface.createNewItem( "Ring of Defense", 1,
 curItem = itemDatabase["ringofdefense"];
 curItem:setArmor( 30 );
 curItem:setEvadeModifierPoints( 5 );
+curItem:setResistAllModifierPoints( 1 );
 
 
 itemDatabase["shadering"]=DawnInterface.createNewItem( "Shade ring", 1, 1, "data/items/Ring2.tga", ItemQuality.ENHANCED, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
