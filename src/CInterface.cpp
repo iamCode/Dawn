@@ -106,10 +106,7 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
     int damageNumber;
     int rand_x = 0;
 
-    if (!player->isPlayer())
-    {
-        rand_x = (rand() % + 64) - 32;
-    }
+    rand_x = (rand() % + 64) - 32;
 
     int characterSpace = 16;
 
@@ -158,10 +155,7 @@ void CInterface::drawCombatText()
         damageDisplay[currentDamageDisplay].thisFrame = SDL_GetTicks();
         if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50) {
             damageDisplay[currentDamageDisplay].transparency -= reduce_amount;
-            if (!player->isPlayer())
-            {
-                damageDisplay[currentDamageDisplay].y_pos++;
-            }
+            damageDisplay[currentDamageDisplay].y_pos++;
             damageDisplay[currentDamageDisplay].lastFrame = damageDisplay[currentDamageDisplay].thisFrame;
         }
 
