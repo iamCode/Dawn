@@ -315,6 +315,22 @@ void itemTooltip::getParentText()
             addTooltipText( white, 12, parent->getWeaponTypeText() );
         break;
         case ItemType::JEWELRY:
+            // nothing here so far...
+        break;
+        case ItemType::DRINK:
+            // nothing here so far...
+        break;
+        case ItemType::FOOD:
+            // nothing here so far...
+        break;
+        case ItemType::POTION:
+            addTooltipText( white, 12, "Potion" );
+        break;
+        case ItemType::SCROLL:
+            addTooltipText( white, 12, "Scroll" );
+        break;
+        case ItemType::NEWSPELL:
+            // nothing here so far...
         break;
         case ItemType::COUNT:
             dawn_debug_fatal("ItemType::COUNT found in getParentText(). This should not be.");
@@ -410,6 +426,12 @@ void itemTooltip::getParentText()
 	if ( spellCriticalModifier != 0 ) {
 		double spellCriticalBonus = (StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( player->getLevel(), spellCriticalModifier, player->getLevel() )) * 100;
 		addTooltipTextForPercentageAttribute( "spell critical chance", spellCriticalBonus );
+	}
+
+	// if the item is useable, display it here and what effect it has.
+	if ( parent->isUseable() )
+	{
+	    addTooltipText( green, 11, parent->getUseableDescription() );
 	}
 
     // display the item description, if any

@@ -72,7 +72,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		spellCriticalModifier( 0 ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
-		levelReq( 0 )
+		levelReq( 0 ),
+		useableItem( false )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -82,6 +83,14 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	}
 	symbolTexture.texture.reserve(1);
 	symbolTexture.LoadIMG( symbolFile, 0 );
+
+	if ( itemType == ItemType::DRINK
+	  || itemType == ItemType::DRINK
+	  || itemType == ItemType::NEWSPELL
+	  || itemType == ItemType::SCROLL )
+    {
+        useableItem = true;
+    }
 }
 
 std::string Item::getName() const
@@ -481,4 +490,31 @@ std::string Item::getEquipPositionText() const
     }
 	dawn_debug_fatal("Reached end of Item::getEquipPositionText without finding a suitable position. This should not be");
     abort();
+}
+
+std::string Item::getUseableDescription() const
+{
+    switch ( itemType )
+    {
+        case ItemType::DRINK:
+            return std::string("Drink: "); // later on add .append(getUsableSpellDescription) or so..
+        break;
+        case ItemType::FOOD:
+            return std::string("Food: "); // later on add .append(getUsableSpellDescription) or so..
+        break;
+        case ItemType::NEWSPELL:
+            return std::string("Memorize: "); //later on add .append(getSpellName and getSpellRank) or so..
+        break;
+        case ItemType::POTION:
+            return std::string("Drink: "); // later on add .append(getUsableSpellDescription) or so..
+        break;
+        case ItemType::SCROLL:
+            return std::string("Read: "); // later on add .append(getUsableSpellDescription) or so..
+        break;
+    }
+}
+
+bool Item::isUseable() const
+{
+    return useableItem;
 }

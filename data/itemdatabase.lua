@@ -1,5 +1,5 @@
 --[[
-itemdatabase.lua generated 2009-12-03 19:12:33 by arnestig.
+itemdatabase.lua generated 2009-12-03 23:12:08 by arnestig.
 --]]
 
 itemDatabase = {};
@@ -88,4 +88,10 @@ curItem = itemDatabase["shadering"];
 curItem:setDexterity( 2 );
 curItem:setEvadeModifierPoints( 10 );
 curItem:setLevelReq( 3 );
+
+
+itemDatabase["scrollofleatherskin"]=DawnInterface.createNewItem( "Scroll of Leatherskin", 1, 1, "data/items/Scroll1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.SCROLL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["scrollofleatherskin"];
+curItem:setLevelReq( 1 );
+
 

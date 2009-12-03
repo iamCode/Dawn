@@ -74,6 +74,11 @@ namespace ItemType
         ARMOR,
         WEAPON,
         JEWELRY,
+        SCROLL,
+        POTION,
+        FOOD,
+        DRINK,
+        NEWSPELL,
         COUNT
     };
 }
@@ -140,6 +145,9 @@ class Item
 		std::string getName() const;
         std::string getDescription() const;
         void setDescription( std::string description );
+
+        bool isUseable() const;
+        std::string getUseableDescription() const;
 
         int16_t getStrength() const;
         int16_t getDexterity() const;
@@ -213,6 +221,8 @@ class Item
 		ArmorType::ArmorType armorType;
 		WeaponType::WeaponType weaponType;
 		EquipPosition::EquipPosition equipPosition;
+
+		bool useableItem;
 
 		int16_t strengthModifier;
         int16_t dexterityModifier;

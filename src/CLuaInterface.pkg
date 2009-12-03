@@ -167,6 +167,11 @@ namespace ItemType
 		ARMOR,
 		WEAPON,
 		JEWELRY,
+		SCROLL,
+		POTION,
+		FOOD,
+		DRINK,
+		NEWSPELL,
 		COUNT
 	};
 }
