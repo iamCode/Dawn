@@ -33,6 +33,24 @@ namespace EffectType
 	};
 }
 
+// system planned:
+// CSpellActionBase is it's own factory, i.e. the spell/action class has no
+// static members any more. Instead it has functions getText, etc. directly
+// The real spell is created by the function create( caster, target ).
+// This is the refactoring part with the goal to get rid of the nasty static functions.
+//
+// Furthermore only general spell classes (effect categories) shall be created here
+// the real spells are created from those by lua configuration script.
+// e.g. here we create the effect damage (singletarget, ball), healing (single target),
+// damage (singletarget, direct) and in lua we create
+// * magic missile as singletarget, ball (element air) - several levels
+// * fireball as singletarget, ball (element fire), perhaps with additional continuous damage (fire) effect - several levels
+// * heal self - several levels
+// * heal other - several levels
+// * lightning as singletarget, direct (element air) - several levels
+// ....
+// This is a new feature and will need only some static factory method, hopefully nothing more :)
+
 class CSpellActionBase
 {
 	public:
