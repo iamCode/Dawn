@@ -198,7 +198,7 @@ void CEditor::HandleKeys()
 	// the arrow-keys. if an object is selected, we move it around. if Left shift is pushed, we scale the object..
 	// else we move around in our zone.
 
-	if (objectedit_selected >= 0) {
+	if (objectedit_selected >= 0 && !KP_moveonce) {
 		switch (current_object) {
 			case 1: // environment
 				if (keys[SDLK_LSHIFT]) {
@@ -215,6 +215,10 @@ void CEditor::HandleKeys()
 						zoneToEdit->EnvironmentMap[objectedit_selected].x_scale += 0.01f;
 					}
 				} else {
+				    if (keys[SDLK_RCTRL]) // right ctrl is held down, then we only want to move environment 1 pixel at time
+					{
+					    KP_moveonce = true;
+                    }
 					if (keys[SDLK_DOWN]) {
 						zoneToEdit->EnvironmentMap[objectedit_selected].y_pos--;
 					}
@@ -303,6 +307,11 @@ void CEditor::HandleKeys()
 		}
 	}
 
+	if (!keys[SDLK_DOWN] && !keys[SDLK_UP] && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT])
+	{
+	    KP_moveonce = false;
+	}
+
 	if (keys[SDLK_DELETE] && !KP_delete_environment) {
 		KP_delete_environment = true;
 		switch (current_object) {
@@ -325,7 +334,7 @@ void CEditor::HandleKeys()
 		KP_delete_environment = false;
 	}
 
-	if (keys[SDLK_KP_ENTER] && !KP_add_environment) {
+	if (keys[SDLK_RETURN] && !KP_add_environment) {
 		objectedit_selected = -1;
 		KP_add_environment = true;
 		switch (current_object) {
@@ -344,7 +353,7 @@ void CEditor::HandleKeys()
 		}
 	}
 
-	if (!keys[SDLK_KP_ENTER]) {
+	if (!keys[SDLK_RETURN]) {
 		KP_add_environment = false;
 	}
 

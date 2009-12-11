@@ -89,6 +89,8 @@ int CZone::LoadEnvironment(std::string file)
 
 	input_file.close();
 
+    std::sort(EnvironmentMap.begin(), EnvironmentMap.end());
+
 	return 0;
 }
 

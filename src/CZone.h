@@ -54,6 +54,11 @@ struct sEnvironmentMap {
 		x_scale = _x_scale;
 		y_scale = _y_scale;
 	};
+
+    bool operator<(const sEnvironmentMap& environmentObject) const { // instead of using a predicate in our sort call.
+		return y_pos > environmentObject.y_pos;
+	};
+
 };
 
 struct sCollisionMap {
