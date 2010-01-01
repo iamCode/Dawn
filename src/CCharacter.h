@@ -61,6 +61,7 @@ struct sLootTable
 class CCharacter
 {
 		friend class CSpellActionBase;
+		friend class SpellActionBaseNew;
 
 	public:
 		CCharacter();

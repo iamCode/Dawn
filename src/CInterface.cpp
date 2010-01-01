@@ -55,8 +55,6 @@ void CInterface::LoadTextures()
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/9big.tga",9);
 }
 
-extern std::vector<CActionFactory*> quickSlots;
-
 void CInterface::DrawInterface()
 {
 	// drawing the base of the life and mana bar.

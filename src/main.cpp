@@ -56,7 +56,6 @@ CEditor Editor;
 CInterface GUI;
 
 std::vector <CNPC*> NPC;
-std::vector<CActionFactory*> quickSlots;
 std::vector<Item*> groundItems;
 std::vector<std::pair<int,int> > groundPositions;
 
@@ -476,7 +475,7 @@ void game_loop()
                     } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
                         if ( spellbook->hasFloatingSpell() )
                         {
-                            actionBar->clicked( mouseX, mouseY, spellbook->getFloatingSpell()->action->getName() );
+                            actionBar->clicked( mouseX, mouseY, spellbook->getFloatingSpell()->action );
                             spellbook->unsetFloatingSpell();
                         } else {
                             actionBar->clicked( mouseX, mouseY );

@@ -39,7 +39,7 @@ itemTooltip::itemTooltip( Item *parent_, Player *player_ )
     getParentText();
 }
 
-spellTooltip::spellTooltip(CActionFactory *parent_, Player *player_ )
+spellTooltip::spellTooltip(CSpellActionBase *parent_, Player *player_ )
             :   parent( parent_ )
 {
     player = player_;
@@ -471,5 +471,5 @@ void spellTooltip::getParentText()
 
     // display description. This shouldnt say "does x amount of damage" but more of a general description.
     addTooltipText( white, 12, "" ); // newline
-    addTooltipText( white, 12, parent->getSpellInfo() );
+    addTooltipText( white, 12, parent->getInfo() );
 }

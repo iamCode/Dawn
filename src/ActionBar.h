@@ -27,7 +27,7 @@ class Player;
 
 struct sButton
 {
-    CActionFactory *action;
+    CSpellActionBase *action;
     spellTooltip *tooltip;
     std::string number;
     int posX;
@@ -62,10 +62,10 @@ class ActionBar
         void draw();
         void drawSpellTooltip( int x, int y );
         void clicked( int clickX, int clickY );
-        void clicked( int clickX, int clickY, std::string floatingSpellName );
+        void clicked( int clickX, int clickY, CSpellActionBase* floatingSpellName );
         void handleKeys();
         int8_t getMouseOverButtonId( int x, int y );
-        void bindAction ( sButton *button, std::string action );
+        void bindAction ( sButton *button, CSpellActionBase* action );
         void unbindAction ( sButton *button );
         void loadTextures();
         void initFonts();

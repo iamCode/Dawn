@@ -83,10 +83,10 @@ class Tooltip
 class spellTooltip : public Tooltip
 {
     public:
-        spellTooltip(CActionFactory *parent, Player *player);
+        spellTooltip(CSpellActionBase *parent, Player *player);
 
     private:
-        CActionFactory *parent;
+        CSpellActionBase *parent;
         void getParentText();
 };
 

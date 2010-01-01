@@ -50,68 +50,77 @@ namespace EffectType
 // * lightning as singletarget, direct (element air) - several levels
 // ....
 // This is a new feature and will need only some static factory method, hopefully nothing more :)
+//
+// Further thoughts on this:
+// A ball spell might consist of a serious of two things:
+// a) a delay effect for the spell (the movement). This might also serve to increase / decrease the following effect.
+// b) the actual damage effect (with separate animation)
+//
+// Some further thought: we could probably even put part of the spell logic to lua for the creation for very general
+// custom spells. Need to think on this.
 
+// NOTE: Not used yet, deactivate this comment once that changes ;)
 class CSpellActionBase
 {
+	protected:
+		CSpellActionBase();
 	public:
-		CSpellActionBase( CCharacter *Creator, uint16_t castTime, uint16_t manaCost, std::string name, std::string info );
+		// Question: What about different target types, such as position (for region damage spells)
+		/// \brief Creates a spell to really cast as a copy from this one with a fixed target and creator.
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target ) = 0;
 		virtual ~CSpellActionBase();
-
-		/// \brief Returns the time needed to cast a spell in ms.
-		uint16_t getCastTime() const;
-		uint16_t getManaCost() const;
-
-		std::string getName() const;
-		std::string getInfo() const;
-
-		void beginPreparationOfSpellAction();
-		virtual void drawEffect() = 0;
-		virtual void startEffect() = 0;
-		virtual void inEffect() = 0;
-		void markSpellActionAsFinished();
-		bool isEffectComplete();
-
+		
+		/// Info about the spell, both for the game (mana cost, etc) and for the player (name, info, etc)
+		
+		/// \brief Returns the time needed to cast a spell.
+		/// \todo Should the spell meta information be put in a separate info object?
+		virtual uint16_t getCastTime() const = 0;
+		virtual uint16_t getManaCost() const = 0;
+		virtual std::string getName() const = 0;
+		virtual std::string getInfo() const = 0;
 		virtual CTexture* getSymbol() const = 0;
-
+		virtual EffectType::EffectType getEffectType() const = 0;
+		
+		/// Note: The following functions may only be called on spells that where really created,
+		///       i.e. for spells created by cast function.
+		
+		/// \brief Draws the graphical representation of the spell effect.
+		virtual void drawEffect() = 0;
+		
+		/// \brief Called directly after creation of the spell and is thought for an initial effect.
+		virtual void startEffect() = 0;
+		/// \brief Called while the spell is not yet completed and thought for continuous effects.
+		/// Needs to mark the spell as completed unless that has already been done,
+		/// e.g. because the effect is not continuous.
+		virtual void inEffect() = 0;
+		
+		/// \brief Whether the spell has done its work and the object can be destroyed.
+		bool isEffectComplete() const;
 		void unbindFromCreator();
 		bool isBoundToCreator() const;
-
-	protected:
-		CCharacter *creator;
-
-	private:
-		uint16_t castTime;
-		uint16_t manaCost;
-
-		std::string name;
-		std::string info;
-		bool boundToCreator;
-		bool finished;
+		void beginPreparationOfSpellAction();
+		void markSpellActionAsFinished();
+		
+		void drawSymbol( int left, int width, int bottom, int height ) const;
+protected:
+	CCharacter *creator;
+	bool boundToCreator;
+	bool finished;
 };
 
 class CSpell : public CSpellActionBase
 {
 	public:
-		CSpell( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
-				: CSpellActionBase( creator_, castTime, manaCost, name, info ) {}
-};
-
-class CActionFactory
-{
-	public:
-		virtual CSpellActionBase* create( CCharacter *target ) = 0;
-		virtual void draw( int left, int width, int bottom, int height ) = 0;
-		virtual EffectType::EffectType getEffectType() const = 0;
-		virtual std::string getName() const = 0;
-		virtual std::string getSpellInfo() const = 0;
-		virtual uint16_t getCastTime() const = 0;
-		virtual uint16_t getManaCost() const = 0;
+		CSpell() {}
 };
 
 namespace SpellCreation
 {
 	void initSpells();
-	CActionFactory* createActionFactoryByName( std::string name, CCharacter *caster );
+	CSpellActionBase* getMagicMissileSpell();
+	CSpellActionBase* getLightningSpell();
+	CSpellActionBase* getHealOtherSpell();
+	CSpellActionBase* getHealingSpell();
 }
 
 #endif // __C_SPELL_H_

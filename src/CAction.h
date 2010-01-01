@@ -24,8 +24,7 @@
 class CAction : public CSpellActionBase
 {
 	public:
-		CAction( CCharacter *creator_, uint16_t castTime, uint16_t manaCost, std::string name, std::string info )
-				: CSpellActionBase( creator_, castTime, manaCost, name, info ) {}
+		CAction() {}
 		virtual double getProgress() const = 0;
 };
 

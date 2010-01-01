@@ -42,10 +42,10 @@ ActionBar::ActionBar( Player *player_ )
     button.push_back( sButton(560, 0, 50, 50, "9", SDLK_9) );
     button.push_back( sButton(630, 0, 50, 50, "0", SDLK_0) );
 
-    bindAction( &button[0], "Lightning" );
-    bindAction( &button[1], "Healing" );
-    bindAction( &button[2], "Heal Other" );
-    bindAction( &button[3], "Magic Missile" );
+    bindAction( &button[0], SpellCreation::getLightningSpell() );
+    bindAction( &button[1], SpellCreation::getHealingSpell() );
+    bindAction( &button[2], SpellCreation::getHealOtherSpell() );
+    bindAction( &button[3], SpellCreation::getMagicMissileSpell() );
 }
 
 ActionBar::~ActionBar()
@@ -103,7 +103,7 @@ void ActionBar::draw()
         glColor3f( 1.0f, 1.0f, 1.0f );
         if ( button[buttonId].action != NULL )
 	    {
-	        button[buttonId].action->draw( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
+	        button[buttonId].action->drawSymbol( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
 	    }
 
 
@@ -121,9 +121,9 @@ void ActionBar::clicked( int clickX, int clickY )
 
         if ( effectType == EffectType::SingleTargetSpell
                  && player->getTarget() != NULL ) {
-            curAction = button[buttonId].action->create( player->getTarget() );
+            curAction = button[buttonId].action->cast( player, player->getTarget() );
         } else if ( effectType == EffectType::SelfAffectingSpell ) {
-            curAction = button[buttonId].action->create( player);
+            curAction = button[buttonId].action->cast( player, player );
         }
 
         if ( curAction != NULL ) {
@@ -137,7 +137,7 @@ void ActionBar::clicked( int clickX, int clickY )
     }
 }
 
-void ActionBar::clicked( int clickX, int clickY, std::string floatingSpellName )
+void ActionBar::clicked( int clickX, int clickY, CSpellActionBase* floatingSpell )
 {
     int buttonId = getMouseOverButtonId( clickX, clickY );
     if ( buttonId >= 0 )
@@ -146,7 +146,7 @@ void ActionBar::clicked( int clickX, int clickY, std::string floatingSpellName )
         {
             unbindAction( &button[buttonId] );
         }
-        bindAction( &button[buttonId], floatingSpellName );
+        bindAction( &button[buttonId], floatingSpell );
     }
 }
 
@@ -164,9 +164,9 @@ void ActionBar::handleKeys()
 
                 if ( effectType == EffectType::SingleTargetSpell
                          && player->getTarget() != NULL ) {
-                    curAction = button[buttonId].action->create( player->getTarget() );
+                    curAction = button[buttonId].action->cast( player, player->getTarget() );
                 } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                    curAction = button[buttonId].action->create( player);
+                    curAction = button[buttonId].action->cast( player, player );
                 }
 
                 if ( curAction != NULL ) {
@@ -201,9 +201,9 @@ int8_t ActionBar::getMouseOverButtonId( int x, int y )
     return -1;
 }
 
-void ActionBar::bindAction( sButton *button, std::string action )
+void ActionBar::bindAction( sButton *button, CSpellActionBase* action )
 {
-    button->action = SpellCreation::createActionFactoryByName( action , player );
+    button->action = action;
     button->tooltip = new spellTooltip( button->action, player );
 
     /** this could be added to game settings, making the player choose to

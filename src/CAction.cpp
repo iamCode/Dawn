@@ -24,6 +24,8 @@
 #include "Player.h"
 #include "StatsSystem.h"
 
+#include <memory>
+
 size_t randomSizeT( size_t min, size_t max ) {
 	return min + ( rand() % (max - min + 1) );
 }
@@ -33,20 +35,34 @@ size_t randomSizeT( size_t min, size_t max ) {
 class AttackAction : public CAction
 {
 	public:
-		static uint16_t getStaticCastTime() {
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target )
+		{
+			std::auto_ptr<AttackAction> newAction( new AttackAction() );
+			newAction->creator = creator;
+			newAction->target = target;
+			
+			return newAction.release();
+		}
+	
+		virtual uint16_t getCastTime() const {
 			return 0;
 		}
 
-		static uint16_t getStaticManaCost() {
+		virtual uint16_t getManaCost() const {
 			return 0;
 		}
 
-		static std::string getStaticName() {
+		virtual std::string getName() const {
 			return "Melee Attack";
 		}
 
-		static std::string getStaticActionInfo() {
+		virtual std::string getInfo() const {
 			return "Causes 20 points of damage to the target.\n";
+		}
+		
+		virtual EffectType::EffectType getEffectType() const
+		{
+			return EffectType::SingleTargetSpell;
 		}
 
 		static CTexture *actionTexture;
@@ -72,14 +88,8 @@ class AttackAction : public CAction
 			return getStaticSymbol();
 		}
 
-		AttackAction( CCharacter *creator_, CCharacter *target_ )
-				: CAction( creator_,
-				           getStaticCastTime(),
-				           getStaticManaCost(),
-				           getStaticName(),
-				           getStaticActionInfo() ),
-				target( target_ ),
-				damageCaused( true ) {
+		AttackAction()
+				: damageCaused( true ) {
 		}
 		
 		virtual double getProgress() const
@@ -165,16 +175,15 @@ namespace ActionCreation
 
 	CTexture* getActionSymbolByName( std::string name )
 	{
-		if ( name == AttackAction::getStaticName() ) {
-			return AttackAction::getStaticSymbol();
-		} else {
-			std::cerr << "symbol for action \"" << name << "\" not implemented yet" << std::endl;
+		{
+			std::cerr << "Interface no longer supported. Action \"" << name << "\" not implemented yet" << std::endl;
 			abort();
 		}
 	}
 
 	CAction* createAttackAction( CCharacter *attacker, CCharacter *target )
 	{
-		return new AttackAction( attacker, target );
+		AttackAction attackAction;
+		return dynamic_cast<CAction*>(attackAction.cast( attacker, target ));
 	}
 }

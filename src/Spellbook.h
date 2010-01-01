@@ -28,7 +28,7 @@ class Player;
 
 struct sSpellSlot
 {
-    CActionFactory *action;
+    CSpellActionBase *action;
     GLFT_Font *font;
     Tooltip *tooltip;
     int posX;

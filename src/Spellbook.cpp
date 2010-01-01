@@ -47,13 +47,13 @@ Spellbook::Spellbook( Player *player_ )
     spellSlot.push_back(sSpellSlot(205,70,50,50));
 
     // do this in a learnSpell / scribeSpell / memorizeSpell function later.
-    spellSlot[0].action = SpellCreation::createActionFactoryByName( "Lightning", player );
+    spellSlot[0].action = SpellCreation::getLightningSpell();
     spellSlot[0].tooltip = new spellTooltip( spellSlot[0].action, player );
-    spellSlot[1].action = SpellCreation::createActionFactoryByName( "Heal Other", player );
+    spellSlot[1].action = SpellCreation::getHealOtherSpell();
     spellSlot[1].tooltip = new spellTooltip( spellSlot[1].action, player );
-    spellSlot[2].action = SpellCreation::createActionFactoryByName( "Healing", player );
+    spellSlot[2].action = SpellCreation::getHealingSpell();
     spellSlot[2].tooltip = new spellTooltip( spellSlot[2].action, player );
-    spellSlot[3].action = SpellCreation::createActionFactoryByName( "Magic Missile", player );
+    spellSlot[3].action = SpellCreation::getMagicMissileSpell();
     spellSlot[3].tooltip = new spellTooltip( spellSlot[3].action, player );
 }
 
@@ -92,7 +92,7 @@ void Spellbook::draw()
 
         if ( spellSlot[x].action != NULL )
         {
-            spellSlot[x].action->draw( world_x + spellSlot[x].posX+posX+2, 46,
+            spellSlot[x].action->drawSymbol( world_x + spellSlot[x].posX+posX+2, 46,
                                        world_y + spellSlot[x].posY+posY+2, 46 );
             spellSlot[x].font->drawText( static_cast<float>( world_x ) + spellSlot[x].posX+posX-20,
                                          static_cast<float>( world_y ) + spellSlot[x].posY+posY-spellSlot[x].font->getHeight()-5,
@@ -121,7 +121,7 @@ void Spellbook::drawFloatingSpell( int x, int y )
                                           world_y + y + 20, 50 );
 
         // draw the spell icon
-        floatingSpell->action->draw( world_x + x + 2, 46,
+        floatingSpell->action->drawSymbol( world_x + x + 2, 46,
                                    world_y + y + 20 + 2, 46 );
 
         // draw the spell name
