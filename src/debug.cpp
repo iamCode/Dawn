@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "debug.h"
+#include <execinfo.h>
 
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
@@ -119,6 +120,31 @@ void dawn_debug_fatal(const std::string& message ...)
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_FATAL);
 	va_end(ap);
+	
+	print_backtrace();
 
 	exit(1);
 }
+
+void print_backtrace()
+{
+	void *array[100];
+	size_t size;
+	char **strings;
+	size_t i;
+
+	size = backtrace (array, 100);
+	// remove functions print_backtrace and backtrace from stacktrace
+	size-=2;
+	strings = backtrace_symbols (array, size);
+
+	printf( "./btdecode.sh << EOBT\n" );
+	
+	for (i = 0; i < size; i++)
+		printf ("%s\n", strings[i]);
+
+	printf( "EOBT\n" );
+
+	free (strings);
+}
+
