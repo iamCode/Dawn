@@ -26,8 +26,14 @@
 
 #include <memory>
 
-size_t randomSizeT( size_t min, size_t max ) {
-	return min + ( rand() % (max - min + 1) );
+size_t randomSizeT( size_t min, size_t max )
+{
+	return min + ( static_cast<size_t>((max - min) * static_cast<double>(random())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
+}
+
+double randomDouble( double min, double max )
+{
+	return min + ( (max - min) * static_cast<double>(random())/static_cast<double>(RAND_MAX) );
 }
 
 /// melee attack

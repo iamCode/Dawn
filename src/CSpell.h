@@ -121,6 +121,8 @@ namespace SpellCreation
 	CSpellActionBase* getLightningSpell();
 	CSpellActionBase* getHealOtherSpell();
 	CSpellActionBase* getHealingSpell();
+	
+	CSpellActionBase* getGeneralDamageSpell();
 }
 
 #endif // __C_SPELL_H_
