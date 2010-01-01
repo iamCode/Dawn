@@ -25,6 +25,7 @@
 #include "CharacterInfoScreen.h"
 #include "item.h"
 #include <memory>
+#include <signal.h>
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -268,12 +269,22 @@ void DrawScene()
 	SDL_GL_SwapBuffers();
 }
 
+void dawn_init_signal_handlers()
+{
+	dawn_debug_info("Initializing signal handlers...");
+	signal( SIGFPE,  generalSignalHandler );
+	signal( SIGSEGV, generalSignalHandler );
+	signal( SIGBUS,  generalSignalHandler );
+	signal( SIGABRT, generalSignalHandler );
+}
+
 bool dawn_init(int argc, char** argv)
 {
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
 
 		dawn_debug_info("Initializing...");
+		dawn_init_signal_handlers();
 		dawn_debug_info("Checking if the game data exists");
 
 		if(!utils::file_exists("data/mobdata.all"))

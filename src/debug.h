@@ -45,4 +45,6 @@ void dawn_debug_fatal(const std::string& message ...); /* Logs fatal
 						problems then quits */
 void print_backtrace();
 
+void generalSignalHandler( int signum );
+
 #endif

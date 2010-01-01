@@ -18,6 +18,7 @@
 
 #include "debug.h"
 #include <execinfo.h>
+#include <signal.h>
 
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
@@ -120,8 +121,6 @@ void dawn_debug_fatal(const std::string& message ...)
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_FATAL);
 	va_end(ap);
-	
-	print_backtrace();
 
 	exit(1);
 }
@@ -146,5 +145,16 @@ void print_backtrace()
 	printf( "EOBT\n" );
 
 	free (strings);
+}
+
+void generalSignalHandler( int signum )
+{
+	printf( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" );
+	printf( "the program caught signal %d\n", signum );
+	printf( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n" );
+	print_backtrace();
+	
+	signal (signum, SIG_DFL);
+	raise (signum);
 }
 
