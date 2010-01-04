@@ -46,7 +46,7 @@ ActionBar::ActionBar( Player *player_ )
     bindAction( &button[1], SpellCreation::getHealingSpell() );
     bindAction( &button[2], SpellCreation::getHealOtherSpell() );
     bindAction( &button[3], SpellCreation::getMagicMissileSpell() );
-    bindAction( &button[4], SpellCreation::getGeneralDamageSpell() );
+//    bindAction( &button[4], SpellCreation::getGeneralDamageSpell() );
 }
 
 ActionBar::~ActionBar()

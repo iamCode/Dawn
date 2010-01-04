@@ -238,6 +238,20 @@ class Item
 	void setLevelReq( int levelReq );
 };
 
+class GeneralDamageSpell
+{
+	void setCastTime( int newCastTime );
+	void setManaCost( int newManaCost );
+	void setName( std::string newName );
+	void setInfo( std::string newInfo );
+
+	void setDirectDamage( int newMinDirectDamage, int newMaxDirectDamage, ElementType::ElementType newElementDirect );
+	void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, int newContDamageTime, ElementType::ElementType newContDamageElement );
+
+	void setSpellSymbol( std::string symbolFile );
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
 
 namespace DawnInterface
 {
@@ -254,5 +268,6 @@ namespace DawnInterface
 	void giveItemToPlayer( Item* item );
     CZone* getCurrentZone();
     void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+    GeneralDamageSpell* createGeneralDamageSpell();
 }
 

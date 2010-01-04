@@ -157,8 +157,8 @@ namespace DawnInterface
 
 void DrawScene()
 {
-	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	//glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	//glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
@@ -261,7 +261,7 @@ void DrawScene()
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
 	// fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 	// Only FPS
-	//fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
+	fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
 
 	message.DrawAll();
 	message.DeleteDecayed();
@@ -287,6 +287,9 @@ bool dawn_init(int argc, char** argv)
 		dawn_init_signal_handlers();
 		dawn_debug_info("Checking if the game data exists");
 
+		if(!utils::file_exists("data/spells.lua"))
+			dawn_debug_fatal("The LUA script \"spells.lua\", "
+				"Could not be found");
 		if(!utils::file_exists("data/mobdata.all"))
 			dawn_debug_fatal("The LUA script \"mobdata.all\", "
 				"Could not be found");
@@ -429,6 +432,8 @@ bool dawn_init(int argc, char** argv)
 		Editor.initFonts();
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
+		
+		LuaFunctions::executeLuaFile("data/spells.lua");
 
 		SpellCreation::initSpells();
 		ActionCreation::initActions();

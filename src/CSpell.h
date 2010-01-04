@@ -22,6 +22,8 @@
 #include <string>
 #include <stdint.h>
 
+#include "elements.h"
+
 class CCharacter;
 class CTexture;
 
@@ -124,5 +126,69 @@ namespace SpellCreation
 	
 	CSpellActionBase* getGeneralDamageSpell();
 }
+
+class GeneralDamageSpell : public CSpell
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		void setCastTime( uint16_t newCastTime );
+		virtual uint16_t getCastTime() const;
+		void setManaCost( uint16_t newManaCost );
+		virtual uint16_t getManaCost() const;
+		void setName( std::string newName );
+		virtual std::string getName() const;
+		void setInfo( std::string newInfo );
+		virtual std::string getInfo() const;
+
+		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
+		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
+		
+		void setSpellSymbol( std::string symbolFile );
+		void setNumAnimations( int count );
+		void setAnimationTexture( int num, std::string filename );
+
+		CTexture* getSymbol() const;
+
+		virtual EffectType::EffectType getEffectType() const;
+
+		GeneralDamageSpell();
+
+		virtual void startEffect();
+		virtual void inEffect();
+		void finishEffect();
+
+		virtual void drawEffect();
+
+	private:
+		CCharacter *target;
+		uint16_t castTime;
+		uint16_t manaCost;
+		uint16_t delayTime;
+		bool moveToTarget;
+		uint16_t minDirectDamage; // This should be a list of effects
+		uint16_t maxDirectDamage;
+		ElementType::ElementType elementDirect;
+		
+		double minContinuousDamagePerSecond;
+		double maxContinuousDamagePerSecond;
+		ElementType::ElementType elementContinuous;
+		uint16_t continuousDamageTime;
+		
+		std::string name;
+		std::string info;
+		
+		uint8_t frameCount;
+		uint32_t effectStart;
+		uint32_t lastEffect;
+		uint32_t animationTimerStart;
+		uint32_t animationTimerStop;
+		double remainingEffect;
+		
+		int numTextures;
+		CTexture *spellTexture;
+		CTexture *spellSymbol;
+		
+	friend CSpellActionBase* SpellCreation::getGeneralDamageSpell();
+};
 
 #endif // __C_SPELL_H_

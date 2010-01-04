@@ -55,8 +55,8 @@ Spellbook::Spellbook( Player *player_ )
     spellSlot[2].tooltip = new spellTooltip( spellSlot[2].action, player );
     spellSlot[3].action = SpellCreation::getMagicMissileSpell();
     spellSlot[3].tooltip = new spellTooltip( spellSlot[3].action, player );
-    spellSlot[4].action = SpellCreation::getGeneralDamageSpell();
-    spellSlot[4].tooltip = new spellTooltip( spellSlot[4].action, player );
+//    spellSlot[4].action = SpellCreation::getGeneralDamageSpell();
+//    spellSlot[4].tooltip = new spellTooltip( spellSlot[4].action, player );
 }
 
 Spellbook::~Spellbook()
