@@ -70,11 +70,20 @@ class Spellbook
         int8_t getMouseOverSpellSlotId( int x, int y ) const;
         sSpellSlot *getFloatingSpell() const;
         void unsetFloatingSpell();
+        void inscribeSpell( CSpellActionBase *spell );
 
     private:
+		bool isMouseOverNextPageArea( int clickX, int clickY );
+		bool isMouseOverPreviousPageArea( int clickX, int clickY );
+		void nextPage();
+		void previousPage();
+		void refreshPage();
+
         CTexture textures;
         std::vector<sSpellSlot> spellSlot;
+        std::vector<CSpellActionBase*> inscribedSpells;
         Player *player;
+        int curPage;
         sSpellSlot *floatingSpell;
         bool visible;
         int posX;

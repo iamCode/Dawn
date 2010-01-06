@@ -70,15 +70,13 @@ class ActionBar
         void loadTextures();
         void initFonts();
 
-		// just for the moment (testing) Should be made private again once spell creation in createGeneralDamageSpell stores the spell somewhere else than in the button...
-		std::vector <sButton> button;
     private:
         Player *player;
         int posX;
         int posY;
         int width;
         int height;
-        // std::vector <sButton> button;
+        std::vector <sButton> button;
         CTexture textures;
         GLFT_Font *shortcutFont;
 };

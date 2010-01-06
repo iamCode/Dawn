@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Jan  4 22:26:08 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Jan  6 12:14:13 2010.
 */
 
 #ifndef __cplusplus
@@ -18,10 +18,11 @@ TOLUA_API int  tolua_CLuaInterface_open (lua_State* tolua_S);
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"GeneralDamageSpell");
- tolua_usertype(tolua_S,"CCharacter");
+ tolua_usertype(tolua_S,"CSpell");
  tolua_usertype(tolua_S,"Item");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"CZone");
+ tolua_usertype(tolua_S,"CCharacter");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -2882,6 +2883,34 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralDamageSpell00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::inscribeSpellInPlayerSpellbook */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00
+static int tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpell* inscribedSpell = ((CSpell*)  tolua_tousertype(tolua_S,1,0));
+  {
+   DawnInterface::inscribeSpellInPlayerSpellbook(inscribedSpell);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'inscribeSpellInPlayerSpellbook'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
 {
@@ -3075,7 +3104,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setMaxDamage",tolua_CLuaInterface_Item_setMaxDamage00);
    tolua_function(tolua_S,"setLevelReq",tolua_CLuaInterface_Item_setLevelReq00);
   tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"GeneralDamageSpell","GeneralDamageSpell","",NULL);
+  tolua_cclass(tolua_S,"GeneralDamageSpell","GeneralDamageSpell","CSpell",NULL);
   tolua_beginmodule(tolua_S,"GeneralDamageSpell");
    tolua_function(tolua_S,"setCastTime",tolua_CLuaInterface_GeneralDamageSpell_setCastTime00);
    tolua_function(tolua_S,"setManaCost",tolua_CLuaInterface_GeneralDamageSpell_setManaCost00);
@@ -3095,6 +3124,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getCurrentZone",tolua_CLuaInterface_DawnInterface_getCurrentZone00);
    tolua_function(tolua_S,"addMobSpawnPoint",tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00);
    tolua_function(tolua_S,"createGeneralDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralDamageSpell00);
+   tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

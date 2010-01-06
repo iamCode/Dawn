@@ -36,5 +36,6 @@ namespace DawnInterface
 	                    WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
 	GeneralDamageSpell* createGeneralDamageSpell();
+	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

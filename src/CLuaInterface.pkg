@@ -238,7 +238,7 @@ class Item
 	void setLevelReq( int levelReq );
 };
 
-class GeneralDamageSpell
+class GeneralDamageSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
 	void setManaCost( int newManaCost );
@@ -266,8 +266,9 @@ namespace DawnInterface
 		                ArmorType::ArmorType armorType,
 		                WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
-    CZone* getCurrentZone();
-    void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
-    GeneralDamageSpell* createGeneralDamageSpell();
+	CZone* getCurrentZone();
+	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	GeneralDamageSpell* createGeneralDamageSpell();
+	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

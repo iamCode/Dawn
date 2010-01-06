@@ -21,6 +21,9 @@
 #include "CCharacter.h"
 #include "Player.h"
 
+#include <cassert>
+#include <memory>
+
 void sSpellSlot::initFont()
 {
 	font = new GLFT_Font("data/verdana.ttf", 11);
@@ -28,6 +31,7 @@ void sSpellSlot::initFont()
 
 Spellbook::Spellbook( Player *player_ )
         :   player( player_ ),
+			curPage( 0 ),
             floatingSpell( NULL ),
             visible( false ),
             posX( 200 ),
@@ -47,16 +51,10 @@ Spellbook::Spellbook( Player *player_ )
     spellSlot.push_back(sSpellSlot(205,70,50,50));
 
     // do this in a learnSpell / scribeSpell / memorizeSpell function later.
-    spellSlot[0].action = SpellCreation::getLightningSpell();
-    spellSlot[0].tooltip = new spellTooltip( spellSlot[0].action, player );
-    spellSlot[1].action = SpellCreation::getHealOtherSpell();
-    spellSlot[1].tooltip = new spellTooltip( spellSlot[1].action, player );
-    spellSlot[2].action = SpellCreation::getHealingSpell();
-    spellSlot[2].tooltip = new spellTooltip( spellSlot[2].action, player );
-    spellSlot[3].action = SpellCreation::getMagicMissileSpell();
-    spellSlot[3].tooltip = new spellTooltip( spellSlot[3].action, player );
-//    spellSlot[4].action = SpellCreation::getGeneralDamageSpell();
-//    spellSlot[4].tooltip = new spellTooltip( spellSlot[4].action, player );
+    inscribeSpell( SpellCreation::getLightningSpell() );
+    inscribeSpell( SpellCreation::getHealOtherSpell() );
+    inscribeSpell( SpellCreation::getHealingSpell() );
+    inscribeSpell( SpellCreation::getMagicMissileSpell() );
 }
 
 Spellbook::~Spellbook()
@@ -160,9 +158,23 @@ void Spellbook::clicked( int clickX, int clickY )
     if (  spellSlotIndex >= 0 && spellSlot[spellSlotIndex].action != NULL )
     {
         floatingSpell = &spellSlot[spellSlotIndex];
-    } else {
+    } else if ( isMouseOverNextPageArea( clickX, clickY ) ) {
+		nextPage();
+	} else if ( isMouseOverPreviousPageArea( clickX, clickY ) ) {
+		previousPage();
+	} else {
         floatingSpell = NULL;
     }
+}
+
+bool Spellbook::isMouseOverNextPageArea( int clickX, int clickY )
+{
+	return (clickX > posX + textures.texture[0].width - 40);
+}
+
+bool Spellbook::isMouseOverPreviousPageArea( int clickX, int clickY )
+{
+	return (clickX < posX + 40 );
 }
 
 int8_t Spellbook::getMouseOverSpellSlotId( int x, int y ) const
@@ -198,4 +210,63 @@ bool Spellbook::hasFloatingSpell() const
     } else {
         return true;
     }
+}
+
+void Spellbook::inscribeSpell( CSpellActionBase *spell )
+{
+	assert( spell != NULL );
+	inscribedSpells.push_back(spell);
+	refreshPage();
+}
+
+void Spellbook::nextPage()
+{
+	// don't go to a page with no spells on it
+	size_t numSlots = spellSlot.size();
+	size_t numSpells = inscribedSpells.size();
+	if ( numSlots * (curPage+1) >= numSpells ) {
+		return;
+	}
+	++curPage;
+	refreshPage();
+}
+
+void Spellbook::previousPage()
+{
+	// don't go further than first page
+	if ( curPage == 0 ) {
+		return;
+	}
+	--curPage;
+	refreshPage();
+}
+
+void Spellbook::refreshPage()
+{
+	size_t spellsOnPreviousPages = curPage * spellSlot.size();
+
+	for ( size_t curSlot=0; curSlot<spellSlot.size(); ++curSlot ) {
+		// reset slot to empty
+		spellSlot[curSlot].action = NULL;
+		if ( spellSlot[curSlot].tooltip != NULL ) {
+			delete spellSlot[curSlot].tooltip;
+		}
+		spellSlot[curSlot].tooltip = NULL;
+		// fill slot with spells from this page
+		size_t curSpellNr = spellsOnPreviousPages + curSlot;
+		if ( curSpellNr < inscribedSpells.size() ) {
+			spellSlot[curSlot].action = inscribedSpells[ curSpellNr ];
+			spellSlot[curSlot].tooltip = new spellTooltip( inscribedSpells[ curSpellNr ], player );
+		}
+	}
+}
+
+extern std::auto_ptr<Spellbook> spellbook;
+
+namespace DawnInterface
+{
+	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell )
+	{
+		spellbook->inscribeSpell( inscribedSpell );
+	}
 }

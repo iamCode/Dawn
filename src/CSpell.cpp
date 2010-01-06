@@ -887,18 +887,8 @@ namespace DawnInterface
 {
 	GeneralDamageSpell* createGeneralDamageSpell()
 	{
-		 GeneralDamageSpell* newSpell = dynamic_cast<GeneralDamageSpell*>( SpellCreation::getGeneralDamageSpell() );
-		 // TODO: Store spells somewhere else than in button[4] (in a global array), make them accessable in spellbook
-		 //       if that is wanted for the player or at least accessible for lua by name so they can be inscribed
-		 //       in spellbook for player and for different monsters.
-		 //       Remove the following quick hack again.
-		 sButton *button = &(actionBar->button[4]);
-		 if ( actionBar->isButtonUsed( button ) )
-		 {
-		 	actionBar->unbindAction( button );
-		 }
-		 actionBar->bindAction( button, newSpell );
-		 return newSpell;
+		 std::auto_ptr<GeneralDamageSpell> newSpell( dynamic_cast<GeneralDamageSpell*>( SpellCreation::getGeneralDamageSpell() ) );
+		 return newSpell.release();
 	}
 }
 
