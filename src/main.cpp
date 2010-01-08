@@ -269,14 +269,18 @@ void DrawScene()
 	SDL_GL_SwapBuffers();
 }
 
+
 void dawn_init_signal_handlers()
 {
+	#ifndef WIN32
 	dawn_debug_info("Initializing signal handlers...");
 	signal( SIGFPE,  generalSignalHandler );
 	signal( SIGSEGV, generalSignalHandler );
 	signal( SIGBUS,  generalSignalHandler );
 	signal( SIGABRT, generalSignalHandler );
+    #endif
 }
+
 
 bool dawn_init(int argc, char** argv)
 {
@@ -397,7 +401,7 @@ bool dawn_init(int argc, char** argv)
 			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/attacking w").append(numberString).append(".tga" ) );
 			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
 		}
-		
+
 		character.setMoveTexture( ActivityType::Walking, STOP, 0, "data/character/swordsman/walking s0000.tga" );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
@@ -432,7 +436,7 @@ bool dawn_init(int argc, char** argv)
 		Editor.initFonts();
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
-		
+
 		LuaFunctions::executeLuaFile("data/spells.lua");
 
 		SpellCreation::initSpells();

@@ -17,8 +17,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "debug.h"
+
+#ifndef WIN32
 #include <execinfo.h>
 #include <signal.h>
+#endif
 
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
@@ -55,7 +58,7 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 	bool should_output = false;
 
 	vsnprintf(buf ,1024, message, ap);
-	
+
 	switch(debug) {
 		case(DEBUG_INFO):
 			ss << date_time_string() << ": Information : " << buf;
@@ -99,7 +102,7 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 void dawn_debug_info(const std::string& message ...)
 {
 	std::va_list ap;
-	
+
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_INFO);
 	va_end(ap);
@@ -108,7 +111,7 @@ void dawn_debug_info(const std::string& message ...)
 void dawn_debug_warn(const std::string& message ...)
 {
 	std::va_list ap;
-	
+
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_WARN);
 	va_end(ap);
@@ -117,7 +120,7 @@ void dawn_debug_warn(const std::string& message ...)
 void dawn_debug_fatal(const std::string& message ...)
 {
 	std::va_list ap;
-	
+
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_FATAL);
 	va_end(ap);
@@ -125,6 +128,7 @@ void dawn_debug_fatal(const std::string& message ...)
 	exit(1);
 }
 
+#ifndef WIN32
 void print_backtrace()
 {
 	void *array[100];
@@ -138,7 +142,7 @@ void print_backtrace()
 	strings = backtrace_symbols (array, size);
 
 	printf( "./btdecode.sh << EOBT\n" );
-	
+
 	for (i = 0; i < size; i++)
 		printf ("%s\n", strings[i]);
 
@@ -153,8 +157,9 @@ void generalSignalHandler( int signum )
 	printf( "the program caught signal %d\n", signum );
 	printf( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n" );
 	print_backtrace();
-	
+
 	signal (signum, SIG_DFL);
 	raise (signum);
 }
 
+#endif

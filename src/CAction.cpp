@@ -28,12 +28,12 @@
 
 size_t randomSizeT( size_t min, size_t max )
 {
-	return min + ( static_cast<size_t>((max - min) * static_cast<double>(random())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
+	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
 }
 
 double randomDouble( double min, double max )
 {
-	return min + ( (max - min) * static_cast<double>(random())/static_cast<double>(RAND_MAX) );
+	return min + ( (max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX) );
 }
 
 /// melee attack
@@ -46,10 +46,10 @@ class AttackAction : public CAction
 			std::auto_ptr<AttackAction> newAction( new AttackAction() );
 			newAction->creator = creator;
 			newAction->target = target;
-			
+
 			return newAction.release();
 		}
-	
+
 		virtual uint16_t getCastTime() const {
 			return 0;
 		}
@@ -65,7 +65,7 @@ class AttackAction : public CAction
 		virtual std::string getInfo() const {
 			return "Causes 20 points of damage to the target.\n";
 		}
-		
+
 		virtual EffectType::EffectType getEffectType() const
 		{
 			return EffectType::SingleTargetSpell;
@@ -97,7 +97,7 @@ class AttackAction : public CAction
 		AttackAction()
 				: damageCaused( true ) {
 		}
-		
+
 		virtual double getProgress() const
 		{
 			uint32_t curTime = SDL_GetTicks();
@@ -125,24 +125,24 @@ class AttackAction : public CAction
 			double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
 			if ( distance <= 120 ) {
 				const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
-				
+
 				double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
 				double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
 				int damage = randomSizeT( minDamage, maxDamage );
-				
+
 				double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
 				double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
 				double targetEvadeChance = statsSystem->complexGetEvadeChance( target->getLevel(), target->getModifiedEvadeModifierPoints(), creator->getLevel() );
 				double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
 				double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
-				
+
 				bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
 				bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
 				int criticalHitFactor = 2;
 				bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
 				bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
 				double blockFactor = 0.5;
-				
+
 				if ( hasHit && !targetEvaded ) {
 					int damageDone = damage * (1.0-damageReduction) * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
 					if ( damageDone < 1 ) {
@@ -154,7 +154,7 @@ class AttackAction : public CAction
 					}
 				}
 			}
-			
+
 			markSpellActionAsFinished();
 		}
 
