@@ -51,10 +51,8 @@ Spellbook::Spellbook( Player *player_ )
     spellSlot.push_back(sSpellSlot(205,70,50,50));
 
     // do this in a learnSpell / scribeSpell / memorizeSpell function later.
-    inscribeSpell( SpellCreation::getLightningSpell() );
     inscribeSpell( SpellCreation::getHealOtherSpell() );
     inscribeSpell( SpellCreation::getHealingSpell() );
-    inscribeSpell( SpellCreation::getMagicMissileSpell() );
 }
 
 Spellbook::~Spellbook()

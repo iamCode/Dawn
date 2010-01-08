@@ -42,11 +42,8 @@ ActionBar::ActionBar( Player *player_ )
     button.push_back( sButton(560, 0, 50, 50, "9", SDLK_9) );
     button.push_back( sButton(630, 0, 50, 50, "0", SDLK_0) );
 
-    bindAction( &button[0], SpellCreation::getLightningSpell() );
-    bindAction( &button[1], SpellCreation::getHealingSpell() );
-    bindAction( &button[2], SpellCreation::getHealOtherSpell() );
-    bindAction( &button[3], SpellCreation::getMagicMissileSpell() );
-//    bindAction( &button[4], SpellCreation::getGeneralDamageSpell() );
+    bindAction( &button[0], SpellCreation::getHealingSpell() );
+    bindAction( &button[1], SpellCreation::getHealOtherSpell() );
 }
 
 ActionBar::~ActionBar()

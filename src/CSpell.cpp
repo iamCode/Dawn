@@ -84,322 +84,6 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	                                  left, width, bottom, height );
 }
 
-/// Magic Missile
-
-class MagicMissileSpell : public CSpell
-{
-	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target )
-		{
-			std::auto_ptr<MagicMissileSpell> newSpell( new MagicMissileSpell() );
-			newSpell->creator = creator;
-			newSpell->target = target;
-			
-			return newSpell.release();
-		}
-		
-		virtual uint16_t getCastTime() const
-		{
-			return 1000;
-		}
-
-		virtual uint16_t getManaCost() const
-		{
-			return 10;
-		}
-
-		virtual std::string getName() const
-		{
-			return "Magic Missile";
-		}
-
-		virtual std::string getInfo() const
-		{
-			return "Causes 5 + (1 to 5) points of lightning damage to the target.";
-		}
-
-		static CTexture *spellTexture;
-		static CTexture *spellSymbol;
-
-		static void init() {
-			spellTexture = new CTexture();
-			spellTexture->texture.reserve( 1 );
-			spellTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
-
-			spellSymbol = new CTexture();
-			spellSymbol->texture.reserve( 1 );
-			spellSymbol->LoadIMG( "data/spells/magicmissile/symbol.tga", 0 );
-		}
-
-		virtual CTexture* getSymbol() const
-		{
-			return spellSymbol;
-		}
-
-		virtual EffectType::EffectType getEffectType() const
-		{
-			return EffectType::SingleTargetSpell;
-		}
-
-		MagicMissileSpell()
-		{
-		}
-
-		virtual void startEffect() {
-			effectStart = SDL_GetTicks();
-			lastEffect = effectStart;
-			posx = creator->getXPos() + (creator->getWidth() / 2);
-			posy = creator->getYPos() + (creator->getHeight() / 2);
-			unbindFromCreator();
-		}
-
-		virtual void inEffect() {
-			uint32_t curTicks = SDL_GetTicks();
-			int move = (curTicks - lastEffect);
-			int targetx = target->getXPos() + (target->getWidth() / 2);
-			int targety = target->getYPos() + (target->getHeight() / 2);
-			int dx = targetx - posx;
-			int dy = targety - posy;
-			double dist = sqrt( (dx * dx) + (dy * dy) );
-			double percdist = (move / dist);
-			int movex;
-			int movey;
-
-			if ( percdist >= 1.0 ) {
-				movex = dx;
-				movey = dy;
-			} else {
-				movex = dx * percdist;
-				movey = dy * percdist;
-			}
-
-			double movedDist = sqrt(movex * movex + movey * movey);
-			lastEffect += movedDist;
-			if ( lastEffect > curTicks )
-				lastEffect = curTicks;
-
-			posx += movex;
-			posy += movey;
-
-			if ( posx == targetx && posy == targety )
-				finishEffect();
-		}
-
-		void finishEffect() {
-			int damage = 1 + rand() % 5 + 5;
-			// element type is Air
-			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
-			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
-			double realDamage = damage * damageFactor * (1-resist);
-			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-			bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
-			if ( criticalHit == true ) {
-				int criticalDamageMultiplier = 2;
-				realDamage *= criticalDamageMultiplier;
-			}
-
-			target->Damage( round( realDamage ),criticalHit );
-			if ( ! target->isAlive() ) {
-				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-			}
-
-			markSpellActionAsFinished();
-		}
-
-		virtual void drawEffect() {
-			DrawingHelpers::mapTextureToRect(
-			    spellTexture->texture[0].texture,
-			    posx - 16, 32,
-			    posy - 16, 32 );
-		}
-
-	private:
-		CCharacter *target;
-		uint32_t effectStart;
-		uint32_t lastEffect;
-		int posx, posy;
-};
-
-CTexture *MagicMissileSpell::spellTexture = NULL;
-CTexture *MagicMissileSpell::spellSymbol = NULL;
-
-/// Lightning spell
-
-class LightningSpell : public CSpell
-{
-	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target )
-		{
-			std::auto_ptr<LightningSpell> newSpell( new LightningSpell() );
-			newSpell->creator = creator;
-			newSpell->target = target;
-			
-			return newSpell.release();
-		}
-
-		virtual uint16_t getCastTime() const
-		{
-			return 3000;
-		}
-
-		virtual uint16_t getManaCost() const
-		{
-			return 20;
-		}
-
-		virtual std::string getName() const
-		{
-			return "Lightning";
-		}
-
-		virtual std::string getInfo() const
-		{
-			return "Causes 30 + (1 to 60) points of lightning damage to the target.";
-		}
-
-		static CTexture *spellTexture;
-		static CTexture *spellSymbol;
-
-		static void init() {
-			spellTexture = new CTexture();
-			spellTexture->texture.reserve( 5 );
-			spellTexture->LoadIMG( "data/spells/lightning/1.tga", 0 );
-			spellTexture->LoadIMG( "data/spells/lightning/2.tga", 1 );
-			spellTexture->LoadIMG( "data/spells/lightning/3.tga", 2 );
-			spellTexture->LoadIMG( "data/spells/lightning/4.tga", 3 );
-			spellTexture->LoadIMG( "data/spells/lightning/5.tga", 4 );
-
-			spellSymbol = new CTexture();
-			spellSymbol->texture.reserve(1);
-			spellSymbol->LoadIMG( "data/spells/lightning/symbol.tga", 0 );
-		}
-
-		CTexture* getSymbol() const {
-			return spellSymbol;
-		}
-
-		virtual EffectType::EffectType getEffectType() const
-		{
-			return EffectType::SingleTargetSpell;
-		}
-
-		LightningSpell()
-				: continuousDamageCaused( 0 ),
-				  remainingEffect( 0.0 ) {
-		}
-
-		virtual void startEffect() {
-			remainingEffect = 0.0;
-			int damage = 1 + rand() % 60;
-			// element type is Air
-			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
-			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
-			double realDamage = damage * damageFactor * (1-resist);
-			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-			bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
-			if ( criticalHit == true ) {
-				int criticalDamageMultiplier = 2;
-				realDamage *= criticalDamageMultiplier;
-			}
-
-			target->Damage( round(realDamage), criticalHit );
-			if ( ! target->isAlive() ) {
-				creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-			}
-			effectStart = SDL_GetTicks();
-			lastEffect = effectStart;
-			unbindFromCreator();
-		}
-
-		virtual void inEffect() {
-			uint32_t curTime = SDL_GetTicks();
-			int curDamage = static_cast<int>( (curTime - lastEffect) / 50 );
-            // element type is Air
-			double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Air ), target->getLevel() );
-			double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( ElementType::Air ), creator->getLevel() );
-			double realDamage = curDamage * damageFactor * (1-resist) + remainingEffect;
-			// no critical damage in this phase so far
-
-			bool callFinish = false;
-			double topLimit = 30.0 * damageFactor * (1-resist);
-
-			if ( continuousDamageCaused + realDamage >= topLimit ) {
-				realDamage = topLimit - continuousDamageCaused;
-				callFinish = true;
-			}
-
-			if ( floor(realDamage) > 0 && ( curTime - lastEffect > 500 || callFinish ) ) {
-				target->Damage( floor(realDamage), false );
-				remainingEffect = realDamage - floor( realDamage );
-				if ( ! target->isAlive() ) {
-					creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-				}
-				lastEffect += curDamage * 50;
-				continuousDamageCaused += floor(realDamage);
-			}
-
-			if ( callFinish || ! target->isAlive() ) {
-				finishEffect();
-			}
-		}
-
-		void finishEffect() {
-			markSpellActionAsFinished();
-		}
-
-		virtual void drawEffect() {
-			float degrees;
-			degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57.296;
-			degrees += 90;
-
-			animationTimerStop = SDL_GetTicks();
-			if (animationTimerStop - animationTimerStart > 50) {
-				frameCount = rand() % 4;
-			}
-
-			if (creator->x_pos < target->x_pos) {
-				degrees = -degrees;
-			}
-
-
-			glPushMatrix();
-			glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
-
-			glTranslatef(creator->x_pos+32, creator->y_pos+32, 0.0f);
-			glRotatef(degrees,0.0f,0.0f,1.0f);
-			glTranslatef(-160-creator->x_pos,-creator->y_pos-32,0.0);
-
-			glBegin( GL_QUADS );
-			// Bottom-left vertex (corner)
-			glTexCoord2f( 0.0f, 0.0f );
-			glVertex3f( creator->x_pos+32, creator->y_pos+64, 0.0f );
-			// Bottom-right vertex (corner)
-			glTexCoord2f( 1.0f, 0.0f );
-			glVertex3f( creator->x_pos+256+32, creator->y_pos+64, 0.0f );
-			// Top-right vertex (corner)
-			glTexCoord2f( 1.0f, 1.0f );
-			glVertex3f( creator->x_pos+256+32, creator->y_pos+400+64, 0.0f );
-			// Top-left vertex (corner)
-			glTexCoord2f( 0.0f, 1.0f );
-			glVertex3f( creator->x_pos+32, creator->y_pos+400+64, 0.0f );
-			glEnd();
-			glPopMatrix();
-		}
-
-	private:
-		CCharacter *target;
-		uint8_t frameCount;
-		uint32_t effectStart;
-		uint32_t lastEffect;
-		uint32_t animationTimerStart;
-		uint32_t animationTimerStop;
-		double continuousDamageCaused;
-		double remainingEffect;
-};
-
-CTexture *LightningSpell::spellTexture = NULL;
-CTexture *LightningSpell::spellSymbol = NULL;
-
 /// Heal Other spell
 
 class HealOtherSpell : public CSpell
@@ -570,33 +254,42 @@ CTexture *HealingSpell::spellSymbol = NULL;
 
 /// GeneralDamageSpell
 
-CSpellActionBase* GeneralDamageSpell::cast( CCharacter *creator, CCharacter *target )
+
+GeneralDamageSpell::GeneralDamageSpell()
 {
-	std::auto_ptr<GeneralDamageSpell> newSpell( new GeneralDamageSpell() );
-	newSpell->creator = creator;
-	newSpell->target = target;
+	spellSymbol = NULL;
 	
-	newSpell->castTime = castTime;
-	newSpell->manaCost = manaCost;
-	newSpell->delayTime = delayTime;
-	newSpell->moveToTarget = moveToTarget;
-	newSpell->minDirectDamage = minDirectDamage; // This should be a list of effects
-	newSpell->maxDirectDamage = maxDirectDamage;
-	newSpell->elementDirect = elementDirect;
+	castTime = 0;
+	manaCost = 0;
+	minDirectDamage = 0;
+	maxDirectDamage = 0;
+	elementDirect = ElementType::Air;
+	
+	minContinuousDamagePerSecond = 0.0;
+	maxContinuousDamagePerSecond = 0.0;
+	elementContinuous = ElementType::Air;
+	
+	name = "";
+	info = "";
+}
 
-	newSpell->minContinuousDamagePerSecond = minContinuousDamagePerSecond;
-	newSpell->maxContinuousDamagePerSecond = maxContinuousDamagePerSecond;
-	newSpell->elementContinuous = elementContinuous;
-	newSpell->continuousDamageTime = continuousDamageTime;
+GeneralDamageSpell::GeneralDamageSpell( GeneralDamageSpell *other )
+{
+	spellSymbol = other->spellSymbol;
 
-	newSpell->name = name;
-	newSpell->info = info;
-	
-	newSpell->numTextures  = numTextures;
-	newSpell->spellTexture = spellTexture;
-	newSpell->spellSymbol  = spellSymbol;
-	
-	return newSpell.release();
+	castTime = other->castTime;
+	manaCost = other->manaCost;
+	minDirectDamage = other->minDirectDamage; // This should be a list of effects
+	maxDirectDamage = other->maxDirectDamage;
+	elementDirect = other->elementDirect;
+
+	minContinuousDamagePerSecond = other->minContinuousDamagePerSecond;
+	maxContinuousDamagePerSecond = other->maxContinuousDamagePerSecond;
+	elementContinuous = other->elementContinuous;
+	continuousDamageTime = other->continuousDamageTime;
+
+	name = other->name;
+	info = other->info;
 }
 
 void GeneralDamageSpell::setCastTime( uint16_t newCastTime )
@@ -662,21 +355,6 @@ void GeneralDamageSpell::setSpellSymbol( std::string symbolFile )
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
 
-void GeneralDamageSpell::setNumAnimations( int count )
-{
-	assert( spellTexture == NULL );
-	spellTexture = new CTexture();
-	numTextures = count;
-	spellTexture->texture.reserve( count );
-}
-
-void GeneralDamageSpell::setAnimationTexture( int num, std::string filename )
-{
-	assert( spellTexture != NULL );
-	assert( numTextures > num && num >= 0 );
-	spellTexture->LoadIMG( filename, num );
-}
-
 CTexture* GeneralDamageSpell::getSymbol() const {
 	return spellSymbol;
 }
@@ -686,19 +364,10 @@ EffectType::EffectType GeneralDamageSpell::getEffectType() const
 	return EffectType::SingleTargetSpell;
 }
 
-GeneralDamageSpell::GeneralDamageSpell()
-	: remainingEffect( 0.0 ),
-	  numTextures( 0 ),
-	  spellTexture( NULL ),
-	  spellSymbol( NULL )
+void GeneralDamageSpell::dealDirectDamage()
 {
-}
-
-void GeneralDamageSpell::startEffect()
-{
-	remainingEffect = 0.0;
 	int damage = minDirectDamage + rand() % (maxDirectDamage - minDirectDamage);
-	// element type is Air
+	
 	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementDirect ), target->getLevel() );
 	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementDirect ), creator->getLevel() );
 	double realDamage = damage * damageFactor * (1-resist);
@@ -713,12 +382,77 @@ void GeneralDamageSpell::startEffect()
 	if ( ! target->isAlive() ) {
 		creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 	}
+}
+
+double GeneralDamageSpell::calculateContinuousDamage( uint64_t timePassed )
+{
+	double secondsPassed = (timePassed) / 1000.0;
+	
+	double curRandDamage = randomDouble( minContinuousDamagePerSecond * secondsPassed, maxContinuousDamagePerSecond * secondsPassed );
+
+	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
+	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementContinuous ), creator->getLevel() );
+	double realDamage = curRandDamage * damageFactor * (1-resist);
+	return realDamage;
+}
+
+/// class GeneralBarDamageSpell
+
+GeneralBarDamageSpell::GeneralBarDamageSpell()
+{
+	remainingEffect = 0;
+
+	numTextures = 0;
+	spellTexture = NULL;
+}
+
+GeneralBarDamageSpell::GeneralBarDamageSpell( GeneralBarDamageSpell *other )
+	: GeneralDamageSpell( other )
+{
+	remainingEffect = 0;
+
+	numTextures = other->numTextures;
+	spellTexture = other->spellTexture;
+}
+
+CSpellActionBase* GeneralBarDamageSpell::cast( CCharacter *creator, CCharacter *target )
+{
+	GeneralBarDamageSpell* newSpell = new GeneralBarDamageSpell( this );
+	newSpell->creator = creator;
+	newSpell->target = target;
+	
+	return newSpell;
+}
+
+void GeneralBarDamageSpell::setNumAnimations( int count )
+{
+	assert( spellTexture == NULL );
+	spellTexture = new CTexture();
+	numTextures = count;
+	spellTexture->texture.reserve( count );
+}
+
+void GeneralBarDamageSpell::setAnimationTexture( int num, std::string filename )
+{
+	assert( spellTexture != NULL );
+	assert( numTextures > num && num >= 0 );
+	spellTexture->LoadIMG( filename, num );
+}
+
+void GeneralBarDamageSpell::startEffect()
+{
+	remainingEffect = 0.0;
+	frameCount = 0;
+
+	dealDirectDamage();
+
 	effectStart = SDL_GetTicks();
+	animationTimerStart = effectStart;
 	lastEffect = effectStart;
 	unbindFromCreator();
 }
 
-void GeneralDamageSpell::inEffect()
+void GeneralBarDamageSpell::inEffect()
 {
 	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
@@ -732,14 +466,7 @@ void GeneralDamageSpell::inEffect()
 		return;
 	}
 
-	double secondsPassed = (elapsedSinceLast) / 1000.0;
-	
-	double curRandDamage = randomDouble( minContinuousDamagePerSecond * secondsPassed, maxContinuousDamagePerSecond * secondsPassed );
-
-	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
-	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementContinuous ), creator->getLevel() );
-	double realDamage = curRandDamage * damageFactor * (1-resist) + remainingEffect;
-	remainingEffect += realDamage;
+	remainingEffect += calculateContinuousDamage( elapsedSinceLast );
 	// no critical damage in this phase so far
 
 	bool callFinish = false;
@@ -748,8 +475,8 @@ void GeneralDamageSpell::inEffect()
 	}
 
 	if ( floor(remainingEffect) > 0 ) {
-		target->Damage( floor(realDamage), false );
-		remainingEffect = realDamage - floor( realDamage );
+		target->Damage( floor(remainingEffect), false );
+		remainingEffect = remainingEffect - floor( remainingEffect );
 		if ( ! target->isAlive() ) {
 			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 		}
@@ -761,21 +488,19 @@ void GeneralDamageSpell::inEffect()
 	}
 }
 
-void GeneralDamageSpell::finishEffect()
+void GeneralBarDamageSpell::finishEffect()
 {
 	markSpellActionAsFinished();
 }
 
-void GeneralDamageSpell::drawEffect()
+void GeneralBarDamageSpell::drawEffect()
 {
 	float degrees;
 	degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57.296;
 	degrees += 90;
 
 	animationTimerStop = SDL_GetTicks();
-	if (animationTimerStop - animationTimerStart > 50) {
-		frameCount = randomSizeT( 0, numTextures-1 );
-	}
+	frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numTextures;
 
 	if (creator->x_pos < target->x_pos) {
 		degrees = -degrees;
@@ -806,6 +531,142 @@ void GeneralDamageSpell::drawEffect()
 	glPopMatrix();
 }
 
+/// class GeneralBoltDamageSpell
+
+
+GeneralBoltDamageSpell::GeneralBoltDamageSpell()
+{
+	numBoltTextures = 0;
+	boltTexture = NULL;
+	moveSpeed = 1;
+	expireTime = 10000;
+}
+
+GeneralBoltDamageSpell::GeneralBoltDamageSpell( GeneralBoltDamageSpell *other )
+	: GeneralDamageSpell( other )
+{
+	numBoltTextures = other->numBoltTextures;
+	boltTexture = other->boltTexture;
+	moveSpeed = other->moveSpeed;
+	expireTime = other->expireTime;
+}
+
+CSpellActionBase* GeneralBoltDamageSpell::cast( CCharacter *creator, CCharacter *target )
+{
+	GeneralBoltDamageSpell* newSpell = new GeneralBoltDamageSpell( this );
+	newSpell->creator = creator;
+	newSpell->target = target;
+	
+	return newSpell;
+}
+
+void GeneralBoltDamageSpell::setMoveSpeed( int newMoveSpeed )
+{
+	moveSpeed = newMoveSpeed;
+}
+
+void GeneralBoltDamageSpell::setExpireTime( int newExpireTime )
+{
+	expireTime = newExpireTime;
+}
+
+void GeneralBoltDamageSpell::setNumAnimations( int count )
+{
+	assert( boltTexture == NULL );
+	boltTexture = new CTexture();
+	numBoltTextures = count;
+	boltTexture->texture.reserve( count );
+}
+
+void GeneralBoltDamageSpell::setAnimationTexture( int num, std::string filename )
+{
+	assert( boltTexture != NULL );
+	assert( numBoltTextures > num && num >= 0 );
+	boltTexture->LoadIMG( filename, num );
+}
+
+void GeneralBoltDamageSpell::startEffect()
+{
+	frameCount = 0;
+	moveRemaining = 0.0;
+	effectStart = SDL_GetTicks();
+	animationTimerStart = effectStart;
+	lastEffect = effectStart;
+	posx = creator->getXPos() + (creator->getWidth() / 2);
+	posy = creator->getYPos() + (creator->getHeight() / 2);
+	unbindFromCreator();
+}
+
+void GeneralBoltDamageSpell::inEffect()
+{
+	uint32_t curTicks = SDL_GetTicks();
+	moveRemaining += moveSpeed * (curTicks - lastEffect) / 1000.0;
+	int targetx = target->getXPos() + (target->getWidth() / 2);
+	int targety = target->getYPos() + (target->getHeight() / 2);
+	int dx = targetx - posx;
+	int dy = targety - posy;
+	double dist = sqrt( (dx * dx) + (dy * dy) );
+	double percdist = (moveRemaining / dist);
+	int movex;
+	int movey;
+
+	if ( percdist >= 1.0 ) {
+		movex = dx;
+		movey = dy;
+	} else {
+		movex = dx * percdist;
+		movey = dy * percdist;
+	}
+
+	double movedDist = sqrt(movex * movex + movey * movey);
+	moveRemaining -= movedDist;
+	lastEffect = curTicks;
+
+	posx += movex;
+	posy += movey;
+
+	if ( (posx == targetx && posy == targety) ) {
+		finishEffect();
+	} else if ( (curTicks - effectStart) > expireTime ) {
+		markSpellActionAsFinished();
+	}
+}
+
+void GeneralBoltDamageSpell::finishEffect()
+{
+	dealDirectDamage();
+	markSpellActionAsFinished();
+}
+
+void GeneralBoltDamageSpell::drawEffect()
+{
+	int targetx = target->getXPos() + (target->getWidth() / 2);
+	int targety = target->getYPos() + (target->getHeight() / 2);
+	float degrees;
+	degrees = asin((posy - targety)/sqrt((pow(posx - targetx,2)+pow(posy - targety,2)))) * 57.296;
+	degrees += 90;
+
+	animationTimerStop = SDL_GetTicks();
+	frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numBoltTextures;
+
+	if (posx < targetx) {
+		degrees = -degrees;
+	}
+
+	int textureWidth = target->getWidth()/2;
+	int textureHeight = target->getWidth()/2;
+	glPushMatrix();
+	glTranslatef(posx, posy, 0.0f);
+	glRotatef(degrees,0.0f,0.0f,1.0f);
+	glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
+
+	DrawingHelpers::mapTextureToRect(
+			    boltTexture->texture[frameCount].texture,
+			    0, textureWidth,
+			    0, textureHeight );
+	glPopMatrix();
+}
+
 /// SpellCreation factory methods
 
 namespace SpellCreation
@@ -813,20 +674,8 @@ namespace SpellCreation
 
 	void initSpells()
 	{
-		MagicMissileSpell::init();
-		LightningSpell::init();
 		HealOtherSpell::init();
 		HealingSpell::init();
-	}
-	
-	CSpellActionBase* getMagicMissileSpell()
-	{
-		return new MagicMissileSpell();
-	}
-	
-	CSpellActionBase* getLightningSpell()
-	{
-		return new LightningSpell();
 	}
 	
 	CSpellActionBase* getHealingSpell()
@@ -839,55 +688,29 @@ namespace SpellCreation
 		return new HealOtherSpell();
 	}
 	
-	CSpellActionBase* getGeneralDamageSpell()
+	CSpellActionBase* getGeneralBarDamageSpell()
 	{
-		uint16_t castTime = 1500;
-		uint16_t manaCost = 120;
-		uint16_t delayTime = 0;
-		bool moveToTarget = false;
-		uint16_t minDirectDamage = 1; // This should be a list of effects
-		uint16_t maxDirectDamage = 10;
-		ElementType::ElementType elementDirect = ElementType::Air;
-		
-		double minContinuousDamagePerSecond = 5.5;
-		double maxContinuousDamagePerSecond = 5.5;
-		ElementType::ElementType elementContinuous = ElementType::Light;
-		uint16_t continuousDamageTime = 4000;
-		
-		std::string name = "DUMMY - not set yet";
-		std::string info = "DUMMY description";
+		return new GeneralBarDamageSpell();
+	}
 	
-		std::auto_ptr<GeneralDamageSpell> newSpell( new GeneralDamageSpell() );
-
-		newSpell->castTime = castTime;
-		newSpell->manaCost = manaCost;
-		newSpell->delayTime = delayTime;
-		newSpell->moveToTarget = moveToTarget;
-		newSpell->minDirectDamage = minDirectDamage; // This should be a list of effects
-		newSpell->maxDirectDamage = maxDirectDamage;
-		newSpell->elementDirect = elementDirect;
-		
-		newSpell->minContinuousDamagePerSecond = minContinuousDamagePerSecond;
-		newSpell->maxContinuousDamagePerSecond = maxContinuousDamagePerSecond;
-		newSpell->elementContinuous = elementContinuous;
-		newSpell->continuousDamageTime = continuousDamageTime;
-		
-		newSpell->name = name;
-		newSpell->info = info;
-		
-		return newSpell.release();
+	CSpellActionBase* getGeneralBoltDamageSpell()
+	{
+		return new GeneralBoltDamageSpell();
 	}
 
 } // namespace SpellCreation
 
-#include "ActionBar.h"
-extern std::auto_ptr<ActionBar> actionBar;
-
 namespace DawnInterface
 {
-	GeneralDamageSpell* createGeneralDamageSpell()
+	GeneralBarDamageSpell* createGeneralBarDamageSpell()
 	{
-		 std::auto_ptr<GeneralDamageSpell> newSpell( dynamic_cast<GeneralDamageSpell*>( SpellCreation::getGeneralDamageSpell() ) );
+		 std::auto_ptr<GeneralBarDamageSpell> newSpell( dynamic_cast<GeneralBarDamageSpell*>( SpellCreation::getGeneralBarDamageSpell() ) );
+		 return newSpell.release();
+	}
+	
+	GeneralBoltDamageSpell* createGeneralBoltDamageSpell()
+	{
+		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell() ) );
 		 return newSpell.release();
 	}
 }

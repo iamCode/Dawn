@@ -249,6 +249,18 @@ class GeneralDamageSpell : public CSpell
 	void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, int newContDamageTime, ElementType::ElementType newContDamageElement );
 
 	void setSpellSymbol( std::string symbolFile );
+};
+
+class GeneralBarDamageSpell : public GeneralDamageSpell
+{
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
+
+class GeneralBoltDamageSpell : public GeneralDamageSpell
+{
+	void setMoveSpeed( int newMoveSpeed );
+	void setExpireTime( int newExpireTime );
 	void setNumAnimations( int count );
 	void setAnimationTexture( int num, std::string filename );
 };
@@ -268,7 +280,8 @@ namespace DawnInterface
 	void giveItemToPlayer( Item* item );
 	CZone* getCurrentZone();
 	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
-	GeneralDamageSpell* createGeneralDamageSpell();
+	GeneralBarDamageSpell* createGeneralBarDamageSpell();
+	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

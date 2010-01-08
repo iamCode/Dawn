@@ -119,18 +119,17 @@ class CSpell : public CSpellActionBase
 namespace SpellCreation
 {
 	void initSpells();
-	CSpellActionBase* getMagicMissileSpell();
-	CSpellActionBase* getLightningSpell();
 	CSpellActionBase* getHealOtherSpell();
 	CSpellActionBase* getHealingSpell();
 	
-	CSpellActionBase* getGeneralDamageSpell();
+	CSpellActionBase* getGeneralBarDamageSpell();
+	CSpellActionBase* getGeneralBoltDamageSpell();
 }
 
 class GeneralDamageSpell : public CSpell
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		void copyAttributes( GeneralDamageSpell *copyTarget ) const;
 		void setCastTime( uint16_t newCastTime );
 		virtual uint16_t getCastTime() const;
 		void setManaCost( uint16_t newManaCost );
@@ -144,27 +143,21 @@ class GeneralDamageSpell : public CSpell
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 		
 		void setSpellSymbol( std::string symbolFile );
-		void setNumAnimations( int count );
-		void setAnimationTexture( int num, std::string filename );
 
 		CTexture* getSymbol() const;
 
 		virtual EffectType::EffectType getEffectType() const;
 
+		void dealDirectDamage();
+		double calculateContinuousDamage( uint64_t timePassed );
+		
+	protected:
 		GeneralDamageSpell();
+		GeneralDamageSpell( GeneralDamageSpell *other );
 
-		virtual void startEffect();
-		virtual void inEffect();
-		void finishEffect();
-
-		virtual void drawEffect();
-
-	private:
 		CCharacter *target;
 		uint16_t castTime;
 		uint16_t manaCost;
-		uint16_t delayTime;
-		bool moveToTarget;
 		uint16_t minDirectDamage; // This should be a list of effects
 		uint16_t maxDirectDamage;
 		ElementType::ElementType elementDirect;
@@ -177,6 +170,29 @@ class GeneralDamageSpell : public CSpell
 		std::string name;
 		std::string info;
 		
+		CTexture *spellSymbol;
+};
+
+class GeneralBarDamageSpell : public GeneralDamageSpell
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		void setNumAnimations( int count );
+		void setAnimationTexture( int num, std::string filename );
+
+		virtual void startEffect();
+		virtual void inEffect();
+		void finishEffect();
+
+		virtual void drawEffect();
+
+	protected:
+		GeneralBarDamageSpell();
+		GeneralBarDamageSpell( GeneralBarDamageSpell *other );
+
+	private:
+		friend CSpellActionBase* SpellCreation::getGeneralBarDamageSpell();
+	
 		uint8_t frameCount;
 		uint32_t effectStart;
 		uint32_t lastEffect;
@@ -186,9 +202,44 @@ class GeneralDamageSpell : public CSpell
 		
 		int numTextures;
 		CTexture *spellTexture;
-		CTexture *spellSymbol;
-		
-	friend CSpellActionBase* SpellCreation::getGeneralDamageSpell();
 };
+
+class GeneralBoltDamageSpell : public GeneralDamageSpell
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		void setMoveSpeed( int newMoveSpeed );
+		void setExpireTime( int newExpireTime );
+		void setNumAnimations( int count );
+		void setAnimationTexture( int num, std::string filename );
+
+		virtual void startEffect();
+		virtual void inEffect();
+		void finishEffect();
+
+		virtual void drawEffect();
+
+	protected:
+		GeneralBoltDamageSpell();
+		GeneralBoltDamageSpell( GeneralBoltDamageSpell *other );
+
+	private:
+		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell();
+	
+		uint32_t moveSpeed;
+		uint32_t expireTime;
+		int posx, posy;
+		double moveRemaining;
+		
+		uint8_t frameCount;
+		uint32_t effectStart;
+		uint32_t lastEffect;
+		uint32_t animationTimerStart;
+		uint32_t animationTimerStop;
+		
+		int numBoltTextures;
+		CTexture *boltTexture;
+};
+
 
 #endif // __C_SPELL_H_
