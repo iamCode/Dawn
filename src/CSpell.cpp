@@ -252,15 +252,87 @@ class HealingSpell : public CSpell
 
 CTexture *HealingSpell::spellSymbol = NULL;
 
+/// ConfigurableSpell
+
+ConfigurableSpell::ConfigurableSpell()
+{
+	spellSymbol = NULL;
+
+	castTime = 0;
+	manaCost = 0;
+
+	name = "";
+	info = "";
+}
+
+ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
+{
+	spellSymbol = other->spellSymbol;
+
+	castTime = other->castTime;
+	manaCost = other->manaCost;
+
+	name = other->name;
+	info = other->info;
+}
+
+void ConfigurableSpell::setCastTime( uint16_t newCastTime )
+{
+	castTime = newCastTime;
+}
+
+uint16_t ConfigurableSpell::getCastTime() const
+{
+	return castTime;
+}
+
+void ConfigurableSpell::setManaCost( uint16_t newManaCost )
+{
+	manaCost = newManaCost;
+}
+
+uint16_t ConfigurableSpell::getManaCost() const
+{
+	return manaCost;
+}
+
+void ConfigurableSpell::setName( std::string newName )
+{
+	name = newName;
+}
+
+std::string ConfigurableSpell::getName() const
+{
+	return name;
+}
+
+void ConfigurableSpell::setInfo( std::string newInfo )
+{
+	info = newInfo;
+}
+
+std::string ConfigurableSpell::getInfo() const
+{
+	return info;
+}
+
+void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
+{
+	assert( spellSymbol == NULL );
+	spellSymbol = new CTexture();
+	spellSymbol->texture.reserve(1);
+	spellSymbol->LoadIMG( symbolFile, 0 );
+}
+
+CTexture* ConfigurableSpell::getSymbol() const {
+	return spellSymbol;
+}
+
 /// GeneralDamageSpell
 
 
 GeneralDamageSpell::GeneralDamageSpell()
 {
-	spellSymbol = NULL;
-	
-	castTime = 0;
-	manaCost = 0;
 	minDirectDamage = 0;
 	maxDirectDamage = 0;
 	elementDirect = ElementType::Air;
@@ -268,17 +340,11 @@ GeneralDamageSpell::GeneralDamageSpell()
 	minContinuousDamagePerSecond = 0.0;
 	maxContinuousDamagePerSecond = 0.0;
 	elementContinuous = ElementType::Air;
-	
-	name = "";
-	info = "";
 }
 
 GeneralDamageSpell::GeneralDamageSpell( GeneralDamageSpell *other )
+	: ConfigurableSpell( other )
 {
-	spellSymbol = other->spellSymbol;
-
-	castTime = other->castTime;
-	manaCost = other->manaCost;
 	minDirectDamage = other->minDirectDamage; // This should be a list of effects
 	maxDirectDamage = other->maxDirectDamage;
 	elementDirect = other->elementDirect;
@@ -287,49 +353,6 @@ GeneralDamageSpell::GeneralDamageSpell( GeneralDamageSpell *other )
 	maxContinuousDamagePerSecond = other->maxContinuousDamagePerSecond;
 	elementContinuous = other->elementContinuous;
 	continuousDamageTime = other->continuousDamageTime;
-
-	name = other->name;
-	info = other->info;
-}
-
-void GeneralDamageSpell::setCastTime( uint16_t newCastTime )
-{
-	castTime = newCastTime;
-}
-
-uint16_t GeneralDamageSpell::getCastTime() const
-{
-	return castTime;
-}
-
-void GeneralDamageSpell::setManaCost( uint16_t newManaCost )
-{
-	manaCost = newManaCost;
-}
-
-uint16_t GeneralDamageSpell::getManaCost() const
-{
-	return manaCost;
-}
-
-void GeneralDamageSpell::setName( std::string newName )
-{
-	name = newName;
-}
-
-std::string GeneralDamageSpell::getName() const
-{
-	return name;
-}
-
-void GeneralDamageSpell::setInfo( std::string newInfo )
-{
-	info = newInfo;
-}
-
-std::string GeneralDamageSpell::getInfo() const
-{
-	return info;
 }
 
 void GeneralDamageSpell::setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect )
@@ -345,18 +368,6 @@ void GeneralDamageSpell::setContinuousDamage( double newMinContDamagePerSec, dou
 	maxContinuousDamagePerSecond = newMaxContDamagePerSec;
 	elementContinuous = newContDamageElement;
 	continuousDamageTime = newContDamageTime;
-}
-
-void GeneralDamageSpell::setSpellSymbol( std::string symbolFile )
-{
-	assert( spellSymbol == NULL );
-	spellSymbol = new CTexture();
-	spellSymbol->texture.reserve(1);
-	spellSymbol->LoadIMG( symbolFile, 0 );
-}
-
-CTexture* GeneralDamageSpell::getSymbol() const {
-	return spellSymbol;
 }
 
 EffectType::EffectType GeneralDamageSpell::getEffectType() const

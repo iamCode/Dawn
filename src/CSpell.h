@@ -126,10 +126,9 @@ namespace SpellCreation
 	CSpellActionBase* getGeneralBoltDamageSpell();
 }
 
-class GeneralDamageSpell : public CSpell
+class ConfigurableSpell : public CSpell
 {
 	public:
-		void copyAttributes( GeneralDamageSpell *copyTarget ) const;
 		void setCastTime( uint16_t newCastTime );
 		virtual uint16_t getCastTime() const;
 		void setManaCost( uint16_t newManaCost );
@@ -138,13 +137,28 @@ class GeneralDamageSpell : public CSpell
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
 		virtual std::string getInfo() const;
+				
+		void setSpellSymbol( std::string symbolFile );
+		CTexture* getSymbol() const;
+		
+	protected:
+		ConfigurableSpell();
+		ConfigurableSpell( ConfigurableSpell *other );
+		
+		uint16_t castTime;
+		uint16_t manaCost;
+		
+		std::string name;
+		std::string info;
+		
+		CTexture *spellSymbol;
+};
 
+class GeneralDamageSpell : public ConfigurableSpell
+{
+	public:
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
-		
-		void setSpellSymbol( std::string symbolFile );
-
-		CTexture* getSymbol() const;
 
 		virtual EffectType::EffectType getEffectType() const;
 
@@ -156,8 +170,7 @@ class GeneralDamageSpell : public CSpell
 		GeneralDamageSpell( GeneralDamageSpell *other );
 
 		CCharacter *target;
-		uint16_t castTime;
-		uint16_t manaCost;
+
 		uint16_t minDirectDamage; // This should be a list of effects
 		uint16_t maxDirectDamage;
 		ElementType::ElementType elementDirect;
@@ -166,11 +179,6 @@ class GeneralDamageSpell : public CSpell
 		double maxContinuousDamagePerSecond;
 		ElementType::ElementType elementContinuous;
 		uint16_t continuousDamageTime;
-		
-		std::string name;
-		std::string info;
-		
-		CTexture *spellSymbol;
 };
 
 class GeneralRayDamageSpell : public GeneralDamageSpell

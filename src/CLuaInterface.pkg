@@ -238,17 +238,20 @@ class Item
 	void setLevelReq( int levelReq );
 };
 
-class GeneralDamageSpell : public CSpell
+class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
 	void setManaCost( int newManaCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );
 
+	void setSpellSymbol( std::string symbolFile );
+};
+
+class GeneralDamageSpell : public ConfigurableSpell
+{
 	void setDirectDamage( int newMinDirectDamage, int newMaxDirectDamage, ElementType::ElementType newElementDirect );
 	void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, int newContDamageTime, ElementType::ElementType newContDamageElement );
-
-	void setSpellSymbol( std::string symbolFile );
 };
 
 class GeneralRayDamageSpell : public GeneralDamageSpell
