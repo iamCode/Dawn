@@ -439,7 +439,6 @@ bool dawn_init(int argc, char** argv)
 
 		LuaFunctions::executeLuaFile("data/spells.lua");
 
-		SpellCreation::initSpells();
 		ActionCreation::initActions();
 
 		// initialize random number generator

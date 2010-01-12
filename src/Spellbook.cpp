@@ -49,10 +49,6 @@ Spellbook::Spellbook( Player *player_ )
 
     spellSlot.push_back(sSpellSlot(85,70,50,50));
     spellSlot.push_back(sSpellSlot(205,70,50,50));
-
-    // do this in a learnSpell / scribeSpell / memorizeSpell function later.
-    inscribeSpell( SpellCreation::getHealOtherSpell() );
-    inscribeSpell( SpellCreation::getHealingSpell() );
 }
 
 Spellbook::~Spellbook()

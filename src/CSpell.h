@@ -118,12 +118,9 @@ class CSpell : public CSpellActionBase
 
 namespace SpellCreation
 {
-	void initSpells();
-	CSpellActionBase* getHealOtherSpell();
-	CSpellActionBase* getHealingSpell();
-	
 	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell();
+	CSpellActionBase* getGeneralHealingSpell();
 }
 
 class ConfigurableSpell : public CSpell
@@ -249,5 +246,35 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 		CTexture *boltTexture;
 };
 
+class GeneralHealingSpell : public ConfigurableSpell
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		
+		void setEffectType( EffectType::EffectType newEffectType );
+		EffectType::EffectType getEffectType() const;
+		void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+		int getHealEffectMin() const;
+		int getHealEffectMax() const;
+		ElementType::ElementType getElementType() const;
+		
+		virtual void drawEffect();
+		virtual void startEffect();
+		virtual void inEffect();
+
+	protected:
+		GeneralHealingSpell();
+		GeneralHealingSpell( GeneralHealingSpell *other );
+
+	private:
+		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell();
+	
+		CCharacter *target;
+
+		EffectType::EffectType effectType;
+		int healEffectMin;
+		int healEffectMax;
+		ElementType::ElementType healEffectElement;
+};
 
 #endif // __C_SPELL_H_

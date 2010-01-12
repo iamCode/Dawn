@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Jan 12 19:07:03 2010.
+** Generated automatically by tolua++-1.0.92 on Tue Jan 12 21:34:50 2010.
 */
 
 #ifndef __cplusplus
@@ -20,12 +20,13 @@ static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"ConfigurableSpell");
- tolua_usertype(tolua_S,"Item");
  tolua_usertype(tolua_S,"CZone");
- tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
- tolua_usertype(tolua_S,"CSpell");
  tolua_usertype(tolua_S,"CCharacter");
+ tolua_usertype(tolua_S,"Item");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
+ tolua_usertype(tolua_S,"GeneralHealingSpell");
+ tolua_usertype(tolua_S,"CSpell");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -2826,6 +2827,76 @@ static int tolua_CLuaInterface_GeneralBoltDamageSpell_setAnimationTexture00(lua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setEffectType of class  GeneralHealingSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralHealingSpell_setEffectType00
+static int tolua_CLuaInterface_GeneralHealingSpell_setEffectType00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralHealingSpell",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  GeneralHealingSpell* self = (GeneralHealingSpell*)  tolua_tousertype(tolua_S,1,0);
+  EffectType::EffectType newEffectType = ((EffectType::EffectType) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffectType'", NULL);
+#endif
+  {
+   self->setEffectType(newEffectType);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setEffectType'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setHealEffect of class  GeneralHealingSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00
+static int tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralHealingSpell",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  GeneralHealingSpell* self = (GeneralHealingSpell*)  tolua_tousertype(tolua_S,1,0);
+  int healEffectMin = ((int)  tolua_tonumber(tolua_S,2,0));
+  int healEffectMax = ((int)  tolua_tonumber(tolua_S,3,0));
+  ElementType::ElementType healEffectElement = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHealEffect'", NULL);
+#endif
+  {
+   self->setHealEffect(healEffectMin,healEffectMax,healEffectElement);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setHealEffect'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::createNewMobType */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createNewMobType00
 static int tolua_CLuaInterface_DawnInterface_createNewMobType00(lua_State* tolua_S)
@@ -3047,6 +3118,33 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralBoltDamageSpell00(lua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::createGeneralHealingSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00
+static int tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   GeneralHealingSpell* tolua_ret = (GeneralHealingSpell*)  DawnInterface::createGeneralHealingSpell();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralHealingSpell");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createGeneralHealingSpell'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::inscribeSpellInPlayerSpellbook */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00
 static int tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00(lua_State* tolua_S)
@@ -3159,6 +3257,11 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Light",ElementType::Light);
    tolua_constant(tolua_S,"Dark",ElementType::Dark);
    tolua_constant(tolua_S,"Count",ElementType::Count);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EffectType",0);
+  tolua_beginmodule(tolua_S,"EffectType");
+   tolua_constant(tolua_S,"SingleTargetSpell",EffectType::SingleTargetSpell);
+   tolua_constant(tolua_S,"SelfAffectingSpell",EffectType::SelfAffectingSpell);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"ItemQuality",0);
   tolua_beginmodule(tolua_S,"ItemQuality");
@@ -3293,6 +3396,11 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setNumAnimations",tolua_CLuaInterface_GeneralBoltDamageSpell_setNumAnimations00);
    tolua_function(tolua_S,"setAnimationTexture",tolua_CLuaInterface_GeneralBoltDamageSpell_setAnimationTexture00);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"GeneralHealingSpell","GeneralHealingSpell","ConfigurableSpell",NULL);
+  tolua_beginmodule(tolua_S,"GeneralHealingSpell");
+   tolua_function(tolua_S,"setEffectType",tolua_CLuaInterface_GeneralHealingSpell_setEffectType00);
+   tolua_function(tolua_S,"setHealEffect",tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00);
+  tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"DawnInterface",0);
   tolua_beginmodule(tolua_S,"DawnInterface");
    tolua_function(tolua_S,"createNewMobType",tolua_CLuaInterface_DawnInterface_createNewMobType00);
@@ -3302,6 +3410,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"addMobSpawnPoint",tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00);
    tolua_function(tolua_S,"createGeneralRayDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00);
    tolua_function(tolua_S,"createGeneralBoltDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralBoltDamageSpell00);
+   tolua_function(tolua_S,"createGeneralHealingSpell",tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

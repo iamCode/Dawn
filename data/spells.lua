@@ -54,3 +54,28 @@ curSpell:setMoveSpeed( 1000 );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["healing"] = curSpell;
+curSpell:setName("Healing");
+curSpell:setInfo("Heals 50 points of damage by heavenly light on self.");
+curSpell:setCastTime( 2000 );
+curSpell:setManaCost( 30 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setHealEffect( 50, 50, ElementType.Light );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["forcedhealing"] = curSpell;
+curSpell:setName("Forced Healing");
+curSpell:setInfo("Heals 50-70 points of damage by dark magic on target.");
+curSpell:setCastTime( 2000 );
+curSpell:setManaCost( 40 );
+curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
+curSpell:setEffectType( EffectType.SingleTargetSpell );
+curSpell:setHealEffect( 50, 70, ElementType.Dark );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );

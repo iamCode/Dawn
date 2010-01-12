@@ -84,174 +84,6 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	                                  left, width, bottom, height );
 }
 
-/// Heal Other spell
-
-class HealOtherSpell : public CSpell
-{
-	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target )
-		{
-			std::auto_ptr<HealOtherSpell> newSpell( new HealOtherSpell() );
-			newSpell->creator = creator;
-			newSpell->target = target;
-			
-			return newSpell.release();
-		}
-		
-		virtual uint16_t getCastTime() const
-		{
-			return 4000;
-		}
-
-		virtual uint16_t getManaCost() const
-		{
-			return 40;
-		}
-
-		virtual std::string getName() const
-		{
-			return "Heal Other";
-		}
-
-		virtual std::string getInfo() const
-		{
-			return "Heals 50 points of damage on the target.";
-		}
-
-		static CTexture *spellSymbol;
-
-		static void init() {
-			spellSymbol = new CTexture();
-			spellSymbol->texture.reserve(1);
-			spellSymbol->LoadIMG( "data/spells/healother/symbol.tga", 0 );
-		}
-
-		CTexture* getSymbol() const {
-			return spellSymbol;
-		}
-
-		virtual EffectType::EffectType getEffectType() const
-		{
-			return EffectType::SingleTargetSpell;
-		}
-
-		HealOtherSpell()
-		{
-		}
-
-		virtual void startEffect() {
-			int healEffect = 50;
-			// element type is Light
-			double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Light ), creator->getLevel() );
-			double realEffect = healEffect * effectFactor;
-			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
-			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
-				int criticalEffectMultiplier = 2;
-				realEffect *= criticalEffectMultiplier;
-			}
-			int healEffectCaused = round( realEffect );
-
-			target->Heal( healEffectCaused );
-			unbindFromCreator();
-			markSpellActionAsFinished();
-		}
-
-		virtual void inEffect() {
-		}
-
-		virtual void drawEffect() {
-		}
-
-	private:
-		CCharacter *target;
-};
-
-CTexture *HealOtherSpell::spellSymbol = NULL;
-
-/// Healing spell
-
-class HealingSpell : public CSpell
-{
-	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target )
-		{
-			assert( creator == target );
-			std::auto_ptr<HealingSpell> newSpell( new HealingSpell() );
-			newSpell->creator = creator;
-			
-			return newSpell.release();
-		}
-		
-		virtual uint16_t getCastTime() const
-		{
-			return 5000;
-		}
-
-		virtual uint16_t getManaCost() const
-		{
-			return 50;
-		}
-
-		virtual std::string getName() const
-		{
-			return "Healing";
-		}
-
-		virtual std::string getInfo() const
-		{
-			return "Heals 100 points of damage on self.";
-		}
-
-		static CTexture *spellSymbol;
-
-		static void init() {
-			spellSymbol = new CTexture();
-			spellSymbol->texture.reserve(1);
-			spellSymbol->LoadIMG( "data/spells/healing/symbol.tga", 0 );
-		}
-
-		CTexture* getSymbol() const {
-			return spellSymbol;
-		}
-
-		virtual EffectType::EffectType getEffectType() const
-		{
-			return EffectType::SelfAffectingSpell;
-		}
-
-		HealingSpell()
-		{
-		}
-
-		virtual void startEffect() {
-			int healing = 100;
-
-			// element type is Light
-			double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( ElementType::Light ), creator->getLevel() );
-			double realEffect = healing * effectFactor;
-			double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
-			if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
-				int criticalEffectMultiplier = 2;
-				realEffect *= criticalEffectMultiplier;
-			}
-			int healEffectCaused = round( realEffect );
-
-
-			creator->Heal( healEffectCaused );
-			unbindFromCreator();
-			markSpellActionAsFinished();
-		}
-
-		virtual void inEffect() {
-		}
-
-		virtual void drawEffect() {
-		}
-
-};
-
-CTexture *HealingSpell::spellSymbol = NULL;
-
 /// ConfigurableSpell
 
 ConfigurableSpell::ConfigurableSpell()
@@ -678,27 +510,99 @@ void GeneralBoltDamageSpell::drawEffect()
 	glPopMatrix();
 }
 
+/// GeneralHealingSpell
+
+GeneralHealingSpell::GeneralHealingSpell()
+{
+	effectType = EffectType::SelfAffectingSpell;
+	healEffectMin = 0;
+	healEffectMax = 0;
+	healEffectElement = ElementType::Light;
+}
+
+GeneralHealingSpell::GeneralHealingSpell( GeneralHealingSpell *other )
+	: ConfigurableSpell( other )
+{
+	effectType = other->effectType;
+	healEffectMin = other->healEffectMin;
+	healEffectMax = other->healEffectMax;
+	healEffectElement = other->healEffectElement;
+}
+
+CSpellActionBase* GeneralHealingSpell::cast( CCharacter *creator, CCharacter *target )
+{
+	assert( effectType != EffectType::SelfAffectingSpell || creator == target );
+	std::auto_ptr<GeneralHealingSpell> newSpell( new GeneralHealingSpell( this ) );
+	newSpell->creator = creator;
+	newSpell->target = target;
+	
+	return newSpell.release();
+}
+
+void GeneralHealingSpell::setEffectType( EffectType::EffectType newEffectType )
+{
+	assert( newEffectType == EffectType::SingleTargetSpell || newEffectType == EffectType::SelfAffectingSpell );
+	effectType = newEffectType;
+}
+
+EffectType::EffectType GeneralHealingSpell::getEffectType() const
+{
+	return effectType;
+}
+
+void GeneralHealingSpell::setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement )
+{
+	this->healEffectMin = healEffectMin;
+	this->healEffectMax = healEffectMax;
+	this->healEffectElement = healEffectElement;
+}
+
+int GeneralHealingSpell::getHealEffectMin() const
+{
+	return healEffectMin;
+}
+
+int GeneralHealingSpell::getHealEffectMax() const
+{
+	return healEffectMax;
+}
+
+ElementType::ElementType GeneralHealingSpell::getElementType() const
+{
+	return healEffectElement;
+}
+
+void GeneralHealingSpell::startEffect()
+{
+	int healing = randomSizeT( healEffectMin, healEffectMax );
+
+	double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( healEffectElement ), creator->getLevel() );
+	double realEffect = healing * effectFactor;
+	double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
+	if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+		int criticalEffectMultiplier = 2;
+		realEffect *= criticalEffectMultiplier;
+	}
+	int healEffectCaused = round( realEffect );
+
+
+	target->Heal( healEffectCaused );
+	unbindFromCreator();
+	markSpellActionAsFinished();
+}
+
+void GeneralHealingSpell::inEffect()
+{
+}
+
+void GeneralHealingSpell::drawEffect()
+{
+}
+
 /// SpellCreation factory methods
 
 namespace SpellCreation
-{
-
-	void initSpells()
-	{
-		HealOtherSpell::init();
-		HealingSpell::init();
-	}
-	
-	CSpellActionBase* getHealingSpell()
-	{
-		return new HealingSpell();
-	}
-	
-	CSpellActionBase* getHealOtherSpell()
-	{
-		return new HealOtherSpell();
-	}
-	
+{	
 	CSpellActionBase* getGeneralRayDamageSpell()
 	{
 		return new GeneralRayDamageSpell();
@@ -707,6 +611,11 @@ namespace SpellCreation
 	CSpellActionBase* getGeneralBoltDamageSpell()
 	{
 		return new GeneralBoltDamageSpell();
+	}
+	
+	CSpellActionBase* getGeneralHealingSpell()
+	{
+		return new GeneralHealingSpell();
 	}
 
 } // namespace SpellCreation
@@ -723,6 +632,12 @@ namespace DawnInterface
 	{
 		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell() ) );
 		 return newSpell.release();
+	}
+	
+	GeneralHealingSpell* createGeneralHealingSpell()
+	{
+		std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell() ) );
+		return newSpell.release();
 	}
 }
 

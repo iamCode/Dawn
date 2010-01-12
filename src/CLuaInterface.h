@@ -37,6 +37,7 @@ namespace DawnInterface
 	void giveItemToPlayer( Item* item );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
+	GeneralHealingSpell* createGeneralHealingSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

@@ -106,6 +106,14 @@ namespace ElementType
 	};
 }
 
+namespace EffectType
+{
+	enum EffectType {
+		SingleTargetSpell,
+		SelfAffectingSpell
+	};
+}
+
 namespace ItemQuality
 {
 	enum ItemQuality
@@ -268,6 +276,12 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 	void setAnimationTexture( int num, std::string filename );
 };
 
+class GeneralHealingSpell : public ConfigurableSpell
+{
+	void setEffectType( EffectType::EffectType newEffectType );
+	void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+};
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
@@ -285,6 +299,7 @@ namespace DawnInterface
 	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
+	GeneralHealingSpell* createGeneralHealingSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

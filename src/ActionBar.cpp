@@ -41,9 +41,6 @@ ActionBar::ActionBar( Player *player_ )
     button.push_back( sButton(490, 0, 50, 50, "8", SDLK_8) );
     button.push_back( sButton(560, 0, 50, 50, "9", SDLK_9) );
     button.push_back( sButton(630, 0, 50, 50, "0", SDLK_0) );
-
-    bindAction( &button[0], SpellCreation::getHealingSpell() );
-    bindAction( &button[1], SpellCreation::getHealOtherSpell() );
 }
 
 ActionBar::~ActionBar()
