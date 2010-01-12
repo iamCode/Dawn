@@ -396,9 +396,9 @@ double GeneralDamageSpell::calculateContinuousDamage( uint64_t timePassed )
 	return realDamage;
 }
 
-/// class GeneralBarDamageSpell
+/// class GeneralRayDamageSpell
 
-GeneralBarDamageSpell::GeneralBarDamageSpell()
+GeneralRayDamageSpell::GeneralRayDamageSpell()
 {
 	remainingEffect = 0;
 
@@ -406,7 +406,7 @@ GeneralBarDamageSpell::GeneralBarDamageSpell()
 	spellTexture = NULL;
 }
 
-GeneralBarDamageSpell::GeneralBarDamageSpell( GeneralBarDamageSpell *other )
+GeneralRayDamageSpell::GeneralRayDamageSpell( GeneralRayDamageSpell *other )
 	: GeneralDamageSpell( other )
 {
 	remainingEffect = 0;
@@ -415,16 +415,16 @@ GeneralBarDamageSpell::GeneralBarDamageSpell( GeneralBarDamageSpell *other )
 	spellTexture = other->spellTexture;
 }
 
-CSpellActionBase* GeneralBarDamageSpell::cast( CCharacter *creator, CCharacter *target )
+CSpellActionBase* GeneralRayDamageSpell::cast( CCharacter *creator, CCharacter *target )
 {
-	GeneralBarDamageSpell* newSpell = new GeneralBarDamageSpell( this );
+	GeneralRayDamageSpell* newSpell = new GeneralRayDamageSpell( this );
 	newSpell->creator = creator;
 	newSpell->target = target;
 	
 	return newSpell;
 }
 
-void GeneralBarDamageSpell::setNumAnimations( int count )
+void GeneralRayDamageSpell::setNumAnimations( int count )
 {
 	assert( spellTexture == NULL );
 	spellTexture = new CTexture();
@@ -432,14 +432,14 @@ void GeneralBarDamageSpell::setNumAnimations( int count )
 	spellTexture->texture.reserve( count );
 }
 
-void GeneralBarDamageSpell::setAnimationTexture( int num, std::string filename )
+void GeneralRayDamageSpell::setAnimationTexture( int num, std::string filename )
 {
 	assert( spellTexture != NULL );
 	assert( numTextures > num && num >= 0 );
 	spellTexture->LoadIMG( filename, num );
 }
 
-void GeneralBarDamageSpell::startEffect()
+void GeneralRayDamageSpell::startEffect()
 {
 	remainingEffect = 0.0;
 	frameCount = 0;
@@ -452,7 +452,7 @@ void GeneralBarDamageSpell::startEffect()
 	unbindFromCreator();
 }
 
-void GeneralBarDamageSpell::inEffect()
+void GeneralRayDamageSpell::inEffect()
 {
 	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
@@ -488,12 +488,12 @@ void GeneralBarDamageSpell::inEffect()
 	}
 }
 
-void GeneralBarDamageSpell::finishEffect()
+void GeneralRayDamageSpell::finishEffect()
 {
 	markSpellActionAsFinished();
 }
 
-void GeneralBarDamageSpell::drawEffect()
+void GeneralRayDamageSpell::drawEffect()
 {
 	float degrees;
 	degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57.296;
@@ -688,9 +688,9 @@ namespace SpellCreation
 		return new HealOtherSpell();
 	}
 	
-	CSpellActionBase* getGeneralBarDamageSpell()
+	CSpellActionBase* getGeneralRayDamageSpell()
 	{
-		return new GeneralBarDamageSpell();
+		return new GeneralRayDamageSpell();
 	}
 	
 	CSpellActionBase* getGeneralBoltDamageSpell()
@@ -702,9 +702,9 @@ namespace SpellCreation
 
 namespace DawnInterface
 {
-	GeneralBarDamageSpell* createGeneralBarDamageSpell()
+	GeneralRayDamageSpell* createGeneralRayDamageSpell()
 	{
-		 std::auto_ptr<GeneralBarDamageSpell> newSpell( dynamic_cast<GeneralBarDamageSpell*>( SpellCreation::getGeneralBarDamageSpell() ) );
+		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell() ) );
 		 return newSpell.release();
 	}
 	

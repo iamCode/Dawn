@@ -15,7 +15,7 @@ curSpell:setMoveSpeed( 500 );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
-curSpell = DawnInterface.createGeneralBarDamageSpell();
+curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
 curSpell:setName("Electrocute");
 curSpell:setInfo("Electrocutes the target with 50-100 point of air damage + 10-20 points per second for 2 seconds.");

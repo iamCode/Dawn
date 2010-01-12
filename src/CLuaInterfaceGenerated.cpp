@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sat Jan  9 00:01:40 2010.
+** Generated automatically by tolua++-1.0.92 on Tue Jan 12 18:41:18 2010.
 */
 
 #ifndef __cplusplus
@@ -18,9 +18,9 @@ TOLUA_API int  tolua_CLuaInterface_open (lua_State* tolua_S);
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
+ tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"CSpell");
  tolua_usertype(tolua_S,"Item");
- tolua_usertype(tolua_S,"GeneralBarDamageSpell");
  tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"CZone");
@@ -2623,14 +2623,14 @@ static int tolua_CLuaInterface_GeneralDamageSpell_setSpellSymbol00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setNumAnimations of class  GeneralBarDamageSpell */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralBarDamageSpell_setNumAnimations00
-static int tolua_CLuaInterface_GeneralBarDamageSpell_setNumAnimations00(lua_State* tolua_S)
+/* method: setNumAnimations of class  GeneralRayDamageSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralRayDamageSpell_setNumAnimations00
+static int tolua_CLuaInterface_GeneralRayDamageSpell_setNumAnimations00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"GeneralBarDamageSpell",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"GeneralRayDamageSpell",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -2638,7 +2638,7 @@ static int tolua_CLuaInterface_GeneralBarDamageSpell_setNumAnimations00(lua_Stat
  else
 #endif
  {
-  GeneralBarDamageSpell* self = (GeneralBarDamageSpell*)  tolua_tousertype(tolua_S,1,0);
+  GeneralRayDamageSpell* self = (GeneralRayDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int count = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'", NULL);
@@ -2656,14 +2656,14 @@ static int tolua_CLuaInterface_GeneralBarDamageSpell_setNumAnimations00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setAnimationTexture of class  GeneralBarDamageSpell */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralBarDamageSpell_setAnimationTexture00
-static int tolua_CLuaInterface_GeneralBarDamageSpell_setAnimationTexture00(lua_State* tolua_S)
+/* method: setAnimationTexture of class  GeneralRayDamageSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralRayDamageSpell_setAnimationTexture00
+static int tolua_CLuaInterface_GeneralRayDamageSpell_setAnimationTexture00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"GeneralBarDamageSpell",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"GeneralRayDamageSpell",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -2672,7 +2672,7 @@ static int tolua_CLuaInterface_GeneralBarDamageSpell_setAnimationTexture00(lua_S
  else
 #endif
  {
-  GeneralBarDamageSpell* self = (GeneralBarDamageSpell*)  tolua_tousertype(tolua_S,1,0);
+  GeneralRayDamageSpell* self = (GeneralRayDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int num = ((int)  tolua_tonumber(tolua_S,2,0));
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -2992,9 +2992,9 @@ static int tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* function: DawnInterface::createGeneralBarDamageSpell */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createGeneralBarDamageSpell00
-static int tolua_CLuaInterface_DawnInterface_createGeneralBarDamageSpell00(lua_State* tolua_S)
+/* function: DawnInterface::createGeneralRayDamageSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00
+static int tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3006,14 +3006,14 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralBarDamageSpell00(lua_S
 #endif
  {
   {
-   GeneralBarDamageSpell* tolua_ret = (GeneralBarDamageSpell*)  DawnInterface::createGeneralBarDamageSpell();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBarDamageSpell");
+   GeneralRayDamageSpell* tolua_ret = (GeneralRayDamageSpell*)  DawnInterface::createGeneralRayDamageSpell();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralRayDamageSpell");
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'createGeneralBarDamageSpell'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'createGeneralRayDamageSpell'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3277,10 +3277,10 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setContinuousDamage",tolua_CLuaInterface_GeneralDamageSpell_setContinuousDamage00);
    tolua_function(tolua_S,"setSpellSymbol",tolua_CLuaInterface_GeneralDamageSpell_setSpellSymbol00);
   tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"GeneralBarDamageSpell","GeneralBarDamageSpell","GeneralDamageSpell",NULL);
-  tolua_beginmodule(tolua_S,"GeneralBarDamageSpell");
-   tolua_function(tolua_S,"setNumAnimations",tolua_CLuaInterface_GeneralBarDamageSpell_setNumAnimations00);
-   tolua_function(tolua_S,"setAnimationTexture",tolua_CLuaInterface_GeneralBarDamageSpell_setAnimationTexture00);
+  tolua_cclass(tolua_S,"GeneralRayDamageSpell","GeneralRayDamageSpell","GeneralDamageSpell",NULL);
+  tolua_beginmodule(tolua_S,"GeneralRayDamageSpell");
+   tolua_function(tolua_S,"setNumAnimations",tolua_CLuaInterface_GeneralRayDamageSpell_setNumAnimations00);
+   tolua_function(tolua_S,"setAnimationTexture",tolua_CLuaInterface_GeneralRayDamageSpell_setAnimationTexture00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"GeneralBoltDamageSpell","GeneralBoltDamageSpell","GeneralDamageSpell",NULL);
   tolua_beginmodule(tolua_S,"GeneralBoltDamageSpell");
@@ -3296,7 +3296,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"giveItemToPlayer",tolua_CLuaInterface_DawnInterface_giveItemToPlayer00);
    tolua_function(tolua_S,"getCurrentZone",tolua_CLuaInterface_DawnInterface_getCurrentZone00);
    tolua_function(tolua_S,"addMobSpawnPoint",tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00);
-   tolua_function(tolua_S,"createGeneralBarDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralBarDamageSpell00);
+   tolua_function(tolua_S,"createGeneralRayDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00);
    tolua_function(tolua_S,"createGeneralBoltDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralBoltDamageSpell00);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
   tolua_endmodule(tolua_S);

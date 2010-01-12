@@ -122,7 +122,7 @@ namespace SpellCreation
 	CSpellActionBase* getHealOtherSpell();
 	CSpellActionBase* getHealingSpell();
 	
-	CSpellActionBase* getGeneralBarDamageSpell();
+	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell();
 }
 
@@ -173,7 +173,7 @@ class GeneralDamageSpell : public CSpell
 		CTexture *spellSymbol;
 };
 
-class GeneralBarDamageSpell : public GeneralDamageSpell
+class GeneralRayDamageSpell : public GeneralDamageSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
@@ -187,11 +187,11 @@ class GeneralBarDamageSpell : public GeneralDamageSpell
 		virtual void drawEffect();
 
 	protected:
-		GeneralBarDamageSpell();
-		GeneralBarDamageSpell( GeneralBarDamageSpell *other );
+		GeneralRayDamageSpell();
+		GeneralRayDamageSpell( GeneralRayDamageSpell *other );
 
 	private:
-		friend CSpellActionBase* SpellCreation::getGeneralBarDamageSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralRayDamageSpell();
 	
 		uint8_t frameCount;
 		uint32_t effectStart;

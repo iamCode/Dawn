@@ -35,7 +35,7 @@ namespace DawnInterface
 	                    ArmorType::ArmorType armorType,
 	                    WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
-	GeneralBarDamageSpell* createGeneralBarDamageSpell();
+	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
