@@ -52,24 +52,9 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		armorType ( armorType_ ),
 		weaponType ( weaponType_ ),
 		equipPosition ( equipPosition_ ),
-		strengthModifier( 0 ),
-		dexterityModifier( 0 ),
-		intellectModifier( 0 ),
-		vitalityModifier( 0 ),
-		wisdomModifier( 0 ),
-		healthModifier( 0 ),
-		manaModifier( 0 ),
-		armorModifier( 0 ),
-		damageModifier( 0 ),
-		hitModifier( 0 ),
-		evadeModifier( 0 ),
-		blockModifier( 0 ),
-		meleeCriticalModifier( 0 ),
+		statsModifier( NULL ),
 		resistElementModifier( NULL ),
-		resistAllModifier( 0 ),
 		spellEffectElementModifier( NULL ),
-		spellEffectAllModifier( 0 ),
-		spellCriticalModifier( 0 ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 ),
@@ -77,10 +62,16 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	statsModifier = new int16_t[ static_cast<size_t>( StatsType::Count ) ];
 	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
 		resistElementModifier[ curElement ] = 0;
 		spellEffectElementModifier[ curElement ] = 0;
 	}
+	for (size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
+	{
+	    statsModifier[ curStat ] = 0;
+	}
+
 	symbolTexture.texture.reserve(1);
 	symbolTexture.LoadIMG( symbolFile, 0 );
 
@@ -143,69 +134,9 @@ std::string Item::getDescription() const
     return description;
 }
 
-int16_t Item::getStrength() const
+int16_t Item::getStats( StatsType::StatsType statsType ) const
 {
-    return strengthModifier;
-}
-
-int16_t Item::getDexterity() const
-{
-    return dexterityModifier;
-}
-
-int16_t Item::getIntellect() const
-{
-    return intellectModifier;
-}
-
-int16_t Item::getVitality() const
-{
-    return vitalityModifier;
-}
-
-int16_t Item::getWisdom() const
-{
-    return wisdomModifier;
-}
-
-int16_t Item::getHealth() const
-{
-    return healthModifier;
-}
-
-int16_t Item::getMana() const
-{
-    return manaModifier;
-}
-
-int16_t Item::getArmor() const
-{
-    return armorModifier;
-}
-
-int16_t Item::getDamageModifierPoints() const
-{
-	return damageModifier;
-}
-
-int16_t Item::getHitModifierPoints() const
-{
-	return hitModifier;
-}
-
-int16_t Item::getEvadeModifierPoints() const
-{
-	return evadeModifier;
-}
-
-int16_t Item::getBlockModifierPoints() const
-{
-	return blockModifier;
-}
-
-int16_t Item::getMeleeCriticalModifierPoints() const
-{
-	return meleeCriticalModifier;
+    return statsModifier[ static_cast<size_t>(statsType) ];
 }
 
 int16_t Item::getResistElementModifierPoints( ElementType::ElementType elementType ) const
@@ -213,24 +144,9 @@ int16_t Item::getResistElementModifierPoints( ElementType::ElementType elementTy
 	return resistElementModifier[ static_cast<size_t>(elementType) ];
 }
 
-int16_t Item::getResistAllModifierPoints() const
-{
-	return resistAllModifier;
-}
-
 int16_t Item::getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
 {
 	return spellEffectElementModifier[ static_cast<size_t>(elementType) ];
-}
-
-int16_t Item::getSpellEffectAllModifierPoints() const
-{
-	return spellEffectAllModifier;
-}
-
-int16_t Item::getSpellCriticalModifierPoints() const
-{
-	return spellCriticalModifier;
 }
 
 uint8_t Item::getMinDamage() const
@@ -248,69 +164,9 @@ uint8_t Item::getLevelReq() const
     return levelReq;
 }
 
-void Item::setStrength( int16_t strength )
+void Item::setStats( StatsType::StatsType statsType, int16_t amount )
 {
-    strengthModifier = strength;
-}
-
-void Item::setDexterity( int16_t dexterity )
-{
-    dexterityModifier = dexterity;
-}
-
-void Item::setIntellect( int16_t intellect )
-{
-    intellectModifier = intellect;
-}
-
-void Item::setVitality( int16_t vitality )
-{
-    vitalityModifier = vitality;
-}
-
-void Item::setWisdom( int16_t wisdom )
-{
-    wisdomModifier = wisdom;
-}
-
-void Item::setHealth( int16_t health )
-{
-    healthModifier = health;
-}
-
-void Item::setMana( int16_t mana )
-{
-    manaModifier = mana;
-}
-
-void Item::setArmor( int16_t armor )
-{
-    armorModifier = armor;
-}
-
-void Item::setDamageModifierPoints( int16_t damageModifierPoints )
-{
-	this->damageModifier = damageModifierPoints;
-}
-
-void Item::setHitModifierPoints( int16_t hitModifierPoints )
-{
-	this->hitModifier = hitModifierPoints;
-}
-
-void Item::setEvadeModifierPoints( int16_t evadeModifierPoints )
-{
-	this->evadeModifier = evadeModifierPoints;
-}
-
-void Item::setBlockModifierPoints( int16_t blockModifierPoints )
-{
-	this->blockModifier = blockModifierPoints;
-}
-
-void Item::setMeleeCriticalModifierPoints( int16_t meleeCriticalModifierPoints )
-{
-	this->meleeCriticalModifier = meleeCriticalModifierPoints;
+	this->statsModifier[ static_cast<size_t>( statsType) ] = amount;
 }
 
 void Item::setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints )
@@ -318,24 +174,9 @@ void Item::setResistElementModifierPoints( ElementType::ElementType elementType,
 	this->resistElementModifier[ static_cast<size_t>( elementType ) ] = resistModifierPoints;
 }
 
-void Item::setResistAllModifierPoints( int16_t resistAllModifierPoints )
-{
-	this->resistAllModifier = resistAllModifierPoints;
-}
-
 void Item::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints )
 {
 	this->spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
-}
-
-void Item::setSpellEffectAllModifierPoints( int16_t spellEffectAllModifierPoints )
-{
-	this->spellEffectAllModifier = spellEffectAllModifierPoints;
-}
-
-void Item::setSpellCriticalModifierPoints( int16_t spellCriticalModifierPoints )
-{
-	this->spellCriticalModifier = spellCriticalModifierPoints;
 }
 
 void Item::setMinDamage( uint8_t minDamage_ )

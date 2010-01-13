@@ -105,6 +105,11 @@ class CCharacter
 		float getPreparationPercentage() const;
 		bool getIsPreparing() const;
 
+		//active buffs and debuffs
+		void addActiveSpell( CSpellActionBase *spellaction );
+		void cleanupActiveSpells( );
+		std::vector<std::pair<GeneralBuffSpell*, uint32_t> > getActiveSpells() const;
+
 		// position access functions
 		int getXPos() const;
 		int getYPos() const;
@@ -350,6 +355,8 @@ class CCharacter
 		uint32_t preparationStartTime, preparationCurrentTime;
 		float preparationPercentage;
         CInterface *activeGUI;
+
+        std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
 
 		int boundingBoxX;
 		int boundingBoxY;

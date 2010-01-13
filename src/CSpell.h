@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 #include "elements.h"
+#include "stats.h"
 
 class CCharacter;
 class CTexture;
@@ -71,9 +72,9 @@ class CSpellActionBase
 		/// \brief Creates a spell to really cast as a copy from this one with a fixed target and creator.
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target ) = 0;
 		virtual ~CSpellActionBase();
-		
+
 		/// Info about the spell, both for the game (mana cost, etc) and for the player (name, info, etc)
-		
+
 		/// \brief Returns the time needed to cast a spell.
 		/// \todo Should the spell meta information be put in a separate info object?
 		virtual uint16_t getCastTime() const = 0;
@@ -82,27 +83,27 @@ class CSpellActionBase
 		virtual std::string getInfo() const = 0;
 		virtual CTexture* getSymbol() const = 0;
 		virtual EffectType::EffectType getEffectType() const = 0;
-		
+
 		/// Note: The following functions may only be called on spells that where really created,
 		///       i.e. for spells created by cast function.
-		
+
 		/// \brief Draws the graphical representation of the spell effect.
 		virtual void drawEffect() = 0;
-		
+
 		/// \brief Called directly after creation of the spell and is thought for an initial effect.
 		virtual void startEffect() = 0;
 		/// \brief Called while the spell is not yet completed and thought for continuous effects.
 		/// Needs to mark the spell as completed unless that has already been done,
 		/// e.g. because the effect is not continuous.
 		virtual void inEffect() = 0;
-		
+
 		/// \brief Whether the spell has done its work and the object can be destroyed.
 		bool isEffectComplete() const;
 		void unbindFromCreator();
 		bool isBoundToCreator() const;
 		void beginPreparationOfSpellAction();
 		void markSpellActionAsFinished();
-		
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
 protected:
 	CCharacter *creator;
@@ -121,6 +122,7 @@ namespace SpellCreation
 	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell();
 	CSpellActionBase* getGeneralHealingSpell();
+	CSpellActionBase* getGeneralBuffSpell();
 }
 
 class ConfigurableSpell : public CSpell
@@ -134,20 +136,20 @@ class ConfigurableSpell : public CSpell
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
 		virtual std::string getInfo() const;
-				
+
 		void setSpellSymbol( std::string symbolFile );
 		CTexture* getSymbol() const;
-		
+
 	protected:
 		ConfigurableSpell();
 		ConfigurableSpell( ConfigurableSpell *other );
-		
+
 		uint16_t castTime;
 		uint16_t manaCost;
-		
+
 		std::string name;
 		std::string info;
-		
+
 		CTexture *spellSymbol;
 };
 
@@ -161,7 +163,7 @@ class GeneralDamageSpell : public ConfigurableSpell
 
 		void dealDirectDamage();
 		double calculateContinuousDamage( uint64_t timePassed );
-		
+
 	protected:
 		GeneralDamageSpell();
 		GeneralDamageSpell( GeneralDamageSpell *other );
@@ -171,7 +173,7 @@ class GeneralDamageSpell : public ConfigurableSpell
 		uint16_t minDirectDamage; // This should be a list of effects
 		uint16_t maxDirectDamage;
 		ElementType::ElementType elementDirect;
-		
+
 		double minContinuousDamagePerSecond;
 		double maxContinuousDamagePerSecond;
 		ElementType::ElementType elementContinuous;
@@ -197,14 +199,14 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralRayDamageSpell();
-	
+
 		uint8_t frameCount;
 		uint32_t effectStart;
 		uint32_t lastEffect;
 		uint32_t animationTimerStart;
 		uint32_t animationTimerStop;
 		double remainingEffect;
-		
+
 		int numTextures;
 		CTexture *spellTexture;
 };
@@ -230,18 +232,18 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell();
-	
+
 		uint32_t moveSpeed;
 		uint32_t expireTime;
 		int posx, posy;
 		double moveRemaining;
-		
+
 		uint8_t frameCount;
 		uint32_t effectStart;
 		uint32_t lastEffect;
 		uint32_t animationTimerStart;
 		uint32_t animationTimerStop;
-		
+
 		int numBoltTextures;
 		CTexture *boltTexture;
 };
@@ -250,14 +252,14 @@ class GeneralHealingSpell : public ConfigurableSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
-		
+
 		void setEffectType( EffectType::EffectType newEffectType );
 		EffectType::EffectType getEffectType() const;
 		void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
 		int getHealEffectMin() const;
 		int getHealEffectMax() const;
 		ElementType::ElementType getElementType() const;
-		
+
 		virtual void drawEffect();
 		virtual void startEffect();
 		virtual void inEffect();
@@ -268,13 +270,49 @@ class GeneralHealingSpell : public ConfigurableSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell();
-	
+
 		CCharacter *target;
 
 		EffectType::EffectType effectType;
 		int healEffectMin;
 		int healEffectMax;
 		ElementType::ElementType healEffectElement;
+};
+
+class GeneralBuffSpell : public ConfigurableSpell
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+
+		void setEffectType( EffectType::EffectType newEffectType );
+		EffectType::EffectType getEffectType() const;
+		uint16_t getDuration() const;
+		void setDuration( uint16_t newDuration );
+        int16_t getStats( StatsType::StatsType statsType ) const;
+		void setStats( StatsType::StatsType statsType, int16_t amount );
+		int16_t getResistElementModifierPoints( ElementType::ElementType elementType ) const;
+        void setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints );
+		int16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
+		void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints );
+
+		virtual void drawEffect();
+		virtual void startEffect();
+		virtual void inEffect();
+
+	protected:
+		GeneralBuffSpell();
+		GeneralBuffSpell( GeneralBuffSpell *other );
+
+	private:
+		friend CSpellActionBase* SpellCreation::getGeneralBuffSpell();
+
+		CCharacter *target;
+
+		EffectType::EffectType effectType;
+		uint16_t duration;
+		int16_t *statsModifier;
+		int16_t *resistElementModifier;
+		int16_t *spellEffectElementModifier;
 };
 
 #endif // __C_SPELL_H_

@@ -75,6 +75,7 @@ std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
 std::auto_ptr<InventoryScreen> inventoryScreen;
 std::auto_ptr<ActionBar> actionBar;
 std::auto_ptr<Spellbook> spellbook;
+std::auto_ptr<BuffWindow> buffWindow;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -219,6 +220,8 @@ void DrawScene()
 		GUI.DrawInterface();
 	}
 
+	buffWindow->draw();
+
 	if ( characterInfoScreen->isVisible() ) {
 		characterInfoScreen->drawScreen();
 	}
@@ -254,6 +257,7 @@ void DrawScene()
     if ( spellbook->hasFloatingSpell() ) {
 	    spellbook->drawFloatingSpell( mouseX, mouseY );
 	}
+
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -428,7 +432,7 @@ bool dawn_init(int argc, char** argv)
 		actionBar->loadTextures();
 		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
 		spellbook->loadTextures();
-
+		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));

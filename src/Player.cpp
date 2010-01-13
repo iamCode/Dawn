@@ -58,6 +58,7 @@ CCharacter* Player::getTarget() const
 void Player::Draw()
 {
 	CalculateStats();
+	cleanupActiveSpells();
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {
@@ -146,27 +147,50 @@ bool Player::isPlayer() const
 	return true;
 }
 
-static int16_t getStrengthHelper( Item * item ) { return item->getStrength(); }
-static int16_t getDexterityHelper( Item * item ) { return item->getDexterity(); }
-static int16_t getVitalityHelper( Item * item ) { return item->getVitality(); }
-static int16_t getIntellectHelper( Item * item ) { return item->getIntellect(); }
-static int16_t getWisdomHelper( Item * item ) { return item->getWisdom(); }
-static int16_t getHealthHelper( Item * item ) { return item->getHealth(); }
-static int16_t getManaHelper( Item * item ) { return item->getMana(); }
-static int16_t getArmorHelper( Item * item ) { return item->getArmor(); }
-static int16_t getDamageModifierPointsHelper( Item * item ) { return item->getDamageModifierPoints(); }
-static int16_t getHitModifierPointsHelper( Item * item ) { return item->getHitModifierPoints(); }
-static int16_t getEvadeModifierPointsHelper( Item * item ) { return item->getEvadeModifierPoints(); }
-static int16_t getBlockModifierPointsHelper( Item * item ) { return item->getBlockModifierPoints(); }
-static int16_t getMeleeCriticalModifierPointsHelper( Item * item ) { return item->getMeleeCriticalModifierPoints(); }
-static int16_t getResistElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getResistElementModifierPoints( elementType ) + item->getResistAllModifierPoints(); }
-static int16_t getSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getSpellEffectElementModifierPoints( elementType ) + item->getSpellEffectAllModifierPoints(); }
-static int16_t getSpellCriticalModifierPointsHelper( Item * item ) { return item->getSpellCriticalModifierPoints(); }
+/// helperfunctions for items.
+static int16_t getItemStrengthHelper( Item * item ) { return item->getStats( StatsType::Strength ); }
+static int16_t getItemDexterityHelper( Item * item ) { return item->getStats( StatsType::Dexterity ); }
+static int16_t getItemVitalityHelper( Item * item ) { return item->getStats( StatsType::Vitality ); }
+static int16_t getItemIntellectHelper( Item * item ) { return item->getStats( StatsType::Intellect ); }
+static int16_t getItemWisdomHelper( Item * item ) { return item->getStats( StatsType::Wisdom ); }
+static int16_t getItemHealthHelper( Item * item ) { return item->getStats( StatsType::Health ); }
+static int16_t getItemManaHelper( Item * item ) { return item->getStats( StatsType::Mana ); }
+static int16_t getItemArmorHelper( Item * item ) { return item->getStats( StatsType::Armor ); }
+static int16_t getItemDamageModifierPointsHelper( Item * item ) { return item->getStats( StatsType::DamageModifier ); }
+static int16_t getItemHitModifierPointsHelper( Item * item ) { return item->getStats( StatsType::HitModifier ); }
+static int16_t getItemEvadeModifierPointsHelper( Item * item ) { return item->getStats( StatsType::EvadeModifier ); }
+static int16_t getItemBlockModifierPointsHelper( Item * item ) { return item->getStats( StatsType::BlockModifier ); }
+static int16_t getItemMeleeCriticalModifierPointsHelper( Item * item ) { return item->getStats( StatsType::MeleeCritical ); }
+static int16_t getItemResistElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getResistElementModifierPoints( elementType ) + item->getStats( StatsType::ResistAll ); }
+static int16_t getItemSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getSpellEffectElementModifierPoints( elementType ) + item->getStats( StatsType::SpellEffectAll ); }
+static int16_t getItemSpellCriticalModifierPointsHelper( Item * item ) { return item->getStats( StatsType::SpellCritical ); }
 
-static int16_t getMinDamageHelper( Item * item ) { return item->getMinDamage(); }
-static int16_t getMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
+static int16_t getItemMinDamageHelper( Item * item ) { return item->getMinDamage(); }
+static int16_t getItemMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
 
-static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( Item* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
+/// helperfunctions for spells (buffs / debuffs)
+static int16_t getSpellStrengthHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Strength ); }
+static int16_t getSpellDexterityHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Dexterity ); }
+static int16_t getSpellVitalityHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Vitality ); }
+static int16_t getSpellIntellectHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Intellect ); }
+static int16_t getSpellWisdomHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Wisdom ); }
+static int16_t getSpellHealthHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Health ); }
+static int16_t getSpellManaHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Mana ); }
+static int16_t getSpellArmorHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Armor ); }
+static int16_t getSpellDamageModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::DamageModifier ); }
+static int16_t getSpellHitModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::HitModifier ); }
+static int16_t getSpellEvadeModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::EvadeModifier ); }
+static int16_t getSpellBlockModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::BlockModifier ); }
+static int16_t getSpellMeleeCriticalModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::MeleeCritical ); }
+static int16_t getSpellResistElementModifierPointsHelper( ElementType::ElementType elementType, GeneralBuffSpell *spell ) { return spell->getResistElementModifierPoints( elementType ) + spell->getStats( StatsType::ResistAll ); }
+static int16_t getSpellSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, GeneralBuffSpell *spell ) { return spell->getSpellEffectElementModifierPoints( elementType ) + spell->getStats( StatsType::SpellEffectAll ); }
+static int16_t getSpellSpellCriticalModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::SpellCritical ); }
+
+static int16_t getSpellMinDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
+static int16_t getSpellMaxDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
+
+
+static uint16_t getModifiedAttribute( const Inventory &inventory, const CCharacter *character, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( Item* ), int16_t (*getSpellAttribute)( GeneralBuffSpell* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
 {
 	int32_t attributeModifier = 0;
 	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
@@ -176,6 +200,18 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basic
 		assert( curItem != NULL );
 		attributeModifier += getItemAttribute( curItem );
 	}
+
+	std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+    activeSpells = character ->getActiveSpells();
+    size_t numSpells = activeSpells.size();
+    for ( size_t curSpellNr=0; curSpellNr<numSpells; ++curSpellNr ) {
+        GeneralBuffSpell* curSpell = activeSpells[ curSpellNr ].first;
+        assert( curSpell != NULL );
+        attributeModifier += getSpellAttribute( curSpell );
+    }
+
+    std::cout << std::endl;
+
 	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {
 		return minValue;
 	}
@@ -186,7 +222,7 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, uint16_t basic
 	}
 }
 
-static uint16_t getModifiedAttribute( ElementType::ElementType elementType, const Inventory &inventory, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( ElementType::ElementType, Item* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
+static uint16_t getModifiedAttribute( ElementType::ElementType elementType, const Inventory &inventory, const CCharacter *character, uint16_t basicAttributeValue, int16_t (*getItemAttribute)( ElementType::ElementType, Item* ), int16_t (*getSpellAttribute)( ElementType::ElementType, GeneralBuffSpell* ), uint16_t minValue = std::numeric_limits<uint16_t>::min(), uint16_t maxValue = std::numeric_limits<uint16_t>::max() )
 {
 	int32_t attributeModifier = 0;
 	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
@@ -196,6 +232,16 @@ static uint16_t getModifiedAttribute( ElementType::ElementType elementType, cons
 		assert( curItem != NULL );
 		attributeModifier += getItemAttribute( elementType, curItem );
 	}
+
+    std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+    size_t numSpells = activeSpells.size();
+    activeSpells = character->getActiveSpells();
+    for ( size_t curSpellNr=0; curSpellNr<numSpells; ++curSpellNr ) {
+        GeneralBuffSpell* curSpell = activeSpells[ curSpellNr ].first;
+        assert( curSpell != NULL );
+        attributeModifier += getSpellAttribute( elementType, curSpell );
+    }
+
 	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {
 		return minValue;
 	}
@@ -209,93 +255,93 @@ static uint16_t getModifiedAttribute( ElementType::ElementType elementType, cons
 
 uint16_t Player::getModifiedArmor() const
 {
-	return getModifiedAttribute( inventory, getArmor(), &getArmorHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageReductionPoints( this );
+	return getModifiedAttribute( inventory, this, getArmor(), &getItemArmorHelper, &getSpellArmorHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageReductionPoints( this );
 }
 
 uint16_t Player::getModifiedDamageModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getDamageModifierPoints(), &getDamageModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getDamageModifierPoints(), &getItemDamageModifierPointsHelper, &getSpellDamageModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateDamageModifierPoints( this );
 }
 
 uint16_t Player::getModifiedHitModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getHitModifierPoints(), &getHitModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateHitModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getHitModifierPoints(), &getItemHitModifierPointsHelper, &getSpellHitModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateHitModifierPoints( this );
 }
 
 uint16_t Player::getModifiedEvadeModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getEvadeModifierPoints(), &getEvadeModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getEvadeModifierPoints(), &getItemEvadeModifierPointsHelper, &getSpellEvadeModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
 }
 
 uint16_t Player::getModifiedBlockModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getBlockModifierPoints(), &getBlockModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateBlockModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getBlockModifierPoints(), &getItemBlockModifierPointsHelper, &getSpellBlockModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateBlockModifierPoints( this );
 }
 
 uint16_t Player::getModifiedMeleeCriticalModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getMeleeCriticalModifierPoints(), &getMeleeCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateMeleeCriticalModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getMeleeCriticalModifierPoints(), &getItemMeleeCriticalModifierPointsHelper, &getSpellMeleeCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateMeleeCriticalModifierPoints( this );
 }
 
 uint16_t Player::getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const
 {
-	return getModifiedAttribute( elementType, inventory, getResistElementModifierPoints( elementType ) + getResistAllModifierPoints(), &getResistElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateResistElementModifierPoints( elementType, this );
+	return getModifiedAttribute( elementType, inventory, this, getResistElementModifierPoints( elementType ) + getResistAllModifierPoints(), &getItemResistElementModifierPointsHelper, &getSpellResistElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateResistElementModifierPoints( elementType, this );
 }
 
 uint16_t Player::getModifiedSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
 {
-	return getModifiedAttribute( elementType, inventory, getSpellEffectElementModifierPoints( elementType ) + getSpellEffectAllModifierPoints(), &getSpellEffectElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellEffectElementModifierPoints( elementType, this );
+	return getModifiedAttribute( elementType, inventory, this, getSpellEffectElementModifierPoints( elementType ) + getSpellEffectAllModifierPoints(), &getItemSpellEffectElementModifierPointsHelper, &getSpellSpellEffectElementModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellEffectElementModifierPoints( elementType, this );
 }
 
 uint16_t Player::getModifiedSpellCriticalModifierPoints() const
 {
-	return getModifiedAttribute( inventory, getSpellCriticalModifierPoints(), &getSpellCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellCriticalModifierPoints( this );
+	return getModifiedAttribute( inventory, this, getSpellCriticalModifierPoints(), &getItemSpellCriticalModifierPointsHelper, &getSpellSpellCriticalModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateSpellCriticalModifierPoints( this );
 }
 
 uint16_t Player::getModifiedStrength() const
 {
-	return getModifiedAttribute( inventory, getStrength(), &getStrengthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getStrength(), &getItemStrengthHelper, &getSpellStrengthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedDexterity() const
 {
-	return getModifiedAttribute( inventory, getDexterity(), &getDexterityHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getDexterity(), &getItemDexterityHelper, &getSpellDexterityHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedVitality() const
 {
-	return getModifiedAttribute( inventory, getVitality(), &getVitalityHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getVitality(), &getItemVitalityHelper, &getSpellVitalityHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedIntellect() const
 {
-	return getModifiedAttribute( inventory, getIntellect(), &getIntellectHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getIntellect(), &getItemIntellectHelper, &getSpellIntellectHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedWisdom() const
 {
-	return getModifiedAttribute( inventory, getWisdom(), &getWisdomHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getWisdom(), &getItemWisdomHelper, &getSpellWisdomHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedMaxHealth() const
 {
-	return getModifiedAttribute( inventory, getMaxHealth(), &getHealthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getMaxHealth(), &getItemHealthHelper, &getSpellHealthHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedMaxMana() const
 {
-	return getModifiedAttribute( inventory, getMaxMana(), &getManaHelper, NULLABLE_ATTRIBUTE_MIN );
+	return getModifiedAttribute( inventory, this, getMaxMana(), &getItemManaHelper, &getSpellManaHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
 uint16_t Player::getModifiedMinDamage() const
 {
-	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, 0, &getMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
+	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, this, 0, &getItemMinDamageHelper, &getSpellMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
 	return inventoryMinDamage;
 }
 
 uint16_t Player::getModifiedMaxDamage() const
 {
-	uint16_t inventoryMaxDamage = getModifiedAttribute( inventory, 0, &getMaxDamageHelper, getModifiedMinDamage() );
+	uint16_t inventoryMaxDamage = getModifiedAttribute( inventory, this, 0, &getItemMaxDamageHelper, &getSpellMaxDamageHelper, getModifiedMinDamage() );
 	return inventoryMaxDamage;
 }
 

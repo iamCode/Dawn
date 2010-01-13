@@ -54,6 +54,10 @@ class AttackAction : public CAction
 			return 0;
 		}
 
+		virtual uint16_t getDuration() const {
+		    return 0;
+		}
+
 		virtual uint16_t getManaCost() const {
 			return 0;
 		}

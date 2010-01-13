@@ -38,6 +38,7 @@ namespace DawnInterface
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
+	GeneralBuffSpell* createGeneralBuffSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 

@@ -23,6 +23,7 @@
 #include "CTexture.h"
 
 #include "elements.h"
+#include "stats.h"
 
 namespace ItemSlot
 {
@@ -149,46 +150,16 @@ class Item
         bool isUseable() const;
         std::string getUseableDescription() const;
 
-        int16_t getStrength() const;
-        int16_t getDexterity() const;
-        int16_t getIntellect() const;
-        int16_t getVitality() const;
-        int16_t getWisdom() const;
-        int16_t getHealth() const;
-        int16_t getMana() const;
-        int16_t getArmor() const;
-		int16_t getDamageModifierPoints() const;
-		int16_t getHitModifierPoints() const;
-		int16_t getEvadeModifierPoints() const;
-		int16_t getBlockModifierPoints() const;
-		int16_t getMeleeCriticalModifierPoints() const;
+		int16_t getStats( StatsType::StatsType statsType ) const;
 		int16_t getResistElementModifierPoints( ElementType::ElementType elementType ) const;
-		int16_t getResistAllModifierPoints() const;
 		int16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
-		int16_t getSpellEffectAllModifierPoints() const;
-		int16_t getSpellCriticalModifierPoints() const;
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
         uint8_t getLevelReq() const;
 
-        void setStrength( int16_t strength );
-		void setDexterity( int16_t dexterity );
-		void setIntellect( int16_t intellect );
-		void setVitality( int16_t vitality );
-		void setWisdom( int16_t wisdom );
-		void setHealth( int16_t health );
-		void setMana( int16_t mana );
-		void setArmor( int16_t armor );
-		void setDamageModifierPoints( int16_t damageModifierPoints );
-		void setHitModifierPoints( int16_t hitModifierPoints );
-		void setEvadeModifierPoints( int16_t evadeModifierPoints );
-		void setBlockModifierPoints( int16_t blockModifierPoints );
-		void setMeleeCriticalModifierPoints( int16_t meleeCriticalModifierPoints );
-		void setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints );
-		void setResistAllModifierPoints( int16_t resistAllModifierPoints );
+        void setStats( StatsType::StatsType statsType, int16_t amount );
+        void setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints );
 		void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints );
-		void setSpellEffectAllModifierPoints( int16_t spellEffectAllModifierPoints );
-		void setSpellCriticalModifierPoints( int16_t spellCriticalModifierPoints );
 		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
         void setLevelReq( uint8_t levelReq );
@@ -224,24 +195,9 @@ class Item
 
 		bool useableItem;
 
-		int16_t strengthModifier;
-        int16_t dexterityModifier;
-        int16_t intellectModifier;
-        int16_t vitalityModifier;
-        int16_t wisdomModifier;
-        int16_t healthModifier;
-        int16_t manaModifier;
-        int16_t armorModifier;
-		int16_t damageModifier;
-		int16_t hitModifier;
-		int16_t evadeModifier;
-		int16_t blockModifier;
-		int16_t meleeCriticalModifier;
+		int16_t *statsModifier;
 		int16_t *resistElementModifier;
-		int16_t resistAllModifier;
 		int16_t *spellEffectElementModifier;
-		int16_t spellEffectAllModifier;
-		int16_t spellCriticalModifier;
 
         uint8_t minDamage;
         uint8_t maxDamage;

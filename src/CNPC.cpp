@@ -50,6 +50,7 @@ void CNPC::Die()
 void CNPC::Draw()
 {
 	CalculateStats(); // always calculate the stats of the NPC.
+	cleanupActiveSpells();
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {

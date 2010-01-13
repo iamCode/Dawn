@@ -92,6 +92,30 @@ class CCharacter {
     void addItemToLootTable( Item *item, double dropChance );
 };
 
+namespace StatsType
+{
+    enum StatsType
+    {
+        Dexterity,
+        Intellect,
+        Strength,
+        Vitality,
+        Wisdom,
+        Health,
+        Mana,
+        Armor,
+        DamageModifier,
+        HitModifier,
+        EvadeModifier,
+        BlockModifier,
+        MeleeCritical,
+        SpellCritical,
+        ResistAll,
+        SpellEffectAll,
+        Count
+    };
+}
+
 namespace ElementType
 {
 	enum ElementType
@@ -223,24 +247,9 @@ namespace WeaponType
 class Item
 {
 	void setDescription( std::string description );
-	void setStrength( int strength );
-	void setDexterity( int dexterity );
-	void setIntellect( int intellect );
-	void setVitality( int vitality );
-	void setWisdom( int wisdom );
-	void setHealth( int health );
-	void setMana( int mana );
-	void setArmor( int armor );
-	void setDamageModifierPoints( int damageModifierPoints );
-	void setHitModifierPoints( int hitModifierPoints );
-	void setEvadeModifierPoints( int evadeModifierPoints ); 
-	void setBlockModifierPoints( int blockModifierPoints );
-	void setMeleeCriticalModifierPoints( int meleeCriticalModifierPoints );
+	void setStats( StatsType::StatsType statsType, int amount );
 	void setResistElementModifierPoints( ElementType::ElementType elementType, int resistModifierPoints );
-	void setResistAllModifierPoints( int resistAllModifierPoints );
 	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
-	void setSpellEffectAllModifierPoints( int spellEffectAllModifierPoints );
-	void setSpellCriticalModifierPoints( int spellCriticalModifierPoints );
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
 	void setLevelReq( int levelReq );
@@ -282,6 +291,16 @@ class GeneralHealingSpell : public ConfigurableSpell
 	void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
 };
 
+class GeneralBuffSpell : public ConfigurableSpell
+{
+	void setEffectType( EffectType::EffectType newEffectType );
+	void setDuration( int newDuration );
+	void setStats( StatsType::StatsType statsType, int amount );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int resistModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
+
+};
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
@@ -300,6 +319,6 @@ namespace DawnInterface
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
+	GeneralBuffSpell* createGeneralBuffSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
-

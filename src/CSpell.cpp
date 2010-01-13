@@ -168,7 +168,7 @@ GeneralDamageSpell::GeneralDamageSpell()
 	minDirectDamage = 0;
 	maxDirectDamage = 0;
 	elementDirect = ElementType::Air;
-	
+
 	minContinuousDamagePerSecond = 0.0;
 	maxContinuousDamagePerSecond = 0.0;
 	elementContinuous = ElementType::Air;
@@ -210,7 +210,7 @@ EffectType::EffectType GeneralDamageSpell::getEffectType() const
 void GeneralDamageSpell::dealDirectDamage()
 {
 	int damage = minDirectDamage + rand() % (maxDirectDamage - minDirectDamage);
-	
+
 	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementDirect ), target->getLevel() );
 	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementDirect ), creator->getLevel() );
 	double realDamage = damage * damageFactor * (1-resist);
@@ -230,7 +230,7 @@ void GeneralDamageSpell::dealDirectDamage()
 double GeneralDamageSpell::calculateContinuousDamage( uint64_t timePassed )
 {
 	double secondsPassed = (timePassed) / 1000.0;
-	
+
 	double curRandDamage = randomDouble( minContinuousDamagePerSecond * secondsPassed, maxContinuousDamagePerSecond * secondsPassed );
 
 	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
@@ -263,7 +263,7 @@ CSpellActionBase* GeneralRayDamageSpell::cast( CCharacter *creator, CCharacter *
 	GeneralRayDamageSpell* newSpell = new GeneralRayDamageSpell( this );
 	newSpell->creator = creator;
 	newSpell->target = target;
-	
+
 	return newSpell;
 }
 
@@ -399,7 +399,7 @@ CSpellActionBase* GeneralBoltDamageSpell::cast( CCharacter *creator, CCharacter 
 	GeneralBoltDamageSpell* newSpell = new GeneralBoltDamageSpell( this );
 	newSpell->creator = creator;
 	newSpell->target = target;
-	
+
 	return newSpell;
 }
 
@@ -535,7 +535,7 @@ CSpellActionBase* GeneralHealingSpell::cast( CCharacter *creator, CCharacter *ta
 	std::auto_ptr<GeneralHealingSpell> newSpell( new GeneralHealingSpell( this ) );
 	newSpell->creator = creator;
 	newSpell->target = target;
-	
+
 	return newSpell.release();
 }
 
@@ -599,23 +599,134 @@ void GeneralHealingSpell::drawEffect()
 {
 }
 
+/// GeneralBuffSpell
+
+GeneralBuffSpell::GeneralBuffSpell()
+{
+	effectType = EffectType::SelfAffectingSpell;
+	duration = 0;
+
+    resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	statsModifier = new int16_t[ static_cast<size_t>( StatsType::Count ) ];
+
+	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+		resistElementModifier[ curElement ] = 0;
+		spellEffectElementModifier[ curElement ] = 0;
+	}
+
+	for (size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
+	{
+	    statsModifier[ curStat ] = 0;
+	}
+}
+
+GeneralBuffSpell::GeneralBuffSpell( GeneralBuffSpell *other )
+	: ConfigurableSpell( other )
+{
+	effectType = other->effectType;
+	duration = other->duration;
+    statsModifier = other->statsModifier;
+}
+
+CSpellActionBase* GeneralBuffSpell::cast( CCharacter *creator, CCharacter *target )
+{
+	assert( effectType != EffectType::SelfAffectingSpell || creator == target );
+	std::auto_ptr<GeneralBuffSpell> newSpell( new GeneralBuffSpell( this ) );
+	newSpell->creator = creator;
+	newSpell->target = target;
+
+	return newSpell.release();
+}
+
+void GeneralBuffSpell::setEffectType( EffectType::EffectType newEffectType )
+{
+	assert( newEffectType == EffectType::SingleTargetSpell || newEffectType == EffectType::SelfAffectingSpell );
+	effectType = newEffectType;
+}
+
+EffectType::EffectType GeneralBuffSpell::getEffectType() const
+{
+	return effectType;
+}
+
+void GeneralBuffSpell::setDuration( uint16_t newDuration )
+{
+    duration = newDuration;
+}
+
+uint16_t GeneralBuffSpell::getDuration() const
+{
+    return duration;
+}
+
+int16_t GeneralBuffSpell::getStats( StatsType::StatsType statsType ) const
+{
+    return statsModifier[ static_cast<size_t>( statsType ) ];
+}
+
+int16_t GeneralBuffSpell::getResistElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return resistElementModifier[ static_cast<size_t>(elementType) ];
+}
+
+int16_t GeneralBuffSpell::getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const
+{
+	return spellEffectElementModifier[ static_cast<size_t>(elementType) ];
+}
+
+void GeneralBuffSpell::setStats( StatsType::StatsType statsType, int16_t amount )
+{
+    statsModifier[ static_cast<size_t>( statsType ) ] = amount;
+}
+
+void GeneralBuffSpell::setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints )
+{
+	resistElementModifier[ static_cast<size_t>( elementType ) ] = resistModifierPoints;
+}
+
+void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints )
+{
+	spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
+}
+
+void GeneralBuffSpell::startEffect()
+{
+	creator->addActiveSpell( cast( NULL, NULL ) );
+	unbindFromCreator();
+	markSpellActionAsFinished();
+}
+
+void GeneralBuffSpell::inEffect()
+{
+}
+
+void GeneralBuffSpell::drawEffect()
+{
+}
+
 /// SpellCreation factory methods
 
 namespace SpellCreation
-{	
+{
 	CSpellActionBase* getGeneralRayDamageSpell()
 	{
 		return new GeneralRayDamageSpell();
 	}
-	
+
 	CSpellActionBase* getGeneralBoltDamageSpell()
 	{
 		return new GeneralBoltDamageSpell();
 	}
-	
+
 	CSpellActionBase* getGeneralHealingSpell()
 	{
 		return new GeneralHealingSpell();
+	}
+
+	CSpellActionBase* getGeneralBuffSpell()
+	{
+		return new GeneralBuffSpell();
 	}
 
 } // namespace SpellCreation
@@ -627,16 +738,22 @@ namespace DawnInterface
 		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell() ) );
 		 return newSpell.release();
 	}
-	
+
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell()
 	{
 		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell() ) );
 		 return newSpell.release();
 	}
-	
+
 	GeneralHealingSpell* createGeneralHealingSpell()
 	{
 		std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell() ) );
+		return newSpell.release();
+	}
+
+	GeneralBuffSpell* createGeneralBuffSpell()
+	{
+		std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell() ) );
 		return newSpell.release();
 	}
 }

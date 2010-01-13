@@ -79,3 +79,17 @@ curSpell:setHealEffect( 50, 70, ElementType.Dark );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["leatherskin"] = curSpell;
+curSpell:setName("Leatherskin");
+curSpell:setInfo("Encoats your skin with leather, increasing armor by 120.");
+curSpell:setStats( StatsType.Armor, 120 );
+curSpell:setCastTime( 2500 );
+curSpell:setManaCost( 75 );
+curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setDuration( 300 );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );

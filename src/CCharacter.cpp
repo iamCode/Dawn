@@ -1008,7 +1008,7 @@ int CCharacter::GetDirectionTexture()
 		{
 			if ( direction == STOP )
 				return activeDirection;
-	
+
 			int msPerDrawFrame = 100;
 			int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection[ curActivity ] )) / msPerDrawFrame );
 			return static_cast<int>(direction) + 8*index;
@@ -1292,4 +1292,41 @@ bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
 bool CCharacter::isPlayer() const
 {
 	return false;
+}
+
+void CCharacter::addActiveSpell( CSpellActionBase *spell )
+{
+    assert( spell != NULL );
+    // here we check to see if the current spell cast is already on the character. if it is, then we refresh it.
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
+    {
+        if ( activeSpells[curSpell].first->getName() == spell->getName() )
+        {
+            // we replace the old spell with a new, in case a more powerful spell is cast (a higher rank)
+            activeSpells[curSpell].first = dynamic_cast<GeneralBuffSpell*>( spell );
+            activeSpells[curSpell].second = SDL_GetTicks();
+            return;
+        }
+    }
+
+    // add new spell on character.
+    activeSpells.push_back( std::pair<GeneralBuffSpell*, uint32_t>( dynamic_cast<GeneralBuffSpell*>( spell ), SDL_GetTicks() ) );
+}
+
+void CCharacter::cleanupActiveSpells()
+{
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
+    {
+        uint32_t thisDuration = SDL_GetTicks();
+        if ( thisDuration - activeSpells[curSpell].second > activeSpells[curSpell].first->getDuration() * 1000 )
+        {
+            delete activeSpells[curSpell].first;
+            activeSpells.erase( activeSpells.begin() + curSpell );
+        }
+    }
+}
+
+std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells() const
+{
+    return activeSpells;
 }
