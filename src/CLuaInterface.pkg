@@ -255,6 +255,14 @@ class Item
 	void setLevelReq( int levelReq );
 };
 
+class InteractionPoint
+{
+	void setPosition( int posX, int posY, int width, int height );
+	void setInteractionTexture( std::string texturename );
+	void setBackgroundTexture( std::string texturename );
+	void setInteractionCode( std::string interactionCode );
+};
+
 class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
@@ -321,4 +329,6 @@ namespace DawnInterface
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+	InteractionPoint* addInteractionPoint();
+	void removeInteractionPoint( InteractionPoint *pointToRemove );
 }

@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "CharacterInfoScreen.h"
 #include "item.h"
+#include "interactionpoint.h"
 #include <memory>
 #include <signal.h>
 
@@ -59,6 +60,7 @@ CInterface GUI;
 std::vector <CNPC*> NPC;
 std::vector<Item*> groundItems;
 std::vector<std::pair<int,int> > groundPositions;
+extern std::vector<InteractionPoint*> allInteractionPoints;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
@@ -180,6 +182,14 @@ void DrawScene()
 		                                  curItem->getSizeX() * 32,
 		                                  posY,
 		                                  curItem->getSizeY() * 32 );
+	}
+	
+	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+		curInteraction->draw();
+		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
+			curInteraction->drawInteractionSymbol(mouseX, mouseY);
+		}
 	}
 
 	character.Draw();
@@ -551,6 +561,17 @@ void game_loop()
 												}
 											}
 											break;
+										}
+									}
+									
+									if ( ! foundSomething ) {
+										for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
+											InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+											if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+												foundSomething = true;
+												curInteraction->startInteraction();
+												break;
+											}
 										}
 									}
 								}
