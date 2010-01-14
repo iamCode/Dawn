@@ -28,3 +28,5 @@ DawnInterface.giveItemToPlayer( itemDatabase["scrollofleatherskin"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
 
+dofile( "data/quests_wood.lua" );
+
