@@ -210,8 +210,6 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, const CCharact
         attributeModifier += getSpellAttribute( curSpell );
     }
 
-    std::cout << std::endl;
-
 	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {
 		return minValue;
 	}
