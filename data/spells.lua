@@ -83,11 +83,11 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["leatherskin"] = curSpell;
 curSpell:setName("Leatherskin");
-curSpell:setInfo("Encoats your skin with leather, increasing armor by 120.");
-curSpell:setStats( StatsType.Armor, 120 );
+curSpell:setInfo("Encoats your skin with leather, increasing armor by 80.");
+curSpell:setStats( StatsType.Armor, 80 );
 curSpell:setCastTime( 2500 );
 curSpell:setManaCost( 75 );
-curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 300 );
 

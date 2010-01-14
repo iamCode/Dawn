@@ -1315,13 +1315,14 @@ void CCharacter::addActiveSpell( CSpellActionBase *spell )
 
 void CCharacter::cleanupActiveSpells()
 {
-    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
-    {
+    size_t curSpell = 0;
+    while ( curSpell < activeSpells.size() ) {
         uint32_t thisDuration = SDL_GetTicks();
-        if ( thisDuration - activeSpells[curSpell].second > activeSpells[curSpell].first->getDuration() * 1000 )
-        {
+        if ( thisDuration - activeSpells[curSpell].second > activeSpells[curSpell].first->getDuration() * 1000u ) {
             delete activeSpells[curSpell].first;
             activeSpells.erase( activeSpells.begin() + curSpell );
+        } else {
+            curSpell ++;
         }
     }
 }
