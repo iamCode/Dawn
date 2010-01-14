@@ -50,7 +50,7 @@ void BuffWindow::initFonts()
 void BuffWindow::loadTextures()
 {
     textures.texture.reserve(2);
-	textures.LoadIMG("data/interface/BuffWindow/side.tga",0);
+	textures.LoadIMG("data/interface/BuffWindow/frame.tga",0);
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
 }
 
@@ -98,25 +98,25 @@ void BuffWindow::draw()
     {
             // here we draw the border and background for the spells we have affecting us.
             // buffs will be drawn with a green border and debuffs with a red border.. for now we draw everyone green.
+            // spell border
             glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
-            // left side
             DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-                                            world_x+posX, 2,
-                                            world_y+posY-34*curSpell, 32 );
+                                            world_x+posX, 36,
+                                            world_y+posY-34*curSpell, 36 );
 
             // background
             DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                            world_x+posX+2, 200,
-                                            world_y+posY-34*curSpell, 32 );
+                                            world_x+posX+36, 168,
+                                            world_y+posY-34*curSpell, 36 );
 
             // right side
-            DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+            /**DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                             world_x+posX+202, 2,
-                                            world_y+posY-34*curSpell, 32 );
-
+                                            world_y+posY-34*curSpell, 36 );
+**/
 
             glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-            activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 30, world_y + posY - 34 * curSpell + 2, 30 );
+            activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 32, world_y + posY - 34 * curSpell + 2, 32 );
             spellFont->drawText(world_x+posX+40,world_y+posY+16-34*curSpell,activeSpells[curSpell].first->getName());
             spellFont->drawText(world_x+posX+40,world_y+posY+6-34*curSpell,convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
     }
