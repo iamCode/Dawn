@@ -18,6 +18,7 @@
 
 #include "CCharacter.h"
 #include "interactionpoint.h"
+#include "textwindow.h"
 
 class CZone;
 

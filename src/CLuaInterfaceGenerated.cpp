@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Thu Jan 14 21:36:22 2010.
+** Generated automatically by tolua++-1.0.92 on Sat Jan 16 00:47:49 2010.
 */
 
 #ifndef __cplusplus
@@ -25,9 +25,10 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"GeneralBuffSpell");
  tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Item");
- tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"CZone");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
+ tolua_usertype(tolua_S,"TextWindow");
  tolua_usertype(tolua_S,"CSpell");
 }
 
@@ -2031,6 +2032,109 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionCode00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setText of class  TextWindow */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_TextWindow_setText00
+static int tolua_CLuaInterface_TextWindow_setText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TextWindow",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
+  std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setText'", NULL);
+#endif
+  {
+   self->setText(text);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAutocloseTime of class  TextWindow */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_TextWindow_setAutocloseTime00
+static int tolua_CLuaInterface_TextWindow_setAutocloseTime00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TextWindow",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
+  int autocloseTime = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAutocloseTime'", NULL);
+#endif
+  {
+   self->setAutocloseTime(autocloseTime);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAutocloseTime'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setPosition of class  TextWindow */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_TextWindow_setPosition00
+static int tolua_CLuaInterface_TextWindow_setPosition00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TextWindow",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
+  PositionType::PositionType tolua_var_1 = ((PositionType::PositionType) (int)  tolua_tonumber(tolua_S,2,0));
+  int x = ((int)  tolua_tonumber(tolua_S,3,0));
+  int y = ((int)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'", NULL);
+#endif
+  {
+   self->setPosition(tolua_var_1,x,y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPosition'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setCastTime of class  ConfigurableSpell */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_ConfigurableSpell_setCastTime00
 static int tolua_CLuaInterface_ConfigurableSpell_setCastTime00(lua_State* tolua_S)
@@ -3045,6 +3149,33 @@ static int tolua_CLuaInterface_DawnInterface_addInteractionPoint00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::createTextWindow */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createTextWindow00
+static int tolua_CLuaInterface_DawnInterface_createTextWindow00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   TextWindow* tolua_ret = (TextWindow*)  DawnInterface::createTextWindow();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"TextWindow");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createTextWindow'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::removeInteractionPoint */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_removeInteractionPoint00
 static int tolua_CLuaInterface_DawnInterface_removeInteractionPoint00(lua_State* tolua_S)
@@ -3183,6 +3314,13 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"SingleTargetSpell",EffectType::SingleTargetSpell);
    tolua_constant(tolua_S,"SelfAffectingSpell",EffectType::SelfAffectingSpell);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"PositionType",0);
+  tolua_beginmodule(tolua_S,"PositionType");
+   tolua_constant(tolua_S,"BOTTOMLEFT",PositionType::BOTTOMLEFT);
+   tolua_constant(tolua_S,"BOTTOMCENTER",PositionType::BOTTOMCENTER);
+   tolua_constant(tolua_S,"LEFTCENTER",PositionType::LEFTCENTER);
+   tolua_constant(tolua_S,"CENTER",PositionType::CENTER);
+  tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"ItemQuality",0);
   tolua_beginmodule(tolua_S,"ItemQuality");
    tolua_constant(tolua_S,"POOR",ItemQuality::POOR);
@@ -3283,6 +3421,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setBackgroundTexture",tolua_CLuaInterface_InteractionPoint_setBackgroundTexture00);
    tolua_function(tolua_S,"setInteractionCode",tolua_CLuaInterface_InteractionPoint_setInteractionCode00);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"TextWindow","TextWindow","",NULL);
+  tolua_beginmodule(tolua_S,"TextWindow");
+   tolua_function(tolua_S,"setText",tolua_CLuaInterface_TextWindow_setText00);
+   tolua_function(tolua_S,"setAutocloseTime",tolua_CLuaInterface_TextWindow_setAutocloseTime00);
+   tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_TextWindow_setPosition00);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"ConfigurableSpell","ConfigurableSpell","CSpell",NULL);
   tolua_beginmodule(tolua_S,"ConfigurableSpell");
    tolua_function(tolua_S,"setCastTime",tolua_CLuaInterface_ConfigurableSpell_setCastTime00);
@@ -3334,6 +3478,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"createGeneralBuffSpell",tolua_CLuaInterface_DawnInterface_createGeneralBuffSpell00);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
    tolua_function(tolua_S,"addInteractionPoint",tolua_CLuaInterface_DawnInterface_addInteractionPoint00);
+   tolua_function(tolua_S,"createTextWindow",tolua_CLuaInterface_DawnInterface_createTextWindow00);
    tolua_function(tolua_S,"removeInteractionPoint",tolua_CLuaInterface_DawnInterface_removeInteractionPoint00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

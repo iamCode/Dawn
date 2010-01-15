@@ -138,6 +138,17 @@ namespace EffectType
 	};
 }
 
+namespace PositionType
+{
+	enum PositionType
+	{
+		BOTTOMLEFT,
+		BOTTOMCENTER,
+		LEFTCENTER,
+		CENTER
+	};
+}
+
 namespace ItemQuality
 {
 	enum ItemQuality
@@ -263,6 +274,13 @@ class InteractionPoint
 	void setInteractionCode( std::string interactionCode );
 };
 
+class TextWindow
+{
+	void setText( std::string text );
+	void setAutocloseTime( int autocloseTime );
+	void setPosition( PositionType::PositionType, int x, int y );
+};
+
 class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
@@ -330,5 +348,6 @@ namespace DawnInterface
 	GeneralBuffSpell* createGeneralBuffSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
+	TextWindow *createTextWindow();
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 }

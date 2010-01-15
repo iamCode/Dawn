@@ -25,6 +25,7 @@
 #include "CharacterInfoScreen.h"
 #include "item.h"
 #include "interactionpoint.h"
+#include "textwindow.h"
 #include <memory>
 #include <signal.h>
 
@@ -61,6 +62,7 @@ std::vector <CNPC*> NPC;
 std::vector<Item*> groundItems;
 std::vector<std::pair<int,int> > groundPositions;
 extern std::vector<InteractionPoint*> allInteractionPoints;
+extern std::vector<TextWindow*> allTextWindows;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
@@ -207,6 +209,12 @@ void DrawScene()
 		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
 			activeSpellActions[ curActiveSpellNr ]->drawEffect();
 		}
+	}
+	
+	// draw textwindows
+	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
+		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
+		curTextWindow->draw();
 	}
 
 	// check our FPS and output it
