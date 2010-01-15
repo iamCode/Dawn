@@ -101,4 +101,10 @@ class itemTooltip : public Tooltip
 		void addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage );
 };
 
+namespace Frames
+{
+	void initFrameTextures();
+	void drawFrame( int topX, int topY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight );
+}
+
 #endif

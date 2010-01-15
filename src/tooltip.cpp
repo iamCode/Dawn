@@ -23,6 +23,7 @@
 #include "Player.h"
 #include "StatsSystem.h"
 #include "elements.h"
+#include <memory>
 
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
             :   parent( parent_ )
@@ -79,16 +80,7 @@ bool Tooltip::isTooltipSmall()
 
 void Tooltip::loadTextures()
 {
-    textures.texture.reserve( 9 );
-    textures.LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
-    textures.LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
-    textures.LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
-    textures.LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
-    textures.LoadIMG( "data/interface/tooltip/background2.tga", 4 );
-    textures.LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
-    textures.LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
-    textures.LoadIMG( "data/interface/tooltip/left2.tga", 7 );
-    textures.LoadIMG( "data/interface/tooltip/right2.tga", 8 );
+	Frames::initFrameTextures();
 }
 
 void Tooltip::draw( int x, int y )
@@ -126,35 +118,7 @@ void Tooltip::draw( int x, int y )
     // (we could also center the text in the tooltip, but topaligned is probably bestlooking
     int font_y = y + blockHeight + (blockNumberHeight) * blockHeight - toplineHeight;
 
-    // draw the corners
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, blockWidth, y, blockHeight); // lower left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y, blockHeight); // lower right corner
-    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, blockWidth, y+blockHeight+(blockNumberHeight*blockHeight), blockHeight); // upper left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+blockWidth+(blockNumberWidth*blockWidth), blockWidth, y+blockHeight+(blockNumberHeight*blockHeight), blockHeight); // upper right corner
-
-    // draw the top and bottom borders
-    for ( int blockX = 0; blockX < blockNumberWidth; blockX++ )
-    {
-        DrawingHelpers::mapTextureToRect( textures.texture[5].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+blockHeight+(blockNumberHeight*blockHeight),blockHeight); // top border
-        DrawingHelpers::mapTextureToRect( textures.texture[6].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y,blockHeight); // bottom border
-    }
-
-    // draw the right and left borders
-    for ( int blockY = 0; blockY < blockNumberHeight; blockY++ )
-    {
-        DrawingHelpers::mapTextureToRect( textures.texture[7].texture, x,blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // left border
-        DrawingHelpers::mapTextureToRect( textures.texture[8].texture, x+blockWidth+(blockNumberWidth*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight); // right border
-    }
-
-    // draw the background
-    for ( int blockY = 0; blockY < blockNumberHeight; blockY++ )
-    {
-        for ( int blockX = 0; blockX < blockNumberWidth; blockX++ )
-        {
-            DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+blockWidth+(blockX*blockWidth),blockWidth,y+blockHeight+(blockY*blockHeight),blockHeight);
-        }
-    }
-
+    Frames::drawFrame( x, y, blockNumberWidth, blockNumberHeight, blockWidth, blockHeight );
 
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
@@ -476,3 +440,65 @@ void spellTooltip::getParentText()
     addTooltipText( white, 12, "" ); // newline
     addTooltipText( white, 12, parent->getInfo() );
 }
+
+/// FRAMES
+
+std::auto_ptr<CTexture> frameTextures( NULL );
+
+namespace Frames
+{
+	
+	void initFrameTextures()
+	{
+		if ( frameTextures.get() != NULL ) {
+			return;
+		}
+		
+		frameTextures = std::auto_ptr<CTexture>(new CTexture());
+		frameTextures->texture.reserve( 9 );
+		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
+		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
+		frameTextures->LoadIMG( "data/interface/tooltip/background2.tga", 4 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
+		frameTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
+		frameTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
+		frameTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
+	
+	}
+	
+	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
+	{
+		// draw the corners
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[0].texture, leftX, blockWidth, bottomY, blockHeight); // lower left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[1].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[2].texture, leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[3].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
+	
+		// draw the top and bottom borders
+		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
+		{
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[5].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[6].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
+		}
+	
+		// draw the right and left borders
+		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
+		{
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[7].texture, leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[8].texture, leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
+		}
+	
+		// draw the background
+		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
+		{
+			for ( int blockX = 0; blockX < numBlocksX; blockX++ )
+			{
+				DrawingHelpers::mapTextureToRect( frameTextures->texture[4].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
+			}
+		}
+	}
+} // namespace Frames
+
+
