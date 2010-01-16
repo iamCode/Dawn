@@ -27,6 +27,7 @@ function onActivateJohn()
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 		textWindow:setAutocloseTime( 3000 );
+		quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Wolf", 1750, 650, 1, 0, zone );
 	elseif ( quest_playHideAndSeek.fulfilled and not quest_playHideAndSeek.rewardGot )
 	then
 		textWindow = DawnInterface.createTextWindow();
@@ -55,6 +56,8 @@ function onActivateJames()
 		textWindow:setAutocloseTime( 3000 );
 		james:setPosition( 800, 200, 20, 26 );
 		quest_playHideAndSeek.fulfilled = true;
+		-- put this into the mob's onDeath...
+		DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
 	end
 end
 

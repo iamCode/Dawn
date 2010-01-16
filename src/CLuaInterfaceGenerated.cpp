@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sat Jan 16 00:47:49 2010.
+** Generated automatically by tolua++-1.0.92 on Sat Jan 16 13:15:40 2010.
 */
 
 #ifndef __cplusplus
@@ -22,6 +22,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"ConfigurableSpell");
  tolua_usertype(tolua_S,"InteractionPoint");
  tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
+ tolua_usertype(tolua_S,"CNPC");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
  tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Item");
@@ -2974,13 +2975,42 @@ static int tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00(lua_State* tolua
   int do_respawn = ((int)  tolua_tonumber(tolua_S,5,0));
   CZone* zone = ((CZone*)  tolua_tousertype(tolua_S,6,0));
   {
-   DawnInterface::addMobSpawnPoint(mobID,x_pos,y_pos,respawn_rate,do_respawn,zone);
+   CNPC* tolua_ret = (CNPC*)  DawnInterface::addMobSpawnPoint(mobID,x_pos,y_pos,respawn_rate,do_respawn,zone);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CNPC");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addMobSpawnPoint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::removeMobSpawnPoint */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_removeMobSpawnPoint00
+static int tolua_CLuaInterface_DawnInterface_removeMobSpawnPoint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CNPC",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CNPC* mobSpawnPoint = ((CNPC*)  tolua_tousertype(tolua_S,1,0));
+  {
+   DawnInterface::removeMobSpawnPoint(mobSpawnPoint);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'addMobSpawnPoint'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'removeMobSpawnPoint'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3472,6 +3502,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"giveItemToPlayer",tolua_CLuaInterface_DawnInterface_giveItemToPlayer00);
    tolua_function(tolua_S,"getCurrentZone",tolua_CLuaInterface_DawnInterface_getCurrentZone00);
    tolua_function(tolua_S,"addMobSpawnPoint",tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00);
+   tolua_function(tolua_S,"removeMobSpawnPoint",tolua_CLuaInterface_DawnInterface_removeMobSpawnPoint00);
    tolua_function(tolua_S,"createGeneralRayDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00);
    tolua_function(tolua_S,"createGeneralBoltDamageSpell",tolua_CLuaInterface_DawnInterface_createGeneralBoltDamageSpell00);
    tolua_function(tolua_S,"createGeneralHealingSpell",tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00);

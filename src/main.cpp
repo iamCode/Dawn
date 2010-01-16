@@ -149,7 +149,7 @@ namespace DawnInterface
 		return &zone1;
 	}
 
-	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
+	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
 	{
 		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
 		newMob->lifebar = NULL;
@@ -157,6 +157,17 @@ namespace DawnInterface
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
 		newMob->setActiveGUI( &GUI );
 		NPC.push_back( newMob );
+		return newMob;
+	}
+	
+	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
+	{
+		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
+			if ( NPC[ curSpawnPointNr ] == mobSpawnPoint ) {
+				NPC.erase( NPC.begin() + curSpawnPointNr );
+				break;
+			}
+		}
 	}
 }
 
