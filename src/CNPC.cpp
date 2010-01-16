@@ -22,6 +22,42 @@
 
 extern Player character;
 
+CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
+	Init( x_spawn_pos, y_spawn_pos );
+	alive = true;
+	current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
+	respawn_thisframe = 0.0f;
+	respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
+	wander_thisframe = 0.0f;
+	wander_lastframe = 0.0f; // helping us decide when the mob will wander.
+	wander_every_seconds = 1; // this mob wanders every 1 seconds.
+	wandering = false;
+	MovingDirection = STOP;
+
+	remainingMovePoints = 0;
+	direction_texture = S;
+	attitudeTowardsPlayer = neutral;
+	markedAsDeleted = false;
+}
+
+CNPC::~CNPC()
+{
+	for ( size_t curEventHandlerNr = 0; curEventHandlerNr < onDieEventHandlers.size(); ++curEventHandlerNr ) {
+		delete onDieEventHandlers[ curEventHandlerNr ];
+	}
+	onDieEventHandlers.clear();
+}
+
+void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
+	x_pos = _x_spawn_pos;
+	y_pos = _y_spawn_pos;
+	x_spawn_pos = _x_spawn_pos;
+	y_spawn_pos = _y_spawn_pos;
+	do_respawn = _do_respawn;
+	seconds_to_respawn = _seconds_to_respawn;
+	zone = _zone;
+}
+
 Direction CNPC::GetDirection()
 {
 	if ( attitudeTowardsPlayer == hostile ) {
@@ -45,6 +81,7 @@ void CNPC::Die()
     dropItems();
     alive = false;
 	respawn_lastframe = SDL_GetTicks();
+	onDie();
 }
 
 void CNPC::Draw()
@@ -123,3 +160,25 @@ void CNPC::Move()
 	}
 	CCharacter::Move();
 }
+
+void CNPC::markAsDeleted()
+{
+	markedAsDeleted = true;
+}
+bool CNPC::isMarkedAsDeletable() const
+{
+	return markedAsDeleted;
+}
+
+void CNPC::addOnDieEventHandler( CallIndirection *eventHandler )
+{
+	onDieEventHandlers.push_back( eventHandler );
+}
+
+void CNPC::onDie()
+{
+	for ( size_t curEventHandlerNr=0; curEventHandlerNr < onDieEventHandlers.size(); ++curEventHandlerNr ) {
+		onDieEventHandlers[ curEventHandlerNr ]->call();
+	}
+}
+

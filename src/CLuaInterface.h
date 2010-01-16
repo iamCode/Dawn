@@ -17,6 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CCharacter.h"
+#include "interactionpoint.h"
+#include "textwindow.h"
+#include "CNPC.h"
 
 class CZone;
 
@@ -24,7 +27,9 @@ namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID );
 	CZone* getCurrentZone();
-	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	void removeMobSpawnPoint( CNPC *spawnPointToRemove );
+	LuaCallIndirection* createEventHandler();
 	Item* createNewItem(std::string name,
 	                    int sizeX,
 	                    int sizeY,

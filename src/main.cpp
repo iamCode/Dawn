@@ -24,6 +24,8 @@
 #include "debug.h"
 #include "CharacterInfoScreen.h"
 #include "item.h"
+#include "interactionpoint.h"
+#include "textwindow.h"
 #include <memory>
 #include <signal.h>
 
@@ -59,6 +61,8 @@ CInterface GUI;
 std::vector <CNPC*> NPC;
 std::vector<Item*> groundItems;
 std::vector<std::pair<int,int> > groundPositions;
+extern std::vector<InteractionPoint*> allInteractionPoints;
+extern std::vector<TextWindow*> allTextWindows;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_toggle_showCharacterInfo = false;
@@ -145,7 +149,7 @@ namespace DawnInterface
 		return &zone1;
 	}
 
-	void addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
+	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
 	{
 		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
 		newMob->lifebar = NULL;
@@ -153,6 +157,33 @@ namespace DawnInterface
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
 		newMob->setActiveGUI( &GUI );
 		NPC.push_back( newMob );
+		return newMob;
+	}
+	
+	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
+	{
+		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
+			CNPC *curNPC = NPC[ curSpawnPointNr ];
+			if ( curNPC == mobSpawnPoint ) {
+				curNPC->markAsDeleted();
+				break;
+			}
+		}
+	}
+}
+
+void cleanupSpawnPointList()
+{
+	size_t curSpawnPointNr = 0;
+	while ( curSpawnPointNr < NPC.size() ) {
+		CNPC *curNPC = NPC[ curSpawnPointNr ];
+		if ( curNPC->isMarkedAsDeletable() ) {
+			NPC.erase( NPC.begin() + curSpawnPointNr );
+			// TODO: delete curNPC. There seem to be some problems at the moment.
+			//delete curNPC;
+		} else {
+			++curSpawnPointNr;
+		}
 	}
 }
 
@@ -181,6 +212,14 @@ void DrawScene()
 		                                  posY,
 		                                  curItem->getSizeY() * 32 );
 	}
+	
+	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+		curInteraction->draw();
+		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
+			curInteraction->drawInteractionSymbol(mouseX, mouseY);
+		}
+	}
 
 	character.Draw();
 	for (unsigned int x=0; x<NPC.size(); x++) {
@@ -197,6 +236,12 @@ void DrawScene()
 		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
 			activeSpellActions[ curActiveSpellNr ]->drawEffect();
 		}
+	}
+	
+	// draw textwindows
+	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
+		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
+		curTextWindow->draw();
 	}
 
 	// check our FPS and output it
@@ -553,6 +598,17 @@ void game_loop()
 											break;
 										}
 									}
+									
+									if ( ! foundSomething ) {
+										for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
+											InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+											if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+												foundSomething = true;
+												curInteraction->startInteraction();
+												break;
+											}
+										}
+									}
 								}
 							break;
 						}
@@ -596,6 +652,7 @@ void game_loop()
 			}
 
 			cleanupActiveSpellActions();
+			cleanupSpawnPointList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
 				for (unsigned int x=0; x<NPC.size(); x++) {
