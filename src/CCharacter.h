@@ -106,9 +106,14 @@ class CCharacter
 		bool getIsPreparing() const;
 
 		//active buffs and debuffs
-		void addActiveSpell( CSpellActionBase *spellaction );
+		void addActiveSpell( CSpellActionBase *spell );
 		void cleanupActiveSpells( );
 		std::vector<std::pair<GeneralBuffSpell*, uint32_t> > getActiveSpells() const;
+
+		//active cooldowns on spells
+		void addCooldownSpell( CSpell *spell );
+		void cleanupCooldownSpells();
+		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
 
 		// position access functions
 		int getXPos() const;
@@ -357,6 +362,8 @@ class CCharacter
         CInterface *activeGUI;
 
         std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+
+        std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
 
 		int boundingBoxX;
 		int boundingBoxY;

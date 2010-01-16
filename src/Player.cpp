@@ -59,6 +59,7 @@ void Player::Draw()
 {
 	CalculateStats();
 	cleanupActiveSpells();
+	cleanupCooldownSpells();
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {

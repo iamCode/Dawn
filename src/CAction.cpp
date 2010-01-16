@@ -54,6 +54,14 @@ class AttackAction : public CAction
 			return 0;
 		}
 
+		virtual uint16_t getCooldown() const {
+		    return 0;
+		}
+
+		virtual uint32_t getCooldownTicks() const {
+		    return 0;
+		}
+
 		virtual uint16_t getDuration() const {
 		    return 0;
 		}

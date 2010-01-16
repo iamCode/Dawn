@@ -79,6 +79,8 @@ class ActionBar
         std::vector <sButton> button;
         CTexture textures;
         GLFT_Font *shortcutFont;
+        GLFT_Font *cooldownFont;
+        std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
 };
 
 #endif

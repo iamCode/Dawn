@@ -298,6 +298,7 @@ class TextWindow
 class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
+	void setCooldown( int newCooldown );
 	void setManaCost( int newManaCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );

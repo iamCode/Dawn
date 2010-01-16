@@ -20,6 +20,7 @@ spellDatabase["electrocute"] = curSpell;
 curSpell:setName("Electrocute");
 curSpell:setInfo("Electrocutes the target with 50-100 point of air damage + 10-20 points per second for 2 seconds.");
 curSpell:setCastTime( 5000 );
+curSpell:setCooldown( 5 );
 curSpell:setManaCost( 50 );
 curSpell:setDirectDamage(  50, 100, ElementType.Air );
 curSpell:setContinuousDamage( 10, 20, 2000, ElementType.Air );
@@ -90,6 +91,21 @@ curSpell:setManaCost( 75 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 300 );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["layingofhands"] = curSpell;
+curSpell:setName("Laying of hands");
+curSpell:setInfo("Instantly heals you for 500 points of damage.");
+curSpell:setCastTime( 0 );
+curSpell:setCooldown( 600 );
+curSpell:setManaCost( 10 );
+curSpell:setSpellSymbol( "data/spells/layingofhands/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setHealEffect( 500, 500, ElementType.Light );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );

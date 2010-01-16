@@ -91,6 +91,7 @@ ConfigurableSpell::ConfigurableSpell()
 	spellSymbol = NULL;
 
 	castTime = 0;
+	cooldown = 0;
 	manaCost = 0;
 
 	name = "";
@@ -102,6 +103,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	spellSymbol = other->spellSymbol;
 
 	castTime = other->castTime;
+	cooldown = other->cooldown;
 	manaCost = other->manaCost;
 
 	name = other->name;
@@ -116,6 +118,16 @@ void ConfigurableSpell::setCastTime( uint16_t newCastTime )
 uint16_t ConfigurableSpell::getCastTime() const
 {
 	return castTime;
+}
+
+void ConfigurableSpell::setCooldown( uint16_t newCooldown )
+{
+    cooldown = newCooldown;
+}
+
+uint16_t ConfigurableSpell::getCooldown() const
+{
+    return cooldown;
 }
 
 void ConfigurableSpell::setManaCost( uint16_t newManaCost )
@@ -292,6 +304,7 @@ void GeneralRayDamageSpell::startEffect()
 	effectStart = SDL_GetTicks();
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
+	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
 
@@ -437,6 +450,7 @@ void GeneralBoltDamageSpell::startEffect()
 	lastEffect = effectStart;
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
+	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
 
@@ -587,6 +601,7 @@ void GeneralHealingSpell::startEffect()
 
 
 	target->Heal( healEffectCaused );
+    creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 	markSpellActionAsFinished();
 }
@@ -693,6 +708,7 @@ void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::Element
 void GeneralBuffSpell::startEffect()
 {
 	creator->addActiveSpell( cast( NULL, NULL ) );
+	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 	markSpellActionAsFinished();
 }

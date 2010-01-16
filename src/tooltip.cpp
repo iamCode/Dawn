@@ -19,6 +19,7 @@
 #include "tooltip.h"
 #include "GLFT_Font.h"
 #include "CDrawingHelpers.h"
+#include "TimeConverterHelper.h"
 #include "CCharacter.h"
 #include "Player.h"
 #include "StatsSystem.h"
@@ -433,8 +434,18 @@ void spellTooltip::getParentText()
     // display duration
 //    addTooltipText( blue, 12, "Duration: %d", parent->getDuration() );
 
+    if ( parent->getCooldown() > 0 )
+    {
+        addTooltipText( white, 12, "Cooldown: %s", TimeConverter::convertTime( parent->getCooldown() ).c_str() );
+    }
+
     // display cast time
-    addTooltipText( white, 12, "Casttime: %.2f sec",static_cast<float>( parent->getCastTime() ) / 1000 );
+    if ( parent->getCastTime() == 0 )
+    {
+        addTooltipText( white, 12, "Casttime: Instant");
+    } else {
+        addTooltipText( white, 12, "Casttime: %.2f sec",static_cast<float>( parent->getCastTime() ) / 1000 );
+    }
 
     // display description. This shouldnt say "does x amount of damage" but more of a general description.
     addTooltipText( white, 12, "" ); // newline
@@ -447,13 +458,13 @@ std::auto_ptr<CTexture> frameTextures( NULL );
 
 namespace Frames
 {
-	
+
 	void initFrameTextures()
 	{
 		if ( frameTextures.get() != NULL ) {
 			return;
 		}
-		
+
 		frameTextures = std::auto_ptr<CTexture>(new CTexture());
 		frameTextures->texture.reserve( 9 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
@@ -465,9 +476,9 @@ namespace Frames
 		frameTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
 		frameTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
 		frameTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
-	
+
 	}
-	
+
 	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
 	{
 		// draw the corners
@@ -475,21 +486,21 @@ namespace Frames
 		DrawingHelpers::mapTextureToRect( frameTextures->texture[1].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
 		DrawingHelpers::mapTextureToRect( frameTextures->texture[2].texture, leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
 		DrawingHelpers::mapTextureToRect( frameTextures->texture[3].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
-	
+
 		// draw the top and bottom borders
 		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
 		{
 			DrawingHelpers::mapTextureToRect( frameTextures->texture[5].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
 			DrawingHelpers::mapTextureToRect( frameTextures->texture[6].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
 		}
-	
+
 		// draw the right and left borders
 		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
 		{
 			DrawingHelpers::mapTextureToRect( frameTextures->texture[7].texture, leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
 			DrawingHelpers::mapTextureToRect( frameTextures->texture[8].texture, leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
 		}
-	
+
 		// draw the background
 		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
 		{

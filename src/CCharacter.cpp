@@ -1047,16 +1047,25 @@ void CCharacter::executeAction( CAction *action )
 
 void CCharacter::castSpell( CSpell *spell )
 {
-	if ( spell->getManaCost() <= getCurrentMana() )
+    if ( spell->getManaCost() > getCurrentMana() )
 	{
-	    giveToPreparation( spell );
-	} else {
-	    /**
-	    can't cast, not enough mana.
-	    TODO: add message to the GUI displaying the shortage of mana.
-	    Lots of other information would be added to the GUI the same way.
-	    **/
+	    /// can't cast, not enough mana. Display message here about it.
+	    return;
 	}
+
+	for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+	{
+	    if ( cooldownSpells[curSpell].first->getName() == spell->getName() )
+	    {
+	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
+            {
+                /// can't cast, spell has a cooldown on it. Display message about it.
+                return;
+            }
+	    }
+	}
+
+	giveToPreparation( spell );
 }
 
 void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
@@ -1330,4 +1339,31 @@ void CCharacter::cleanupActiveSpells()
 std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells() const
 {
     return activeSpells;
+}
+
+
+void CCharacter::addCooldownSpell( CSpell *spell )
+{
+    assert( spell != NULL );
+    cooldownSpells.push_back( std::pair<CSpell*,uint32_t>( spell, SDL_GetTicks() ) );
+}
+
+void CCharacter::cleanupCooldownSpells()
+{
+
+    size_t curSpell = 0;
+    while ( curSpell < cooldownSpells.size() ) {
+        uint32_t thisDuration = SDL_GetTicks();
+        if ( thisDuration - cooldownSpells[curSpell].second > cooldownSpells[curSpell].first->getCooldown() * 1000u ) {
+            delete cooldownSpells[curSpell].first;
+            cooldownSpells.erase( cooldownSpells.begin() + curSpell );
+        } else {
+            curSpell ++;
+        }
+    }
+}
+
+std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const
+{
+    return cooldownSpells;
 }

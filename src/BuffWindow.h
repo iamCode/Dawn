@@ -34,7 +34,6 @@ class BuffWindow
         void initFonts();
         void loadTextures();
         void draw();
-        std::string convertTime( uint32_t ticks, uint16_t duration );
 
     private:
         Player *player;

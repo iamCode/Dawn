@@ -19,6 +19,7 @@
 #include "BuffWindow.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
+#include "TimeConverterHelper.h"
 #include "debug.h"
 
 BuffWindow::BuffWindow( Player *player_)
@@ -40,7 +41,6 @@ BuffWindow::~BuffWindow()
     }
 }
 
-
 void BuffWindow::initFonts()
 {
 	spellFont = new GLFT_Font();
@@ -52,41 +52,6 @@ void BuffWindow::loadTextures()
     textures.texture.reserve(2);
 	textures.LoadIMG("data/interface/BuffWindow/frame.tga",0);
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
-}
-
-std::string BuffWindow::convertTime( uint32_t ticks, uint16_t duration )
-{
-    // break our ticks down into hours, minutes or seconds and return a pretty string to use in the buffwindow.
-    std::string output_string;
-	std::stringstream ss;
-	uint32_t thisDuration = SDL_GetTicks();
-    uint16_t seconds = 0;
-    uint16_t minutes = 0;
-    uint16_t hours = 0;
-    std::string returnString;
-
-    seconds = duration - floor( ( thisDuration - ticks ) / 1000 );
-    minutes = floor( seconds / 60 );
-    hours = floor( minutes / 60 );
-
-    if ( hours > 0 )
-    {
-        ss << hours << "h ";
-    }
-
-    if ( minutes > 0 )
-    {
-        ss << minutes << "m ";
-    }
-
-    if ( minutes <= 0 && hours <= 0 )
-    {
-        ss << seconds << "s ";
-    }
-
-    output_string = ss.str();
-
-    return output_string;
 }
 
 void BuffWindow::draw()
@@ -102,23 +67,18 @@ void BuffWindow::draw()
             glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
             DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                             world_x+posX, 36,
-                                            world_y+posY-34*curSpell, 36 );
+                                            world_y+posY-40*curSpell, 36 );
 
             // background
             DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
                                             world_x+posX+36, 168,
-                                            world_y+posY-34*curSpell, 36 );
+                                            world_y+posY-40*curSpell, 36 );
 
-            // right side
-            /**DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-                                            world_x+posX+202, 2,
-                                            world_y+posY-34*curSpell, 36 );
-**/
 
             glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-            activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 32, world_y + posY - 34 * curSpell + 2, 32 );
+            activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 32, world_y + posY - 40 * curSpell + 2, 32 );
             spellFont->drawText(world_x+posX+40,world_y+posY+16-34*curSpell,activeSpells[curSpell].first->getName());
-            spellFont->drawText(world_x+posX+40,world_y+posY+6-34*curSpell,convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
+            spellFont->drawText(world_x+posX+40,world_y+posY+6-34*curSpell,TimeConverter::convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
     }
 
 }

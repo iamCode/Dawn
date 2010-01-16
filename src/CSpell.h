@@ -78,6 +78,7 @@ class CSpellActionBase
 		/// \brief Returns the time needed to cast a spell.
 		/// \todo Should the spell meta information be put in a separate info object?
 		virtual uint16_t getCastTime() const = 0;
+		virtual uint16_t getCooldown() const = 0;
 		virtual uint16_t getManaCost() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getInfo() const = 0;
@@ -130,6 +131,8 @@ class ConfigurableSpell : public CSpell
 	public:
 		void setCastTime( uint16_t newCastTime );
 		virtual uint16_t getCastTime() const;
+		void setCooldown( uint16_t newCooldown );
+		virtual uint16_t getCooldown() const;
 		void setManaCost( uint16_t newManaCost );
 		virtual uint16_t getManaCost() const;
 		void setName( std::string newName );
@@ -146,6 +149,7 @@ class ConfigurableSpell : public CSpell
 
 		uint16_t castTime;
 		uint16_t manaCost;
+		uint16_t cooldown;
 
 		std::string name;
 		std::string info;

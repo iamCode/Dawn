@@ -8,12 +8,41 @@
 
 std::auto_ptr<GLFT_Font> textWindowFont( NULL );
 
+char *strtok_r(char *str, const char *delim, char **nextp)
+{
+    char *ret;
+
+    if ( str == NULL )
+    {
+        str = *nextp;
+    }
+
+    str += strspn(str, delim);
+
+    if (*str == '\0')
+    {
+        return NULL;
+    }
+
+    ret = str;
+    str += strcspn(str, delim);
+
+    if (*str)
+    {
+        *str++ = '\0';
+    }
+
+    *nextp = str;
+
+    return ret;
+}
+
 void initTextWindowFont()
 {
 	if ( textWindowFont.get() != NULL ) {
 		return;
 	}
-	 
+
 	textWindowFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 14));
 }
 
@@ -34,7 +63,7 @@ void TextWindow::setText( std::string text )
 
 	// format the text.
 	const int lineWidth = 416;
-	
+
 	// for strtok_r
 	char *some_ptr = NULL;
 	char **save_ptr = &some_ptr;
@@ -89,7 +118,7 @@ void TextWindow::draw()
 	const int blockSizeY = 32;
 	const int lineWidth = 416;
 	const int lineSpace = textWindowFont->getHeight() * 0.5;
-	
+
 	int neededWidth = lineWidth;
 	int neededHeight = 0;
 	if ( textLines.size() > 0 ) {
@@ -104,10 +133,10 @@ void TextWindow::draw()
 	if ( neededHeight % blockSizeY != 0 ) {
 		++neededInnerBlocksY;
 	}
-	
+
 	int leftX = 0;
 	int bottomY = 0;
-	
+
 	switch ( positionType )
 	{
 		case PositionType::CENTER:
@@ -127,13 +156,13 @@ void TextWindow::draw()
 			bottomY = y;
 		break;
 	}
-	
+
 	leftX += world_x;
 	bottomY += world_y;
-	
+
 	// draw the frame
 	Frames::drawFrame( leftX, bottomY, neededInnerBlocksX, neededInnerBlocksY, blockSizeX, blockSizeY );
-	
+
 	// draw the text
 	int curX = leftX + blockSizeX;
 	int curY = bottomY + neededInnerBlocksY * blockSizeY + textWindowFont->getHeight();

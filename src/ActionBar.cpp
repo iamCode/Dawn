@@ -20,6 +20,7 @@
 #include "CCharacter.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
+#include "TimeConverterHelper.h"
 #include "CAction.h"
 #include "CSpell.h"
 
@@ -31,6 +32,7 @@ ActionBar::ActionBar( Player *player_ )
         height ( 49 )
 {
     shortcutFont = NULL;
+    cooldownFont = NULL;
     button.push_back( sButton(0, 0, 50, 50, "1", SDLK_1) );
     button.push_back( sButton(70, 0, 50, 50, "2", SDLK_2) );
     button.push_back( sButton(140, 0, 50, 50, "3", SDLK_3) );
@@ -45,8 +47,14 @@ ActionBar::ActionBar( Player *player_ )
 
 ActionBar::~ActionBar()
 {
-	if ( shortcutFont != NULL ) {
+	if ( shortcutFont != NULL )
+	{
 		delete shortcutFont;
+	}
+
+	if ( cooldownFont != NULL )
+	{
+	    delete cooldownFont;
 	}
 }
 
@@ -54,6 +62,9 @@ void ActionBar::initFonts()
 {
 	shortcutFont = new GLFT_Font();
 	shortcutFont->open("data/verdana.ttf", 9);
+
+	cooldownFont = new GLFT_Font();
+	cooldownFont->open("data/verdana.ttf", 11);
 }
 
 bool ActionBar::isMouseOver( int x, int y )
@@ -70,6 +81,9 @@ bool ActionBar::isMouseOver( int x, int y )
 
 void ActionBar::draw()
 {
+    bool drawCooldownText;
+    std::string cooldownText;
+    cooldownSpells = player->getCooldownSpells();
 
     // background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
@@ -96,12 +110,33 @@ void ActionBar::draw()
 		                                  world_y+ 8, 50 );
 
         glColor3f( 1.0f, 1.0f, 1.0f );
+
+        drawCooldownText = false;
+
         if ( button[buttonId].action != NULL )
 	    {
+	        for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+	        {
+	            if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
+	            {
+                    // make the spellicon darker if it's on cooldown.
+                    glColor3f( 0.4f, 0.4f, 0.4f );
+                    drawCooldownText = true;
+                    cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
+	            }
+            }
+
 	        button[buttonId].action->drawSymbol( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
+
+            if ( drawCooldownText == true )
+            {
+                glColor3f( 1.0f, 0.0f, 0.0f );
+                unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
+	            cooldownFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 + 6 + (static_cast<float>(50)-xModifier) / 2,
+                                        static_cast<float>( world_y ) + 28, cooldownText.c_str() );
+                glColor3f( 1.0f, 1.0f, 1.0f );
+            }
 	    }
-
-
 	}
 }
 
@@ -152,6 +187,7 @@ void ActionBar::handleKeys()
     for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
         // TODO: use a conversion table here from quickslot nr to keycode
         if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
+            button[buttonId].wasPressed = true;
             if ( button[buttonId].action != NULL ) {
                 CSpellActionBase *curAction = NULL;
 
