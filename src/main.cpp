@@ -163,10 +163,26 @@ namespace DawnInterface
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
 	{
 		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
-			if ( NPC[ curSpawnPointNr ] == mobSpawnPoint ) {
-				NPC.erase( NPC.begin() + curSpawnPointNr );
+			CNPC *curNPC = NPC[ curSpawnPointNr ];
+			if ( curNPC == mobSpawnPoint ) {
+				curNPC->markAsDeleted();
 				break;
 			}
+		}
+	}
+}
+
+void cleanupSpawnPointList()
+{
+	size_t curSpawnPointNr = 0;
+	while ( curSpawnPointNr < NPC.size() ) {
+		CNPC *curNPC = NPC[ curSpawnPointNr ];
+		if ( curNPC->isMarkedAsDeletable() ) {
+			NPC.erase( NPC.begin() + curSpawnPointNr );
+			// TODO: delete curNPC. There seem to be some problems at the moment.
+			//delete curNPC;
+		} else {
+			++curSpawnPointNr;
 		}
 	}
 }
@@ -636,6 +652,7 @@ void game_loop()
 			}
 
 			cleanupActiveSpellActions();
+			cleanupSpawnPointList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
 				for (unsigned int x=0; x<NPC.size(); x++) {

@@ -274,6 +274,20 @@ class InteractionPoint
 	void setInteractionCode( std::string interactionCode );
 };
 
+class CallIndirection
+{
+};
+
+class LuaCallIndirection : public CallIndirection
+{
+	void setExecuteText( std::string text );
+};
+
+class CNPC
+{
+	void addOnDieEventHandler( CallIndirection *eventHandler );
+};
+
 class TextWindow
 {
 	void setText( std::string text );
@@ -351,4 +365,5 @@ namespace DawnInterface
 	InteractionPoint* addInteractionPoint();
 	TextWindow *createTextWindow();
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
+	LuaCallIndirection* createEventHandler();
 }

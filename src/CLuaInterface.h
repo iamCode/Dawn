@@ -29,6 +29,7 @@ namespace DawnInterface
 	CZone* getCurrentZone();
 	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
 	void removeMobSpawnPoint( CNPC *spawnPointToRemove );
+	LuaCallIndirection* createEventHandler();
 	Item* createNewItem(std::string name,
 	                    int sizeX,
 	                    int sizeY,
