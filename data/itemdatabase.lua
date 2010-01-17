@@ -90,8 +90,8 @@ curItem:setStats(StatsType.EvadeModifier, 10 );
 curItem:setLevelReq( 3 );
 
 
-itemDatabase["scrollofleatherskin"]=DawnInterface.createNewItem( "Scroll of Leatherskin", 1, 1, "data/items/Scroll1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.SCROLL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
-curItem = itemDatabase["scrollofleatherskin"];
+itemDatabase["scrolloftheboar"]=DawnInterface.createNewItem( "Scroll of the Boar", 1, 1, "data/items/Scroll1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.SCROLL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["scrolloftheboar"];
+curItem:setSpell( spellDatabase["spiritoftheboar"] );
+curItem:setSpellCharges( 5 );
 curItem:setLevelReq( 1 );
-
-

@@ -61,6 +61,7 @@ class Tooltip
         void disableSmallTooltip();
         bool isTooltipSmall();
         virtual void getParentText() = 0;
+        void reloadTooltip();
 
     private:
         bool smallTooltip; // with this true, tooltip will merely display the name of things.

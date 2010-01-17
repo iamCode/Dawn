@@ -164,6 +164,16 @@ uint8_t Item::getLevelReq() const
     return levelReq;
 }
 
+uint8_t Item::getSpellCharges() const
+{
+    return spellCharges;
+}
+
+CSpell *Item::getSpell() const
+{
+    return spell;
+}
+
 void Item::setStats( StatsType::StatsType statsType, int16_t amount )
 {
 	this->statsModifier[ static_cast<size_t>( statsType) ] = amount;
@@ -192,6 +202,21 @@ void Item::setMaxDamage( uint8_t maxDamage_ )
 void Item::setLevelReq( uint8_t levelReq_ )
 {
     levelReq = levelReq_;
+}
+
+void Item::reduceSpellCharges()
+{
+    spellCharges--;
+}
+
+void Item::setSpellCharges( uint8_t newSpellCharges )
+{
+    spellCharges = newSpellCharges;
+}
+
+void Item::setSpell( CSpell *newSpell )
+{
+    spell = newSpell;
 }
 
 void Item::setDescription ( std::string description_ )
@@ -347,10 +372,10 @@ std::string Item::getUseableDescription() const
             return std::string("Memorize: "); //later on add .append(getSpellName and getSpellRank) or so..
         break;
         case ItemType::POTION:
-            return std::string("Drink: "); // later on add .append(getUsableSpellDescription) or so..
+            return std::string("Drink: ").append(getSpell()->getInfo() );
         break;
         case ItemType::SCROLL:
-            return std::string("Read: "); // later on add .append(getUsableSpellDescription) or so..
+            return std::string("Read: ").append(getSpell()->getInfo() );
         break;
     }
 }

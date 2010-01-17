@@ -17,7 +17,7 @@ DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
 DawnInterface.giveItemToPlayer( itemDatabase["snakeloop"] );
 DawnInterface.giveItemToPlayer( itemDatabase["bladeofstrength"] );
 DawnInterface.giveItemToPlayer( itemDatabase["shadering"] );
-DawnInterface.giveItemToPlayer( itemDatabase["scrollofleatherskin"] );
+DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
 
 
 

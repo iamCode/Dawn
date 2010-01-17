@@ -95,6 +95,16 @@ curSpell:setDuration( 300 );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["spiritoftheboar"] = curSpell;
+curSpell:setName("Spirit of the Boar");
+curSpell:setInfo("Embraces you with the spirit of the boar, increasing vitality by 5.");
+curSpell:setStats( StatsType.Vitality, 5 );
+curSpell:setCastTime( 0 );
+curSpell:setManaCost( 0 );
+curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setDuration( 5 );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["layingofhands"] = curSpell;

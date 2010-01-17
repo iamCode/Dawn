@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on 01/16/10 19:50:24.
+** Generated automatically by tolua++-1.0.92 on 01/17/10 16:25:22.
 */
 
 #ifndef __cplusplus
@@ -26,12 +26,12 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
- tolua_usertype(tolua_S,"TextWindow");
+ tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Item");
  tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"CSpell");
- tolua_usertype(tolua_S,"CCharacter");
+ tolua_usertype(tolua_S,"TextWindow");
  tolua_usertype(tolua_S,"InteractionPoint");
 }
 
@@ -1897,6 +1897,72 @@ static int tolua_CLuaInterface_Item_setLevelReq00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setSpellCharges of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setSpellCharges00
+static int tolua_CLuaInterface_Item_setSpellCharges00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  int newSpellCharges = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCharges'",NULL);
+#endif
+  {
+   self->setSpellCharges(newSpellCharges);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpellCharges'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSpell of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setSpell00
+static int tolua_CLuaInterface_Item_setSpell00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  CSpell* newSpell = ((CSpell*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpell'",NULL);
+#endif
+  {
+   self->setSpell(newSpell);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpell'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setPosition of class  InteractionPoint */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionPoint_setPosition00
 static int tolua_CLuaInterface_InteractionPoint_setPosition00(lua_State* tolua_S)
@@ -3571,6 +3637,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setMinDamage",tolua_CLuaInterface_Item_setMinDamage00);
    tolua_function(tolua_S,"setMaxDamage",tolua_CLuaInterface_Item_setMaxDamage00);
    tolua_function(tolua_S,"setLevelReq",tolua_CLuaInterface_Item_setLevelReq00);
+   tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
+   tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"InteractionPoint","InteractionPoint","",NULL);
   tolua_beginmodule(tolua_S,"InteractionPoint");

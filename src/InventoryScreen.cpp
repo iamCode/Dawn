@@ -155,7 +155,7 @@ void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 	groundPositions.push_back( std::pair<int,int>( player->getXPos(), player->getYPos() ) );
 }
 
-void InventoryScreen::clicked( int clickX, int clickY )
+void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 {
 	// Put Floating selection out of inventory.
 	// Check several positions here for equipping, for now weapon hand and shield hand
@@ -208,6 +208,29 @@ void InventoryScreen::clicked( int clickX, int clickY )
 
 	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
 	int fieldIndexY = ( clickY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
+
+	if ( mouseDown == 3 )
+	{
+	    if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) )
+        {
+	        InventoryItem *useItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
+	        assert ( useItem != NULL );
+	        if ( useItem->getItem()->isUseable()
+            && useItem->getItem()->getSpellCharges() > 0
+            && useItem->getItem()->getLevelReq() <= player->getLevel()
+            && player->isSpellOnCooldown( useItem->getItem()->getSpell()->getName() ) == false )
+            {
+                player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
+                useItem->getItem()->reduceSpellCharges();
+                useItem->tt->reloadTooltip();
+                if ( useItem->getItem()->getSpellCharges() == 0 )
+                {
+                    inventory->removeItem( useItem );
+                }
+            }
+	    }
+	    return;
+	}
 
 	if ( floatingSelection != NULL ) {
 		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {

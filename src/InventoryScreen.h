@@ -77,7 +77,7 @@ class InventoryScreen
 		void setVisible( bool newVisible );
 		bool isVisible() const;
 
-		void clicked( int clickX, int clickY );
+		void clicked( int clickX, int clickY, uint8_t mouseDown );
 
 		void loadTextures();
 

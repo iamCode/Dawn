@@ -84,6 +84,13 @@ void Tooltip::loadTextures()
 	Frames::initFrameTextures();
 }
 
+void Tooltip::reloadTooltip()
+{
+    loadedAtLevel = player->getLevel();
+    tooltipText.clear();
+    getParentText();
+}
+
 void Tooltip::draw( int x, int y )
 {
     if ( tooltipText.empty() )
@@ -95,9 +102,7 @@ void Tooltip::draw( int x, int y )
     // if not, we clear the tooltip and get the parent text again.
     if ( loadedAtLevel != player->getLevel() )
     {
-        loadedAtLevel = player->getLevel();
-        tooltipText.clear();
-        getParentText();
+        reloadTooltip();
     }
 
     // make sure the tooltip doesnt go "off screen"
@@ -397,6 +402,7 @@ void itemTooltip::getParentText()
 	if ( parent->isUseable() )
 	{
 	    addTooltipText( green, 11, parent->getUseableDescription() );
+	    addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
 	}
 
     // display the item description, if any

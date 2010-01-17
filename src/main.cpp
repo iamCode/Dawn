@@ -159,7 +159,7 @@ namespace DawnInterface
 		NPC.push_back( newMob );
 		return newMob;
 	}
-	
+
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
 	{
 		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
@@ -212,7 +212,7 @@ void DrawScene()
 		                                  posY,
 		                                  curItem->getSizeY() * 32 );
 	}
-	
+
 	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
@@ -237,7 +237,7 @@ void DrawScene()
 			activeSpellActions[ curActiveSpellNr ]->drawEffect();
 		}
 	}
-	
+
 	// draw textwindows
 	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
 		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
@@ -390,11 +390,23 @@ bool dawn_init(int argc, char** argv)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
+		Editor.LoadTextures();
+		GUI.LoadTextures();
+		GUI.SetPlayer(&character);
+		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
+		characterInfoScreen->LoadTextures();
+		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
+		inventoryScreen->loadTextures();
+		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
+		actionBar->loadTextures();
+		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
+		spellbook->loadTextures();
+		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
+
 		dawn_debug_info("Loading the game data files and objects");
-
-		LuaFunctions::executeLuaFile("data/itemdatabase.lua");
+        LuaFunctions::executeLuaFile("data/spells.lua");
+        LuaFunctions::executeLuaFile("data/itemdatabase.lua");
 		LuaFunctions::executeLuaFile("data/mobdata.all");
-
 
 		zone1.LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
@@ -451,6 +463,9 @@ bool dawn_init(int argc, char** argv)
 			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
 		}
 
+
+
+
 		character.setMoveTexture( ActivityType::Walking, STOP, 0, "data/character/swordsman/walking s0000.tga" );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
@@ -464,21 +479,6 @@ bool dawn_init(int argc, char** argv)
 		character.setWisdom(10);
 		character.setIntellect(10);
 
-		LuaFunctions::executeLuaFile("data/gameinit.lua");
-
-		Editor.LoadTextures();
-		GUI.LoadTextures();
-		GUI.SetPlayer(&character);
-		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
-		characterInfoScreen->LoadTextures();
-		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
-		inventoryScreen->loadTextures();
-		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
-		actionBar->loadTextures();
-		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
-		spellbook->loadTextures();
-		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
-
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
 		message.initFonts();
@@ -486,9 +486,9 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
 
-		LuaFunctions::executeLuaFile("data/spells.lua");
-
 		ActionCreation::initActions();
+
+		LuaFunctions::executeLuaFile("data/gameinit.lua");
 
 		// initialize random number generator
 		srand( time( 0 ) );
@@ -536,7 +536,7 @@ void game_loop()
 					if ( ( inventoryScreen->isVisible()
 					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
-						inventoryScreen->clicked( mouseX, mouseY );
+						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
 					} else if ( characterInfoScreen->isVisible()
                             && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
                         characterInfoScreen->clicked( mouseX, mouseY );
@@ -598,7 +598,7 @@ void game_loop()
 											break;
 										}
 									}
-									
+
 									if ( ! foundSomething ) {
 										for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
 											InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];

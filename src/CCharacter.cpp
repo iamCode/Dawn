@@ -1367,3 +1367,15 @@ std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const
 {
     return cooldownSpells;
 }
+
+bool CCharacter::isSpellOnCooldown( std::string spellName ) const
+{
+    for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+    {
+	    if ( cooldownSpells[curSpell].first->getName() == spellName )
+        {
+            return true;
+        }
+    }
+    return false;
+}

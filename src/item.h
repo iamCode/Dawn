@@ -21,7 +21,7 @@
 
 #include <string>
 #include "CTexture.h"
-
+#include "CSpell.h"
 #include "elements.h"
 #include "stats.h"
 
@@ -156,6 +156,8 @@ class Item
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
         uint8_t getLevelReq() const;
+        uint8_t getSpellCharges() const;
+        CSpell *getSpell() const;
 
         void setStats( StatsType::StatsType statsType, int16_t amount );
         void setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints );
@@ -163,6 +165,9 @@ class Item
 		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
         void setLevelReq( uint8_t levelReq );
+        void setSpellCharges( uint8_t newSpellCharges );
+        void reduceSpellCharges();
+        void setSpell( CSpell *newSpell );
 
 		size_t getSizeX() const;
 		size_t getSizeY() const;
@@ -203,6 +208,9 @@ class Item
         uint8_t maxDamage;
 
         uint8_t levelReq;
+
+        uint8_t spellCharges;
+        CSpell *spell;
 
 		CTexture symbolTexture;
 };
