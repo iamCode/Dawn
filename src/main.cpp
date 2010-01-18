@@ -195,6 +195,11 @@ void DrawScene()
 	glLoadIdentity();
 
 	glTranslated(-focus.getX(), -focus.getY(),0);
+	
+	/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be
+	 * removed once Editor and GUI don't need them */
+	world_x = focus.getX();
+	world_y = focus.getY();
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
@@ -252,11 +257,6 @@ void DrawScene()
 		ff=0;
 		lastframe=thisframe;
 	}
-
-	/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be
-	 * removed once Editor and GUI don't need them */
-	world_x = focus.getX();
-	world_y = focus.getY();
 
 	if (Editor.isEnabled() ) {
 		Editor.DrawEditor();
