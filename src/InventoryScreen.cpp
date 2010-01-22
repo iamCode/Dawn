@@ -218,6 +218,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 	        if ( useItem->getItem()->isUseable()
             && useItem->getItem()->getSpellCharges() > 0
             && useItem->getItem()->getLevelReq() <= player->getLevel()
+            && !player->getIsPreparing()
             && player->isSpellOnCooldown( useItem->getItem()->getSpell()->getName() ) == false )
             {
                 player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );

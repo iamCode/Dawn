@@ -76,7 +76,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	symbolTexture.LoadIMG( symbolFile, 0 );
 
 	if ( itemType == ItemType::DRINK
-	  || itemType == ItemType::DRINK
+	  || itemType == ItemType::FOOD
+	  || itemType == ItemType::POTION
 	  || itemType == ItemType::NEWSPELL
 	  || itemType == ItemType::SCROLL )
     {

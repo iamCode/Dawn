@@ -19,6 +19,8 @@ DawnInterface.giveItemToPlayer( itemDatabase["bladeofstrength"] );
 DawnInterface.giveItemToPlayer( itemDatabase["shadering"] );
 DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
 
+DawnInterface.giveItemToPlayer( itemDatabase["smallhealingpotion"] );
+
 
 
 

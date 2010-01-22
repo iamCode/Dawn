@@ -119,3 +119,15 @@ curSpell:setHealEffect( 500, 500, ElementType.Light );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["smallhealingpotion"] = curSpell;
+curSpell:setName("Small healing potion");
+curSpell:setInfo("Heals 10-25 points of damage on self.");
+curSpell:setCastTime( 0 );
+curSpell:setManaCost( 0 );
+curSpell:setCooldown( 120 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setHealEffect( 10, 25, ElementType.Light );
