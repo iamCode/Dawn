@@ -28,6 +28,7 @@
 #include "textwindow.h"
 #include <memory>
 #include <signal.h>
+#include "SDL_getenv.h"
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -335,6 +336,9 @@ bool dawn_init(int argc, char** argv)
 {
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
+
+		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
+		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
 
 		dawn_debug_info("Initializing...");
 		dawn_init_signal_handlers();
