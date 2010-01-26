@@ -42,7 +42,7 @@ end
 
 function onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
-	james:setPosition( 1950, 700, 20, 26 );
+	james:setPosition( 1950, 650, 20, 26 );
 	james:setBackgroundTexture( "data/character/link/link1.tga" );
 	james:setInteractionTexture( "data/interaction/talk.tga" );
 	james:setInteractionCode( "onActivateJames()" );

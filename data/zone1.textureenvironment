@@ -1,6 +1,6 @@
 # texture-id filename also_add_collision_box(cb) cb_x cb_y cb_w cb_h
-1 data/tree/tree1.tga 1 70 70 70 70
-2 data/tree/tree2.tga 1 70 70 70 70
+1 data/tree/tree1.tga 1 0 58 109 64
+2 data/tree/tree2.tga 1 0 62 68 87
 3 data/stone/stone1.tga 1 0 0 10 10
 4 data/stone/stone2.tga 1 0 0 15 15
 5 data/tile.tga 1 0 0 40 40
