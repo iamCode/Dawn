@@ -26,6 +26,7 @@
 #include "item.h"
 #include "interactionpoint.h"
 #include "textwindow.h"
+#include "questwindow.h"
 #include <memory>
 #include <signal.h>
 #include "SDL_getenv.h"
@@ -69,6 +70,7 @@ bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_
 bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
+bool KP_toggle_showQuestWindow = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -81,6 +83,7 @@ std::auto_ptr<InventoryScreen> inventoryScreen;
 std::auto_ptr<ActionBar> actionBar;
 std::auto_ptr<Spellbook> spellbook;
 std::auto_ptr<BuffWindow> buffWindow;
+std::auto_ptr<QuestWindow> questWindow;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -304,6 +307,9 @@ void DrawScene()
 	    spellbook->drawFloatingSpell( mouseX, mouseY );
 	}
 
+	if ( questWindow->isVisible() ) {
+		questWindow->draw();
+	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -406,6 +412,7 @@ bool dawn_init(int argc, char** argv)
 		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
 		spellbook->loadTextures();
 		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
+		questWindow = std::auto_ptr<QuestWindow>( new QuestWindow );
 
 		dawn_debug_info("Loading the game data files and objects");
         LuaFunctions::executeLuaFile("data/spells.lua");
@@ -556,6 +563,9 @@ void game_loop()
                                 && (spellbook->isOnThisScreen( mouseX, mouseY )
                                 || spellbook->hasFloatingSpell()) ) {
                         spellbook->clicked( mouseX, mouseY );
+					} else if ( questWindow->isVisible()
+					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
+						questWindow->clicked( mouseX, mouseY );
                     } else {
 						switch (event.button.button) {
 							case 1:
@@ -738,6 +748,15 @@ void game_loop()
 
 			if ( !keys[SDLK_i] ) {
 			    KP_toggle_showInventory = false;
+			}
+
+			if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
+			    KP_toggle_showQuestWindow = true;
+			    questWindow->setVisible( !questWindow->isVisible() );
+			}
+
+			if ( !keys[SDLK_q] ) {
+				KP_toggle_showQuestWindow = false;
 			}
 
 			actionBar->handleKeys();

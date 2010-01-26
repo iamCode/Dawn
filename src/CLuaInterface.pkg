@@ -369,4 +369,7 @@ namespace DawnInterface
 	TextWindow *createTextWindow();
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 	LuaCallIndirection* createEventHandler();
+	void addQuest( std::string questName, std::string questDescription );
+	void removeQuest( std::string questName );
+	void changeQuestDescription( std::string questName, std::string newDescription );
 }

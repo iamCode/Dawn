@@ -20,6 +20,7 @@ function onActivateJohn()
 			onDieEventHandler = DawnInterface.createEventHandler();
 			onDieEventHandler:setExecuteText( "onKilledQuestMonster()" );
 			quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );
+			DawnInterface.addQuest("hide and seek", "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 		end
 		textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
@@ -35,6 +36,7 @@ function onActivateJohn()
 		quest_playHideAndSeek.rewardGot = true;
 		DawnInterface.removeInteractionPoint( john );
 		DawnInterface.removeInteractionPoint( james );
+		DawnInterface.removeQuest("hide and seek");
 	end
 end
 
@@ -62,6 +64,7 @@ function onActivateJames()
 		textWindow:setAutocloseTime( 10000 );
 		james:setPosition( 800, 200, 20, 26 );
 		quest_playHideAndSeek.fulfilled = true;
+		DawnInterface.changeQuestDescription("hide and seek", "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
 	end
 end
 

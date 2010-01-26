@@ -37,6 +37,37 @@ char *strtok_r(char *str, const char *delim, char **nextp)
     return ret;
 }
 
+void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font )
+{
+	// for strtok_r
+	char *some_ptr = NULL;
+	char **save_ptr = &some_ptr;
+	std::string delim = " ";
+	char *nextString = strtok_r( const_cast<char*>(text.c_str()), delim.c_str(), save_ptr );
+	std::string curLine = "";
+	std::string testCurLine = "";
+	while ( nextString != NULL ) {
+		if ( testCurLine != "" ) {
+			testCurLine.append(" ");
+		}
+		testCurLine.append( nextString );
+		// check render length of curLine
+		int estimatedWidth = font->calcStringWidth(testCurLine);
+		if ( estimatedWidth <= lineWidth ) {
+			curLine = testCurLine;
+		} else {
+			textLines.push_back( curLine );
+			curLine = std::string("").append( nextString );
+			testCurLine = curLine;
+		}
+		nextString = strtok_r( NULL, delim.c_str(), save_ptr );
+	}
+
+	if ( curLine != "" ) {
+		textLines.push_back( curLine );
+	}
+}
+
 void initTextWindowFont()
 {
 	if ( textWindowFont.get() != NULL ) {
@@ -64,33 +95,7 @@ void TextWindow::setText( std::string text )
 	// format the text.
 	const int lineWidth = 416;
 
-	// for strtok_r
-	char *some_ptr = NULL;
-	char **save_ptr = &some_ptr;
-	std::string delim = " ";
-	char *nextString = strtok_r( const_cast<char*>(text.c_str()), delim.c_str(), save_ptr );
-	std::string curLine = "";
-	std::string testCurLine = "";
-	while ( nextString != NULL ) {
-		if ( testCurLine != "" ) {
-			testCurLine.append(" ");
-		}
-		testCurLine.append( nextString );
-		// check render length of curLine
-		int estimatedWidth = textWindowFont->calcStringWidth(testCurLine);
-		if ( estimatedWidth <= lineWidth ) {
-			curLine = testCurLine;
-		} else {
-			textLines.push_back( curLine );
-			curLine = std::string("").append( nextString );
-			testCurLine = curLine;
-		}
-		nextString = strtok_r( NULL, delim.c_str(), save_ptr );
-	}
-
-	if ( curLine != "" ) {
-		textLines.push_back( curLine );
-	}
+	formatMultilineText( text, textLines, lineWidth, textWindowFont.get() );
 }
 
 void TextWindow::setAutocloseTime( int autocloseTime )
