@@ -373,10 +373,16 @@ std::string Item::getUseableDescription() const
             return std::string("Memorize: "); //later on add .append(getSpellName and getSpellRank) or so..
         break;
         case ItemType::POTION:
-            return std::string("Drink: ").append(getSpell()->getInfo() );
+            if ( getSpell() != NULL )
+            {
+                return std::string("Drink: ").append(getSpell()->getInfo() );
+            }
         break;
         case ItemType::SCROLL:
-            return std::string("Read: ").append(getSpell()->getInfo() );
+            if ( getSpell() != NULL )
+            {
+                return std::string("Read: ").append(getSpell()->getInfo() );
+            }
         break;
     }
 }
