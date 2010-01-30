@@ -29,7 +29,7 @@
 #include "questwindow.h"
 #include <memory>
 #include <signal.h>
-#include "SDL_getenv.h"
+#include <SDL\SDL_getenv.h>
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -199,7 +199,7 @@ void DrawScene()
 	glLoadIdentity();
 
 	glTranslated(-focus.getX(), -focus.getY(),0);
-	
+
 	/* FIXME, TEMPORARY HACK: this is a quick fix, world_* should be
 	 * removed once Editor and GUI don't need them */
 	world_x = focus.getX();
