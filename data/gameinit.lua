@@ -21,6 +21,8 @@ DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["smallhealingpotion"] );
 
+DawnInterface.giveItemToPlayer( itemDatabase["tornleatherbelt"] );
+
 
 
 

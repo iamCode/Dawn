@@ -66,6 +66,10 @@ curItem:setStats( StatsType.Intellect, 3 );
 curItem:setLevelReq( 1 );
 curItem:setSpellEffectElementModifierPoints( ElementType.Light, 20 );
 
+itemDatabase["tornleatherbelt"]=DawnInterface.createNewItem( "Torn leather belt", 2, 1, "data/items/Belt1.tga", ItemQuality.NORMAL, EquipPosition.BELT, ItemType.ARMOR, ArmorType.LEATHER, WeaponType.NO_WEAPON );
+curItem = itemDatabase["tornleatherbelt"];
+curItem:setStats( StatsType.Armor, 12 );
+
 
 itemDatabase["bladeofstrength"]=DawnInterface.createNewItem( "Blade of Strength", 1, 3, "data/items/Sword1.tga", ItemQuality.ENHANCED, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.ONEHAND_SWORD );
 curItem = itemDatabase["bladeofstrength"];
