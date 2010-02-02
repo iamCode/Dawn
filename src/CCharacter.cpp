@@ -1345,12 +1345,14 @@ std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells
 void CCharacter::addCooldownSpell( CSpell *spell )
 {
     assert( spell != NULL );
-    cooldownSpells.push_back( std::pair<CSpell*,uint32_t>( spell, SDL_GetTicks() ) );
+    if ( spell->getCooldown() > 0 )
+    {
+        cooldownSpells.push_back( std::pair<CSpell*,uint32_t>( spell, SDL_GetTicks() ) );
+    }
 }
 
 void CCharacter::cleanupCooldownSpells()
 {
-
     size_t curSpell = 0;
     while ( curSpell < cooldownSpells.size() ) {
         uint32_t thisDuration = SDL_GetTicks();
@@ -1366,6 +1368,18 @@ void CCharacter::cleanupCooldownSpells()
 std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const
 {
     return cooldownSpells;
+}
+
+uint32_t CCharacter::getTicksOnCooldownSpell( std::string spellName ) const
+{
+    for ( size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++ )
+    {
+        if ( cooldownSpells[curSpell].first->getName() == spellName )
+        {
+            return cooldownSpells[curSpell].second;
+        }
+    }
+    return false;
 }
 
 bool CCharacter::isSpellOnCooldown( std::string spellName ) const

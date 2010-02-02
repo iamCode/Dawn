@@ -96,7 +96,6 @@ curItem:setLevelReq( 3 );
 
 itemDatabase["scrolloftheboar"]=DawnInterface.createNewItem( "Scroll of the Boar", 1, 1, "data/items/Scroll1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.SCROLL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["scrolloftheboar"];
-curItem:setLevelReq( 1 );
 curItem:setSpell( spellDatabase["spiritoftheboar"] );
 curItem:setSpellCharges( 5 );
 
@@ -104,5 +103,5 @@ curItem:setSpellCharges( 5 );
 itemDatabase["smallhealingpotion"]=DawnInterface.createNewItem( "Small healing potion", 1, 1, "data/items/Potion1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.POTION, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["smallhealingpotion"];
 curItem:setSpell( spellDatabase["smallhealingpotion"] );
-curItem:setSpellCharges( 1 );
+curItem:setSpellCharges( 5 );
 

@@ -56,11 +56,11 @@ class Tooltip
 
     public:
         ~Tooltip();
-        void draw( int x, int y );
         void enableSmallTooltip();
         void disableSmallTooltip();
         bool isTooltipSmall();
         virtual void getParentText() = 0;
+        virtual void draw( int x, int y ) = 0;
         void reloadTooltip();
 
     private:
@@ -85,6 +85,7 @@ class spellTooltip : public Tooltip
 {
     public:
         spellTooltip(CSpellActionBase *parent, Player *player);
+        void draw( int x, int y );
 
     private:
         CSpellActionBase *parent;
@@ -95,9 +96,12 @@ class itemTooltip : public Tooltip
 {
     public:
         itemTooltip(Item *parent, Player *player);
+        void draw( int x, int y );
 
     private:
         Item *parent;
+        std::string currentCooldownText;
+
         void getParentText();
 		void addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage );
 };

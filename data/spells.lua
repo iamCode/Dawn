@@ -104,7 +104,7 @@ curSpell:setCastTime( 0 );
 curSpell:setManaCost( 0 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setDuration( 5 );
+curSpell:setDuration( 600 );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["layingofhands"] = curSpell;

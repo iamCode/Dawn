@@ -114,6 +114,7 @@ class CCharacter
 		void addCooldownSpell( CSpell *spell );
 		void cleanupCooldownSpells();
 		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
+		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;
 
 		// position access functions

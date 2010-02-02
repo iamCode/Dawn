@@ -91,7 +91,64 @@ void Tooltip::reloadTooltip()
     getParentText();
 }
 
-void Tooltip::draw( int x, int y )
+void itemTooltip::draw( int x, int y )
+{
+    if ( tooltipText.empty() )
+    {
+        return;
+    }
+
+    // check to see if the player's level is the same since he loaded the parentText to the tooltip.
+    // if not, we clear the tooltip and get the parent text again.
+    if ( loadedAtLevel != player->getLevel() )
+    {
+        reloadTooltip();
+    }
+
+    // we also check to see if the bound spell has changed the displayed cooldown.
+    if ( parent->getSpell() != NULL )
+    {
+        if ( player->isSpellOnCooldown( parent->getSpell()->getName()) == true || !currentCooldownText.empty() )
+        {
+            if ( currentCooldownText != TimeConverter::convertTime( player->getTicksOnCooldownSpell( parent->getSpell()->getName() ), parent->getSpell()->getCooldown() ) )
+            {
+                reloadTooltip();
+            }
+        }
+    }
+
+    // make sure the tooltip doesnt go "off screen"
+    if ( x + (blockNumberWidth + 2) * blockWidth > dawn_configuration::screenWidth )
+    {
+        x = dawn_configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
+    }
+
+    if ( y + (blockNumberHeight + 2) * blockHeight > dawn_configuration::screenHeight )
+    {
+        y = dawn_configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
+    }
+
+    // set the correct position based on where we are
+    x += world_x;
+    y += world_y;
+
+	// set the first font Y-position on the top of the first tooltip block excluding topborder
+    // (we could also center the text in the tooltip, but topaligned is probably bestlooking
+    int font_y = y + blockHeight + (blockNumberHeight) * blockHeight - toplineHeight;
+
+    Frames::drawFrame( x, y, blockNumberWidth, blockNumberHeight, blockWidth, blockHeight );
+
+    // loop through the text vector and print all the text.
+    for ( unsigned int i = 0; i < tooltipText.size(); i++ )
+    {
+        glColor4fv(tooltipText[i].color);
+        tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
+        glColor4f(1.0f,1.0f,1.0f,1.0f);
+        font_y -= tooltipText[i].font->getHeight()+19;
+    }
+}
+
+void spellTooltip::draw( int x, int y )
 {
     if ( tooltipText.empty() )
     {
@@ -138,8 +195,6 @@ void Tooltip::draw( int x, int y )
 
 void Tooltip::drawSmallTooltip( int x, int y )
 {
-    // since this is a tooltip, we could almost assume that we have a tooltiptext.
-    // i did, but spent 15 minutes searching for this error made me add this check:
     if ( tooltipText.empty() )
     {
         return;
@@ -403,6 +458,14 @@ void itemTooltip::getParentText()
 	{
 	    addTooltipText( green, 11, parent->getUseableDescription() );
 	    addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
+	    if ( parent->getSpell() != NULL )
+	    {
+	        if ( player->isSpellOnCooldown( parent->getSpell()->getName()) == true )
+            {
+                currentCooldownText = TimeConverter::convertTime( player->getTicksOnCooldownSpell( parent->getSpell()->getName() ), parent->getSpell()->getCooldown() );
+                addTooltipText( red, 11, "Cooldown: %s", currentCooldownText.c_str() );
+            }
+	    }
 	}
 
     // display the item description, if any

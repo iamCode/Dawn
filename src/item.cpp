@@ -58,7 +58,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 ),
-		useableItem( false )
+		useableItem( false ),
+		spell( NULL )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
