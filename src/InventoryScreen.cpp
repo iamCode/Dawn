@@ -26,6 +26,7 @@
 #include "Spellbook.h"
 
 #include <cassert>
+#include <memory>
 
 namespace dawn_configuration
 {
