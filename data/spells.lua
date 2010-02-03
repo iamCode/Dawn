@@ -12,9 +12,6 @@ curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/magicmissile/magicmissile.tga" );
 curSpell:setMoveSpeed( 500 );
 
--- add this spell to players spellbook
-DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
-
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
 curSpell:setName("Electrocute");

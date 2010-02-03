@@ -105,3 +105,7 @@ curItem = itemDatabase["smallhealingpotion"];
 curItem:setSpell( spellDatabase["smallhealingpotion"] );
 curItem:setSpellCharges( 5 );
 
+
+itemDatabase["bookofmagicmissile"]=DawnInterface.createNewItem( "Book of Magic missile", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["bookofmagicmissile"];
+curItem:setSpell( spellDatabase["magicmissile"] );

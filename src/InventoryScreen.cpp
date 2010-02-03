@@ -23,6 +23,7 @@
 #include "CCharacter.h"
 #include "Player.h"
 #include "item.h"
+#include "Spellbook.h"
 
 #include <cassert>
 
@@ -31,8 +32,14 @@ namespace dawn_configuration
 	extern int screenWidth;
 }
 
+namespace DawnInterface
+{
+	extern void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+}
+
 extern std::vector<Item*> groundItems;
 extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<Spellbook> spellbook;
 
 InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string shader_file, std::string plain_file)
 	: itemSlot( itemSlot_ ),
@@ -216,17 +223,24 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 	        InventoryItem *useItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
 	        assert ( useItem != NULL );
 	        if ( useItem->getItem()->isUseable()
-            && useItem->getItem()->getSpellCharges() > 0
             && useItem->getItem()->getLevelReq() <= player->getLevel()
             && !player->getIsPreparing()
             && player->isSpellOnCooldown( useItem->getItem()->getSpell()->getName() ) == false )
             {
-                player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
-                useItem->getItem()->reduceSpellCharges();
-                useItem->tt->reloadTooltip();
-                if ( useItem->getItem()->getSpellCharges() == 0 )
+                if ( useItem->getItem()->getItemType() == ItemType::NEWSPELL )
                 {
+                    // item is a spellbook, learn new spell.
+                    DawnInterface::inscribeSpellInPlayerSpellbook( useItem->getItem()->getSpell() );
                     inventory->removeItem( useItem );
+                } else {
+                    // item is potion or scroll, use it.
+                    player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
+                    useItem->getItem()->reduceSpellCharges();
+                    useItem->tt->reloadTooltip();
+                    if ( useItem->getItem()->getSpellCharges() == 0 )
+                    {
+                        inventory->removeItem( useItem );
+                    }
                 }
             }
 	    }

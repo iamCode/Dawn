@@ -59,7 +59,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		maxDamage( 0 ),
 		levelReq( 0 ),
 		useableItem( false ),
-		spell( NULL )
+		spell( NULL ),
+		spellCharges( 0 )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -371,7 +372,11 @@ std::string Item::getUseableDescription() const
             return std::string("Food: "); // later on add .append(getUsableSpellDescription) or so..
         break;
         case ItemType::NEWSPELL:
-            return std::string("Memorize: "); //later on add .append(getSpellName and getSpellRank) or so..
+            if ( getSpell() != NULL )
+            {
+                // TODO: add actual rank of spell.
+                return std::string("Memorize: Inscribes ").append( getSpell()->getName() ).append( " (rank X)" ).append(" to spellbook.");
+            }
         break;
         case ItemType::POTION:
             if ( getSpell() != NULL )

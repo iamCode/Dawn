@@ -2,11 +2,11 @@
 
 
 DawnInterface.giveItemToPlayer( itemDatabase["axeofanguish"] );
-DawnInterface.giveItemToPlayer( itemDatabase["arustysword"] );
+--DawnInterface.giveItemToPlayer( itemDatabase["arustysword"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["swordofkhazom"] );
 
-DawnInterface.giveItemToPlayer( itemDatabase["shortsword"] );
+--DawnInterface.giveItemToPlayer( itemDatabase["shortsword"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["eyeoflicor"] );
 
@@ -15,7 +15,7 @@ DawnInterface.giveItemToPlayer( itemDatabase["gnollshield"] );
 DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["snakeloop"] );
-DawnInterface.giveItemToPlayer( itemDatabase["bladeofstrength"] );
+--DawnInterface.giveItemToPlayer( itemDatabase["bladeofstrength"] );
 DawnInterface.giveItemToPlayer( itemDatabase["shadering"] );
 DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
 
@@ -23,6 +23,7 @@ DawnInterface.giveItemToPlayer( itemDatabase["smallhealingpotion"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["tornleatherbelt"] );
 
+DawnInterface.giveItemToPlayer( itemDatabase["bookofmagicmissile"] );
 
 
 
