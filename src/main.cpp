@@ -529,6 +529,7 @@ void game_loop()
 	Uint32 curTicks  = lastTicks;
 	Uint32 ticksDiff = 0;
 	Uint8 *keys;
+	std::pair<int,int> mouseDownXY;
     done = 0;
 
     focus.setFocus(&character);
@@ -550,7 +551,8 @@ void game_loop()
 				}
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
-					if ( ( inventoryScreen->isVisible()
+                    mouseDownXY = std::pair<int,int>( mouseX, mouseY );
+                    if ( ( inventoryScreen->isVisible()
 					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
 						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
@@ -641,7 +643,21 @@ void game_loop()
 					}
 				}
 
-				if (event.type == SDL_MOUSEMOTION) {
+				if (event.type == SDL_MOUSEMOTION)
+				{
+				    if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+					{
+					    actionBar->dragSpell();
+					}
+				}
+
+				if (event.type == SDL_MOUSEBUTTONUP)
+				{
+                    actionBar->executeSpellQueue();
+				}
+
+				if (event.type == SDL_MOUSEMOTION)
+				{
 					mouseX = event.motion.x;
 					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
 				}

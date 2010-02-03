@@ -24,12 +24,15 @@
 #include "CAction.h"
 #include "CSpell.h"
 
+extern std::auto_ptr<Spellbook> spellbook;
+
 ActionBar::ActionBar( Player *player_ )
 	:	player( player_ ),
         posX ( 300 ),
         posY ( 9 ),
         width ( 680 ),
-        height ( 49 )
+        height ( 49 ),
+        spellQueue( NULL )
 {
     shortcutFont = NULL;
     cooldownFont = NULL;
@@ -145,25 +148,7 @@ void ActionBar::clicked( int clickX, int clickY )
     int buttonId = getMouseOverButtonId( clickX, clickY );
     if ( buttonId >= 0 && button[buttonId].action != NULL )
     {
-        CSpellActionBase *curAction = NULL;
-
-        EffectType::EffectType effectType = button[buttonId].action->getEffectType();
-
-        if ( effectType == EffectType::SingleTargetSpell
-                 && player->getTarget() != NULL ) {
-            curAction = button[buttonId].action->cast( player, player->getTarget() );
-        } else if ( effectType == EffectType::SelfAffectingSpell ) {
-            curAction = button[buttonId].action->cast( player, player );
-        }
-
-        if ( curAction != NULL ) {
-            // TODO: This is a hack. just create a single type of action
-            if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-                player->castSpell( dynamic_cast<CSpell*>( curAction ) );
-            } else {
-                player->executeAction( dynamic_cast<CAction*>( curAction ) );
-            }
-        }
+        spellQueue = &button[buttonId];
     }
 }
 
@@ -246,6 +231,7 @@ void ActionBar::unbindAction( sButton *button )
 {
     button->action = NULL;
     delete button->tooltip;
+    button->tooltip = NULL;
 }
 
 bool ActionBar::isButtonUsed( sButton *button ) const
@@ -272,4 +258,47 @@ void ActionBar::loadTextures()
     textures.texture.reserve(2);
 	textures.LoadIMG("data/interface/blended_bg.tga",0);
 	textures.LoadIMG("data/border.tga",1);
+}
+
+void ActionBar::executeSpellQueue()
+{
+    if ( spellQueue != NULL )
+    {
+        if ( spellQueue->action != NULL )
+        {
+            CSpellActionBase *curAction = NULL;
+
+            EffectType::EffectType effectType = spellQueue->action->getEffectType();
+
+            if ( effectType == EffectType::SingleTargetSpell
+                     && player->getTarget() != NULL ) {
+                curAction = spellQueue->action->cast( player, player->getTarget() );
+            } else if ( effectType == EffectType::SelfAffectingSpell ) {
+                curAction = spellQueue->action->cast( player, player );
+            }
+
+            if ( curAction != NULL ) {
+                // TODO: This is a hack. just create a single type of action
+                if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
+                    player->castSpell( dynamic_cast<CSpell*>( curAction ) );
+                } else {
+                    player->executeAction( dynamic_cast<CAction*>( curAction ) );
+                }
+            }
+            spellQueue = NULL;
+        }
+    }
+}
+
+void ActionBar::dragSpell()
+{
+    if ( spellQueue != NULL )
+    {
+        if ( spellQueue->action != NULL )
+        {
+            spellbook->setFloatingSpell( spellbook->getSpellSlotBySpell( spellQueue->action ) );
+            unbindAction( spellQueue );
+            spellQueue = NULL;
+        }
+    }
 }

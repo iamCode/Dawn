@@ -69,6 +69,8 @@ class Spellbook
 
         int8_t getMouseOverSpellSlotId( int x, int y ) const;
         sSpellSlot *getFloatingSpell() const;
+        sSpellSlot *getSpellSlotBySpell( CSpellActionBase *spell ) const;
+        void setFloatingSpell( sSpellSlot *newFloatingSpell );
         void unsetFloatingSpell();
         void inscribeSpell( CSpellActionBase *spell );
 

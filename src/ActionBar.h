@@ -63,7 +63,9 @@ class ActionBar
         void drawSpellTooltip( int x, int y );
         void clicked( int clickX, int clickY );
         void clicked( int clickX, int clickY, CSpellActionBase* floatingSpellName );
+        void executeSpellQueue();
         void handleKeys();
+        void dragSpell();
         int8_t getMouseOverButtonId( int x, int y );
         void bindAction ( sButton *button, CSpellActionBase* action );
         void unbindAction ( sButton *button );
@@ -80,6 +82,7 @@ class ActionBar
         CTexture textures;
         GLFT_Font *shortcutFont;
         GLFT_Font *cooldownFont;
+        sButton *spellQueue;
         std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
 };
 

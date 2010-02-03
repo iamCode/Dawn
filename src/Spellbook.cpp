@@ -191,6 +191,22 @@ sSpellSlot *Spellbook::getFloatingSpell() const
     return floatingSpell;
 }
 
+sSpellSlot *Spellbook::getSpellSlotBySpell( CSpellActionBase *spell) const
+{
+    for ( size_t index = 0; index < spellSlot.size(); index++ )
+    {
+        if ( spellSlot[index].action == spell )
+        {
+            return const_cast<sSpellSlot *> (&spellSlot[index]);
+        }
+    }
+}
+
+void Spellbook::setFloatingSpell( sSpellSlot *newFloatingSpell )
+{
+    floatingSpell = newFloatingSpell;
+}
+
 void Spellbook::unsetFloatingSpell()
 {
     floatingSpell = NULL;
