@@ -233,8 +233,8 @@ static uint16_t getModifiedAttribute( ElementType::ElementType elementType, cons
 	}
 
     std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
-    size_t numSpells = activeSpells.size();
     activeSpells = character->getActiveSpells();
+    size_t numSpells = activeSpells.size();
     for ( size_t curSpellNr=0; curSpellNr<numSpells; ++curSpellNr ) {
         GeneralBuffSpell* curSpell = activeSpells[ curSpellNr ].first;
         assert( curSpell != NULL );

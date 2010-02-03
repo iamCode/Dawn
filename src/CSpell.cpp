@@ -642,6 +642,8 @@ GeneralBuffSpell::GeneralBuffSpell( GeneralBuffSpell *other )
 	effectType = other->effectType;
 	duration = other->duration;
     statsModifier = other->statsModifier;
+    resistElementModifier = other->resistElementModifier;
+    spellEffectElementModifier = other->spellEffectElementModifier;
 }
 
 CSpellActionBase* GeneralBuffSpell::cast( CCharacter *creator, CCharacter *target )
