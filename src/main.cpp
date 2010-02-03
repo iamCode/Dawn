@@ -27,9 +27,10 @@
 #include "interactionpoint.h"
 #include "textwindow.h"
 #include "questwindow.h"
+#include "optionswindow.h"
 #include <memory>
 #include <signal.h>
-#include <SDL\SDL_getenv.h>
+#include <SDL/SDL_getenv.h>
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -71,6 +72,7 @@ bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
+bool KP_toggle_showOptionsWindow = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -84,6 +86,7 @@ std::auto_ptr<ActionBar> actionBar;
 std::auto_ptr<Spellbook> spellbook;
 std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
+std::auto_ptr<OptionsWindow> optionsWindow;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -311,6 +314,10 @@ void DrawScene()
 		questWindow->draw();
 	}
 
+	if ( optionsWindow->isVisible() ) {
+		optionsWindow->draw();
+	}
+
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -413,6 +420,7 @@ bool dawn_init(int argc, char** argv)
 		spellbook->loadTextures();
 		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
 		questWindow = std::auto_ptr<QuestWindow>( new QuestWindow );
+		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
 
 		dawn_debug_info("Loading the game data files and objects");
         LuaFunctions::executeLuaFile("data/spells.lua");
@@ -507,6 +515,11 @@ bool dawn_init(int argc, char** argv)
 		return true;
 }
 
+void setQuitGame()
+{
+	done = 1;
+}
+
 void game_loop()
 {
 
@@ -516,7 +529,7 @@ void game_loop()
 	Uint32 curTicks  = lastTicks;
 	Uint32 ticksDiff = 0;
 	Uint8 *keys;
-    bool done = false;
+    done = 0;
 
     focus.setFocus(&character);
 
@@ -533,14 +546,7 @@ void game_loop()
 
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT)  {
-					done = true;
-				}
-
-				if (event.type == SDL_KEYDOWN) {
-					if (event.key.keysym.sym == SDLK_ESCAPE) {
-						done = true;
-					}
-					if (event.key.keysym.sym == SDLK_SPACE) { }
+					done = 1;
 				}
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -566,7 +572,13 @@ void game_loop()
 					} else if ( questWindow->isVisible()
 					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						questWindow->clicked( mouseX, mouseY );
-                    } else {
+					} else if ( optionsWindow->isVisible()
+					            && ( optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
+						optionsWindow->clicked( mouseX, mouseY );
+					} else if ( optionsWindow->isVisible()
+					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
+						optionsWindow->clicked( mouseX, mouseY );
+					} else {
 						switch (event.button.button) {
 							case 1:
 								// search for new target
@@ -721,6 +733,15 @@ void game_loop()
 
 			if (!keys[SDLK_TAB]) {
 				KP_select_next = false;
+			}
+
+			if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
+				KP_toggle_showOptionsWindow = true;
+				optionsWindow->setVisible( ! optionsWindow->isVisible() );
+			}
+
+			if ( !keys[SDLK_ESCAPE] ) {
+				KP_toggle_showOptionsWindow = false;
 			}
 
 			if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
