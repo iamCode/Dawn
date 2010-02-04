@@ -3,7 +3,7 @@
 #    other distros)
 #
 # g++ -c *.cpp -I/usr/include/GL -I/usr/include/freetype2 -I/usr/include/lua5.1
-# g++ -o dawn *.o -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut
+# g++ -o dawn *.o -lSDL -lSDL_image -lGL -llua5.1 -llibtolua++5.1 -lfreetype -lglut
 #
 CC=g++
 LIBS= -lSDL -lSDL_image -lGL -lglut -llua5.1 -ltolua++5.1 -lfreetype -lglut
@@ -17,8 +17,8 @@ clean:
 	rm *.o
 
 
-dawn-rpg: main debug CharacterInfoScreen inventory GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions item StatsSystem Player CNPC tooltip Spellbook ActionBar InventoryScreen
-	$(CC) $(CCFLAGS) -o dawn-rpg main.o inventory.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o item.o StatsSystem.o Player.o CNPC.o tooltip.o ActionBar.o Spellbook.o InventoryScreen.o $(LIBS) 
+dawn-rpg: main debug CharacterInfoScreen inventory GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions item StatsSystem Player CNPC tooltip Spellbook ActionBar InventoryScreen optionswindow interactionpoint elements callindirection BuffWindow questwindow textwindow
+	$(CC) $(CCFLAGS) -o dawn-rpg main.o inventory.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o item.o StatsSystem.o Player.o CNPC.o tooltip.o ActionBar.o Spellbook.o InventoryScreen.o optionswindow.o interactionpoint.o elements.o callindirection.o BuffWindow.o questwindow.o textwindow.o $(LIBS) 
 
 main: main.cpp
 	$(CC) $(CCFLAGS) -c main.cpp
@@ -95,3 +95,23 @@ InventoryScreen: InventoryScreen.cpp
 debug: debug.cpp
 	$(CC) $(CCFLAGS) -c debug.cpp
 
+optionswindow: optionswindow.cpp
+	$(CC) $(CCFLAGS) -c optionswindow.cpp
+
+textwindow: textwindow.cpp
+	$(CC) $(CCFLAGS) -c textwindow.cpp
+
+interactionpoint: interactionpoint.cpp
+	$(CC) $(CCFLAGS) -c interactionpoint.cpp
+
+elements: elements.cpp
+	$(CC) $(CCFLAGS) -c elements.cpp
+
+callindirection: callindirection.cpp
+	$(CC) $(CCFLAGS) -c callindirection.cpp
+
+BuffWindow: BuffWindow.cpp
+	$(CC) $(CCFLAGS) -c BuffWindow.cpp
+
+questwindow: questwindow.cpp
+	$(CC) $(CCFLAGS) -c questwindow.cpp

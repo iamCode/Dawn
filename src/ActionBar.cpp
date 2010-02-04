@@ -23,6 +23,7 @@
 #include "TimeConverterHelper.h"
 #include "CAction.h"
 #include "CSpell.h"
+#include <memory>
 
 extern std::auto_ptr<Spellbook> spellbook;
 
