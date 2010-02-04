@@ -128,3 +128,31 @@ curSpell:setCooldown( 120 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setHealEffect( 10, 25, ElementType.Light );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["callingofthegrave"] = curSpell;
+curSpell:setName("Calling of the grave");
+curSpell:setSpellEffectElementModifierPoints( ElementType.Dark, 25 );
+curSpell:setDuration( 600 );
+curSpell:setInfo("The ancient tombs of Ark'li engulfs you, increasing Dark spell damage.");
+curSpell:setCastTime( 4000 );
+curSpell:setManaCost( 100 );
+curSpell:setSpellSymbol( "data/spells/callingofthegrave/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["mightofthetitan"] = curSpell;
+curSpell:setName("Might of the Titan");
+curSpell:setStats( StatsType.Strength, 15 );
+curSpell:setDuration( 600 );
+curSpell:setInfo("Calls for the power of the Titans, increasing your strength.");
+curSpell:setCastTime( 1000 );
+curSpell:setManaCost( 25 );
+curSpell:setSpellSymbol( "data/spells/mightofthetitan/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
