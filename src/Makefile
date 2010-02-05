@@ -3,10 +3,10 @@
 #    other distros)
 #
 # g++ -c *.cpp -I/usr/include/GL -I/usr/include/freetype2 -I/usr/include/lua5.1
-# g++ -o dawn *.o -lSDL -lSDL_image -lGL -llua5.1 -llibtolua++5.1 -lfreetype -lglut
+# g++ -o dawn *.o -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -llibglut
 #
 CC=g++
-LIBS= -lSDL -lSDL_image -lGL -lglut -llua5.1 -ltolua++5.1 -lfreetype -lglut
+LIBS= -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut -lGLU
 CCFLAGS= -I/usr/include/GL -I/usr/include/freetype2 -I/usr/include/lua5.1
 SRCDIR= src/
 
