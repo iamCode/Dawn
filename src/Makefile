@@ -7,7 +7,7 @@
 #
 CC=g++
 LIBS= -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut -lGLU
-CCFLAGS= -I/usr/include/GL -I/usr/include/freetype2 -I/usr/include/lua5.1
+CCFLAGS= -I/usr/include/GL -I/usr/include/freetype2 -I/usr/include/lua5.1 -IthreadObject
 SRCDIR= src/
 
 
@@ -17,8 +17,8 @@ clean:
 	rm *.o
 
 
-dawn-rpg: main debug CharacterInfoScreen inventory GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions item StatsSystem Player CNPC tooltip Spellbook ActionBar InventoryScreen optionswindow interactionpoint elements callindirection BuffWindow questwindow textwindow
-	$(CC) $(CCFLAGS) -o dawn-rpg main.o inventory.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o item.o StatsSystem.o Player.o CNPC.o tooltip.o ActionBar.o Spellbook.o InventoryScreen.o optionswindow.o interactionpoint.o elements.o callindirection.o BuffWindow.o questwindow.o textwindow.o $(LIBS) 
+dawn-rpg: main debug CharacterInfoScreen inventory GLFT_Font CZone utils CMessage CInterface CTexture CSpell CAction CCharacter CEditor cameraFocusHandler CLuaInterfaceGenerated CLuaFunctions item StatsSystem Player CNPC tooltip Spellbook ActionBar InventoryScreen optionswindow interactionpoint elements callindirection BuffWindow questwindow textwindow loadingscreen EventClass MutexClass Thread
+	$(CC) $(CCFLAGS) -o dawn-rpg main.o inventory.o CharacterInfoScreen.o utils.o debug.o GLFT_Font.o CZone.o CMessage.o CInterface.o CTexture.o CSpell.o CAction.o CCharacter.o CEditor.o cameraFocusHandler.o CLuaInterfaceGenerated.o CLuaFunctions.o item.o StatsSystem.o Player.o CNPC.o tooltip.o ActionBar.o Spellbook.o InventoryScreen.o optionswindow.o interactionpoint.o elements.o callindirection.o BuffWindow.o questwindow.o textwindow.o loadingscreen.o EventClass.o MutexClass.o Thread.o $(LIBS) 
 
 main: main.cpp
 	$(CC) $(CCFLAGS) -c main.cpp
@@ -115,3 +115,16 @@ BuffWindow: BuffWindow.cpp
 
 questwindow: questwindow.cpp
 	$(CC) $(CCFLAGS) -c questwindow.cpp
+
+loadingscreen: loadingscreen.cpp
+	$(CC) $(CCFLAGS) -c loadingscreen.cpp
+
+EventClass: threadObject/EventClass.cpp
+	$(CC) $(CCFLAGS) -c threadObject/EventClass.cpp
+
+MutexClass: threadObject/MutexClass.cpp
+	$(CC) $(CCFLAGS) -c threadObject/MutexClass.cpp
+
+Thread: threadObject/Thread.cpp
+	$(CC) $(CCFLAGS) -c threadObject/Thread.cpp
+
