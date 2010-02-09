@@ -406,6 +406,7 @@ public:
 		curTextureIndex = textureIndex;
 		accessMutex.Unlock();
 		while ( curTexture != NULL ) {
+			Sleep(1);
 		}
 	}
 
@@ -430,6 +431,7 @@ public:
 		curFontSize = fontSize;
 		accessMutex.Unlock();
 		while ( curFont != NULL ) {
+			Sleep(1);
 		}
 	}
 
