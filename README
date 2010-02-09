@@ -1,0 +1,5 @@
+To compile Dawn:
+
+At the prompt: ./configure && make
+
+To run Dawn: ./dawn
