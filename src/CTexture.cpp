@@ -22,8 +22,15 @@
 
 #include "CDrawingHelpers.h"
 
+extern bool processFilesDirectly;
+void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
+
 void CTexture::LoadIMG(std::string file, int texture_index)
 {
+	if ( ! processFilesDirectly ) {
+		processTextureInOpenGLThread( this, file, texture_index );
+		return;
+	}
 	if ((surface = IMG_Load(file.c_str()))) {
 		
 		dawn_debug_info("%s: width = %d and height = %d", file.c_str(), surface->w, surface->h);

@@ -6,9 +6,9 @@
 @LUA_INCLUDES=Popen(["pkg-config", "--cflags", "lua5.1"], stdout=PIPE).communicate()[0]
 @LUA_LIBS=Popen(["pkg-config", "--libs", "lua5.1"], stdout=PIPE).communicate()[0]
 
-OPTIMIZE = 3
-CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -ggdb -Wall
-LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm -rdynamic
+OPTIMIZE = 0
+CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -IthreadObject -ggdb -Wall
+LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm -rdynamic -lpthread -lrt
 
 # rule for generation tolua-headers from package files 
 # (only enable if you are working on the .pkg file because it would be checked too often otherwise)
@@ -16,5 +16,5 @@ LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm
 #    :sys tolua++ -o $(target[0]) -H $(target[1]) $source
 
 :program dawn : 
-        *.cpp
+        *.cpp threadObject/*.cpp
 

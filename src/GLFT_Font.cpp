@@ -76,12 +76,20 @@ GLFT_Font::GLFT_Font() :
 {
 }
 
+extern bool processFilesDirectly;
+
+void processFontInOpenGLThread( GLFT_Font *font, const std::string &filename, unsigned int size );
+
 GLFT_Font::GLFT_Font(const std::string& filename, unsigned int size) :
 		texID_(0), listBase_(0),    // initalize GL variables to zero
 		widths_(NUM_CHARS),         // make room for 96 widths
 		height_(0), drawX_(0), drawY_(0)
 {
-	open(filename, size);
+	if ( processFilesDirectly ) {
+		open(filename, size);
+	} else {
+		processFontInOpenGLThread( this, filename, size );
+	}
 }
 
 GLFT_Font::~GLFT_Font()
@@ -324,7 +332,7 @@ StreamFlusher GLFT_Font::endDraw()
 
 unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 {
-	if (!isValid()) {
+	if (!isValid() && processFilesDirectly) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
 	}
 	unsigned int width=0;
@@ -339,7 +347,7 @@ unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 
 unsigned int GLFT_Font::getHeight() const
 {
-	if (!isValid()) {
+	if (!isValid() && processFilesDirectly) {
 		throw std::logic_error("Invalid GLFT_Font::getHeight call.");
 	}
 	return height_;

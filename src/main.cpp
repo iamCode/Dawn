@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
+#include "Thread.h"
+
 #include "main.h"
 
 #include "CLuaFunctions.h"
@@ -31,6 +33,7 @@
 #include <memory>
 #include <signal.h>
 #include <SDL/SDL_getenv.h>
+#include "loadingscreen.h"
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -344,89 +347,154 @@ void dawn_init_signal_handlers()
     #endif
 }
 
+class DawnInitObject;
+bool processFilesDirectly = true;
+DawnInitObject *curTextureProcessor = NULL;
+void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
 
-bool dawn_init(int argc, char** argv)
+class DawnInitObject : public CThread
 {
-		if(!HandleCommandLineAurguments(argc, argv))
-			return false;
+private:
+	bool finished;
+	CTexture *curTexture;
+	std::string curTextureFile;
+	int curTextureIndex;
+	GLFT_Font *curFont;
+	std::string curFontFile;
+	unsigned int curFontSize;
+	std::string progressString;
+	double progress;
+	CMutexClass accessMutex;
+public:
+	bool started;
+	DawnInitObject()
+	    : finished( false ),
+	      curTexture( NULL ),
+	      curFont( NULL ),
+	      progressString( "" ),
+	      progress( 0.0 ),
+	      accessMutex(),
+	      started( false )
+	{
+		SetThreadType(ThreadTypeEventDriven);
+	}
 
-		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
-		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
+	bool isFinished()
+	{
+		bool result = false;
+		accessMutex.Lock();
+		result = finished;
+		accessMutex.Unlock();
+		return result;
+	}
+	
+	std::string getCurrentText()
+	{
+		return progressString;
+	}
+	
+	double getProgress()
+	{
+		return progress;
+	}
 
-		dawn_debug_info("Initializing...");
-		dawn_init_signal_handlers();
-		dawn_debug_info("Checking if the game data exists");
+	void setCurrentTextureToProcess( CTexture *texture, std::string textureFile, int textureIndex )
+	{
+		accessMutex.Lock();
+		curTexture = texture;
+		curTextureFile = textureFile;
+		curTextureIndex = textureIndex;
+		accessMutex.Unlock();
+		while ( curTexture != NULL ) {
+		}
+	}
 
-		if(!utils::file_exists("data/spells.lua"))
-			dawn_debug_fatal("The LUA script \"spells.lua\", "
-				"Could not be found");
-		if(!utils::file_exists("data/mobdata.all"))
-			dawn_debug_fatal("The LUA script \"mobdata.all\", "
-				"Could not be found");
-		if(!utils::file_exists("data/itemdatabase.lua"))
-			dawn_debug_fatal("The LUA script \"itemdatabase.lua\", "
-				"Could not be found");
-		if(!utils::file_exists("data/gameinit.lua"))
-			dawn_debug_fatal("The LUA script \"gameinit.lua\", "
-					"Could not be found");
-		if(!utils::file_exists("data/verdana.ttf"))
-			dawn_debug_fatal("Font  \"verdana.ttf\", "
-				"Could not be found");
+	void processCurTexture()
+	{
+		accessMutex.Lock();
+		if ( curTexture != NULL ) {
+			dawn_debug_info( "loading texture %s\n", curTextureFile.c_str());
+			processFilesDirectly = true;
+			curTexture->LoadIMG( curTextureFile, curTextureIndex );
+			processFilesDirectly = false;
+			curTexture = NULL;
+		}
+		accessMutex.Unlock();
+	}
 
-		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
-			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
+	void setCurrentFontToProcess( GLFT_Font *font, std::string fontFile, unsigned int fontSize )
+	{
+		accessMutex.Lock();
+		curFont = font;
+		curFontFile = fontFile;
+		curFontSize = fontSize;
+		accessMutex.Unlock();
+		while ( curFont != NULL ) {
+		}
+	}
 
-		atexit(SDL_Quit);
+	void processCurFont()
+	{
+		accessMutex.Lock();
+		if ( curFont != NULL ) {
+			dawn_debug_info( "loading font %s\n", curFontFile.c_str());
+			processFilesDirectly = true;
+			curFont->open( curFontFile, curFontSize );
+			processFilesDirectly = false;
+			curFont = NULL;
+		}
+		accessMutex.Unlock();
+	}
 
-		if (dawn_configuration::fullscreenenabled)
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
-				dawn_configuration::screenHeight, dawn_configuration::bpp,
-				SDL_OPENGL | SDL_FULLSCREEN);
-		else
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
-				dawn_configuration::screenHeight, dawn_configuration::bpp, SDL_OPENGL);
-
-		if ( !screen )
-			dawn_debug_fatal("Unable to set resolution");
-
-		glEnable( GL_TEXTURE_2D );
-
-		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		glViewport( 0, 0, dawn_configuration::screenWidth, dawn_configuration::screenHeight );
-
-		glClear( GL_COLOR_BUFFER_BIT );
-
-		glMatrixMode( GL_PROJECTION );
-		glLoadIdentity(); // reset view to 0,0
-
-		glOrtho(0.0f, dawn_configuration::screenWidth, 0.0f, dawn_configuration::screenHeight, -1.0f, 1.0f);
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity();  // reset view to 0,0
-
-		glEnable( GL_BLEND ); // enable blending
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
-
+	void init()
+	{
+		dawn_debug_info("Starting initialization");
+		progressString = "Initializing Editor";
 		Editor.LoadTextures();
+		progressString = "Initializing GUI";
+		progress = 0.025;
 		GUI.LoadTextures();
 		GUI.SetPlayer(&character);
+		progressString = "Initializing Character Screen";
+		progress = 0.05;
 		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
 		characterInfoScreen->LoadTextures();
+		progressString = "Initializing Inventory Screen";
+		progress = 0.075;
 		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
 		inventoryScreen->loadTextures();
+		progressString = "Initializing Action Bar";
+		progress = 0.1;
 		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
 		actionBar->loadTextures();
+		progressString = "Initializing Spellbook";
+		progress = 0.125;
 		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
 		spellbook->loadTextures();
+		progressString = "Initializing Buff Display";
+		progress = 0.15;
 		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
+		progressString = "Initializing Quest Screen";
+		progress = 0.175;
 		questWindow = std::auto_ptr<QuestWindow>( new QuestWindow );
+		progressString = "Initializing Menu Screen";
+		progress = 0.2;
 		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
 
 		dawn_debug_info("Loading the game data files and objects");
+		progressString = "Loading Spell Data";
+		progress = 0.225;
         LuaFunctions::executeLuaFile("data/spells.lua");
+        progressString = "Loading Item Data";
+        progress = 0.375;
         LuaFunctions::executeLuaFile("data/itemdatabase.lua");
+        progressString = "Loading Mob Data";
+        progress = 0.525;
 		LuaFunctions::executeLuaFile("data/mobdata.all");
+		dawn_debug_info("Loading completed");
 
+		progressString = "Loading Character Data";
+		progress = 0.7;
 		zone1.LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
@@ -497,6 +565,128 @@ bool dawn_init(int argc, char** argv)
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		dawn_debug_info("Character completed");
+
+		progressString = "Loading Game Init Data";
+		progress = 0.95;
+		LuaFunctions::executeLuaFile("data/gameinit.lua");
+
+		// initialize random number generator
+		progressString = "Initializing Random Number Generator";
+		progress = 0.99;
+		srand( time( 0 ) );
+		
+		accessMutex.Lock();
+		finished = true;
+		accessMutex.Unlock();
+	}
+
+	virtual BOOL OnTask()
+	{
+		if ( started )
+			return true;
+		started = true;
+		init();
+		return true;
+	}
+};
+
+void processTextureInOpenGLThread( CTexture *texture, std::string textureFile, int textureIndex )
+{
+	curTextureProcessor->setCurrentTextureToProcess( texture, textureFile, textureIndex );
+}
+
+void processFontInOpenGLThread( GLFT_Font *font, const std::string &filename, unsigned int size )
+{
+	curTextureProcessor->setCurrentFontToProcess( font, filename, size );
+}
+
+bool dawn_init(int argc, char** argv)
+{
+		if(!HandleCommandLineAurguments(argc, argv))
+			return false;
+
+		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
+		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
+
+		dawn_debug_info("Initializing...");
+		dawn_init_signal_handlers();
+		dawn_debug_info("Checking if the game data exists");
+
+		if(!utils::file_exists("data/spells.lua"))
+			dawn_debug_fatal("The LUA script \"spells.lua\", "
+				"Could not be found");
+		if(!utils::file_exists("data/mobdata.all"))
+			dawn_debug_fatal("The LUA script \"mobdata.all\", "
+				"Could not be found");
+		if(!utils::file_exists("data/itemdatabase.lua"))
+			dawn_debug_fatal("The LUA script \"itemdatabase.lua\", "
+				"Could not be found");
+		if(!utils::file_exists("data/gameinit.lua"))
+			dawn_debug_fatal("The LUA script \"gameinit.lua\", "
+					"Could not be found");
+		if(!utils::file_exists("data/verdana.ttf"))
+			dawn_debug_fatal("Font  \"verdana.ttf\", "
+				"Could not be found");
+
+		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
+			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
+
+		atexit(SDL_Quit);
+
+		if (dawn_configuration::fullscreenenabled)
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
+			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
+			                          SDL_OPENGL | SDL_FULLSCREEN);
+		else
+			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
+			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
+			                          SDL_OPENGL);
+
+
+		if ( !screen )
+			dawn_debug_fatal("Unable to set resolution");
+
+		glEnable( GL_TEXTURE_2D );
+
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		glViewport( 0, 0, dawn_configuration::screenWidth, dawn_configuration::screenHeight );
+
+		glClear( GL_COLOR_BUFFER_BIT );
+
+		glMatrixMode( GL_PROJECTION );
+		glLoadIdentity(); // reset view to 0,0
+
+		glOrtho(0.0f, dawn_configuration::screenWidth, 0.0f, dawn_configuration::screenHeight, -1.0f, 1.0f);
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();  // reset view to 0,0
+
+		glEnable( GL_BLEND ); // enable blending
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
+		
+		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
+		DawnInitObject obj;
+		processFilesDirectly = false;
+		curTextureProcessor = &obj;
+		do {
+			obj.Event();
+			Sleep( 10 );
+		} while ( ! obj.started );
+		
+		while ( ! obj.isFinished() ) {
+			obj.processCurTexture();
+			obj.processCurFont();
+			loadingScreen->setCurrentText( obj.getCurrentText() );
+			loadingScreen->setProgress( obj.getProgress() );
+			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+			loadingScreen->draw();
+			SDL_GL_SwapBuffers();
+		}
+		
+		processFilesDirectly = true;
+		curTextureProcessor = NULL;
 
 		// initialize fonts where needed
 		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
@@ -507,11 +697,8 @@ bool dawn_init(int argc, char** argv)
 
 		ActionCreation::initActions();
 
-		LuaFunctions::executeLuaFile("data/gameinit.lua");
-
-		// initialize random number generator
-		srand( time( 0 ) );
-
+		
+		
 		return true;
 }
 
@@ -533,6 +720,8 @@ void game_loop()
     done = 0;
 
     focus.setFocus(&character);
+
+
 
 	while (!done) {
 
