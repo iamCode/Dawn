@@ -13,7 +13,7 @@
 //
 // REVISIONS
 // =======================================================
-// Date: 10.24.07        
+// Date: 10.24.07
 // Name: Walter E. Capers
 // Description: File creation
 //
@@ -50,7 +50,7 @@ typedef unsigned char BOOL;
 typedef long DWORD;
 typedef void *LPVOID;
 #else
-#include "afx.h"
+//#include "afx.h"
 #include <windows.h>
 #include <stdio.h>
 #endif
@@ -58,7 +58,7 @@ typedef void *LPVOID;
 
 #if defined(AS400) || defined(OS400)
 typedef pthread_id_np_t ThreadId_t;
-#elif defined(VMS) 
+#elif defined(VMS)
 typedef pthread_t ThreadId_t;
 #else
 typedef DWORD ThreadId_t;
@@ -100,7 +100,7 @@ private:
 public:
 	CMutexClass m_mutex;
 
-	void SetTaskStatus(TaskStatus_t state) 
+	void SetTaskStatus(TaskStatus_t state)
 	{
 		m_mutex.Lock();
 			m_state=state;
@@ -159,9 +159,9 @@ public:
 };
 
 
-class CThread 
+class CThread
 #ifdef WINDOWS
-	: public CObject // use CObject as a base class so object can be used in lists and
+//	: public CObject // use CObject as a base class so object can be used in lists and
 	               // object arrays
 #endif
 {
@@ -235,7 +235,7 @@ public:
 	{
 #if defined(AS400)||defined(OS400)
 		return(( memcmp(p1,p2,sizeof(ThreadId_t))==0)?TRUE:FALSE);
-#elif defined(VMS) 
+#elif defined(VMS)
 		return (( pthread_equal(*p1,*p2) )?TRUE:FALSE );
 #else
 		return ((*p1 == *p2)?TRUE:FALSE);
