@@ -85,11 +85,7 @@ GLFT_Font::GLFT_Font(const std::string& filename, unsigned int size) :
 		widths_(NUM_CHARS),         // make room for 96 widths
 		height_(0), drawX_(0), drawY_(0)
 {
-	if ( processFilesDirectly ) {
 		open(filename, size);
-	} else {
-		processFontInOpenGLThread( this, filename, size );
-	}
 }
 
 GLFT_Font::~GLFT_Font()
@@ -100,6 +96,11 @@ GLFT_Font::~GLFT_Font()
 void GLFT_Font::open(const std::string& filename, unsigned int size)
 {
 	const size_t MARGIN = 3;
+
+	if ( ! processFilesDirectly ){
+		processFontInOpenGLThread( this, filename, size );
+		return;
+	}
 
 	// release the font if it already exists
 	if (isValid()) {
