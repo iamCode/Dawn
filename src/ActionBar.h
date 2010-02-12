@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
-
 
 #ifndef __ACTIONBAR_H__
 #define __ACTIONBAR_H__

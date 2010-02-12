@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -387,12 +387,12 @@ public:
 		accessMutex.Unlock();
 		return result;
 	}
-	
+
 	std::string getCurrentText()
 	{
 		return progressString;
 	}
-	
+
 	double getProgress()
 	{
 		return progress;
@@ -577,7 +577,7 @@ public:
 		progressString = "Initializing Random Number Generator";
 		progress = 0.99;
 		srand( time( 0 ) );
-		
+
 		accessMutex.Lock();
 		finished = true;
 		accessMutex.Unlock();
@@ -666,7 +666,7 @@ bool dawn_init(int argc, char** argv)
 		glEnable( GL_BLEND ); // enable blending
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
-		
+
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		DawnInitObject obj;
 		processFilesDirectly = false;
@@ -675,7 +675,7 @@ bool dawn_init(int argc, char** argv)
 			obj.Event();
 			Sleep( 10 );
 		} while ( ! obj.started );
-		
+
 		while ( ! obj.isFinished() ) {
 			obj.processCurTexture();
 			obj.processCurFont();
@@ -686,7 +686,7 @@ bool dawn_init(int argc, char** argv)
 			loadingScreen->draw();
 			SDL_GL_SwapBuffers();
 		}
-		
+
 		processFilesDirectly = true;
 		curTextureProcessor = NULL;
 
@@ -699,8 +699,8 @@ bool dawn_init(int argc, char** argv)
 
 		ActionCreation::initActions();
 
-		
-		
+
+
 		return true;
 }
 

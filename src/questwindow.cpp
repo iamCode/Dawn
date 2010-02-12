@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@ QuestWindow::QuestWindow()
 	visible = false;
 	font = NULL;
 	backgroundTexture = NULL;
-	
+
 	font = new GLFT_Font("data/verdana.ttf", 14);
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.reserve(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
-	
+
 	width = backgroundTexture->texture[0].width;
 	height = backgroundTexture->texture[0].height;
 }
@@ -76,10 +76,10 @@ void QuestWindow::draw()
 		}
 		textY -= font->getHeight() * 1.5;
 	}
-	
+
 	int topOfDescriptionBox = 192;
 	textY = world_y + posY + topOfDescriptionBox - font->getHeight();
-	
+
 	if ( selectedQuestNr >= 0 && static_cast<size_t>(selectedQuestNr) < questDescriptions.size() ) {
 		// draw description of currently selected quest
 		std::vector<std::string> selectedQuestDescription = questDescriptions[ selectedQuestNr ];
@@ -111,7 +111,7 @@ void QuestWindow::removeQuest( std::string name )
 			break;
 		}
 	}
-	
+
 	if ( foundQuestNr < questNames.size() ) {
 		// found the quest
 		questNames.erase( questNames.begin() + foundQuestNr );
@@ -136,7 +136,7 @@ void QuestWindow::changeQuestDescription( std::string name, std::string newDescr
 			break;
 		}
 	}
-	
+
 	if ( foundQuestNr < questNames.size() ) {
 		// found the quest
 		questDescriptions[ foundQuestNr ].clear();
@@ -158,7 +158,7 @@ void QuestWindow::clicked( int mouseX, int mouseY )
 	if ( ! isOnThisScreen( mouseX, mouseY ) ) {
 		return;
 	}
-	
+
 	size_t curEntryNr = (posY + height - 64 - mouseY) / (font->getHeight() * 1.5);
 	if ( curEntryNr < questNames.size() ) {
 		selectedQuestNr = curEntryNr;
@@ -183,12 +183,12 @@ namespace DawnInterface
 	{
 		questWindow->addQuest( questName, questDescription );
 	}
-	
+
 	void removeQuest( std::string questName )
 	{
 		questWindow->removeQuest( questName );
 	}
-	
+
 	void changeQuestDescription( std::string questName, std::string newDescription )
 	{
 		questWindow->changeQuestDescription( questName, newDescription );

@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 		return;
 	}
 	if ((surface = IMG_Load(file.c_str()))) {
-		
+
 		dawn_debug_info("%s: width = %d and height = %d", file.c_str(), surface->w, surface->h);
-		
+
 		// Check that the image's width is a power of 2
 		if ((surface->w & (surface->w - 1)) != 0) {
 			dawn_debug_warn("The width of image %s is not a"

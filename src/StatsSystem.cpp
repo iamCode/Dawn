@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ const StatsSystem *StatsSystem::getStatsSystem()
 		theStatsSystem->calculateTables( 99, 1.1 );
 		dawn_debug_info( "StatsSystem initialized" );
 	}
-	
+
 	return theStatsSystem.get();
 }
 
@@ -60,23 +60,23 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 		assert( maxArmorPointsForLevel != NULL );
 		return;
 	}
-	
+
 	assert( maxLevel > 0 );
-	
+
 	this->maxLevel = maxLevel;
-	
+
 	// calculate the stats points needed for each level
 	maxStatsPointsForLevel = new int[ maxLevel + 1 ];
 	maxArmorPointsForLevel = new int[ maxLevel + 1 ];
-	
+
 	maxStatsPointsForLevel[0] = 100;
 	maxArmorPointsForLevel[0] = 300;
-	
+
 	for ( size_t curLevel=1; curLevel<=maxLevel; ++curLevel ) {
 		maxStatsPointsForLevel[ curLevel ] = maxStatsPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
 		maxArmorPointsForLevel[ curLevel ] = maxArmorPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
 	}
-	
+
 	// set the allowed maximal percentages for different attributes
 	maxDamageModifier = std::numeric_limits<double>::max();
 	maxHitChance = 1.0;
@@ -92,16 +92,16 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 static double getModifierCommon( int myModifierPoints, int maxModifierPointsOwn, int maxModifierPointsOpponent, double maxModifierValue )
 {
 	int usePoints = myModifierPoints;
-	
+
 	if ( usePoints > maxModifierPointsOwn ) {
 		usePoints = maxModifierPointsOwn;
 	}
-	
+
 	if ( usePoints > maxModifierPointsOpponent )
 	{
 		usePoints = maxModifierPointsOpponent;
 	}
-	
+
 	double result = (static_cast<double>(usePoints) / static_cast<double>( maxModifierPointsOpponent ));
 
 	if ( result > maxModifierValue ) {

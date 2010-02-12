@@ -1,5 +1,7 @@
-/**                    Dawn - 2D roleplaying game
-    Copyright (C) 2009  Tobias Eliasson (arnestig@users.sourceforge.net)
+/**
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

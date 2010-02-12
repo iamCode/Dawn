@@ -1,3 +1,21 @@
+/**
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+
 #include "optionswindow.h"
 
 #include "CTexture.h"
@@ -15,12 +33,12 @@ OptionsWindow::OptionsWindow()
 	visible = false;
 	font = NULL;
 	backgroundTexture = NULL;
-	
+
 	font = new GLFT_Font("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.reserve(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
-	
+
 	width = backgroundTexture->texture[0].width;
 	height = backgroundTexture->texture[0].height;
 	// center on screen
@@ -61,7 +79,7 @@ void OptionsWindow::draw()
 			selectedEntry = -1;
 		}
 	}
-	
+
 	if ( selectedEntry == 0 ) {
 		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
@@ -112,7 +130,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	if ( ! isOnThisScreen( mouseX, mouseY ) ) {
 		return;
 	}
-	
+
 	int selectedEntry = -1;
 	if ( mouseX < posX + 64 || mouseX > posX + width - 64 || posY + height - 64 < mouseY) {
 		selectedEntry = -1;
@@ -122,7 +140,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 			selectedEntry = -1;
 		}
 	}
-	
+
 	if ( selectedEntry == 0 ) {
 		setQuitGame();
 	} else if ( selectedEntry == 3 ) {

@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@ class CNPC : public CCharacter
 
 		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone);
 		~CNPC();
-		
+
 		void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone );
-		
+
 		void Draw();
 		void Move();
 		Direction GetDirection();
@@ -43,12 +43,12 @@ class CNPC : public CCharacter
 		void Wander();
         void Die();
 		void Damage(int amount, bool criticalHit);
-		
+
 		void markAsDeleted();
 		bool isMarkedAsDeletable() const;
-		
+
 		void addOnDieEventHandler( CallIndirection *eventHandler );
-		
+
 		void onDie();
 };
 

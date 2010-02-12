@@ -1,7 +1,7 @@
 /**
-    Copyright (C) 2009  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project.
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,12 +43,12 @@ class StatsSystem
 		double maxResistElementChance;
 		double maxSpellEffectElementModifier;
 		double maxSpellCriticalChance;
-		
+
 	public:
 		~StatsSystem();
 
 		static const StatsSystem *getStatsSystem();
-		
+
 		double complexGetDamageModifier( int myLevel, int myDamageModifierPoints, int opponentLevel ) const;
 		double complexGetHitChance( int myLevel, int myHitModifierPoints, int opponentLevel ) const;
 		double complexGetEvadeChance( int myLevel, int myEvadeModifierPoints, int opponentLevel ) const;
@@ -58,7 +58,7 @@ class StatsSystem
 		double complexGetResistElementChance( int myLevel, int myResistElementModifierPoints, int opponentLevel ) const;
 		double complexGetSpellEffectElementModifier( int myLevel, int mySpellEffectElementModifierPoints, int opponentLevel ) const;
 		double complexGetSpellCriticalStrikeChance( int myLevel, int mySpellCriticalModifierPoints, int opponentLevel ) const;
-		
+
 		int calculateDamageModifierPoints( const CCharacter *character ) const;
 		int calculateHitModifierPoints( const CCharacter *character ) const;
 		int calculateEvadeModifierPoints( const CCharacter *character ) const;
