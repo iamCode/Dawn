@@ -6,6 +6,8 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/
 
 
 bin_PROGRAMS = dawn_rpg
+#todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
+dawndatadir = $(bindir)/data
 dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/ActionBar.h \
 	src/BuffWindow.cpp \
@@ -86,5 +88,4 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/threadObject/Thread.cpp \
 	src/threadObject/Thread.h
 
-
-
+dawndata_DATA = data/spells.lua
