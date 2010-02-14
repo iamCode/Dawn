@@ -24,6 +24,7 @@
 #include "CAction.h"
 #include "CSpell.h"
 #include <memory>
+#include "fontcache.h"
 
 extern std::auto_ptr<Spellbook> spellbook;
 
@@ -51,24 +52,12 @@ ActionBar::ActionBar( Player *player_ )
 
 ActionBar::~ActionBar()
 {
-	if ( shortcutFont != NULL )
-	{
-		delete shortcutFont;
-	}
-
-	if ( cooldownFont != NULL )
-	{
-	    delete cooldownFont;
-	}
 }
 
 void ActionBar::initFonts()
 {
-	shortcutFont = new GLFT_Font();
-	shortcutFont->open("data/verdana.ttf", 9);
-
-	cooldownFont = new GLFT_Font();
-	cooldownFont->open("data/verdana.ttf", 11);
+	shortcutFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
+	cooldownFont = FontCache::getFontFromCache( "data/verdana.ttf", 11 );
 }
 
 bool ActionBar::isMouseOver( int x, int y )

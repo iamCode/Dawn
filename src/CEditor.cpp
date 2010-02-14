@@ -20,11 +20,12 @@
 #include "GLFT_Font.h"
 
 #include "CDrawingHelpers.h"
+#include "fontcache.h"
 
 void CEditor::initFonts()
 {
-	objectDescriptionFont = new GLFT_Font("data/verdana.ttf", 10);
-	keybindingFont = new GLFT_Font("data/verdana.ttf", 9);
+	objectDescriptionFont = FontCache::getFontFromCache( "data/verdana.ttf", 10 );
+	keybindingFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
 }
 
 void CEditor::inc_tilepos()

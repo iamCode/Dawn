@@ -21,6 +21,7 @@
 #include "CTexture.h"
 #include "GLFT_Font.h"
 #include "CDrawingHelpers.h"
+#include "fontcache.h"
 
 namespace dawn_configuration
 {
@@ -34,7 +35,7 @@ OptionsWindow::OptionsWindow()
 	font = NULL;
 	backgroundTexture = NULL;
 
-	font = new GLFT_Font("data/verdana.ttf", 20);
+	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.reserve(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
@@ -50,9 +51,6 @@ OptionsWindow::~OptionsWindow()
 {
 	if ( backgroundTexture != NULL ) {
 		delete backgroundTexture;
-	}
-	if ( font != NULL ) {
-		delete font;
 	}
 }
 

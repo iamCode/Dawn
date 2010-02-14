@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "GLFT_Font.h"
 #include <memory>
+#include "fontcache.h"
 
 void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
@@ -33,7 +34,7 @@ QuestWindow::QuestWindow()
 	font = NULL;
 	backgroundTexture = NULL;
 
-	font = new GLFT_Font("data/verdana.ttf", 14);
+	font = FontCache::getFontFromCache("data/verdana.ttf", 14);
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.reserve(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
@@ -46,9 +47,6 @@ QuestWindow::~QuestWindow()
 {
 	if ( backgroundTexture != NULL ) {
 		delete backgroundTexture;
-	}
-	if ( font != NULL ) {
-		delete font;
 	}
 }
 

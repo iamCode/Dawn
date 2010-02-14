@@ -82,7 +82,7 @@ extern int world_x, world_y, mouseX, mouseY;
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
 
-std::auto_ptr<GLFT_Font> fpsFont;
+GLFT_Font *fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
 std::auto_ptr<InventoryScreen> inventoryScreen;
 std::auto_ptr<ActionBar> actionBar;
@@ -691,7 +691,7 @@ bool dawn_init(int argc, char** argv)
 		curTextureProcessor = NULL;
 
 		// initialize fonts where needed
-		fpsFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 12));
+		fpsFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 		message.initFonts();
 		Editor.initFonts();
 		characterInfoScreen->initFonts();

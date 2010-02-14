@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "TimeConverterHelper.h"
 #include "debug.h"
+#include "fontcache.h"
 
 BuffWindow::BuffWindow( Player *player_)
         :   player( player_ ),
@@ -35,16 +36,11 @@ BuffWindow::BuffWindow( Player *player_)
 
 BuffWindow::~BuffWindow()
 {
-    if ( spellFont != NULL )
-    {
-        delete spellFont;
-    }
 }
 
 void BuffWindow::initFonts()
 {
-	spellFont = new GLFT_Font();
-	spellFont->open("data/verdana.ttf", 9);
+	spellFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
 }
 
 void BuffWindow::loadTextures()

@@ -20,6 +20,7 @@
 #include <stdarg.h>
 
 #include "CMessage.h"
+#include "fontcache.h"
 
 CMessage::CMessage()
 {
@@ -28,14 +29,11 @@ CMessage::CMessage()
 
 CMessage::~CMessage()
 {
-	if ( messageFont != NULL ) {
-		delete messageFont;
-	}
 }
 
 void CMessage::initFonts()
 {
-	messageFont = new GLFT_Font("data/verdana.ttf", 12);
+	messageFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 }
 
 void CMessage::DrawAll()

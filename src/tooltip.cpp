@@ -56,12 +56,6 @@ spellTooltip::spellTooltip(CSpellActionBase *parent_, Player *player_ )
 
 Tooltip::~Tooltip()
 {
-    for (unsigned int i = 0; i < tooltipText.size(); i++) {
-        if ( tooltipText[i].font != NULL )
-        {
-            delete tooltipText[i].font;
-        }
-    }
 }
 
 void Tooltip::enableSmallTooltip()

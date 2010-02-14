@@ -21,6 +21,7 @@
 #include "CTexture.h"
 #include "CDrawingHelpers.h"
 #include "GLFT_Font.h"
+#include "fontcache.h"
 
 namespace dawn_configuration
 {
@@ -34,7 +35,7 @@ LoadingScreen::LoadingScreen()
 	backgroundTexture = NULL;
 	progressTexture = NULL;
 
-	font = new GLFT_Font("data/verdana.ttf", 20);
+	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.reserve(1);
 	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/loadingScreen.tga", 0 );
@@ -58,9 +59,6 @@ LoadingScreen::~LoadingScreen()
 	}
 	if ( progressTexture != NULL ) {
 		delete progressTexture;
-	}
-	if ( font != NULL ) {
-		delete font;
 	}
 }
 

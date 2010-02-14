@@ -44,12 +44,6 @@ class CEditor
 		};
 
 		~CEditor() {
-			if ( objectDescriptionFont != NULL ) {
-				delete objectDescriptionFont;
-			}
-			if ( keybindingFont != NULL ) {
-				delete keybindingFont;
-			}
 		}
 
 		void initFonts();

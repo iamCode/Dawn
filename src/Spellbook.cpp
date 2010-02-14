@@ -23,10 +23,11 @@
 
 #include <cassert>
 #include <memory>
+#include "fontcache.h"
 
 void sSpellSlot::initFont()
 {
-	font = new GLFT_Font("data/verdana.ttf", 11);
+	font = FontCache::getFontFromCache("data/verdana.ttf", 11);
 }
 
 Spellbook::Spellbook( Player *player_ )
@@ -53,13 +54,6 @@ Spellbook::Spellbook( Player *player_ )
 
 Spellbook::~Spellbook()
 {
-    for ( size_t ss = 0; ss < spellSlot.size(); ss++ )
-    {
-        if ( spellSlot[ss].font != NULL )
-        {
-            delete spellSlot[ss].font;
-        }
-    }
 }
 
 void Spellbook::loadTextures()
@@ -200,6 +194,7 @@ sSpellSlot *Spellbook::getSpellSlotBySpell( CSpellActionBase *spell) const
             return const_cast<sSpellSlot *> (&spellSlot[index]);
         }
     }
+    abort();
 }
 
 void Spellbook::setFloatingSpell( sSpellSlot *newFloatingSpell )

@@ -23,6 +23,7 @@
 #include "CSpell.h"
 #include "item.h"
 #include "GLFT_Font.h"
+#include "fontcache.h"
 
 class Player;
 
@@ -45,7 +46,7 @@ struct sTooltipText
         color[1] = color_[1];
         color[2] = color_[2];
         color[3] = 1.0f;
-        font = new GLFT_Font("data/verdana.ttf",fontsize);
+        font = FontCache::getFontFromCache("data/verdana.ttf",fontsize);
     }
 };
 

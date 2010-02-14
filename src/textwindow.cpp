@@ -23,8 +23,9 @@
 #include <cstring> // for strtok_r
 #include <memory>
 #include "GLFT_Font.h"
+#include "fontcache.h"
 
-std::auto_ptr<GLFT_Font> textWindowFont( NULL );
+GLFT_Font *textWindowFont = NULL;
 
 char *strtok_r(char *str, const char *delim, char **nextp)
 {
@@ -88,11 +89,11 @@ void formatMultilineText( std::string text, std::vector< std::string > &textLine
 
 void initTextWindowFont()
 {
-	if ( textWindowFont.get() != NULL ) {
+	if ( textWindowFont != NULL ) {
 		return;
 	}
 
-	textWindowFont = std::auto_ptr<GLFT_Font>(new GLFT_Font("data/verdana.ttf", 14));
+	textWindowFont = FontCache::getFontFromCache("data/verdana.ttf", 14);
 }
 
 TextWindow::TextWindow()
@@ -113,7 +114,7 @@ void TextWindow::setText( std::string text )
 	// format the text.
 	const int lineWidth = 416;
 
-	formatMultilineText( text, textLines, lineWidth, textWindowFont.get() );
+	formatMultilineText( text, textLines, lineWidth, textWindowFont );
 }
 
 void TextWindow::setAutocloseTime( int autocloseTime )

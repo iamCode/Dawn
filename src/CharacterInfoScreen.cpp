@@ -59,9 +59,6 @@ CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
 
 CharacterInfoScreen::~CharacterInfoScreen()
 {
-	if ( infoFont != NULL ) {
-		delete infoFont;
-	}
 }
 
 void CharacterInfoScreen::setVisible( bool newVisible )
@@ -83,7 +80,7 @@ void CharacterInfoScreen::LoadTextures()
 
 void CharacterInfoScreen::initFonts()
 {
-	infoFont = new GLFT_Font("data/verdana.ttf", 12);
+	infoFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 }
 
 void CharacterInfoScreen::drawScreen()
