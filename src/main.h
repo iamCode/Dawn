@@ -40,6 +40,8 @@
 
 #include "GLFT_Font.h"
 
+#include "pnglite/pnglite.h"
+
 #include "CZone.h"
 #include "CInterface.h"
 #include "CCharacter.h"

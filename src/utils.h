@@ -22,4 +22,5 @@
 
 namespace utils {
 	bool file_exists(const std::string& file);
+	void takeScreenshot();
 }

@@ -71,6 +71,7 @@ extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
+bool KP_screenshot = false;
 bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
@@ -891,6 +892,16 @@ void game_loop()
 				for (unsigned int x=0; x<NPC.size(); x++) {
 					NPC[x]->Die();
 				}
+			}
+
+			if (keys[SDLK_PRINT] && !KP_screenshot) {
+			    KP_screenshot = true;
+                utils::takeScreenshot();
+			}
+
+			if (!keys[SDLK_PRINT])
+			{
+			    KP_screenshot = false;
 			}
 
 			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
