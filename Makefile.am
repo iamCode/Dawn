@@ -47,6 +47,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
+	src/fontcache.cpp \
+	src/fontcache.h \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
 	src/interactionpoint.cpp \
@@ -81,6 +83,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/utils.h \
 	src/GLee/GLee.cpp \
 	src/GLee/GLee.h \
+	src/pnglite/pnglite.c \
+	src/pnglite/pnglite.h \
 	src/threadObject/EventClass.cpp \
 	src/threadObject/EventClass.h \
 	src/threadObject/MutexClass.cpp \

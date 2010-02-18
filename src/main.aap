@@ -16,5 +16,5 @@ LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm
 #    :sys tolua++ -o $(target[0]) -H $(target[1]) $source
 
 :program dawn : 
-        *.cpp threadObject/*.cpp
+        *.cpp threadObject/*.cpp pnglite/*.c
 

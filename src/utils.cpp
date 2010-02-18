@@ -17,6 +17,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "utils.h"
+#include "pnglite/pnglite.h"
+#include "GLee/GLee.h"
+#include <sstream>
+#include <string.h>
+
+namespace dawn_configuration
+{
+	extern int screenWidth;
+	extern int screenHeight;
+}
+
+extern int world_x, world_y;
 
 bool utils::file_exists(const std::string& file)
 {
@@ -25,4 +37,51 @@ bool utils::file_exists(const std::string& file)
 	if(!temp)
 		return false;
 	return true;
+}
+
+void utils::takeScreenshot()
+{
+    int w = dawn_configuration::screenWidth;
+	int h = dawn_configuration::screenHeight;
+
+	png_t pngOutput;
+
+	int screenshotIndex = 0;
+
+	std::stringstream ss;
+
+	ss << "screenshot" << screenshotIndex << ".png";
+	std::string filename = ss.str();
+
+
+    unsigned char outputImage[h*w*4];
+    unsigned char *tempImage = outputImage;// dawn_configuration::screenHeight*dawn_configuration::screenWidth*4;
+
+    glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, &outputImage);
+
+	/* flip the pixel because opengl works from bottom left corner */
+	for(unsigned int y = 0; y < h/2; y++)
+	{
+		memcpy(tempImage, outputImage+y*w*4, w*4);
+		memcpy(outputImage+y*w*4, outputImage+(h-y)*w*4, w*4);
+		memcpy(outputImage+(h-y)*w*4, tempImage,w*4);
+	}
+
+    // look for a free screenshot file to write to. screenshot0.PNG, screenshot1.PNG...screenshotX.PNG
+    while ( utils::file_exists( filename ) )
+    {
+        screenshotIndex++;
+        ss.str("");
+        ss << "screenshot" << screenshotIndex << ".png";
+        filename = ss.str();
+    }
+    if ( !filename.empty() )
+    {
+        png_init(0,0);
+        png_open_file_write(&pngOutput,filename.c_str());
+
+        png_set_data(&pngOutput, dawn_configuration::screenWidth, dawn_configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
+
+        png_close_file(&pngOutput);
+    }
 }

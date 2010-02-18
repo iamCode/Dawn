@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ([2.64])
-AC_INIT([dawn], [0.0.17], [dawn-rpg-bugreports@lists.sourceforge.net])
+AC_INIT([dawn], [0.0.18], [dawn-rpg-bugreports@lists.sourceforge.net])
 AM_INIT_AUTOMAKE
 
 # Checks for programs.
@@ -47,7 +47,7 @@ AC_SEARCH_LIBS([tolua_open], [tolua++5.1 tolua++], [], [
 
 
 # Checks for header files.
-AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h])
+AC_CHECK_HEADERS([zlib.h stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
