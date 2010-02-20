@@ -1393,3 +1393,25 @@ bool CCharacter::isSpellOnCooldown( std::string spellName ) const
     }
     return false;
 }
+
+
+void CCharacter::giveCoins( uint32_t amountOfCoins )
+{
+    // should check for maxValue here.
+    coins += amountOfCoins;
+}
+
+void CCharacter::reduceCoins( uint32_t amountOfCoins )
+{
+    if ( coins >= amountOfCoins )
+    {
+        coins -= amountOfCoins;
+    } else {
+        coins = 0;
+    }
+}
+
+uint32_t CCharacter::getCoins() const
+{
+    return coins;
+}

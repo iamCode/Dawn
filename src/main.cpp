@@ -568,6 +568,8 @@ public:
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.giveCoins( 576 );
+
 		dawn_debug_info("Character completed");
 
 		progressString = "Loading Game Init Data";
@@ -723,8 +725,6 @@ void game_loop()
     done = 0;
 
     focus.setFocus(&character);
-
-
 
 	while (!done) {
 
