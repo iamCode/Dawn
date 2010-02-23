@@ -288,10 +288,7 @@ void DrawScene()
 	    inventoryScreen->draw();
 	}
 
-	if ( inventoryScreen->hasFloatingSelection() ) {
-	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
-		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
+
 
 	if ( inventoryScreen->isVisible() )
 	{
@@ -326,6 +323,11 @@ void DrawScene()
 
 	if ( shopWindow->isVisible() ) {
 	    shopWindow->draw();
+	}
+
+    if ( inventoryScreen->hasFloatingSelection() ) {
+	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
+		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int

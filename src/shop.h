@@ -17,9 +17,8 @@ namespace currency
 }
 
 class Shop{    public:
-        Shop::Shop( Player *buyer_, CNPC *seller_ );
-        void loadBuyerInventory();
-        void loadSellerInventory();
+        Shop::Shop( Player *player_, CNPC *shopkeeper_);
+        void loadShopkeeperInventory();
         void loadTextures();
         bool isVisible() const;
         void setVisible( bool newVisible );
@@ -30,14 +29,12 @@ class Shop{    public:
 
     private:
         int posX, posY, width, height;
-		size_t FieldWidth;
-		size_t FieldHeight;
-		size_t sellerOffsetX;
-		size_t sellerOffsetY;
-		size_t buyerOffsetX;
-		size_t buyerOffsetY;
-		size_t slotSeparatorWidth;
-		size_t slotSeparatorHeight;
+		size_t backpackFieldWidth;
+		size_t backpackFieldHeight;
+		size_t backpackSeparatorWidth;
+		size_t backpackSeparatorHeight;
+		size_t backpackOffsetX;
+		size_t backpackOffsetY;
 		size_t numSlotsX;
 		size_t numSlotsY;
 
@@ -50,6 +47,8 @@ class Shop{    public:
 
 		InventoryItem *floatingSelection;
 
-		Player *buyer;
-		CNPC *seller;};#endif
+		Player *player;
+		CNPC *shopkeeper;
+
+		std::vector<InventoryItem*> shopkeeperInventory;};#endif
 
