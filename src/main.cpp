@@ -77,6 +77,7 @@ bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
+bool KP_toggle_showShop = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -91,6 +92,7 @@ std::auto_ptr<Spellbook> spellbook;
 std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
+std::auto_ptr<Shop> shopWindow;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -322,6 +324,10 @@ void DrawScene()
 		optionsWindow->draw();
 	}
 
+	if ( shopWindow->isVisible() ) {
+	    shopWindow->draw();
+	}
+
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
 
@@ -483,6 +489,9 @@ public:
 		progressString = "Initializing Menu Screen";
 		progress = 0.2;
 		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
+
+		/// testing the shop, should not be initialized like this!!!
+		shopWindow = std::auto_ptr<Shop>( new Shop( &character, dynamic_cast<CNPC*>( &character ) ) );
 
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";
@@ -772,6 +781,9 @@ void game_loop()
 					} else if ( optionsWindow->isVisible()
 					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						optionsWindow->clicked( mouseX, mouseY );
+                    } else if ( shopWindow->isVisible()
+                                && (shopWindow->isOnThisScreen(mouseX, mouseY ) ) ) {
+                        shopWindow->clicked( mouseX, mouseY );
 					} else {
 						switch (event.button.button) {
 							case 1:
@@ -969,6 +981,15 @@ void game_loop()
 
 			if ( !keys[SDLK_c] ) {
 				KP_toggle_showCharacterInfo = false;
+			}
+
+			if ( keys[SDLK_s] && !KP_toggle_showShop ) {
+				KP_toggle_showShop = true;
+				shopWindow->setVisible( ! shopWindow->isVisible() );
+			}
+
+			if ( !keys[SDLK_s] ) {
+				KP_toggle_showShop= false;
 			}
 
 			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {

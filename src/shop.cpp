@@ -1,6 +1,119 @@
 /**    Copyright (C) 2009,2010  Dawn - 2D roleplaying game    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.    This program is free software: you can redistribute it and/or modify    it under the terms of the GNU General Public License as published by    the Free Software Foundation, either version 3 of the License, or    (at your option) any later version.    This program is distributed in the hope that it will be useful,    but WITHOUT ANY WARRANTY; without even the implied warranty of    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the    GNU General Public License for more details.    You should have received a copy of the GNU General Public License    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 #include "shop.h"#include <sstream>
 
+
+Shop::Shop( Player *buyer_, CNPC *seller_ )
+	:	buyer( buyer_ ),
+        seller( seller_ ),
+		visible(false),
+		currentTab( 0 ),
+		posX( 50 ),
+		posY( 80 ),
+		floatingSelection( NULL ),
+		FieldWidth( 32 ),
+		FieldHeight( 32 ),
+		slotSeparatorWidth( 3 ),
+		slotSeparatorHeight( 3 ),
+		sellerOffsetX( 69 ),
+		sellerOffsetY( 59 ),
+		buyerOffsetX( 69 ),
+		buyerOffsetY( 59 ),
+		numSlotsX( 10 ),
+		numSlotsY( 4 )
+		{
+		    tabs[0].tabimage.texture.reserve(1);
+            tabs[0].tabimage.LoadIMG("data/interface/shop/weapontab.tga",0);
+            tabs[0].height = 128;
+            tabs[0].width = 128;
+
+            tabs[0].posX = 61 + posX;
+            tabs[0].posY = 473 + posY;
+
+            tabs[1].tabimage.texture.reserve(1);
+            tabs[1].tabimage.LoadIMG("data/interface/shop/armortab.tga",0);
+            tabs[1].height = 128;
+            tabs[1].width = 128;
+            tabs[1].posX = 202 + posX;
+            tabs[1].posY = 473 + posY;
+
+            tabs[2].tabimage.texture.reserve(1);
+            tabs[2].tabimage.LoadIMG("data/interface/shop/misctab.tga",0);
+            tabs[2].height = 128;
+            tabs[2].width = 128;
+            tabs[2].posX = 343 + posX;
+            tabs[2].posY = 473 + posY;
+
+
+		    loadBuyerInventory();
+		    loadSellerInventory();
+            loadTextures();
+        };
+
+bool Shop::isVisible() const
+{
+    return visible;
+}
+
+void Shop::setVisible( bool newVisible )
+{
+    visible = newVisible;
+}
+
+void Shop::loadTextures()
+{
+    textures.texture.reserve(1);
+    textures.LoadIMG("data/interface/shop/base.tga",0);
+}
+
+void Shop::loadBuyerInventory()
+{
+
+}
+
+void Shop::loadSellerInventory()
+{
+
+}
+
+void Shop::draw()
+{
+    DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+                                      world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
+    drawTabs();
+}
+
+void Shop::drawTabs()
+{
+    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
+                                      world_x + tabs[currentTab].posX, tabs[currentTab].width , world_y + tabs[currentTab].posY, tabs[currentTab].height );
+
+}
+
+void Shop::clicked( int clickX, int clickY )
+{
+    // loop through our tabs, see if any got clicked.
+    for (size_t tabIndex = 0; tabIndex <= 2; tabIndex++) {
+        if ( clickX > tabs[tabIndex].posX
+            && clickY > tabs[tabIndex].posY
+            && clickX < tabs[tabIndex].posX + tabs[tabIndex].width
+            && clickY < tabs[tabIndex].posY + tabs[tabIndex].height ) {
+            currentTab = tabIndex;
+        }
+    }
+}
+
+bool Shop::isOnThisScreen( int x, int y )
+{
+    if ( x < posX
+	     || y < posY
+	     || x > posX + textures.texture[0].width
+	     || y > posY + textures.texture[0].height ) {
+		return false;
+	}
+	return true;
+
+}
+
 void currency::exchangeCoins( uint32_t &copper, uint32_t &silver, uint32_t &gold, uint32_t &coins )
 {
     // exchanging coins to copper coins.
