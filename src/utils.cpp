@@ -54,17 +54,17 @@ void utils::takeScreenshot()
 	std::string filename = ss.str();
 
 
-    unsigned char outputImage[h*w*4];
+    std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );    unsigned char *outputImage = outputImageAuto.get();
     unsigned char *tempImage = outputImage;// dawn_configuration::screenHeight*dawn_configuration::screenWidth*4;
 
-    glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, &outputImage);
+    glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
 
 	/* flip the pixel because opengl works from bottom left corner */
 	for(unsigned int y = 0; y < h/2; y++)
 	{
 		memcpy(tempImage, outputImage+y*w*4, w*4);
-		memcpy(outputImage+y*w*4, outputImage+(h-y)*w*4, w*4);
-		memcpy(outputImage+(h-y)*w*4, tempImage,w*4);
+		memcpy(outputImage+y*w*4, outputImage+(h-y-1)*w*4, w*4);
+		memcpy(outputImage+(h-y-1)*w*4, tempImage,w*4);
 	}
 
     // look for a free screenshot file to write to. screenshot0.PNG, screenshot1.PNG...screenshotX.PNG
@@ -83,5 +83,4 @@ void utils::takeScreenshot()
         png_set_data(&pngOutput, dawn_configuration::screenWidth, dawn_configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
         png_close_file(&pngOutput);
-    }
-}
+    }}
