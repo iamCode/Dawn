@@ -894,12 +894,13 @@ void game_loop()
 				}
 			}
 
-			if (keys[SDLK_PRINT] && !KP_screenshot) {
-			    KP_screenshot = true;
+			if (event.key.keysym.sym == SDLK_PRINT && !KP_screenshot)
+            {
+                KP_screenshot = true;
                 utils::takeScreenshot();
 			}
 
-			if (!keys[SDLK_PRINT])
+			if (!event.key.keysym.sym != SDLK_PRINT)
 			{
 			    KP_screenshot = false;
 			}
