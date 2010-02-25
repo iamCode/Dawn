@@ -18,7 +18,7 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
 		backpackOffsetX( 69 ),
 		backpackOffsetY( 59 ),
 		numSlotsX( 10 ),
-		numSlotsY( 4 )
+		numSlotsY( 6 )
 		{
 		    tabs[0].tabimage.texture.reserve(1);
             tabs[0].tabimage.LoadIMG("data/interface/shop/weapontab.tga",0);
@@ -72,13 +72,34 @@ void Shop::draw()
     DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                       world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
     drawTabs();
+    drawItems();
 }
 
 void Shop::drawTabs()
 {
     DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
                                       world_x + tabs[currentTab].posX, tabs[currentTab].width , world_y + tabs[currentTab].posY, tabs[currentTab].height );
+}
 
+void Shop::drawItems()
+{
+    size_t numItems = shopkeeperInventory.size();
+	for ( size_t curItemNr=0; curItemNr<numItems; ++curItemNr ) {
+		InventoryItem *curInvItem = shopkeeperInventory[ curItemNr ];
+		Item *curItem = curInvItem->getItem();
+		CTexture *symbolTexture = curItem->getSymbolTexture();
+
+		size_t invPosX = curInvItem->getInventoryPosX();
+		size_t invPosY = curInvItem->getInventoryPosY();
+		size_t sizeX = curItem->getSizeX();
+		size_t sizeY = curItem->getSizeY();
+
+		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+		                                  world_x + posX + backpackOffsetX + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
+		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
+		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
+		                                  backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
+	}
 }
 
 void Shop::clicked( int clickX, int clickY )
@@ -94,7 +115,7 @@ void Shop::clicked( int clickX, int clickY )
     }
 }
 
-bool Shop::isOnThisScreen( int x, int y )
+bool Shop::isOnThisScreen( int x, int y ) const
 {
     if ( x < posX
 	     || y < posY
@@ -104,6 +125,27 @@ bool Shop::isOnThisScreen( int x, int y )
 	}
 	return true;
 
+}
+
+bool Shop::isOnSlotsScreen( int x, int y )
+{
+	if ( x < static_cast<int>(posX + backpackOffsetX)
+	     || y < static_cast<int>(posY + backpackOffsetY)
+	     || x > static_cast<int>(posX + backpackOffsetX + backpackFieldWidth * numSlotsX + (numSlotsX-1)*backpackSeparatorWidth)
+	     || y > static_cast<int>(posY + backpackOffsetY + backpackFieldHeight * numSlotsY + (numSlotsY-1)*backpackSeparatorHeight) ) {
+		return false;
+	}
+	return true;
+}
+
+void Shop::sellItem( InventoryItem *sellItem )
+{
+
+}
+
+bool Shop::hasFloatingSelection() const
+{
+    return floatingSelection != NULL;
 }
 
 void currency::exchangeCoins( uint32_t &copper, uint32_t &silver, uint32_t &gold, uint32_t &coins )

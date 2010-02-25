@@ -23,9 +23,13 @@ class Shop{    public:
         bool isVisible() const;
         void setVisible( bool newVisible );
         void draw();
+        void drawItems();
         void drawTabs();
         void clicked( int clickX, int clickY );
-        bool isOnThisScreen ( int x, int y );
+        bool isOnThisScreen ( int x, int y ) const;
+        bool isOnSlotsScreen( int x, int y );
+        void sellItem( InventoryItem *sellItem );
+        bool hasFloatingSelection() const;
 
     private:
         int posX, posY, width, height;

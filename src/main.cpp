@@ -755,11 +755,7 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
-                    if ( ( inventoryScreen->isVisible()
-					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
-					     || inventoryScreen->hasFloatingSelection() ) {
-						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
-					} else if ( characterInfoScreen->isVisible()
+                    if ( characterInfoScreen->isVisible()
                             && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
                         characterInfoScreen->clicked( mouseX, mouseY );
                     } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
@@ -785,7 +781,20 @@ void game_loop()
 						optionsWindow->clicked( mouseX, mouseY );
                     } else if ( shopWindow->isVisible()
                                 && (shopWindow->isOnThisScreen(mouseX, mouseY ) ) ) {
-                        shopWindow->clicked( mouseX, mouseY );
+                        if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
+                                    && ( inventoryScreen->hasFloatingSelection() ) ) {
+                            //sell item
+                        } else if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
+                                    && ( shopWindow->hasFloatingSelection() ) ) {
+                            //put item back
+                        } else {
+                            shopWindow->clicked( mouseX, mouseY );
+                        }
+
+                    } else if ( ( inventoryScreen->isVisible()
+					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
+					     || inventoryScreen->hasFloatingSelection() ) {
+						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
 					} else {
 						switch (event.button.button) {
 							case 1:
