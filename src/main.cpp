@@ -900,7 +900,7 @@ void game_loop()
                 utils::takeScreenshot();
 			}
 
-			if (!event.key.keysym.sym != SDLK_PRINT)
+			if (event.key.keysym.sym != SDLK_PRINT)
 			{
 			    KP_screenshot = false;
 			}
