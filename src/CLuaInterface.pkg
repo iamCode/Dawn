@@ -264,6 +264,7 @@ class Item
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
 	void setLevelReq( int levelReq );
+	void setValue( int newValue );
 	void setSpellCharges( int newSpellCharges );
 	void setSpell( CSpell *newSpell );
 };

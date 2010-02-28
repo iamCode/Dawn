@@ -60,7 +60,8 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		levelReq( 0 ),
 		useableItem( false ),
 		spell( NULL ),
-		spellCharges( 0 )
+		spellCharges( 0 ),
+		value( 0 )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -167,6 +168,11 @@ uint8_t Item::getLevelReq() const
     return levelReq;
 }
 
+uint32_t Item::getValue() const
+{
+    return value;
+}
+
 uint8_t Item::getSpellCharges() const
 {
     return spellCharges;
@@ -205,6 +211,11 @@ void Item::setMaxDamage( uint8_t maxDamage_ )
 void Item::setLevelReq( uint8_t levelReq_ )
 {
     levelReq = levelReq_;
+}
+
+void Item::setValue( uint32_t newValue )
+{
+    value = newValue;
 }
 
 void Item::reduceSpellCharges()

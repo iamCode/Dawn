@@ -27,32 +27,29 @@ class Player;
 
 class InventoryItem
 {
-	public:
-		InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player );
-		~InventoryItem();
-		size_t getInventoryPosX() const;
+    public:
+        InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player );
+        ~InventoryItem();
+        size_t getInventoryPosX() const;
 		size_t getInventoryPosY() const;
 		void setInventoryPos( size_t inventoryPosX, size_t inventoryPosY );
+        itemTooltip* getTooltip() const;
 
 		size_t getSizeX() const;
 		size_t getSizeY() const;
 
-		Item* getItem() const;
-        itemTooltip *tt;
-		// TODO: set this
+        Item* getItem() const;
 
-		EquipPosition::EquipPosition getEquippedPosition() const;
-		bool isEquipped() const;
-		bool isEquippable() const;
+		bool isLevelReqMet() const;
+
 
 	private:
 		Item *item;
 		Player *player;
+        itemTooltip *tooltip;
 
 		size_t inventoryPosX;
 		size_t inventoryPosY;
-
-		EquipPosition::EquipPosition equippedPosition;
 };
 
 class Inventory

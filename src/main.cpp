@@ -323,6 +323,12 @@ void DrawScene()
 
 	if ( shopWindow->isVisible() ) {
 	    shopWindow->draw();
+	    shopWindow->drawItemTooltip( mouseX, mouseY );
+	}
+
+	if ( shopWindow->hasFloatingSelection() )
+	{
+	    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
 
     if ( inventoryScreen->hasFloatingSelection() ) {
@@ -780,21 +786,31 @@ void game_loop()
 					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						optionsWindow->clicked( mouseX, mouseY );
                     } else if ( shopWindow->isVisible()
-                                && (shopWindow->isOnThisScreen(mouseX, mouseY ) ) ) {
+                                && (shopWindow->isOnThisScreen(mouseX, mouseY )
+                                || (shopWindow->hasFloatingSelection()
+                                && (!inventoryScreen->isOnBackpackScreen( mouseX, mouseY )) ) ) )  {
                         if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
                                     && ( inventoryScreen->hasFloatingSelection() ) ) {
-                            //sell item
-                        } else if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
-                                    && ( shopWindow->hasFloatingSelection() ) ) {
-                            //put item back
+                            shopWindow->sellToShop( inventoryScreen->getFloatingSelection(), true );
+                            inventoryScreen->unsetFloatingSelection();
                         } else {
                             shopWindow->clicked( mouseX, mouseY );
                         }
 
                     } else if ( ( inventoryScreen->isVisible()
-					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
+                                && !shopWindow->hasFloatingSelection()
+                                && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
 						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
+                    } else if ( inventoryScreen->isVisible()
+                                && shopWindow->hasFloatingSelection()
+                                && inventoryScreen->isOnBackpackScreen( mouseX, mouseY ) ) {
+                            bool purchased = character.getInventory()->insertItem( shopWindow->getFloatingSelection()->getItem() );
+                            if ( purchased )
+                            {
+                                shopWindow->buyFromShop();
+                            }
+
 					} else {
 						switch (event.button.button) {
 							case 1:
@@ -824,7 +840,7 @@ void game_loop()
 										     && worldMouseY <= static_cast<int>(posY + curItem->getSizeY() * 32) ) {
 											foundSomething = true;
 											if ( inventoryScreen->isVisible() ) {
-												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0, &character ) );
+												inventoryScreen->setFloatingSelection( new InventoryItem( curItem, 0, 0, &character ) );
 												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
 												groundItems.resize( groundItems.size() - 1 );
 												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];

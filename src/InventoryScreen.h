@@ -96,9 +96,12 @@ class InventoryScreen
 		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const;
 		bool hasFloatingSelection() const;
 
+        InventoryItem *getFloatingSelection() const;
+
 		ItemSlot::ItemSlot getMouseOverSlot(int x, int y) const;
 
-		void selectFloating( InventoryItem *item );
+		void setFloatingSelection( InventoryItem *item );
+		void unsetFloatingSelection();
 };
 
 #endif

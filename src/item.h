@@ -155,6 +155,7 @@ class Item
 		int16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
+        uint32_t getValue() const;
         uint8_t getLevelReq() const;
         uint8_t getSpellCharges() const;
         CSpell *getSpell() const;
@@ -164,6 +165,7 @@ class Item
 		void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints );
 		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
+        void setValue( uint32_t newValue );
         void setLevelReq( uint8_t levelReq );
         void setSpellCharges( uint8_t newSpellCharges );
         void reduceSpellCharges();
@@ -173,7 +175,6 @@ class Item
 		size_t getSizeY() const;
 
         ItemQuality::ItemQuality getItemQuality() const;
-		ItemSlot::ItemSlot getItemSlot() const;
 		ItemType::ItemType getItemType() const;
 		ArmorType::ArmorType getArmorType() const;
 		WeaponType::WeaponType getWeaponType() const;
@@ -208,6 +209,8 @@ class Item
         uint8_t maxDamage;
 
         uint8_t levelReq;
+
+        uint32_t value;
 
         uint8_t spellCharges;
         CSpell *spell;

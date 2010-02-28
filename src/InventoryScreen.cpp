@@ -182,8 +182,8 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 			if ( inventory->containsItem( floatingSelection ) ) {
 				inventory->removeItem( floatingSelection );
 			}
-			delete floatingSelection;
-			floatingSelection = NULL;
+
+			unsetFloatingSelection();
 
 			return;
 		}
@@ -192,7 +192,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, clickX, clickY ) ) {
-			if ( floatingSelection != NULL && floatingSelection->isEquippable() ) {
+			if ( floatingSelection != NULL && floatingSelection->isLevelReqMet() ) {
 				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
 					if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
@@ -213,11 +213,12 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 		}
 	}
 
-	// calculate field index under mouse
+
 	if ( ! isOnBackpackScreen( clickX, clickY ) ) {
 		return;
 	}
 
+    // calculate field index under mouse
 	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
 	int fieldIndexY = ( clickY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
@@ -241,7 +242,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
                     // item is potion or scroll, use it.
                     player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
                     useItem->getItem()->reduceSpellCharges();
-                    useItem->tt->reloadTooltip();
+                    useItem->getTooltip()->reloadTooltip();
                     if ( useItem->getItem()->getSpellCharges() == 0 )
                     {
                         inventory->removeItem( useItem );
@@ -256,8 +257,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {
 			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelection, fieldIndexX, fieldIndexY );
 		}
-	}
-	else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
+	} else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
 		floatingSelection = inventory->getItemAt( fieldIndexX, fieldIndexY );
 		inventory->removeItem( floatingSelection );
 	}
@@ -401,7 +401,7 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
-			if ( floatingSelection->isEquippable()
+			if ( floatingSelection->isLevelReqMet()
 			     && floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
 				shade[1] = 1.0f; // green color
@@ -522,10 +522,23 @@ bool InventoryScreen::hasFloatingSelection() const
 	return floatingSelection != NULL;
 }
 
-void InventoryScreen::selectFloating( InventoryItem *item )
+void InventoryScreen::setFloatingSelection( InventoryItem *item )
 {
 	assert( floatingSelection == NULL );
 	floatingSelection = item;
+}
+
+void InventoryScreen::unsetFloatingSelection()
+{
+    assert( floatingSelection != NULL );
+
+    delete floatingSelection;
+    floatingSelection = NULL;
+}
+
+InventoryItem *InventoryScreen::getFloatingSelection() const
+{
+    return floatingSelection;
 }
 
 void InventoryScreen::drawItemTooltip( int x, int y )
@@ -539,7 +552,8 @@ void InventoryScreen::drawItemTooltip( int x, int y )
 
         if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
             tooltipItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
-            tooltipItem->tt->draw( x, y );
+            tooltipItem->getTooltip()->setShopItem( false );
+            tooltipItem->getTooltip()->draw( x, y );
         }
     }
 
@@ -556,7 +570,8 @@ void InventoryScreen::drawItemTooltip( int x, int y )
             tooltipItem = inventory->getItemAtSlot( tooltipslot );
             if ( tooltipItem )
             {
-                tooltipItem->tt->draw( x, y );
+                tooltipItem->getTooltip()->setShopItem( false );
+                tooltipItem->getTooltip()->draw( x, y );
             }
         }
     }

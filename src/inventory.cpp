@@ -25,17 +25,17 @@
 
 
 InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t inventoryPosY_, Player *player_ )
-	:	item( item_ ),
+    :   item( item_ ),
 		player( player_ ),
 		inventoryPosX( inventoryPosX_ ),
 		inventoryPosY( inventoryPosY_ )
 {
-    tt = new itemTooltip(item_, player);
+    tooltip = new itemTooltip(item_, player);
 }
 
 InventoryItem::~InventoryItem()
 {
-    delete tt;
+    delete tooltip;
 }
 
 size_t InventoryItem::getInventoryPosX() const
@@ -69,6 +69,10 @@ Item* InventoryItem::getItem() const
 	return item;
 }
 
+itemTooltip* InventoryItem::getTooltip() const
+{
+    return tooltip;
+}
 
 /// Class Inventory
 
@@ -354,7 +358,7 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 	abort();
 }
 
-bool InventoryItem::isEquippable() const
+bool InventoryItem::isLevelReqMet() const
 {
     if ( player->getLevel() < item->getLevelReq() )
     {

@@ -20,19 +20,42 @@ class Shop{    public:
         Shop::Shop( Player *player_, CNPC *shopkeeper_);
         void loadShopkeeperInventory();
         void loadTextures();
+
         bool isVisible() const;
         void setVisible( bool newVisible );
+
         void draw();
         void drawItems();
         void drawTabs();
+        void drawItemTooltip( int x, int y );
+        void drawFloatingSelection( int x, int y );
+
         void clicked( int clickX, int clickY );
+
+        size_t getItemTab( Item *item );
+
         bool isOnThisScreen ( int x, int y ) const;
         bool isOnSlotsScreen( int x, int y );
-        void sellItem( InventoryItem *sellItem );
+        bool isPositionFree( size_t invPosX, size_t invPosY, size_t curTab ) const;
+
         bool hasFloatingSelection() const;
+        bool hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY, size_t itemTab ) const;
+
+        void sellToShop( InventoryItem *sellItem, bool givePlayerMoney );
+        void buyFromShop();
+
+        void insertItemAt( InventoryItem *newItem, size_t foundX, size_t foundY, size_t itemTab );
+        InventoryItem* getItemAt( size_t invPosX, size_t invPosY, size_t itemTab );
+        void removeItem( InventoryItem *inventoryItem );
+
+        void unsetFloatingSelection();
+        InventoryItem *getFloatingSelection() const;
 
     private:
+        uint8_t currentTab;
+
         int posX, posY, width, height;
+
 		size_t backpackFieldWidth;
 		size_t backpackFieldHeight;
 		size_t backpackSeparatorWidth;
@@ -45,14 +68,14 @@ class Shop{    public:
 		CTexture textures;
 
 		sTabs tabs[3];
-		uint8_t currentTab;
 
 		bool visible;
+		bool ***slotUsed;
 
 		InventoryItem *floatingSelection;
 
 		Player *player;
 		CNPC *shopkeeper;
 
-		std::vector<InventoryItem*> shopkeeperInventory;};#endif
+		std::vector<InventoryItem*> shopkeeperInventory[3];};#endif
 
