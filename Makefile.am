@@ -69,6 +69,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/Player.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/shop.cpp \
+	src/shop.h \
 	src/Spellbook.cpp \
 	src/Spellbook.h \
 	src/stats.h \

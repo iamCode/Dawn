@@ -1,6 +1,25 @@
-/**    Copyright (C) 2009,2010  Dawn - 2D roleplaying game    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.    This program is free software: you can redistribute it and/or modify    it under the terms of the GNU General Public License as published by    the Free Software Foundation, either version 3 of the License, or    (at your option) any later version.    This program is distributed in the hope that it will be useful,    but WITHOUT ANY WARRANTY; without even the implied warranty of    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the    GNU General Public License for more details.    You should have received a copy of the GNU General Public License    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
-#include "shop.h"#include <sstream>
+/**
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+
+#include "shop.h"
+#include <sstream>
 #include "Player.h"
+#include <assert.h>
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_)
 	:	player( player_ ),
@@ -20,7 +39,7 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
 		numSlotsY( 6 )
 		{
 		    tabs[0].tabimage.texture.reserve(1);
-            tabs[0].tabimage.LoadIMG("data/interface/shop/weapontab.tga",0);
+            tabs[0].tabimage.LoadIMG("data/interface/Shop/weapontab.tga",0);
             tabs[0].height = 128;
             tabs[0].width = 128;
 
@@ -28,14 +47,14 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
             tabs[0].posY = 264 + posY;
 
             tabs[1].tabimage.texture.reserve(1);
-            tabs[1].tabimage.LoadIMG("data/interface/shop/armortab.tga",0);
+            tabs[1].tabimage.LoadIMG("data/interface/Shop/armortab.tga",0);
             tabs[1].height = 128;
             tabs[1].width = 128;
             tabs[1].posX = 202 + posX;
             tabs[1].posY = 264 + posY;
 
             tabs[2].tabimage.texture.reserve(1);
-            tabs[2].tabimage.LoadIMG("data/interface/shop/misctab.tga",0);
+            tabs[2].tabimage.LoadIMG("data/interface/Shop/misctab.tga",0);
             tabs[2].height = 128;
             tabs[2].width = 128;
             tabs[2].posX = 343 + posX;
