@@ -24,6 +24,16 @@ namespace ActivityType
 	};
 }
 
+namespace Attitude
+{
+	enum Attitude
+	{
+		FRIENDLY,
+		NEUTRAL,
+		HOSTILE
+	};
+}
+
 class CCharacter {
     void baseOnType( std::string otherType );
 
@@ -286,9 +296,10 @@ class LuaCallIndirection : public CallIndirection
 	void setExecuteText( std::string text );
 };
 
-class CNPC
+class CNPC : public CCharacter
 {
 	void addOnDieEventHandler( CallIndirection *eventHandler );
+	void setAttitude( Attitude::Attitude attitude );
 };
 
 class TextWindow
@@ -297,6 +308,12 @@ class TextWindow
 	void setAutocloseTime( int autocloseTime );
 	void setPosition( PositionType::PositionType, int x, int y );
 };
+
+class Shop
+{
+	void setVisible( bool newVisible );
+	void addItem( Item *item );
+}
 
 class ConfigurableSpell : public CSpell
 {
@@ -367,10 +384,12 @@ namespace DawnInterface
 	GeneralBuffSpell* createGeneralBuffSpell();
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
+	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
 	TextWindow *createTextWindow();
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 	LuaCallIndirection* createEventHandler();
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
+	Shop *addShop();
 }

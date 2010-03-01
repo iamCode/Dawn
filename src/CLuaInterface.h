@@ -20,6 +20,7 @@
 #include "interactionpoint.h"
 #include "textwindow.h"
 #include "CNPC.h"
+#include "shop.h"
 
 class CZone;
 

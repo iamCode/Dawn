@@ -66,6 +66,7 @@ class Shop
         void sellToShop( InventoryItem *sellItem, bool givePlayerMoney );
         void buyFromShop();
 
+        void addItem( Item *item );
         void insertItemAt( InventoryItem *newItem, size_t foundX, size_t foundY, size_t itemTab );
         InventoryItem* getItemAt( size_t invPosX, size_t invPosY, size_t itemTab );
         void removeItem( InventoryItem *inventoryItem );
@@ -102,6 +103,9 @@ class Shop
 		std::vector<InventoryItem*> shopkeeperInventory[3];
 };
 
-
+namespace DawnInterface
+{
+	Shop *addShop();
+}
 
 #endif

@@ -36,7 +36,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 
 	remainingMovePoints = 0;
 	direction_texture = S;
-	attitudeTowardsPlayer = neutral;
+	attitudeTowardsPlayer = Attitude::NEUTRAL;
 	markedAsDeleted = false;
 }
 
@@ -60,7 +60,7 @@ void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_res
 
 Direction CNPC::GetDirection()
 {
-	if ( attitudeTowardsPlayer == hostile ) {
+	if ( attitudeTowardsPlayer == Attitude::HOSTILE ) {
 		return getDirectionTowards( (character.x_pos + character.getWidth()) / 2, (character.y_pos + character.getHeight()) / 2 );
 	}
 	if ( wandering ) {
@@ -72,7 +72,7 @@ Direction CNPC::GetDirection()
 
 void CNPC::Damage(int amount, bool criticalHit)
 {
-	attitudeTowardsPlayer = hostile;
+	attitudeTowardsPlayer = Attitude::HOSTILE;
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -115,7 +115,7 @@ void CNPC::Respawn()
 			respawn_lastframe = 0.0f;
 			setCurrentHealth( getModifiedMaxHealth() );
 			setCurrentMana( getModifiedMaxMana() );
-			attitudeTowardsPlayer = neutral;
+			attitudeTowardsPlayer = Attitude::NEUTRAL;
 		}
 	}
 }
@@ -151,7 +151,7 @@ void CNPC::Wander()
 
 void CNPC::Move()
 {
-	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == hostile ) {
+	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == Attitude::HOSTILE ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
@@ -182,4 +182,17 @@ void CNPC::onDie()
 		onDieEventHandlers[ curEventHandlerNr ]->call();
 	}
 }
+
+void CNPC::setAttitude( Attitude::Attitude attitude )
+{
+	this->attitudeTowardsPlayer = attitude;
+}
+
+Attitude::Attitude CNPC::getAttitude() const
+{
+	return this->attitudeTowardsPlayer;
+}
+
+
+
 

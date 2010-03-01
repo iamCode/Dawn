@@ -21,6 +21,7 @@
 #include "CTexture.h"
 #include "CDrawingHelpers.h"
 #include "CLuaFunctions.h"
+#include "CCharacter.h"
 
 #include <cassert>
 
@@ -141,11 +142,44 @@ void InteractionPoint::markAsDeletable()
 	markedAsDeletable = true;
 }
 
+CharacterInteractionPoint::CharacterInteractionPoint( CCharacter *character_ )
+	: interactionCharacter( character_ )
+{
+}
+
+bool CharacterInteractionPoint::isMouseOver( int mouseX, int mouseY ) const
+{
+	int posX = interactionCharacter->getXPos();
+	int posY = interactionCharacter->getYPos();
+	int width = interactionCharacter->getWidth();
+	int height = interactionCharacter->getHeight();
+
+	if ( mouseX+world_x > posX
+		&& mouseX+world_x < posX + width
+		&& mouseY+world_y > posY
+		&& mouseY+world_y < posY + height ) {
+		return true;
+	}
+	return false;
+}
+
+void CharacterInteractionPoint::draw()
+{
+	// no drawing since the character is what is drawn
+}
+
 namespace DawnInterface
 {
 	InteractionPoint* addInteractionPoint()
 	{
 		InteractionPoint *newInteractionPoint = new InteractionPoint();
+		allInteractionPoints.push_back( newInteractionPoint );
+		return newInteractionPoint;
+	}
+
+	InteractionPoint* addCharacterInteractionPoint( CCharacter *character )
+	{
+		InteractionPoint *newInteractionPoint = new CharacterInteractionPoint( character );
 		allInteractionPoints.push_back( newInteractionPoint );
 		return newInteractionPoint;
 	}

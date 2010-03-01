@@ -1,3 +1,25 @@
+trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0, zone );
+trader:setAttitude( Attitude.FRIENDLY );
+traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
+traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );
+traderInteraction:setInteractionCode( "onActivateTrader()" );
+traderShop = DawnInterface.addShop();
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["smallhealingpotion"] );
+traderShop:addItem( itemDatabase["bladeofstrength"] );
+
+function onActivateTrader()
+	traderShop:setVisible( true )
+end
+
 
 if ( quest_playHideAndSeek == nil or not quest_playHideAndSeek.fulfilled )
 then

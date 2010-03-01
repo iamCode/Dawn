@@ -231,19 +231,19 @@ void DrawScene()
 		                                  curItem->getSizeY() * 32 );
 	}
 
+	character.Draw();
+	for (unsigned int x=0; x<NPC.size(); x++) {
+		NPC[x]->Draw();
+		if ( character.getTarget() == NPC[x] )
+			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+	}
+
 	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
 			curInteraction->drawInteractionSymbol(mouseX, mouseY);
 		}
-	}
-
-	character.Draw();
-	for (unsigned int x=0; x<NPC.size(); x++) {
-		NPC[x]->Draw();
-		if ( character.getTarget() == NPC[x] )
-			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
 	}
 
 	// draws the character's target's lifebar, if we have any target.
@@ -816,12 +816,22 @@ void game_loop()
 							case 1:
 								// search for new target
 								bool foundSomething = false;
+								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+										foundSomething = true;
+										curInteraction->startInteraction();
+										break;
+									}
+								}
 
 								for (unsigned int x=0; x<NPC.size(); x++) {
 									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-										character.setTarget( NPC[x] );
-										foundSomething = true;
-										break;
+										if ( ! NPC[x]->getAttitude() == Attitude::FRIENDLY ) {
+											character.setTarget( NPC[x] );
+											foundSomething = true;
+											break;
+										}
 									}
 								}
 
@@ -855,17 +865,6 @@ void game_loop()
 												}
 											}
 											break;
-										}
-									}
-
-									if ( ! foundSomething ) {
-										for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-											InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-											if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-												foundSomething = true;
-												curInteraction->startInteraction();
-												break;
-											}
 										}
 									}
 								}

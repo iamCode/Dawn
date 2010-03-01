@@ -19,7 +19,8 @@
 #include "shop.h"
 #include <sstream>
 #include "Player.h"
-#include <assert.h>
+#include <cassert>
+#include <memory>
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_)
 	:	player( player_ ),
@@ -281,6 +282,12 @@ bool Shop::isPositionFree( size_t invPosX, size_t invPosY, size_t curTab ) const
 	return ( !slotUsed[ curTab ][ invPosX ][ invPosY ] );
 }
 
+void Shop::addItem( Item *item )
+{
+	InventoryItem invItem( item, 0, 0, player );
+	sellToShop( &invItem, false );
+}
+
 void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 {
 	Item *item = sellItem->getItem();
@@ -501,3 +508,15 @@ std::string currency::convertCoinsToString( currency::currency currency, uint32_
 
     return output;
 }
+
+extern std::auto_ptr<Shop> shopWindow;
+
+namespace DawnInterface
+{
+	Shop *addShop()
+	{
+		return shopWindow.get();
+	}
+}
+
+
