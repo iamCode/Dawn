@@ -56,6 +56,10 @@
 #include "BuffWindow.h"
 #include "shop.h"
 
+#ifdef _WIN32
+#define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
+#endif
+
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
