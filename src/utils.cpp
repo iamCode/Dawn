@@ -62,7 +62,7 @@ void utils::takeScreenshot()
     glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
 
 	/* flip the pixel because opengl works from bottom left corner */
-	for(unsigned int y = 0; y < h/2; y++)
+	for(int y = 0; y < h/2; y++)
 	{
 		memcpy(tempImage, outputImage+y*w*4, w*4);
 		memcpy(outputImage+y*w*4, outputImage+(h-y-1)*w*4, w*4);

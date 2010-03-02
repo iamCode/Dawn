@@ -52,16 +52,16 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		armorType ( armorType_ ),
 		weaponType ( weaponType_ ),
 		equipPosition ( equipPosition_ ),
+		useableItem( false ),
 		statsModifier( NULL ),
 		resistElementModifier( NULL ),
 		spellEffectElementModifier( NULL ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 ),
-		useableItem( false ),
-		spell( NULL ),
+		value( 0 ),
 		spellCharges( 0 ),
-		value( 0 )
+		spell( NULL )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -401,7 +401,10 @@ std::string Item::getUseableDescription() const
                 return std::string("Read: ").append(getSpell()->getInfo() );
             }
         break;
+        default:
+        break;
     }
+    return "";
 }
 
 bool Item::isUseable() const

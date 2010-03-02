@@ -374,14 +374,14 @@ CThread::CThread(void)
 ,m_thread(NULL)
 #endif
 ,m_dwId(0L)
+,m_lppvQue(NULL)
+,m_chQue(QUE_SIZE)
+,m_quePos(0)
+,m_lpvProcessor(NULL)
 ,m_state(ThreadStateDown)
 ,m_dwIdle(100)
-,m_lppvQue(NULL)
-,m_lpvProcessor(NULL)
-,m_chQue(QUE_SIZE)
 ,m_type(ThreadTypeEventDriven)
 ,m_stackSize(DEFAULT_STACK_SIZE)
-,m_quePos(0)
 {
 
 	m_dwObjectCondition = NO_ERRORS;

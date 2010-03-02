@@ -499,7 +499,7 @@ public:
 		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
 
 		/// testing the shop, should not be initialized like this!!!
-		shopWindow = std::auto_ptr<Shop>( new Shop( &character, dynamic_cast<CNPC*>( &character ) ) );
+		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
 
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";

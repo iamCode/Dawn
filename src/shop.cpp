@@ -23,13 +23,9 @@
 #include <memory>
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_)
-	:	player( player_ ),
-        shopkeeper( shopkeeper_ ),
-		visible(false),
-		currentTab( 0 ),
+	:	currentTab( 0 ),
 		posX( 30 ),
 		posY( 80 ),
-		floatingSelection( NULL ),
 		backpackFieldWidth( 32 ),
 		backpackFieldHeight( 32 ),
 		backpackSeparatorWidth( 3 ),
@@ -37,7 +33,11 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
 		backpackOffsetX( 67 ),
 		backpackOffsetY( 56 ),
 		numSlotsX( 10 ),
-		numSlotsY( 6 )
+		numSlotsY( 6 ),
+		visible(false),
+		floatingSelection( NULL ),
+		player( player_ ),
+		shopkeeper( shopkeeper_ )
 		{
 		    tabs[0].tabimage.texture.reserve(1);
             tabs[0].tabimage.LoadIMG("data/interface/Shop/weapontab.tga",0);
