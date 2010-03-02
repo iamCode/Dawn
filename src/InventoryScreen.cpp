@@ -222,7 +222,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
 	int fieldIndexY = ( clickY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
-	if ( mouseDown == 3 )
+	if ( mouseDown == SDL_BUTTON_RIGHT )
 	{
 	    if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) )
         {
