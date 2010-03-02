@@ -20,7 +20,8 @@
 #include "pnglite/pnglite.h"
 #include "GLee/GLee.h"
 #include <sstream>
-#include <string.h>
+#include <cstring>
+#include <memory>
 
 namespace dawn_configuration
 {
@@ -54,7 +55,8 @@ void utils::takeScreenshot()
 	std::string filename = ss.str();
 
 
-    std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );    unsigned char *outputImage = outputImageAuto.get();
+    std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );
+    unsigned char *outputImage = outputImageAuto.get();
     unsigned char *tempImage = outputImage;// dawn_configuration::screenHeight*dawn_configuration::screenWidth*4;
 
     glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
@@ -75,7 +77,8 @@ void utils::takeScreenshot()
         ss << "screenshot" << screenshotIndex << ".png";
         filename = ss.str();
     }
-    if ( !filename.empty() )
+
+    if ( !filename.empty() )
     {
         png_init(0,0);
         png_open_file_write(&pngOutput,filename.c_str());
@@ -83,4 +86,5 @@ void utils::takeScreenshot()
         png_set_data(&pngOutput, dawn_configuration::screenWidth, dawn_configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
         png_close_file(&pngOutput);
-    }}
+    }
+}
