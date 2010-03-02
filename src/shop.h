@@ -52,7 +52,7 @@ class Shop
         void drawItemTooltip( int x, int y );
         void drawFloatingSelection( int x, int y );
 
-        void clicked( int clickX, int clickY );
+        void clicked( int clickX, int clickY, uint8_t mouseButton );
 
         size_t getItemTab( Item *item );
 

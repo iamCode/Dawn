@@ -794,7 +794,7 @@ void game_loop()
                             shopWindow->sellToShop( inventoryScreen->getFloatingSelection(), true );
                             inventoryScreen->unsetFloatingSelection();
                         } else {
-                            shopWindow->clicked( mouseX, mouseY );
+                            shopWindow->clicked( mouseX, mouseY, event.button.button );
                         }
 
                     } else if ( ( inventoryScreen->isVisible()

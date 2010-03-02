@@ -202,7 +202,7 @@ void Shop::drawFloatingSelection( int x, int y )
 	}
 }
 
-void Shop::clicked( int clickX, int clickY )
+void Shop::clicked( int clickX, int clickY, uint8_t mouseButton )
 {
     if ( isOnSlotsScreen( clickX, clickY ) )
     {
@@ -221,8 +221,19 @@ void Shop::clicked( int clickX, int clickY )
             InventoryItem *curItem = getItemAt( fieldIndexX, fieldIndexY, currentTab );
             if ( player->getCoins() >= curItem->getItem()->getValue() )
             {
-                floatingSelection = curItem;
-                removeItem( floatingSelection );
+                if ( mouseButton == SDL_BUTTON_RIGHT ) {
+                    // direct buy on right button
+                    bool inserted = player->getInventory()->insertItem( curItem->getItem() );
+                    if ( inserted ) {
+                        floatingSelection = curItem;
+                        removeItem( floatingSelection );
+                        buyFromShop();
+                    }
+                } else {
+                    // add pick up item on left click
+                    floatingSelection = curItem;
+                    removeItem( floatingSelection );
+                }
             }
         }
         return;
