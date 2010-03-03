@@ -94,6 +94,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setLootTable( other->getLootTable() );
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
+	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
@@ -709,7 +710,10 @@ CCharacter::CCharacter()
 	  boundingBoxY( 0 ),
 	  boundingBoxW( 0 ),
 	  boundingBoxH( 0 ),
-	  useBoundingBox( false )
+	  useBoundingBox( false ),
+	  minCoinDrop( 0 ),
+	  maxCoinDrop( 0 ),
+	  coinDropChance( 0.0 )
 {
 	resistElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -1195,6 +1199,8 @@ void CCharacter::Damage(int amount, bool criticalHit)
 	}
 }
 
+extern size_t randomSizeT( size_t min, size_t max );
+
 void CCharacter::dropItems()
 {
     // iterate through the loot table and see if we should drop any items.
@@ -1206,6 +1212,14 @@ void CCharacter::dropItems()
             groundItems.push_back( lootTable[tableID].item );
             groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
         }
+    }
+    
+    {
+    	double dropChance = (double)rand()/(double)RAND_MAX;
+    	if ( dropChance <= coinDropChance ) {
+    		groundItems.push_back( new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
+    		groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
+    	}
     }
 }
 
@@ -1415,3 +1429,11 @@ uint32_t CCharacter::getCoins() const
 {
     return coins;
 }
+
+void CCharacter::setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance )
+{
+	this->minCoinDrop = minCoinDrop;
+	this->maxCoinDrop = maxCoinDrop;
+	this->coinDropChance = dropChance;
+}
+

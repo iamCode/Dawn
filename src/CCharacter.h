@@ -280,6 +280,7 @@ class CCharacter
 		void giveCoins( uint32_t amountOfCoins );
 		void reduceCoins( uint32_t amountOfCoins );
 		uint32_t getCoins() const;
+		void setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance );
 
 		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
 		CTexture *getTexture( ActivityType::ActivityType activity ) const;
@@ -383,6 +384,9 @@ class CCharacter
 
         std::vector<sLootTable> lootTable;
         uint32_t coins;
+        uint32_t minCoinDrop;
+        uint32_t maxCoinDrop;
+        double coinDropChance;
 };
 
 #endif

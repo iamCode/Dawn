@@ -49,6 +49,7 @@ wolfbase:setEvadeModifierPoints( 0 )
 wolfbase:setName("A wolf")
 wolfbase:setWanderRadius( 250 )
 wolfbase:setLevel( 2 )
+wolfbase:setCoinDrop( 1, 3, 0.75 );
 
 wolfpup = DawnInterface.createNewMobType("Wolf Pup")
 wolfpup:baseOnType("Wolf")

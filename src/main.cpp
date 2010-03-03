@@ -849,7 +849,16 @@ void game_loop()
 										     && worldMouseY >= posY
 										     && worldMouseY <= static_cast<int>(posY + curItem->getSizeY() * 32) ) {
 											foundSomething = true;
-											if ( inventoryScreen->isVisible() ) {
+											if ( dynamic_cast<GoldHeap*>(curItem) != NULL ) {
+												// some gold heap
+												GoldHeap *goldHeap = dynamic_cast<GoldHeap*>(curItem);
+												character.giveCoins( goldHeap->numCoins() );
+												delete goldHeap;
+												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
+												groundItems.resize( groundItems.size() - 1 );
+												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
+												groundPositions.resize( groundPositions.size() - 1 );
+											} else if ( inventoryScreen->isVisible() ) {
 												inventoryScreen->setFloatingSelection( new InventoryItem( curItem, 0, 0, &character ) );
 												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
 												groundItems.resize( groundItems.size() - 1 );

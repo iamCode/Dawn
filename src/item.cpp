@@ -411,3 +411,22 @@ bool Item::isUseable() const
 {
     return useableItem;
 }
+
+
+GoldHeap::GoldHeap( size_t coins_ )
+	:	Item( "Coins", 1, 1, "data/items/coins.tga",
+		      ItemQuality::NORMAL,
+		      EquipPosition::NONE,
+		      ItemType::MISCELLANEOUS,
+		      ArmorType::NO_ARMOR,
+		      WeaponType::NO_WEAPON ),
+		coins( coins_ )
+{
+}
+
+size_t GoldHeap::numCoins() const
+{
+	return coins;
+}
+
+

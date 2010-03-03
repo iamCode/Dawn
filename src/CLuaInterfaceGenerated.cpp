@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Mar  1 21:11:40 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Mar  3 21:53:42 2010.
 */
 
 #ifndef __cplusplus
@@ -1656,6 +1656,43 @@ static int tolua_CLuaInterface_CCharacter_addItemToLootTable00(lua_State* tolua_
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'addItemToLootTable'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setCoinDrop of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setCoinDrop00
+static int tolua_CLuaInterface_CCharacter_setCoinDrop00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int minCoinDrop = ((int)  tolua_tonumber(tolua_S,2,0));
+  int maxCoinDrop = ((int)  tolua_tonumber(tolua_S,3,0));
+  double dropChance = ((double)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCoinDrop'", NULL);
+#endif
+  {
+   self->setCoinDrop(minCoinDrop,maxCoinDrop,dropChance);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCoinDrop'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3785,6 +3822,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setBoundingBox",tolua_CLuaInterface_CCharacter_setBoundingBox00);
    tolua_function(tolua_S,"setUseBoundingBox",tolua_CLuaInterface_CCharacter_setUseBoundingBox00);
    tolua_function(tolua_S,"addItemToLootTable",tolua_CLuaInterface_CCharacter_addItemToLootTable00);
+   tolua_function(tolua_S,"setCoinDrop",tolua_CLuaInterface_CCharacter_setCoinDrop00);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"StatsType",0);
   tolua_beginmodule(tolua_S,"StatsType");

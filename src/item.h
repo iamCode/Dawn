@@ -184,7 +184,7 @@ class Item
 		std::string getWeaponTypeText() const;
 		std::string getEquipPositionText() const;
 
-		CTexture* getSymbolTexture();
+		virtual CTexture* getSymbolTexture();
 
 	private:
 		std::string name;
@@ -216,6 +216,16 @@ class Item
         CSpell *spell;
 
 		CTexture symbolTexture;
+};
+
+class GoldHeap : public Item
+{
+	public:
+		GoldHeap( size_t coins_ );
+		size_t numCoins() const;
+		
+	private:
+		size_t coins;
 };
 
 #endif // __ITEM_H__
