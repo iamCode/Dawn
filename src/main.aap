@@ -12,8 +12,8 @@ LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lm
 
 # rule for generation tolua-headers from package files 
 # (only enable if you are working on the .pkg file because it would be checked too often otherwise)
-:rule %Generated.cpp %Generated.h : %.pkg
-    :sys tolua++ -o $(target[0]) -H $(target[1]) $source
+# :rule %Generated.cpp %Generated.h : %.pkg
+#     :sys tolua++ -o $(target[0]) -H $(target[1]) $source
 
 :program dawn : 
         *.cpp threadObject/*.cpp pnglite/*.c
