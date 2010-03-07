@@ -65,8 +65,6 @@ CEditor Editor;
 CInterface GUI;
 
 std::vector <CNPC*> NPC;
-std::vector<Item*> groundItems;
-std::vector<std::pair<int,int> > groundPositions;
 extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
@@ -93,6 +91,7 @@ std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
+std::auto_ptr<GroundLoot> groundLoot;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -219,19 +218,13 @@ void DrawScene()
 	zone1.DrawZone();
 
 	// draw items on the ground
-	for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
-		Item *curItem = groundItems[ curItemNr ];
-		int posX = groundPositions[ curItemNr ].first;
-		int posY = groundPositions[ curItemNr ].second;
-
-		DrawingHelpers::mapTextureToRect( curItem->getSymbolTexture()->texture[0].texture,
-		                                  posX,
-		                                  curItem->getSizeX() * 32,
-		                                  posY,
-		                                  curItem->getSizeY() * 32 );
-	}
+    groundLoot->draw();
 
 	character.Draw();
+
+	// draw tooltips if we're holding left ALT key.
+	groundLoot->drawTooltip();
+
 	for (unsigned int x=0; x<NPC.size(); x++) {
 		NPC[x]->Draw();
 		if ( character.getTarget() == NPC[x] )
@@ -500,6 +493,9 @@ public:
 
 		/// testing the shop, should not be initialized like this!!!
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
+
+        /// setting up groundlooting system. Should we have a progress value here?
+        groundLoot = std::auto_ptr<GroundLoot>( new GroundLoot( &character ) );
 
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";
@@ -837,44 +833,15 @@ void game_loop()
 
 								if ( !foundSomething ) {
 									// search for items
-									for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
-										Item *curItem = groundItems[ curItemNr ];
-										int posX = groundPositions[ curItemNr ].first;
-										int posY = groundPositions[ curItemNr ].second;
+									groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
 
-										int worldMouseX = world_x + mouseX;
-										int worldMouseY = world_y + mouseY;
-										if ( worldMouseX >= posX
-										     && worldMouseX <= static_cast<int>(posX + curItem->getSizeX() * 32)
-										     && worldMouseY >= posY
-										     && worldMouseY <= static_cast<int>(posY + curItem->getSizeY() * 32) ) {
-											foundSomething = true;
-											if ( dynamic_cast<GoldHeap*>(curItem) != NULL ) {
-												// some gold heap
-												GoldHeap *goldHeap = dynamic_cast<GoldHeap*>(curItem);
-												character.giveCoins( goldHeap->numCoins() );
-												delete goldHeap;
-												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
-												groundItems.resize( groundItems.size() - 1 );
-												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
-												groundPositions.resize( groundPositions.size() - 1 );
-											} else if ( inventoryScreen->isVisible() ) {
-												inventoryScreen->setFloatingSelection( new InventoryItem( curItem, 0, 0, &character ) );
-												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
-												groundItems.resize( groundItems.size() - 1 );
-												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
-												groundPositions.resize( groundPositions.size() - 1 );
-											} else {
-												bool inserted = character.getInventory()->insertItem( curItem );
-												if ( inserted ) {
-													groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
-													groundItems.resize( groundItems.size() - 1 );
-													groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
-													groundPositions.resize( groundPositions.size() - 1 );
-												}
-											}
-											break;
-										}
+									if ( inventoryScreen->isVisible() )
+									{
+									    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                        if ( floatingSelection != NULL )
+                                        {
+                                            inventoryScreen->setFloatingSelection( floatingSelection );
+                                        }
 									}
 								}
 							break;
@@ -884,7 +851,10 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEMOTION)
 				{
-				    if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+				    mouseX = event.motion.x;
+					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
+
+					if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
 					{
 					    actionBar->dragSpell();
 					}
@@ -893,12 +863,6 @@ void game_loop()
 				if (event.type == SDL_MOUSEBUTTONUP)
 				{
                     actionBar->executeSpellQueue();
-				}
-
-				if (event.type == SDL_MOUSEMOTION)
-				{
-					mouseX = event.motion.x;
-					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
 				}
 			}
 
@@ -915,7 +879,7 @@ void game_loop()
 
 			for (unsigned int x=0; x<NPC.size(); x++) {
 				if ( NPC[x]->isAlive() ) {
-					NPC[x]->giveMovePoints( ticksDiff );
+                    NPC[x]->giveMovePoints( ticksDiff );
 					NPC[x]->Move();
 				}
 				NPC[x]->Respawn();
@@ -995,6 +959,16 @@ void game_loop()
 				if ( !FoundNewTarget && NPClist.size() > 0) {
 					character.setTarget(NPClist[0]);
 				}
+			}
+
+			if (keys[SDLK_LALT])
+			{
+			    groundLoot->enableTooltips();
+			}
+
+			if (!keys[SDLK_LALT])
+			{
+			    groundLoot->disableTooltips();
 			}
 
 			if (!keys[SDLK_TAB]) {

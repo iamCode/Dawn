@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "CSpell.h"
 #include "CInterface.h"
+#include "GroundLoot.h"
 #include "CAction.h"
 #include "StatsSystem.h"
 
@@ -35,8 +36,7 @@
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
-extern std::vector<Item*> groundItems;
-extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<GroundLoot> groundLoot;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -1209,16 +1209,14 @@ void CCharacter::dropItems()
         double dropChance = (double)rand()/(double)RAND_MAX;
         if ( dropChance <= lootTable[tableID].dropChance )
         {
-            groundItems.push_back( lootTable[tableID].item );
-            groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
+            groundLoot->addItem( getXPos(), getYPos(), lootTable[tableID].item );
         }
     }
-    
+
     {
     	double dropChance = (double)rand()/(double)RAND_MAX;
     	if ( dropChance <= coinDropChance ) {
-    		groundItems.push_back( new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
-    		groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
+    		groundLoot->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
     	}
     }
 }

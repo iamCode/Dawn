@@ -18,6 +18,7 @@
 
 #include "Player.h"
 #include "inventory.h"
+#include "GroundLoot.h"
 #include "StatsSystem.h"
 
 #include <limits>
@@ -27,8 +28,7 @@ const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
 extern Player character;
-extern std::vector<Item*> groundItems;
-extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<GroundLoot> groundLoot;
 
 namespace DawnInterface
 {
@@ -38,8 +38,7 @@ namespace DawnInterface
 		bool wasInserted = playerInventory->insertItem( item );
 		if ( ! wasInserted )
 		{
-			groundItems.push_back( item );
-			groundPositions.push_back( std::pair<int,int>( character.getXPos(), character.getYPos() ) );
+			groundLoot->addItem( character.getXPos(), character.getYPos(), item );
 		}
 	}
 }

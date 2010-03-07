@@ -55,6 +55,7 @@
 #include "Spellbook.h"
 #include "BuffWindow.h"
 #include "shop.h"
+#include "GroundLoot.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.

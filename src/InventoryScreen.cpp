@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "item.h"
 #include "Spellbook.h"
+#include "GroundLoot.h"
 #include "shop.h"
 
 #include <cassert>
@@ -39,8 +40,7 @@ namespace DawnInterface
 	extern void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 
-extern std::vector<Item*> groundItems;
-extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<GroundLoot> groundLoot;
 extern std::auto_ptr<Spellbook> spellbook;
 
 InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string plain_file)
@@ -163,8 +163,7 @@ void InventoryScreen::loadTextures()
 
 void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 {
-	groundItems.push_back( inventoryItem->getItem() );
-	groundPositions.push_back( std::pair<int,int>( player->getXPos(), player->getYPos() ) );
+	groundLoot->addItem( player->getXPos(), player->getYPos(), inventoryItem->getItem() );
 }
 
 void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
