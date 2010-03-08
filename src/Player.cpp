@@ -23,6 +23,7 @@
 
 #include <limits>
 #include <cassert>
+#include <memory>
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;

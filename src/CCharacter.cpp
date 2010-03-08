@@ -32,6 +32,7 @@
 #include <string>
 #include <limits>
 #include <iostream>
+#include <memory>
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
@@ -773,7 +774,7 @@ extern std::vector <CNPC*> NPC;
 
 extern Player character;
 
-static bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
+bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
 {
 	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
 }
