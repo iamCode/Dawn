@@ -247,7 +247,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
                         inventory->removeItem( useItem );
                     }
                 }
-            } else if ( useItem->isLevelReqMet() ) {
+            } else if ( floatingSelection == NULL && useItem->isLevelReqMet() ) {
                 // try to equip the item
                 std::vector<size_t> possibleSlots;
                 for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
