@@ -247,6 +247,38 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
                         inventory->removeItem( useItem );
                     }
                 }
+            } else if ( useItem->isLevelReqMet() ) {
+                // try to equip the item
+                std::vector<size_t> possibleSlots;
+                for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
+                    ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
+                    if ( Inventory::getEquipType( curSlotEnum ) == useItem->getItem()->getEquipPosition() ) {
+                        possibleSlots.push_back( curSlotNr );
+                    }
+                }
+
+                // find position to wield item
+                size_t usedSlot = static_cast<size_t>( ItemSlot::COUNT );
+                for ( size_t curSlotIndex=0; curSlotIndex<possibleSlots.size(); ++curSlotIndex ) {
+                    if ( ( inventory->getItemAtSlot( static_cast<ItemSlot::ItemSlot>( possibleSlots[ curSlotIndex] ) )
+                                          == NULL )
+                         || ( usedSlot == static_cast<size_t>( ItemSlot::COUNT ) ) ) {
+                        usedSlot = possibleSlots[ curSlotIndex];
+                    }
+                }
+
+                if ( usedSlot != static_cast<size_t>( ItemSlot::COUNT ) ) {
+                    // found a position. Insert item
+                    ItemSlot::ItemSlot curSlotEnum = static_cast< ItemSlot::ItemSlot>(usedSlot);
+                    InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
+                    inventory->removeItem( useItem );
+                    inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                    if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
+                        delete tmp;
+                    } else {
+                        floatingSelection = tmp;
+                    }
+                }
             }
 	    }
 	    return;
