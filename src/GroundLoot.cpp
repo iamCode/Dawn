@@ -164,21 +164,45 @@ void GroundLoot::removeItem( size_t pos )
     sortItems();
 }
 
+bool groundItemYPosCompareFunction( const sGroundItems &item1, const sGroundItems &item2 )
+{
+	return item1.tooltipYpos <= item2.tooltipYpos;
+}
+
+extern bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t );
+
 void GroundLoot::sortItems()
 {
-    /// need to fix this function, not working as it is now.. ;/
-    std::sort(groundItems.begin(), groundItems.end());
-    for ( size_t curItem = 0; curItem < groundItems.size(); curItem++ )
-	{
-        for ( size_t nextCurItem = 0; nextCurItem > groundItems.size(); nextCurItem++ )
-        {
-            if ( groundItems[nextCurItem].tooltipYpos <= groundItems[curItem].tooltipYpos
-              && groundItems[nextCurItem].tooltipYpos + 16 >= groundItems[curItem].tooltipYpos )
-            {
-               groundItems[curItem].tooltipYpos = groundItems[nextCurItem].tooltipYpos + 17;
-            }
-        }
-	}
+    // first restore original item position so tooltips always stay close to the items
+    for ( size_t curItem=0; curItem<groundItems.size(); ++curItem ) {
+        groundItems[curItem].tooltipYpos = groundItems[curItem].ypos;
+    }
+
+    // sort by Y-Position. This gives an inital sorting
+    std::sort(groundItems.begin(), groundItems.end(), groundItemYPosCompareFunction);
+
+    // Check each item for collision against already placed items and move up until it no longer collides
+    for ( size_t curItem = 1; curItem < groundItems.size(); ++curItem ) {
+    	sGroundItems &curGroundItem = groundItems[ curItem ];
+    	bool fitsSpace;
+    	do
+    	{
+    		fitsSpace = true;
+    		for ( size_t previousItem = 0; previousItem < curItem; ++previousItem ) {
+    			// check for overlap
+
+    			if ( hasIntersection( curGroundItem.tooltipXpos, curGroundItem.tooltipXpos + curGroundItem.tooltipWidth,
+    			                      curGroundItem.tooltipYpos, curGroundItem.tooltipYpos + 16,
+    			                      groundItems[previousItem].tooltipXpos,
+    			                      groundItems[previousItem].tooltipXpos + groundItems[previousItem].tooltipWidth,
+    			                      groundItems[previousItem].tooltipYpos,
+    			                      groundItems[previousItem].tooltipYpos + 16 ) ) {
+    				fitsSpace = false;
+    			}
+    			groundItems[ curItem ].tooltipYpos++;
+    		}
+    	} while ( ! fitsSpace );
+    }
 }
 
 void GroundLoot::draw()
