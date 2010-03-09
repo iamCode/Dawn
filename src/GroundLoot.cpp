@@ -20,6 +20,7 @@
 #include "fontcache.h"
 #include "Player.h"
 #include "item.h"
+#include "shop.h"
 
 class Player;
 
@@ -155,6 +156,23 @@ void GroundLoot::addItem( int x, int y, Item *newItem )
 {
     /// we dont want items to be dropped at the exact the same position, therefor we do a little random here aswell.
     groundItems.push_back( sGroundItems( x + randomSizeT(-20,20), y + randomSizeT(-20,20), newItem, font->calcStringWidth( newItem->getName() ) ) );
+
+    if ( dynamic_cast<GoldHeap*>( newItem ) != NULL )
+    {
+        int xoffset = 4;
+        for ( size_t i = 0; i < 3; i++ )
+        {
+            groundItems[ groundItems.size() - 1 ].itemValue[i] = currency::convertCoinsToString(static_cast<currency::currency>( i ), dynamic_cast<GoldHeap*> ( newItem )->numCoins() );
+            if ( groundItems[ groundItems.size() - 1 ].itemValue[i] != "0" )
+            {
+                groundItems[ groundItems.size() - 1 ].coinsOffset[i] = xoffset;
+                groundItems[ groundItems.size() - 1 ].coinsTextOffset[i] = font->calcStringWidth( groundItems[ groundItems.size() - 1 ].itemValue[i] );
+                xoffset = xoffset + 25 + groundItems[ groundItems.size() - 1 ].coinsTextOffset[i];
+                groundItems[ groundItems.size() - 1 ].tooltipWidth = xoffset - 25;
+            }
+        }
+        groundItems[ groundItems.size() -1 ].tooltipWidth += 8;
+    }
     sortItems();
 }
 
@@ -253,9 +271,21 @@ void GroundLoot::drawTooltip()
                                               textures.texture[2].height );
 
             glColor4fv( groundItems[curItem].color );
-            font->drawText( groundItems[curItem].tooltipXpos+10,
-                            groundItems[curItem].tooltipYpos+2,
-                            groundItems[curItem].item->getName() );
+            if ( dynamic_cast<GoldHeap*>( groundItems[curItem].item ) == NULL )
+            {
+                font->drawText( groundItems[curItem].tooltipXpos+10,
+                                groundItems[curItem].tooltipYpos+2,
+                                groundItems[curItem].item->getName() );
+            } else {
+                for ( size_t i = 0; i < 3; i++ )
+                {
+                    if ( groundItems[curItem].itemValue[i] != "0" )
+                    {
+                        Frames::drawCoin( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth - groundItems[curItem].coinsOffset[i], groundItems[curItem].tooltipYpos+2, i );
+                        font->drawText( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth - groundItems[curItem].coinsOffset[i] - groundItems[curItem].coinsTextOffset[i], groundItems[curItem].tooltipYpos+2, groundItems[curItem].itemValue[i] );
+                    }
+                }
+            }
             glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
         }
 	}

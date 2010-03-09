@@ -28,6 +28,9 @@ class Player;
 struct sGroundItems
 {
     int xpos, ypos, tooltipXpos, tooltipYpos, tooltipWidth;
+    std::string itemValue[3];
+    int coinsOffset[3];
+    int coinsTextOffset[3];
     GLfloat color[4];
     Item *item;
     void loadTooltip();

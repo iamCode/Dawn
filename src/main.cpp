@@ -810,6 +810,18 @@ void game_loop()
 					} else {
 						switch (event.button.button) {
 							case 1:
+
+                                groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
+
+                                if ( inventoryScreen->isVisible() )
+                                {
+                                    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                    if ( floatingSelection != NULL )
+                                    {
+                                        inventoryScreen->setFloatingSelection( floatingSelection );
+                                    }
+                                }
+
 								// search for new target
 								bool foundSomething = false;
 								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
@@ -828,20 +840,6 @@ void game_loop()
 											foundSomething = true;
 											break;
 										}
-									}
-								}
-
-								if ( !foundSomething ) {
-									// search for items
-									groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
-
-									if ( inventoryScreen->isVisible() )
-									{
-									    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
-                                        if ( floatingSelection != NULL )
-                                        {
-                                            inventoryScreen->setFloatingSelection( floatingSelection );
-                                        }
 									}
 								}
 							break;
