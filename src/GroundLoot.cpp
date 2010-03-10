@@ -184,7 +184,14 @@ void GroundLoot::removeItem( size_t pos )
 
 bool groundItemYPosCompareFunction( const sGroundItems &item1, const sGroundItems &item2 )
 {
-	return item1.tooltipYpos <= item2.tooltipYpos;
+	if ( item1.tooltipYpos != item2.tooltipYpos ) {
+		return item1.tooltipYpos < item2.tooltipYpos;
+	} else if ( item1.tooltipXpos != item2.tooltipXpos ) {
+		return item1.tooltipXpos < item2.tooltipXpos;
+	} else {
+		// compare pointers to have consistent ordering of identical items
+		return &item1 < &item2;
+	}
 }
 
 extern bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t );
@@ -199,25 +206,35 @@ void GroundLoot::sortItems()
     // sort by Y-Position. This gives an inital sorting
     std::sort(groundItems.begin(), groundItems.end(), groundItemYPosCompareFunction);
 
+    // this needs to be added because drawing tooltipWidth isn't exact and height not set
+    size_t tooltipAddSpaceX = textures.texture[0].width + textures.texture[2].width - 16;
+    size_t tooltipAddSpaceY = textures.texture[1].height;
+
     // Check each item for collision against already placed items and move up until it no longer collides
-    for ( size_t curItem = 1; curItem < groundItems.size(); ++curItem ) {
-    	sGroundItems &curGroundItem = groundItems[ curItem ];
+    for ( size_t curItemNr = 1; curItemNr < groundItems.size(); ++curItemNr ) {
+    	sGroundItems &curItem = groundItems[ curItemNr ];
     	bool fitsSpace;
     	do
     	{
     		fitsSpace = true;
-    		for ( size_t previousItem = 0; previousItem < curItem; ++previousItem ) {
+    		for ( size_t previousItemNr = 0; previousItemNr < curItemNr; ++previousItemNr ) {
+    			sGroundItems &prevItem = groundItems[ previousItemNr ];
     			// check for overlap
 
-    			if ( hasIntersection( curGroundItem.tooltipXpos, curGroundItem.tooltipXpos + curGroundItem.tooltipWidth,
-    			                      curGroundItem.tooltipYpos, curGroundItem.tooltipYpos + 16,
-    			                      groundItems[previousItem].tooltipXpos,
-    			                      groundItems[previousItem].tooltipXpos + groundItems[previousItem].tooltipWidth,
-    			                      groundItems[previousItem].tooltipYpos,
-    			                      groundItems[previousItem].tooltipYpos + 16 ) ) {
+    			if ( hasIntersection( curItem.tooltipXpos,
+    			                      curItem.tooltipXpos + curItem.tooltipWidth + tooltipAddSpaceX,
+    			                      curItem.tooltipYpos,
+    			                      curItem.tooltipYpos + tooltipAddSpaceY,
+    			                      prevItem.tooltipXpos,
+    			                      prevItem.tooltipXpos + prevItem.tooltipWidth + tooltipAddSpaceX,
+    			                      prevItem.tooltipYpos,
+    			                      prevItem.tooltipYpos + tooltipAddSpaceY ) ) {
     				fitsSpace = false;
     			}
-    			groundItems[ curItem ].tooltipYpos++;
+    		}
+
+    		if ( ! fitsSpace ) {
+    			curItem.tooltipYpos++;
     		}
     	} while ( ! fitsSpace );
     }
