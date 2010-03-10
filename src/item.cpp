@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "item.h"
+#include <memory>
 
 std::vector<Item*> allItems;
 
@@ -415,12 +416,12 @@ bool Item::isUseable() const
     return useableItem;
 }
 
-static CTexture *goldHeapTexture = NULL;
+static std::auto_ptr<CTexture> goldHeapTexture( NULL );
 
 sTexture getGoldHeapTexture()
 {
-	if ( goldHeapTexture == NULL ) {
-		goldHeapTexture = new CTexture();
+	if ( goldHeapTexture.get() == NULL ) {
+		goldHeapTexture = std::auto_ptr<CTexture>(new CTexture());
 		goldHeapTexture->texture.reserve( 1 );
 		goldHeapTexture->LoadIMG( "data/items/coins.tga", 0 );
 	}
