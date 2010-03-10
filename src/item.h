@@ -140,7 +140,8 @@ class Item
 		EquipPosition::EquipPosition equipPosition,
 		ItemType::ItemType itemType,
 		ArmorType::ArmorType armorType,
-		WeaponType::WeaponType weaponType );
+		WeaponType::WeaponType weaponType,
+		bool loadSymbol = true );
 		// probably like CCharacter: baseOnType
 
 		std::string getName() const;
@@ -215,6 +216,7 @@ class Item
         uint8_t spellCharges;
         CSpell *spell;
 
+	protected:
 		CTexture symbolTexture;
 };
 

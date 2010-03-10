@@ -43,7 +43,7 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
         EquipPosition::EquipPosition equipPosition_,
         ItemType::ItemType itemType_,
         ArmorType::ArmorType armorType_,
-        WeaponType::WeaponType weaponType_ )
+        WeaponType::WeaponType weaponType_, bool loadSymbol )
 	:	name( name_ ),
 		sizeX( sizeX_ ),
 		sizeY( sizeY_ ),
@@ -76,7 +76,10 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	}
 
 	symbolTexture.texture.reserve(1);
-	symbolTexture.LoadIMG( symbolFile, 0 );
+	// note: This is for use in derived classes that set their own texture ID only
+	if ( loadSymbol ) {
+		symbolTexture.LoadIMG( symbolFile, 0 );
+	}
 
 	if ( itemType == ItemType::DRINK
 	  || itemType == ItemType::FOOD
@@ -412,6 +415,17 @@ bool Item::isUseable() const
     return useableItem;
 }
 
+static CTexture *goldHeapTexture = NULL;
+
+sTexture getGoldHeapTexture()
+{
+	if ( goldHeapTexture == NULL ) {
+		goldHeapTexture = new CTexture();
+		goldHeapTexture->texture.reserve( 1 );
+		goldHeapTexture->LoadIMG( "data/items/coins.tga", 0 );
+	}
+	return goldHeapTexture->texture[0];
+}
 
 GoldHeap::GoldHeap( size_t coins_ )
 	:	Item( "Coins", 1, 1, "data/items/coins.tga",
@@ -419,9 +433,11 @@ GoldHeap::GoldHeap( size_t coins_ )
 		      EquipPosition::NONE,
 		      ItemType::MISCELLANEOUS,
 		      ArmorType::NO_ARMOR,
-		      WeaponType::NO_WEAPON ),
+		      WeaponType::NO_WEAPON,
+		      false ),
 		coins( coins_ )
 {
+	symbolTexture.texture[0] = getGoldHeapTexture();
 }
 
 size_t GoldHeap::numCoins() const
