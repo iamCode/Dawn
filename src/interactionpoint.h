@@ -22,10 +22,13 @@
 #include <string>
 
 class InteractionPoint;
+class CharacterInteractionPoint;
+class CCharacter;
 
 namespace DawnInterface
 {
 	InteractionPoint* addInteractionPoint();
+	InteractionPoint *addCharacterInteractionPoint( CCharacter *character );
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 };
 
@@ -40,18 +43,20 @@ class InteractionPoint
 		void setBackgroundTexture( std::string texturename );
 		void setInteractionCode( std::string interactionCode );
 
-		bool isMouseOver( int mouseX, int mouseY ) const;
-		void draw();
-		void drawInteractionSymbol( int mouseX, int mouseY );
+		virtual bool isMouseOver( int mouseX, int mouseY ) const;
+		virtual void draw();
+		virtual void drawInteractionSymbol( int mouseX, int mouseY );
 		void startInteraction();
 
 		bool isMarkedDeletable() const;
+
+	protected:
+		InteractionPoint();
 
 	private:
 		friend InteractionPoint* DawnInterface::addInteractionPoint();
 		friend void DawnInterface::removeInteractionPoint( InteractionPoint *pointToRemove );
 
-		InteractionPoint();
 		void markAsDeletable();
 
 		CTexture *interactionTexture;
@@ -65,6 +70,19 @@ class InteractionPoint
 		std::string interactionCode;
 
 		bool markedAsDeletable;
+};
+
+class CharacterInteractionPoint : public InteractionPoint
+{
+	public:
+		virtual bool isMouseOver( int mouseX, int mouseY ) const;
+		virtual void draw();
+
+	private:
+		friend InteractionPoint* DawnInterface::addCharacterInteractionPoint( CCharacter *character );
+
+		CharacterInteractionPoint( CCharacter *character );
+		CCharacter *interactionCharacter;
 };
 
 namespace InteractionControl

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Jan 26 21:26:50 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Mar  3 21:53:42 2010.
 */
 
 #ifndef __cplusplus
@@ -21,14 +21,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"LuaCallIndirection");
  tolua_usertype(tolua_S,"ConfigurableSpell");
  tolua_usertype(tolua_S,"CZone");
+ tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"CNPC");
  tolua_usertype(tolua_S,"CallIndirection");
- tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
+ tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
  tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Item");
- tolua_usertype(tolua_S,"GeneralRayDamageSpell");
+ tolua_usertype(tolua_S,"Shop");
  tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"CSpell");
  tolua_usertype(tolua_S,"TextWindow");
@@ -1660,6 +1661,43 @@ static int tolua_CLuaInterface_CCharacter_addItemToLootTable00(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setCoinDrop of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setCoinDrop00
+static int tolua_CLuaInterface_CCharacter_setCoinDrop00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int minCoinDrop = ((int)  tolua_tonumber(tolua_S,2,0));
+  int maxCoinDrop = ((int)  tolua_tonumber(tolua_S,3,0));
+  double dropChance = ((double)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCoinDrop'", NULL);
+#endif
+  {
+   self->setCoinDrop(minCoinDrop,maxCoinDrop,dropChance);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCoinDrop'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setDescription of class  Item */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setDescription00
 static int tolua_CLuaInterface_Item_setDescription00(lua_State* tolua_S)
@@ -1892,6 +1930,39 @@ static int tolua_CLuaInterface_Item_setLevelReq00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setLevelReq'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setValue of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setValue00
+static int tolua_CLuaInterface_Item_setValue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  int newValue = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setValue'", NULL);
+#endif
+  {
+   self->setValue(newValue);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setValue'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2167,6 +2238,39 @@ static int tolua_CLuaInterface_CNPC_addOnDieEventHandler00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setAttitude of class  CNPC */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CNPC_setAttitude00
+static int tolua_CLuaInterface_CNPC_setAttitude00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CNPC",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CNPC* self = (CNPC*)  tolua_tousertype(tolua_S,1,0);
+  Attitude::Attitude attitude = ((Attitude::Attitude) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAttitude'", NULL);
+#endif
+  {
+   self->setAttitude(attitude);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAttitude'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setText of class  TextWindow */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_TextWindow_setText00
 static int tolua_CLuaInterface_TextWindow_setText00(lua_State* tolua_S)
@@ -2265,6 +2369,72 @@ static int tolua_CLuaInterface_TextWindow_setPosition00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setPosition'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setVisible of class  Shop */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Shop_setVisible00
+static int tolua_CLuaInterface_Shop_setVisible00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Shop",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Shop* self = (Shop*)  tolua_tousertype(tolua_S,1,0);
+  bool newVisible = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVisible'", NULL);
+#endif
+  {
+   self->setVisible(newVisible);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setVisible'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addItem of class  Shop */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Shop_addItem00
+static int tolua_CLuaInterface_Shop_addItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Shop",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Item",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Shop* self = (Shop*)  tolua_tousertype(tolua_S,1,0);
+  Item* item = ((Item*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addItem'", NULL);
+#endif
+  {
+   self->addItem(item);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addItem'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3346,6 +3516,35 @@ static int tolua_CLuaInterface_DawnInterface_addInteractionPoint00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::addCharacterInteractionPoint */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00
+static int tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* character = ((CCharacter*)  tolua_tousertype(tolua_S,1,0));
+  {
+   InteractionPoint* tolua_ret = (InteractionPoint*)  DawnInterface::addCharacterInteractionPoint(character);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addCharacterInteractionPoint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::createTextWindow */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createTextWindow00
 static int tolua_CLuaInterface_DawnInterface_createTextWindow00(lua_State* tolua_S)
@@ -3516,6 +3715,33 @@ static int tolua_CLuaInterface_DawnInterface_changeQuestDescription00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::addShop */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addShop00
+static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Shop* tolua_ret = (Shop*)  DawnInterface::addShop();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Shop");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addShop'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
 {
@@ -3538,6 +3764,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Casting",ActivityType::Casting);
    tolua_constant(tolua_S,"Attacking",ActivityType::Attacking);
    tolua_constant(tolua_S,"Count",ActivityType::Count);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Attitude",0);
+  tolua_beginmodule(tolua_S,"Attitude");
+   tolua_constant(tolua_S,"FRIENDLY",Attitude::FRIENDLY);
+   tolua_constant(tolua_S,"NEUTRAL",Attitude::NEUTRAL);
+   tolua_constant(tolua_S,"HOSTILE",Attitude::HOSTILE);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CCharacter","CCharacter","",NULL);
   tolua_beginmodule(tolua_S,"CCharacter");
@@ -3590,6 +3822,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setBoundingBox",tolua_CLuaInterface_CCharacter_setBoundingBox00);
    tolua_function(tolua_S,"setUseBoundingBox",tolua_CLuaInterface_CCharacter_setUseBoundingBox00);
    tolua_function(tolua_S,"addItemToLootTable",tolua_CLuaInterface_CCharacter_addItemToLootTable00);
+   tolua_function(tolua_S,"setCoinDrop",tolua_CLuaInterface_CCharacter_setCoinDrop00);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"StatsType",0);
   tolua_beginmodule(tolua_S,"StatsType");
@@ -3725,6 +3958,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setMinDamage",tolua_CLuaInterface_Item_setMinDamage00);
    tolua_function(tolua_S,"setMaxDamage",tolua_CLuaInterface_Item_setMaxDamage00);
    tolua_function(tolua_S,"setLevelReq",tolua_CLuaInterface_Item_setLevelReq00);
+   tolua_function(tolua_S,"setValue",tolua_CLuaInterface_Item_setValue00);
    tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
    tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
   tolua_endmodule(tolua_S);
@@ -3742,15 +3976,21 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"LuaCallIndirection");
    tolua_function(tolua_S,"setExecuteText",tolua_CLuaInterface_LuaCallIndirection_setExecuteText00);
   tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"CNPC","CNPC","",NULL);
+  tolua_cclass(tolua_S,"CNPC","CNPC","CCharacter",NULL);
   tolua_beginmodule(tolua_S,"CNPC");
    tolua_function(tolua_S,"addOnDieEventHandler",tolua_CLuaInterface_CNPC_addOnDieEventHandler00);
+   tolua_function(tolua_S,"setAttitude",tolua_CLuaInterface_CNPC_setAttitude00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"TextWindow","TextWindow","",NULL);
   tolua_beginmodule(tolua_S,"TextWindow");
    tolua_function(tolua_S,"setText",tolua_CLuaInterface_TextWindow_setText00);
    tolua_function(tolua_S,"setAutocloseTime",tolua_CLuaInterface_TextWindow_setAutocloseTime00);
    tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_TextWindow_setPosition00);
+  tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"Shop","Shop","",NULL);
+  tolua_beginmodule(tolua_S,"Shop");
+   tolua_function(tolua_S,"setVisible",tolua_CLuaInterface_Shop_setVisible00);
+   tolua_function(tolua_S,"addItem",tolua_CLuaInterface_Shop_addItem00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"ConfigurableSpell","ConfigurableSpell","CSpell",NULL);
   tolua_beginmodule(tolua_S,"ConfigurableSpell");
@@ -3805,12 +4045,14 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"createGeneralBuffSpell",tolua_CLuaInterface_DawnInterface_createGeneralBuffSpell00);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
    tolua_function(tolua_S,"addInteractionPoint",tolua_CLuaInterface_DawnInterface_addInteractionPoint00);
+   tolua_function(tolua_S,"addCharacterInteractionPoint",tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00);
    tolua_function(tolua_S,"createTextWindow",tolua_CLuaInterface_DawnInterface_createTextWindow00);
    tolua_function(tolua_S,"removeInteractionPoint",tolua_CLuaInterface_DawnInterface_removeInteractionPoint00);
    tolua_function(tolua_S,"createEventHandler",tolua_CLuaInterface_DawnInterface_createEventHandler00);
    tolua_function(tolua_S,"addQuest",tolua_CLuaInterface_DawnInterface_addQuest00);
    tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
+   tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

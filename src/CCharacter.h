@@ -86,6 +86,7 @@ class CCharacter
 			alive = true;
 			curSpellAction = NULL;
 			experience = 0;
+			coins = 0;
 		}
 
 		virtual bool isPlayer() const;
@@ -276,6 +277,11 @@ class CCharacter
 		virtual void Die();
 		void dropItems();
 
+		void giveCoins( uint32_t amountOfCoins );
+		void reduceCoins( uint32_t amountOfCoins );
+		uint32_t getCoins() const;
+		void setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance );
+
 		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
 		CTexture *getTexture( ActivityType::ActivityType activity ) const;
 		void setLifebar( CTexture *newLifebar );
@@ -377,6 +383,10 @@ class CCharacter
 		int activeDirection;
 
         std::vector<sLootTable> lootTable;
+        uint32_t coins;
+        uint32_t minCoinDrop;
+        uint32_t maxCoinDrop;
+        double coinDropChance;
 };
 
 #endif

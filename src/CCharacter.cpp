@@ -21,6 +21,7 @@
 #include "CDrawingHelpers.h"
 #include "CSpell.h"
 #include "CInterface.h"
+#include "GroundLoot.h"
 #include "CAction.h"
 #include "StatsSystem.h"
 
@@ -31,12 +32,12 @@
 #include <string>
 #include <limits>
 #include <iostream>
+#include <memory>
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
-extern std::vector<Item*> groundItems;
-extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<GroundLoot> groundLoot;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -94,6 +95,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setLootTable( other->getLootTable() );
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
+	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
@@ -709,7 +711,10 @@ CCharacter::CCharacter()
 	  boundingBoxY( 0 ),
 	  boundingBoxW( 0 ),
 	  boundingBoxH( 0 ),
-	  useBoundingBox( false )
+	  useBoundingBox( false ),
+	  minCoinDrop( 0 ),
+	  maxCoinDrop( 0 ),
+	  coinDropChance( 0.0 )
 {
 	resistElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -769,7 +774,7 @@ extern std::vector <CNPC*> NPC;
 
 extern Player character;
 
-static bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
+bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
 {
 	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
 }
@@ -1195,6 +1200,8 @@ void CCharacter::Damage(int amount, bool criticalHit)
 	}
 }
 
+extern size_t randomSizeT( size_t min, size_t max );
+
 void CCharacter::dropItems()
 {
     // iterate through the loot table and see if we should drop any items.
@@ -1203,9 +1210,15 @@ void CCharacter::dropItems()
         double dropChance = (double)rand()/(double)RAND_MAX;
         if ( dropChance <= lootTable[tableID].dropChance )
         {
-            groundItems.push_back( lootTable[tableID].item );
-            groundPositions.push_back( std::pair<int,int>( getXPos(), getYPos() ) );
+            groundLoot->addItem( getXPos(), getYPos(), lootTable[tableID].item );
         }
+    }
+
+    {
+    	double dropChance = (double)rand()/(double)RAND_MAX;
+    	if ( dropChance <= coinDropChance ) {
+    		groundLoot->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
+    	}
     }
 }
 
@@ -1393,3 +1406,33 @@ bool CCharacter::isSpellOnCooldown( std::string spellName ) const
     }
     return false;
 }
+
+
+void CCharacter::giveCoins( uint32_t amountOfCoins )
+{
+    // should check for maxValue here.
+    coins += amountOfCoins;
+}
+
+void CCharacter::reduceCoins( uint32_t amountOfCoins )
+{
+    if ( coins >= amountOfCoins )
+    {
+        coins -= amountOfCoins;
+    } else {
+        coins = 0;
+    }
+}
+
+uint32_t CCharacter::getCoins() const
+{
+    return coins;
+}
+
+void CCharacter::setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance )
+{
+	this->minCoinDrop = minCoinDrop;
+	this->maxCoinDrop = maxCoinDrop;
+	this->coinDropChance = dropChance;
+}
+

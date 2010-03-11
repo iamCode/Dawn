@@ -24,6 +24,8 @@
 #include "Player.h"
 #include "item.h"
 #include "Spellbook.h"
+#include "GroundLoot.h"
+#include "shop.h"
 
 #include <cassert>
 #include <memory>
@@ -38,20 +40,18 @@ namespace DawnInterface
 	extern void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 
-extern std::vector<Item*> groundItems;
-extern std::vector<std::pair<int,int> > groundPositions;
+extern std::auto_ptr<GroundLoot> groundLoot;
 extern std::auto_ptr<Spellbook> spellbook;
 
-InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string shader_file, std::string plain_file)
+InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string plain_file)
 	: itemSlot( itemSlot_ ),
 	  offsetX( offsetX_ ),
 	  offsetY( offsetY_ ),
 	  sizeX( sizeX_ ),
 	  sizeY( sizeY_ )
 {
-    textures.texture.reserve( 2 );
-    textures.LoadIMG( shader_file, 0 );
-    textures.LoadIMG( plain_file, 1 );
+    textures.texture.reserve( 1 );
+    textures.LoadIMG( plain_file, 0 );
 }
 
 size_t InventoryScreenSlot::getOffsetX() const
@@ -84,25 +84,23 @@ CTexture* InventoryScreenSlot::getTexture()
     return &textures;
 }
 
-void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot slotToUse, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string shader_file, std::string plain_file )
+void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot slotToUse, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string plain_file )
 {
-	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY, shader_file, plain_file );
+	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY, plain_file );
 }
 
 InventoryScreen::InventoryScreen( Player *player_ )
 	:	player( player_ ),
 		visible(false),
 		posX(0),
-		posY(100),
-		width(350),
-		height(400),
+		posY(80),
 		floatingSelection( NULL ),
 		backpackFieldWidth( 32 ),
 		backpackFieldHeight( 32 ),
 		backpackSeparatorWidth( 3 ),
 		backpackSeparatorHeight( 3 ),
-		backpackOffsetX( 96 ),
-		backpackOffsetY( 12 ),
+		backpackOffsetX( 69 ),
+		backpackOffsetY( 59 ),
 		numSlotsX( 10 ),
 		numSlotsY( 4 ) {
 	mySlots = new InventoryScreenSlot*[ static_cast<size_t>( ItemSlot::COUNT )];
@@ -110,19 +108,22 @@ InventoryScreen::InventoryScreen( Player *player_ )
 		mySlots[curSlotNr] = NULL;
 	}
 
-	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 96, 539, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/head.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 131, 489, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/amulet.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 11, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/main_hand.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 96, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/chest.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 96, 319, 67, 32, "data/interface/inventory/1x2_shader.tga", "data/interface/inventory/belt.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 96, 199, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/legs.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 376, 504, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/shoulder.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 376, 419, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/cloak.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 376, 334, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/gloves.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 461, 369, 67, 102, "data/interface/inventory/2x3_shader.tga", "data/interface/inventory/off_hand.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 376, 284, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/ring_one.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 411, 284, 32, 32, "data/interface/inventory/1x1_shader.tga", "data/interface/inventory/ring_two.tga" );
-	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 376, 199, 67, 67, "data/interface/inventory/2x2_shader.tga", "data/interface/inventory/boots.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::HEAD, 210, 556, 64, 64, "data/interface/inventory/head.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::AMULET, 171, 532, 32, 32, "data/interface/inventory/amulet.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::MAIN_HAND, 97, 412, 64, 96, "data/interface/inventory/main_hand.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::CHEST, 210, 450, 64, 96, "data/interface/inventory/chest.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::BELT, 210, 408, 64, 32, "data/interface/inventory/belt.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::LEGS, 210, 302, 64, 96, "data/interface/inventory/legs.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::SHOULDER, 281, 493, 64, 64, "data/interface/inventory/shoulder.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::CLOAK, 294, 284, 64, 64, "data/interface/inventory/cloak.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::GLOVES, 284, 376, 64, 64, "data/interface/inventory/gloves.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::OFF_HAND, 354, 412, 64, 96, "data/interface/inventory/off_hand.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_ONE, 117, 362, 32, 32, "data/interface/inventory/ring_one.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::RING_TWO, 159, 362, 32, 32, "data/interface/inventory/ring_two.tga" );
+	addInventoryScreenSlot( mySlots, ItemSlot::BOOTS, 210, 229, 64, 64, "data/interface/inventory/boots.tga" );
+
+    // load the font for coin text.
+    coinsFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 
 	// check that all slots were set
 	bool allSlotsFilled = true;
@@ -150,17 +151,19 @@ InventoryScreen::~InventoryScreen()
 
 void InventoryScreen::loadTextures()
 {
-	textures.texture.reserve(2);
+	textures.texture.reserve(5);
 	textures.LoadIMG("data/interface/inventory/base.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
+	textures.LoadIMG("data/interface/inventory/goldcoin.tga",2);
+	textures.LoadIMG("data/interface/inventory/silvercoin.tga",3);
+	textures.LoadIMG("data/interface/inventory/coppercoin.tga",4);
 
 	posX = dawn_configuration::screenWidth - textures.texture[0].width - 50;
 }
 
 void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 {
-	groundItems.push_back( inventoryItem->getItem() );
-	groundPositions.push_back( std::pair<int,int>( player->getXPos(), player->getYPos() ) );
+	groundLoot->addItem( player->getXPos(), player->getYPos(), inventoryItem->getItem() );
 }
 
 void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
@@ -178,8 +181,8 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 			if ( inventory->containsItem( floatingSelection ) ) {
 				inventory->removeItem( floatingSelection );
 			}
-			delete floatingSelection;
-			floatingSelection = NULL;
+
+			unsetFloatingSelection();
 
 			return;
 		}
@@ -188,7 +191,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, clickX, clickY ) ) {
-			if ( floatingSelection != NULL && floatingSelection->isEquippable() ) {
+			if ( floatingSelection != NULL && floatingSelection->isLevelReqMet() ) {
 				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
 					if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
@@ -209,15 +212,16 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 		}
 	}
 
-	// calculate field index under mouse
+
 	if ( ! isOnBackpackScreen( clickX, clickY ) ) {
 		return;
 	}
 
+    // calculate field index under mouse
 	int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
 	int fieldIndexY = ( clickY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
-	if ( mouseDown == 3 )
+	if ( mouseDown == SDL_BUTTON_RIGHT )
 	{
 	    if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) )
         {
@@ -237,10 +241,42 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
                     // item is potion or scroll, use it.
                     player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
                     useItem->getItem()->reduceSpellCharges();
-                    useItem->tt->reloadTooltip();
+                    useItem->getTooltip()->reloadTooltip();
                     if ( useItem->getItem()->getSpellCharges() == 0 )
                     {
                         inventory->removeItem( useItem );
+                    }
+                }
+            } else if ( floatingSelection == NULL && useItem->isLevelReqMet() ) {
+                // try to equip the item
+                std::vector<size_t> possibleSlots;
+                for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
+                    ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
+                    if ( Inventory::getEquipType( curSlotEnum ) == useItem->getItem()->getEquipPosition() ) {
+                        possibleSlots.push_back( curSlotNr );
+                    }
+                }
+
+                // find position to wield item
+                size_t usedSlot = static_cast<size_t>( ItemSlot::COUNT );
+                for ( size_t curSlotIndex=0; curSlotIndex<possibleSlots.size(); ++curSlotIndex ) {
+                    if ( ( inventory->getItemAtSlot( static_cast<ItemSlot::ItemSlot>( possibleSlots[ curSlotIndex] ) )
+                                          == NULL )
+                         || ( usedSlot == static_cast<size_t>( ItemSlot::COUNT ) ) ) {
+                        usedSlot = possibleSlots[ curSlotIndex];
+                    }
+                }
+
+                if ( usedSlot != static_cast<size_t>( ItemSlot::COUNT ) ) {
+                    // found a position. Insert item
+                    ItemSlot::ItemSlot curSlotEnum = static_cast< ItemSlot::ItemSlot>(usedSlot);
+                    InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
+                    inventory->removeItem( useItem );
+                    inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                    if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
+                        delete tmp;
+                    } else {
+                        floatingSelection = tmp;
                     }
                 }
             }
@@ -252,8 +288,7 @@ void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )
 		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {
 			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelection, fieldIndexX, fieldIndexY );
 		}
-	}
-	else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
+	} else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
 		floatingSelection = inventory->getItemAt( fieldIndexX, fieldIndexY );
 		inventory->removeItem( floatingSelection );
 	}
@@ -305,6 +340,32 @@ void InventoryScreen::drawFloatingSelection( int x, int y )
 		                                  x, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  y-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}
+}
+
+void InventoryScreen::drawCoins()
+{
+    // draws our coins in gold, silver and copper.
+    std::string gold = currency::convertCoinsToString(currency::GOLD, player->getCoins());
+    std::string silver = currency::convertCoinsToString(currency::SILVER, player->getCoins());
+    std::string copper = currency::convertCoinsToString(currency::COPPER, player->getCoins());
+
+    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(gold),world_y+posY+307, gold );
+    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(silver),world_y+posY+285, silver );
+    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(copper),world_y+posY+263, copper );
+
+    // gold coin
+    DrawingHelpers::mapTextureToRect( textures.texture[2].texture,
+                                      world_x+posX+167, textures.texture[2].width,
+                                      world_y+posY+308, textures.texture[2].height );
+    // silver coin
+    DrawingHelpers::mapTextureToRect( textures.texture[3].texture,
+                                      world_x+posX+167, textures.texture[3].width,
+                                      world_y+posY+286, textures.texture[3].height );
+    // copper coin
+    DrawingHelpers::mapTextureToRect( textures.texture[4].texture,
+                                      world_x+posX+167, textures.texture[4].width,
+                                      world_y+posY+264, textures.texture[4].height );
+
 }
 
 void InventoryScreen::drawItemPlacement( int x, int y )
@@ -371,7 +432,7 @@ void InventoryScreen::drawItemPlacement( int x, int y )
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
-			if ( floatingSelection->isEquippable()
+			if ( floatingSelection->isLevelReqMet()
 			     && floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
 				shade[1] = 1.0f; // green color
@@ -398,6 +459,7 @@ void InventoryScreen::draw()
     DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                       world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
 
+	drawCoins();
 	drawBackpack();
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		drawSlot( static_cast<ItemSlot::ItemSlot>(curSlotNr) );
@@ -437,46 +499,11 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
 		size_t centerOffsetY = (curScreenSlot->getSizeY() - drawSizeY) / 2;
 
         // draw the plain background image of the item, hiding the item placeholder.
-        DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[1].texture,
-                                          world_x + posX + curScreenSlot->getOffsetX(),
-                                          curScreenSlot->getTexture()->texture[1].width,
-                                          world_y + posY + curScreenSlot->getOffsetY(),
-                                          curScreenSlot->getTexture()->texture[1].height );
-
-        // draw the shading image below the item, and color it with the item quality color.
-        GLfloat shadeColor[5][3] = {
-             { 0.0f, 0.0f, 0.0f }, // grey
-             { 1.0f, 1.0f, 1.0f }, // white
-             { 1.0f, 1.0f, 0.0f }, // yellow
-             { 1.0f, 0.5f, 0.0f }, // orange
-             { 1.0f, 0.0f, 0.0f } // red
-        };
-
-        switch ( item->getItemQuality() )
-        {
-            case ItemQuality::POOR:
-                glColor3fv( shadeColor[0] );
-            break;
-            case ItemQuality::NORMAL:
-                glColor3fv( shadeColor[1] );
-            break;
-            case ItemQuality::ENHANCED:
-                glColor3fv( shadeColor[2] );
-            break;
-            case ItemQuality::RARE:
-                glColor3fv( shadeColor[3] );
-            break;
-            case ItemQuality::LORE:
-                glColor3fv( shadeColor[4] );
-            break;
-        }
-
         DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[0].texture,
                                           world_x + posX + curScreenSlot->getOffsetX(),
                                           curScreenSlot->getTexture()->texture[0].width,
                                           world_y + posY + curScreenSlot->getOffsetY(),
                                           curScreenSlot->getTexture()->texture[0].height );
-        glColor3f( 1.0f, 1.0f, 1.0f );
 
         // draw the actual item image
 		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
@@ -526,10 +553,23 @@ bool InventoryScreen::hasFloatingSelection() const
 	return floatingSelection != NULL;
 }
 
-void InventoryScreen::selectFloating( InventoryItem *item )
+void InventoryScreen::setFloatingSelection( InventoryItem *item )
 {
 	assert( floatingSelection == NULL );
 	floatingSelection = item;
+}
+
+void InventoryScreen::unsetFloatingSelection()
+{
+    assert( floatingSelection != NULL );
+
+    delete floatingSelection;
+    floatingSelection = NULL;
+}
+
+InventoryItem *InventoryScreen::getFloatingSelection() const
+{
+    return floatingSelection;
 }
 
 void InventoryScreen::drawItemTooltip( int x, int y )
@@ -543,7 +583,8 @@ void InventoryScreen::drawItemTooltip( int x, int y )
 
         if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
             tooltipItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
-            tooltipItem->tt->draw( x, y );
+            tooltipItem->getTooltip()->setShopItem( false );
+            tooltipItem->getTooltip()->draw( x, y );
         }
     }
 
@@ -560,7 +601,8 @@ void InventoryScreen::drawItemTooltip( int x, int y )
             tooltipItem = inventory->getItemAtSlot( tooltipslot );
             if ( tooltipItem )
             {
-                tooltipItem->tt->draw( x, y );
+                tooltipItem->getTooltip()->setShopItem( false );
+                tooltipItem->getTooltip()->draw( x, y );
             }
         }
     }

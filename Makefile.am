@@ -51,6 +51,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
+	src/GroundLoot.cpp \
+	src/GroundLoot.h \
 	src/interactionpoint.cpp \
 	src/interactionpoint.h \
 	src/inventory.cpp \
@@ -69,6 +71,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/Player.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/shop.cpp \
+	src/shop.h \
 	src/Spellbook.cpp \
 	src/Spellbook.h \
 	src/stats.h \

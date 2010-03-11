@@ -140,7 +140,8 @@ class Item
 		EquipPosition::EquipPosition equipPosition,
 		ItemType::ItemType itemType,
 		ArmorType::ArmorType armorType,
-		WeaponType::WeaponType weaponType );
+		WeaponType::WeaponType weaponType,
+		bool loadSymbol = true );
 		// probably like CCharacter: baseOnType
 
 		std::string getName() const;
@@ -155,6 +156,7 @@ class Item
 		int16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
+        uint32_t getValue() const;
         uint8_t getLevelReq() const;
         uint8_t getSpellCharges() const;
         CSpell *getSpell() const;
@@ -164,6 +166,7 @@ class Item
 		void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints );
 		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
+        void setValue( uint32_t newValue );
         void setLevelReq( uint8_t levelReq );
         void setSpellCharges( uint8_t newSpellCharges );
         void reduceSpellCharges();
@@ -173,7 +176,6 @@ class Item
 		size_t getSizeY() const;
 
         ItemQuality::ItemQuality getItemQuality() const;
-		ItemSlot::ItemSlot getItemSlot() const;
 		ItemType::ItemType getItemType() const;
 		ArmorType::ArmorType getArmorType() const;
 		WeaponType::WeaponType getWeaponType() const;
@@ -183,7 +185,7 @@ class Item
 		std::string getWeaponTypeText() const;
 		std::string getEquipPositionText() const;
 
-		CTexture* getSymbolTexture();
+		virtual CTexture* getSymbolTexture();
 
 	private:
 		std::string name;
@@ -209,10 +211,23 @@ class Item
 
         uint8_t levelReq;
 
+        uint32_t value;
+
         uint8_t spellCharges;
         CSpell *spell;
 
+	protected:
 		CTexture symbolTexture;
+};
+
+class GoldHeap : public Item
+{
+	public:
+		GoldHeap( size_t coins_ );
+		size_t numCoins() const;
+		
+	private:
+		size_t coins;
 };
 
 #endif // __ITEM_H__

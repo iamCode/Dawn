@@ -170,6 +170,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
+	src/GroundLoot.cpp \
+	src/GroundLoot.h \
 	src/interactionpoint.cpp \
 	src/interactionpoint.h \
 	src/inventory.cpp \
@@ -188,6 +190,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/Player.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/shop.cpp \
+	src/shop.h \
 	src/Spellbook.cpp \
 	src/Spellbook.h \
 	src/stats.h \
@@ -228,14 +232,15 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CLuaInterfaceGenerated.$(OBJEXT) CMessage.$(OBJEXT) \
 	CNPC.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
 	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) \
+	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) inventory.$(OBJEXT) \
 	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) main.$(OBJEXT) optionswindow.$(OBJEXT) \
-	Player.$(OBJEXT) questwindow.$(OBJEXT) Spellbook.$(OBJEXT) \
-	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tooltip.$(OBJEXT) \
-	utils.$(OBJEXT) GLee.$(OBJEXT) pnglite.$(OBJEXT) \
-	EventClass.$(OBJEXT) MutexClass.$(OBJEXT) Thread.$(OBJEXT)
+	Player.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
+	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
+	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
+	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
+	Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 dawn_rpg_DEPENDENCIES =
@@ -255,7 +260,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/CZone.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/CharacterInfoScreen.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/EventClass.Po ./$(DEPDIR)/GLFT_Font.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/GLee.Po ./$(DEPDIR)/InventoryScreen.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/GLee.Po ./$(DEPDIR)/GroundLoot.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/InventoryScreen.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MutexClass.Po ./$(DEPDIR)/Player.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Spellbook.Po ./$(DEPDIR)/StatsSystem.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thread.Po \
@@ -267,7 +273,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/inventory.Po ./$(DEPDIR)/item.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/loadingscreen.Po ./$(DEPDIR)/main.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/optionswindow.Po ./$(DEPDIR)/pnglite.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/questwindow.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/questwindow.Po ./$(DEPDIR)/shop.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/textwindow.Po ./$(DEPDIR)/tooltip.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/utils.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -358,6 +364,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EventClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLFT_Font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLee.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GroundLoot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryScreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
@@ -377,6 +384,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/optionswindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnglite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/questwindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tooltip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
@@ -887,6 +895,28 @@ GLFT_Font.obj: src/GLFT_Font.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLFT_Font.obj `if test -f 'src/GLFT_Font.cpp'; then $(CYGPATH_W) 'src/GLFT_Font.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GLFT_Font.cpp'; fi`
 
+GroundLoot.o: src/GroundLoot.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GroundLoot.o -MD -MP -MF "$(DEPDIR)/GroundLoot.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o GroundLoot.o `test -f 'src/GroundLoot.cpp' || echo '$(srcdir)/'`src/GroundLoot.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GroundLoot.Tpo" "$(DEPDIR)/GroundLoot.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/GroundLoot.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/GroundLoot.cpp' object='GroundLoot.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GroundLoot.Po' tmpdepfile='$(DEPDIR)/GroundLoot.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GroundLoot.o `test -f 'src/GroundLoot.cpp' || echo '$(srcdir)/'`src/GroundLoot.cpp
+
+GroundLoot.obj: src/GroundLoot.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GroundLoot.obj -MD -MP -MF "$(DEPDIR)/GroundLoot.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o GroundLoot.obj `if test -f 'src/GroundLoot.cpp'; then $(CYGPATH_W) 'src/GroundLoot.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GroundLoot.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GroundLoot.Tpo" "$(DEPDIR)/GroundLoot.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/GroundLoot.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/GroundLoot.cpp' object='GroundLoot.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GroundLoot.Po' tmpdepfile='$(DEPDIR)/GroundLoot.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GroundLoot.obj `if test -f 'src/GroundLoot.cpp'; then $(CYGPATH_W) 'src/GroundLoot.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GroundLoot.cpp'; fi`
+
 interactionpoint.o: src/interactionpoint.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT interactionpoint.o -MD -MP -MF "$(DEPDIR)/interactionpoint.Tpo" \
 @am__fastdepCXX_TRUE@	  -c -o interactionpoint.o `test -f 'src/interactionpoint.cpp' || echo '$(srcdir)/'`src/interactionpoint.cpp; \
@@ -1084,6 +1114,28 @@ questwindow.obj: src/questwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/questwindow.Po' tmpdepfile='$(DEPDIR)/questwindow.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o questwindow.obj `if test -f 'src/questwindow.cpp'; then $(CYGPATH_W) 'src/questwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/questwindow.cpp'; fi`
+
+shop.o: src/shop.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT shop.o -MD -MP -MF "$(DEPDIR)/shop.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o shop.o `test -f 'src/shop.cpp' || echo '$(srcdir)/'`src/shop.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/shop.Tpo" "$(DEPDIR)/shop.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/shop.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/shop.cpp' object='shop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/shop.Po' tmpdepfile='$(DEPDIR)/shop.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o shop.o `test -f 'src/shop.cpp' || echo '$(srcdir)/'`src/shop.cpp
+
+shop.obj: src/shop.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT shop.obj -MD -MP -MF "$(DEPDIR)/shop.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o shop.obj `if test -f 'src/shop.cpp'; then $(CYGPATH_W) 'src/shop.cpp'; else $(CYGPATH_W) '$(srcdir)/src/shop.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/shop.Tpo" "$(DEPDIR)/shop.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/shop.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/shop.cpp' object='shop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/shop.Po' tmpdepfile='$(DEPDIR)/shop.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o shop.obj `if test -f 'src/shop.cpp'; then $(CYGPATH_W) 'src/shop.cpp'; else $(CYGPATH_W) '$(srcdir)/src/shop.cpp'; fi`
 
 Spellbook.o: src/Spellbook.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Spellbook.o -MD -MP -MF "$(DEPDIR)/Spellbook.Tpo" \

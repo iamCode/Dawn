@@ -22,10 +22,20 @@
 #include "CCharacter.h"
 #include "callindirection.h"
 
+namespace Attitude
+{
+	enum Attitude
+	{
+		FRIENDLY,
+		NEUTRAL,
+		HOSTILE
+	};
+}
+
 class CNPC : public CCharacter
 {
 	private:
-		enum { friendly, neutral, hostile } attitudeTowardsPlayer;
+		Attitude::Attitude attitudeTowardsPlayer;
 		std::vector<sLootTable> lootTable;
 		std::vector<CallIndirection*> onDieEventHandlers;
 		bool markedAsDeleted;
@@ -50,6 +60,8 @@ class CNPC : public CCharacter
 		void addOnDieEventHandler( CallIndirection *eventHandler );
 
 		void onDie();
+		void setAttitude( Attitude::Attitude attitude );
+		Attitude::Attitude getAttitude() const;
 };
 
 #endif // __CNPC_H__

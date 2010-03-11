@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "StatsSystem.h"
 #include "elements.h"
+#include "shop.h"
 #include <memory>
 
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
@@ -37,6 +38,7 @@ itemTooltip::itemTooltip( Item *parent_, Player *player_ )
     blockNumberWidth = 1;
     blockNumberHeight = 1;
     smallTooltip = false;
+    isShopItem = false;
     loadTextures();
     getParentText();
 }
@@ -83,6 +85,20 @@ void Tooltip::reloadTooltip()
     loadedAtLevel = player->getLevel();
     tooltipText.clear();
     getParentText();
+}
+
+void itemTooltip::setShopItem( bool isShopItem_ )
+{
+    if ( isShopItem != isShopItem_ )
+    {
+        isShopItem = isShopItem_;
+        reloadTooltip();
+    }
+}
+
+int Tooltip::getTooltipWidth() const
+{
+    return blockWidth * blockNumberWidth + blockWidth;
 }
 
 void itemTooltip::draw( int x, int y )
@@ -135,11 +151,36 @@ void itemTooltip::draw( int x, int y )
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
     {
-        glColor4fv(tooltipText[i].color);
-        tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
-        glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+        if ( tooltipText[i].text.find("price:") != tooltipText[i].text.npos )
+        {
+            drawCoinsLine( x+blockWidth, blockWidth*blockNumberWidth-10, font_y, &tooltipText[i] );
+        } else {
+            glColor4fv(tooltipText[i].color);
+            tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
+            glColor4f(1.0f,1.0f,1.0f,1.0f);
+        }
         font_y -= tooltipText[i].font->getHeight()+19;
     }
+}
+
+void itemTooltip::drawCoinsLine( int x, int frameWidth, int y, sTooltipText *tooltipText )
+{
+    std::string realString = tooltipText->text.substr(0,tooltipText->text.find_first_of(":")+1);
+
+    int stringWidth = tooltipText->font->calcStringWidth( realString );
+    int xoffset = 0;
+    for ( size_t i = 0; i < 3; i++ )
+    {
+        if ( itemValue[i] != "0" )
+        {
+            Frames::drawCoin( x + frameWidth - xoffset, y+1, i );
+            int stringWidth = tooltipText->font->calcStringWidth( itemValue[i] );
+            tooltipText->font->drawText( x + frameWidth - xoffset - stringWidth, y, itemValue[i] );
+            xoffset = xoffset + 25 + stringWidth;
+        }
+    }
+    tooltipText->font->drawText( x + frameWidth - xoffset + 20 - stringWidth, y, realString );
 }
 
 void spellTooltip::draw( int x, int y )
@@ -473,6 +514,21 @@ void itemTooltip::getParentText()
     {
         addTooltipText( red, 12, "Requires level %d", parent->getLevelReq() );
     }
+
+    int32_t coins = parent->getValue();
+
+    if ( isShopItem )
+    {
+        itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins );
+        itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins );
+        itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins );
+        addTooltipText( white, 12, "Buy price:             " );
+    } else {
+        itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins * 0.75 );
+        itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins * 0.75 );
+        itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins * 0.75 );
+        addTooltipText( white, 12, "Sell price:            " );
+    }
 }
 
 void spellTooltip::getParentText()
@@ -529,7 +585,7 @@ namespace Frames
 		}
 
 		frameTextures = std::auto_ptr<CTexture>(new CTexture());
-		frameTextures->texture.reserve( 9 );
+		frameTextures->texture.reserve( 12 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
 		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
@@ -539,6 +595,9 @@ namespace Frames
 		frameTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
 		frameTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
 		frameTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
+		frameTextures->LoadIMG( "data/interface/inventory/goldcoin.tga", 9 );
+        frameTextures->LoadIMG( "data/interface/inventory/silvercoin.tga", 10 );
+        frameTextures->LoadIMG( "data/interface/inventory/coppercoin.tga", 11 );
 
 	}
 
@@ -572,6 +631,22 @@ namespace Frames
 				DrawingHelpers::mapTextureToRect( frameTextures->texture[4].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
 			}
 		}
+	}
+
+	void drawCoin( int x, int y, int coin )
+	{
+	    if ( coin == currency::GOLD )
+	    {
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[9].texture, x, 16, y, 16 );
+	    }
+	    if ( coin == currency::SILVER )
+	    {
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[10].texture, x, 16, y, 16 );
+	    }
+	    if ( coin == currency::COPPER )
+	    {
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[11].texture, x, 16, y, 16 );
+	    }
 	}
 } // namespace Frames
 

@@ -62,6 +62,7 @@ class Tooltip
         bool isTooltipSmall();
         virtual void getParentText() = 0;
         virtual void draw( int x, int y ) = 0;
+        int getTooltipWidth() const;
         void reloadTooltip();
 
     private:
@@ -98,19 +99,26 @@ class itemTooltip : public Tooltip
     public:
         itemTooltip(Item *parent, Player *player);
         void draw( int x, int y );
+        void setShopItem( bool isShopItem_ );
 
     private:
         Item *parent;
         std::string currentCooldownText;
 
+        bool isShopItem;
+
+        std::string itemValue[3];
+
         void getParentText();
 		void addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage );
+		void drawCoinsLine( int x, int y, int frameWidth, sTooltipText *tooltipText );
 };
 
 namespace Frames
 {
 	void initFrameTextures();
 	void drawFrame( int topX, int topY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight );
+	void drawCoin( int x, int y, int coin );
 }
 
 #endif

@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "item.h"
+#include <memory>
 
 std::vector<Item*> allItems;
 
@@ -43,7 +44,7 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
         EquipPosition::EquipPosition equipPosition_,
         ItemType::ItemType itemType_,
         ArmorType::ArmorType armorType_,
-        WeaponType::WeaponType weaponType_ )
+        WeaponType::WeaponType weaponType_, bool loadSymbol )
 	:	name( name_ ),
 		sizeX( sizeX_ ),
 		sizeY( sizeY_ ),
@@ -52,15 +53,16 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		armorType ( armorType_ ),
 		weaponType ( weaponType_ ),
 		equipPosition ( equipPosition_ ),
+		useableItem( false ),
 		statsModifier( NULL ),
 		resistElementModifier( NULL ),
 		spellEffectElementModifier( NULL ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
 		levelReq( 0 ),
-		useableItem( false ),
-		spell( NULL ),
-		spellCharges( 0 )
+		value( 0 ),
+		spellCharges( 0 ),
+		spell( NULL )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -75,7 +77,10 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	}
 
 	symbolTexture.texture.reserve(1);
-	symbolTexture.LoadIMG( symbolFile, 0 );
+	// note: This is for use in derived classes that set their own texture ID only
+	if ( loadSymbol ) {
+		symbolTexture.LoadIMG( symbolFile, 0 );
+	}
 
 	if ( itemType == ItemType::DRINK
 	  || itemType == ItemType::FOOD
@@ -167,6 +172,11 @@ uint8_t Item::getLevelReq() const
     return levelReq;
 }
 
+uint32_t Item::getValue() const
+{
+    return value;
+}
+
 uint8_t Item::getSpellCharges() const
 {
     return spellCharges;
@@ -205,6 +215,11 @@ void Item::setMaxDamage( uint8_t maxDamage_ )
 void Item::setLevelReq( uint8_t levelReq_ )
 {
     levelReq = levelReq_;
+}
+
+void Item::setValue( uint32_t newValue )
+{
+    value = newValue;
 }
 
 void Item::reduceSpellCharges()
@@ -390,10 +405,45 @@ std::string Item::getUseableDescription() const
                 return std::string("Read: ").append(getSpell()->getInfo() );
             }
         break;
+        default:
+        break;
     }
+    return "";
 }
 
 bool Item::isUseable() const
 {
     return useableItem;
 }
+
+static std::auto_ptr<CTexture> goldHeapTexture( NULL );
+
+sTexture getGoldHeapTexture()
+{
+	if ( goldHeapTexture.get() == NULL ) {
+		goldHeapTexture = std::auto_ptr<CTexture>(new CTexture());
+		goldHeapTexture->texture.reserve( 1 );
+		goldHeapTexture->LoadIMG( "data/items/coins.tga", 0 );
+	}
+	return goldHeapTexture->texture[0];
+}
+
+GoldHeap::GoldHeap( size_t coins_ )
+	:	Item( "Coins", 1, 1, "data/items/coins.tga",
+		      ItemQuality::NORMAL,
+		      EquipPosition::NONE,
+		      ItemType::MISCELLANEOUS,
+		      ArmorType::NO_ARMOR,
+		      WeaponType::NO_WEAPON,
+		      false ),
+		coins( coins_ )
+{
+	symbolTexture.texture[0] = getGoldHeapTexture();
+}
+
+size_t GoldHeap::numCoins() const
+{
+	return coins;
+}
+
+

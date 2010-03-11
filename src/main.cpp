@@ -65,8 +65,6 @@ CEditor Editor;
 CInterface GUI;
 
 std::vector <CNPC*> NPC;
-std::vector<Item*> groundItems;
-std::vector<std::pair<int,int> > groundPositions;
 extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
@@ -77,6 +75,7 @@ bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
+bool KP_toggle_showShop = false;
 
 extern int world_x, world_y, mouseX, mouseY;
 
@@ -91,6 +90,8 @@ std::auto_ptr<Spellbook> spellbook;
 std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
+std::auto_ptr<Shop> shopWindow;
+std::auto_ptr<GroundLoot> groundLoot;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -217,16 +218,17 @@ void DrawScene()
 	zone1.DrawZone();
 
 	// draw items on the ground
-	for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
-		Item *curItem = groundItems[ curItemNr ];
-		int posX = groundPositions[ curItemNr ].first;
-		int posY = groundPositions[ curItemNr ].second;
+    groundLoot->draw();
 
-		DrawingHelpers::mapTextureToRect( curItem->getSymbolTexture()->texture[0].texture,
-		                                  posX,
-		                                  curItem->getSizeX() * 32,
-		                                  posY,
-		                                  curItem->getSizeY() * 32 );
+	character.Draw();
+
+	// draw tooltips if we're holding left ALT key.
+	groundLoot->drawTooltip();
+
+	for (unsigned int x=0; x<NPC.size(); x++) {
+		NPC[x]->Draw();
+		if ( character.getTarget() == NPC[x] )
+			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
 	}
 
 	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
@@ -235,13 +237,6 @@ void DrawScene()
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
 			curInteraction->drawInteractionSymbol(mouseX, mouseY);
 		}
-	}
-
-	character.Draw();
-	for (unsigned int x=0; x<NPC.size(); x++) {
-		NPC[x]->Draw();
-		if ( character.getTarget() == NPC[x] )
-			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
 	}
 
 	// draws the character's target's lifebar, if we have any target.
@@ -286,10 +281,7 @@ void DrawScene()
 	    inventoryScreen->draw();
 	}
 
-	if ( inventoryScreen->hasFloatingSelection() ) {
-	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
-		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
+
 
 	if ( inventoryScreen->isVisible() )
 	{
@@ -320,6 +312,21 @@ void DrawScene()
 
 	if ( optionsWindow->isVisible() ) {
 		optionsWindow->draw();
+	}
+
+	if ( shopWindow->isVisible() ) {
+	    shopWindow->draw();
+	    shopWindow->drawItemTooltip( mouseX, mouseY );
+	}
+
+	if ( shopWindow->hasFloatingSelection() )
+	{
+	    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+	}
+
+    if ( inventoryScreen->hasFloatingSelection() ) {
+	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
+		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
@@ -484,6 +491,12 @@ public:
 		progress = 0.2;
 		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
 
+		/// testing the shop, should not be initialized like this!!!
+		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
+
+        /// setting up groundlooting system. Should we have a progress value here?
+        groundLoot = std::auto_ptr<GroundLoot>( new GroundLoot( &character ) );
+
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";
 		progress = 0.225;
@@ -568,6 +581,8 @@ public:
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.giveCoins( 576 );
+
 		dawn_debug_info("Character completed");
 
 		progressString = "Loading Game Init Data";
@@ -724,8 +739,6 @@ void game_loop()
 
     focus.setFocus(&character);
 
-
-
 	while (!done) {
 
 		if (Editor.isEnabled()) {
@@ -744,11 +757,7 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
-                    if ( ( inventoryScreen->isVisible()
-					       && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
-					     || inventoryScreen->hasFloatingSelection() ) {
-						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
-					} else if ( characterInfoScreen->isVisible()
+                    if ( characterInfoScreen->isVisible()
                             && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
                         characterInfoScreen->clicked( mouseX, mouseY );
                     } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
@@ -772,61 +781,64 @@ void game_loop()
 					} else if ( optionsWindow->isVisible()
 					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						optionsWindow->clicked( mouseX, mouseY );
+                    } else if ( shopWindow->isVisible()
+                                && (shopWindow->isOnThisScreen(mouseX, mouseY )
+                                || (shopWindow->hasFloatingSelection()
+                                && (!inventoryScreen->isOnBackpackScreen( mouseX, mouseY )) ) ) )  {
+                        if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
+                                    && ( inventoryScreen->hasFloatingSelection() ) ) {
+                            shopWindow->sellToShop( inventoryScreen->getFloatingSelection(), true );
+                            inventoryScreen->unsetFloatingSelection();
+                        } else {
+                            shopWindow->clicked( mouseX, mouseY, event.button.button );
+                        }
+
+                    } else if ( ( inventoryScreen->isVisible()
+                                && !shopWindow->hasFloatingSelection()
+                                && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
+					     || inventoryScreen->hasFloatingSelection() ) {
+						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
+                    } else if ( inventoryScreen->isVisible()
+                                && shopWindow->hasFloatingSelection()
+                                && inventoryScreen->isOnBackpackScreen( mouseX, mouseY ) ) {
+                            bool purchased = character.getInventory()->insertItem( shopWindow->getFloatingSelection()->getItem() );
+                            if ( purchased )
+                            {
+                                shopWindow->buyFromShop();
+                            }
+
 					} else {
 						switch (event.button.button) {
 							case 1:
+
+                                groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
+
+                                if ( inventoryScreen->isVisible() )
+                                {
+                                    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                    if ( floatingSelection != NULL )
+                                    {
+                                        inventoryScreen->setFloatingSelection( floatingSelection );
+                                    }
+                                }
+
 								// search for new target
 								bool foundSomething = false;
-
-								for (unsigned int x=0; x<NPC.size(); x++) {
-									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-										character.setTarget( NPC[x] );
+								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
 										foundSomething = true;
+										curInteraction->startInteraction();
 										break;
 									}
 								}
 
-								if ( !foundSomething ) {
-									// search for items
-									for ( size_t curItemNr=0; curItemNr<groundItems.size(); ++curItemNr ) {
-										Item *curItem = groundItems[ curItemNr ];
-										int posX = groundPositions[ curItemNr ].first;
-										int posY = groundPositions[ curItemNr ].second;
-
-										int worldMouseX = world_x + mouseX;
-										int worldMouseY = world_y + mouseY;
-										if ( worldMouseX >= posX
-										     && worldMouseX <= static_cast<int>(posX + curItem->getSizeX() * 32)
-										     && worldMouseY >= posY
-										     && worldMouseY <= static_cast<int>(posY + curItem->getSizeY() * 32) ) {
+								for (unsigned int x=0; x<NPC.size(); x++) {
+									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+										if ( ! NPC[x]->getAttitude() == Attitude::FRIENDLY ) {
+											character.setTarget( NPC[x] );
 											foundSomething = true;
-											if ( inventoryScreen->isVisible() ) {
-												inventoryScreen->selectFloating( new InventoryItem( curItem, 0, 0, &character ) );
-												groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
-												groundItems.resize( groundItems.size() - 1 );
-												groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
-												groundPositions.resize( groundPositions.size() - 1 );
-											} else {
-												bool inserted = character.getInventory()->insertItem( curItem );
-												if ( inserted ) {
-													groundItems[ curItemNr ] = groundItems[ groundItems.size() - 1 ];
-													groundItems.resize( groundItems.size() - 1 );
-													groundPositions[ curItemNr ] = groundPositions[ groundPositions.size() - 1 ];
-													groundPositions.resize( groundPositions.size() - 1 );
-												}
-											}
 											break;
-										}
-									}
-
-									if ( ! foundSomething ) {
-										for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-											InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-											if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-												foundSomething = true;
-												curInteraction->startInteraction();
-												break;
-											}
 										}
 									}
 								}
@@ -837,7 +849,10 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEMOTION)
 				{
-				    if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+				    mouseX = event.motion.x;
+					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
+
+					if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
 					{
 					    actionBar->dragSpell();
 					}
@@ -846,12 +861,6 @@ void game_loop()
 				if (event.type == SDL_MOUSEBUTTONUP)
 				{
                     actionBar->executeSpellQueue();
-				}
-
-				if (event.type == SDL_MOUSEMOTION)
-				{
-					mouseX = event.motion.x;
-					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
 				}
 			}
 
@@ -868,7 +877,7 @@ void game_loop()
 
 			for (unsigned int x=0; x<NPC.size(); x++) {
 				if ( NPC[x]->isAlive() ) {
-					NPC[x]->giveMovePoints( ticksDiff );
+                    NPC[x]->giveMovePoints( ticksDiff );
 					NPC[x]->Move();
 				}
 				NPC[x]->Respawn();
@@ -950,6 +959,16 @@ void game_loop()
 				}
 			}
 
+			if (keys[SDLK_LALT])
+			{
+			    groundLoot->enableTooltips();
+			}
+
+			if (!keys[SDLK_LALT])
+			{
+			    groundLoot->disableTooltips();
+			}
+
 			if (!keys[SDLK_TAB]) {
 				KP_select_next = false;
 			}
@@ -970,6 +989,15 @@ void game_loop()
 
 			if ( !keys[SDLK_c] ) {
 				KP_toggle_showCharacterInfo = false;
+			}
+
+			if ( keys[SDLK_s] && !KP_toggle_showShop ) {
+				KP_toggle_showShop = true;
+				shopWindow->setVisible( ! shopWindow->isVisible() );
+			}
+
+			if ( !keys[SDLK_s] ) {
+				KP_toggle_showShop= false;
 			}
 
 			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {

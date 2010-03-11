@@ -20,6 +20,7 @@
 #define __INVENTORYSCREEN_H__
 
 #include "CTexture.h"
+#include "GLFT_Font.h"
 #include "item.h" // for EquipPosition
 
 class Player;
@@ -36,7 +37,7 @@ class InventoryScreenSlot
 		CTexture textures;
 
 	public:
-		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string shader_file, std::string plain_file );
+		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string plain_file );
 		size_t getOffsetX() const;
 		size_t getOffsetY() const;
 		size_t getSizeX() const;
@@ -57,6 +58,8 @@ class InventoryScreen
 		InventoryItem *floatingSelection;
 
 		InventoryScreenSlot **mySlots;
+
+		GLFT_Font *coinsFont;
 
 		void drawBackpack();
 		void dropItemOnGround( InventoryItem *item );
@@ -82,6 +85,7 @@ class InventoryScreen
 		void loadTextures();
 
 		void draw();
+		void drawCoins();
 		void drawSlot( ItemSlot::ItemSlot curSlot );
 		void drawFloatingSelection( int x, int y );
 		void drawItemPlacement( int x, int y );
@@ -92,9 +96,12 @@ class InventoryScreen
 		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const;
 		bool hasFloatingSelection() const;
 
+        InventoryItem *getFloatingSelection() const;
+
 		ItemSlot::ItemSlot getMouseOverSlot(int x, int y) const;
 
-		void selectFloating( InventoryItem *item );
+		void setFloatingSelection( InventoryItem *item );
+		void unsetFloatingSelection();
 };
 
 #endif
