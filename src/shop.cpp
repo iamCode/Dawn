@@ -172,6 +172,7 @@ void Shop::drawItemTooltip( int x, int y )
             Uint8 *keys;
             keys = SDL_GetKeyState(NULL);
             int equippedItemOffset = 0;
+            int previousFrameWidth = 0;
             if ( keys[SDLK_LSHIFT] )
             {
                 std::vector<InventoryItem*> playersInventory = player->getInventory()->getEquippedItems();
@@ -179,7 +180,13 @@ void Shop::drawItemTooltip( int x, int y )
                 {
                     if ( playersInventory[ curItem ]->getItem()->getEquipPosition() == tooltipItem->getItem()->getEquipPosition() )
                     {
-                        equippedItemOffset += tooltipItem->getTooltip()->getTooltipWidth() + 30;
+                        if ( equippedItemOffset != 0 )
+                        {
+                            equippedItemOffset += previousFrameWidth + 30;
+                        } else {
+                            equippedItemOffset += tooltipItem->getTooltip()->getTooltipWidth() + 30;
+                        }
+                        previousFrameWidth = playersInventory[ curItem ]->getTooltip()->getTooltipWidth();
                         playersInventory[ curItem ]->getTooltip()->draw( x + equippedItemOffset, y );
                     }
                 }
