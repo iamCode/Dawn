@@ -27,33 +27,33 @@
 CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
 	:	player( player_ ),
 		visible(false),
-		posX(50),
+		posX(25),
 		posY(100),
-		width(331),
-		height(445)
+		width(462),
+		height(512)
 {
 	infoFont = NULL;
 	currentTab = 0;
 	tabs[0].tabimage.texture.reserve(1);
 	tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
 	tabs[0].height = 32;
-	tabs[0].width = 64;
-	tabs[0].posX = 33 + posX;
-	tabs[0].posY = 190 + posY;
+	tabs[0].width = 58;
+	tabs[0].posX = 61 + posX;
+	tabs[0].posY = 242 + posY;
 
 	tabs[1].tabimage.texture.reserve(1);
 	tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
 	tabs[1].height = 32;
-	tabs[1].width = 64;
-	tabs[1].posX = 106 + posX;
-	tabs[1].posY = 190 + posY;
+	tabs[1].width = 72;
+	tabs[1].posX = 196 + posX;
+	tabs[1].posY = 242 + posY;
 
 	tabs[2].tabimage.texture.reserve(1);
 	tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
 	tabs[2].height = 32;
-	tabs[2].width = 64;
-	tabs[2].posX = 179 + posX;
-	tabs[2].posY = 190 + posY;
+	tabs[2].width = 59;
+	tabs[2].posX = 340 + posX;
+	tabs[2].posY = 242 + posY;
 
 }
 
@@ -86,11 +86,11 @@ void CharacterInfoScreen::initFonts()
 void CharacterInfoScreen::drawScreen()
 {
 	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-	                                  world_x + posX, width, world_y + posY, height );
+	                                  world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height );
 
-	size_t descriptionTextStart = 20;
-	size_t valueFieldStart = 200;
-	size_t topBorderDistance = 20;
+	size_t descriptionTextStart = 60;
+	size_t valueFieldStart = 280;
+	size_t topBorderDistance = 50;
 	size_t lineDistance = 15;
 
 	int curLine = 0;
@@ -184,8 +184,8 @@ bool CharacterInfoScreen::isOnThisScreen( int x, int y )
 {
     if ( x < posX
 	     || y < posY
-	     || x > posX + textures.texture[0].width
-	     || y > posY + textures.texture[0].height ) {
+	     || x > posX + width
+	     || y > posY + height ) {
 		return false;
 	}
 	return true;
@@ -201,23 +201,23 @@ void CharacterInfoScreen::drawExpBar()
 
     glColor3f( 0.7f, 0.73f, 0.29f );
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                    world_x + posX + 200, 100, world_y + 492, 10 );
+                                    world_x + posX + 280, 100, world_y + 533, 10 );
     glColor3f( 0.9f, 0.93f, 0.29f );
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                    world_x + posX + 200, expBarWidth, world_y + 492, 10 );
+                                    world_x + posX + 280, expBarWidth, world_y + 540, 10 );
     glColor3f( 1.0f, 1.0f, 1.0f );
 }
 
 void CharacterInfoScreen::drawTabs()
 {
     DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
-                                      world_x + tabs[currentTab].posX, 64, world_y + tabs[currentTab].posY, 32 );
+                                      world_x + tabs[currentTab].posX, tabs[currentTab].tabimage.texture[0].width, world_y + tabs[currentTab].posY, tabs[currentTab].tabimage.texture[0].height );
 
 	const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
 
-	size_t descriptionTextStart = 25;
-	size_t valueFieldStart = 250;
-	size_t topBorderDistance = 260;
+	size_t descriptionTextStart = 80;
+	size_t valueFieldStart = 300;
+	size_t topBorderDistance = 285;
 	size_t lineDistance = 15;
 
 	int curLine = 0;
