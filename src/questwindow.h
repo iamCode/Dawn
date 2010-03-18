@@ -40,6 +40,8 @@ class QuestWindow
 		void setVisible( bool visible );
 		bool isVisible() const;
 
+		std::string getReloadScriptText() const;
+
 	private:
 		std::vector< std::string > questNames;
 		/// \brief For each quest the description. Formatted for multiline output.

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Wed Mar  3 21:53:42 2010.
+** Generated automatically by tolua++-1.0.92 on Thu Mar 18 22:59:51 2010.
 */
 
 #ifndef __cplusplus
@@ -3715,6 +3715,33 @@ static int tolua_CLuaInterface_DawnInterface_changeQuestDescription00(lua_State*
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::getQuestSaveText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getQuestSaveText00
+static int tolua_CLuaInterface_DawnInterface_getQuestSaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getQuestSaveText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getQuestSaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::addShop */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addShop00
 static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
@@ -4052,6 +4079,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"addQuest",tolua_CLuaInterface_DawnInterface_addQuest00);
    tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
+   tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

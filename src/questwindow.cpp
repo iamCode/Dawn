@@ -180,6 +180,22 @@ bool QuestWindow::isVisible() const
 	return visible;
 }
 
+std::string QuestWindow::getReloadScriptText() const
+{
+	std::ostringstream oss;
+	for ( size_t curQuestNr=0; curQuestNr<questNames.size(); ++curQuestNr ) {
+		oss << "DawnInterface.addQuest( '" << questNames[ curQuestNr ] << "', '";
+		for ( size_t curQuestDescriptionNr=0; curQuestDescriptionNr<questDescriptions[curQuestNr].size(); ++curQuestDescriptionNr ) {
+			oss << questDescriptions[curQuestNr][curQuestDescriptionNr];
+			if ( curQuestDescriptionNr < questDescriptions[curQuestNr].size() - 1 ) {
+				oss << " ";
+			}
+		}
+		oss << "' );" << std::endl;
+	}
+	return oss.str();
+}
+
 extern std::auto_ptr<QuestWindow> questWindow;
 
 namespace DawnInterface
@@ -197,6 +213,11 @@ namespace DawnInterface
 	void changeQuestDescription( std::string questName, std::string newDescription )
 	{
 		questWindow->changeQuestDescription( questName, newDescription );
+	}
+	
+	std::string getQuestSaveText()
+	{
+		return questWindow->getReloadScriptText();
 	}
 }
 
