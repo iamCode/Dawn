@@ -22,6 +22,13 @@
 #include "GLFT_Font.h"
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
+#include "CLuaFunctions.h"
+#include "questwindow.h"
+#include "interactionpoint.h"
+#include <memory>
+
+extern std::vector<InteractionPoint*> allInteractionPoints;
+extern std::auto_ptr<QuestWindow> questWindow;
 
 namespace dawn_configuration
 {
@@ -87,7 +94,7 @@ void OptionsWindow::draw()
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 1 ) {
-		glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
 	font->drawText( textX, textY, "Load Game" );
 	if ( selectedEntry == 1 ) {
@@ -95,7 +102,7 @@ void OptionsWindow::draw()
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 2 ) {
-		glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
 	font->drawText( textX, textY, "Save Game" );
 	if ( selectedEntry == 2 ) {
@@ -141,6 +148,18 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 
 	if ( selectedEntry == 0 ) {
 		setQuitGame();
+	} else if ( selectedEntry == 1 ) {
+		// clear all interaction points and quests
+		// TODO: check for deletion of interaction points
+		allInteractionPoints.clear();
+		questWindow->removeAllQuests();
+		// Load Game
+		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
+		// reenter map
+		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
+	} else if ( selectedEntry == 2 ) {
+		// Save Game
+		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 	} else if ( selectedEntry == 3 ) {
 		setVisible( false );
 	}

@@ -126,6 +126,13 @@ void QuestWindow::removeQuest( std::string name )
 	}
 }
 
+void QuestWindow::removeAllQuests()
+{
+	questNames.clear();
+	questDescriptions.clear();
+	selectedQuestNr = -1;
+}
+
 void QuestWindow::changeQuestDescription( std::string name, std::string newDescription )
 {
 	size_t foundQuestNr = 0;

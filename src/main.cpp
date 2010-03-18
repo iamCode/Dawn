@@ -585,6 +585,9 @@ public:
 
 		dawn_debug_info("Character completed");
 
+		progressString = "Initializing load/save functions";
+		progress = 0.92;
+		LuaFunctions::executeLuaFile("data/loadsave.lua");
 		progressString = "Loading Game Init Data";
 		progress = 0.95;
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
