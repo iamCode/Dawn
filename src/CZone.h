@@ -87,6 +87,11 @@ struct sShadowMap {
 	};
 };
 
+// TODO:
+// Make the CZone a real map
+// * Zone is the only point used to look for information (ok some pointers may be set by setCurrentZone)
+// * Add enterZone LUA-Interface which loads a zone if it is not loaded, yet and enters that zone at a certain position
+//   But it returns by just setting the current zone it does not call a new interface
 class CZone
 {
 	private:

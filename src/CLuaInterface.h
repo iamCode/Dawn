@@ -22,13 +22,10 @@
 #include "CNPC.h"
 #include "shop.h"
 
-class CZone;
-
 namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID );
-	CZone* getCurrentZone();
-	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 	void removeMobSpawnPoint( CNPC *spawnPointToRemove );
 	LuaCallIndirection* createEventHandler();
 	Item* createNewItem(std::string name,

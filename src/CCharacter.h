@@ -28,7 +28,7 @@
 #include <math.h>
 
 extern int RES_X,RES_Y,world_x,world_y;
-extern CZone zone1;
+extern CZone *curZone;
 
 class CSpellActionBase;
 class CSpell;
@@ -322,8 +322,6 @@ class CCharacter
 		int x_spawn_pos, y_spawn_pos;
 		int NPC_id;
 		int seconds_to_respawn;
-
-		CZone *zone;
 
 	protected:
 		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;

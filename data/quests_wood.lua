@@ -1,4 +1,4 @@
-trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0, zone );
+trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0 );
 trader:setAttitude( Attitude.FRIENDLY );
 traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
 traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );
@@ -55,7 +55,7 @@ end
 function initializeWolfStatus()
 	if ( quest_playHideAndSeek.monsterSpawnPoint == nil and quest_playHideAndSeek.status == 1 )
 	then
-		quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 1750, 650, 1, 0, zone );
+		quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 1750, 650, 1, 0 );
 		onDieEventHandler = DawnInterface.createEventHandler();
 		onDieEventHandler:setExecuteText( "onKilledQuestMonster()" );
 		quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );

@@ -22,7 +22,7 @@
 
 extern Player character;
 
-CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
+CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn ) {
 	Init( x_spawn_pos, y_spawn_pos );
 	alive = true;
 	current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
@@ -48,14 +48,13 @@ CNPC::~CNPC()
 	onDieEventHandlers.clear();
 }
 
-void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
+void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn ) {
 	x_pos = _x_spawn_pos;
 	y_pos = _y_spawn_pos;
 	x_spawn_pos = _x_spawn_pos;
 	y_spawn_pos = _y_spawn_pos;
 	do_respawn = _do_respawn;
 	seconds_to_respawn = _seconds_to_respawn;
-	zone = _zone;
 }
 
 Direction CNPC::GetDirection()

@@ -44,7 +44,7 @@ namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID )
 	{
-		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0, NULL);
+		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0);
 		newMobType->lifebar = NULL;
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
@@ -782,9 +782,9 @@ bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
 	int character_l = x_pos, character_r = x_pos + getWidth(), character_b = y_pos, character_t = y_pos + getHeight();
-	for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
-		int other_l = zone1.CollisionMap[t].CR.x, other_r = zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w;
-		int other_b = zone1.CollisionMap[t].CR.y, other_t = zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h;
+	for (unsigned int t=0;t<curZone->CollisionMap.size();t++) {
+		int other_l = curZone->CollisionMap[t].CR.x, other_r = curZone->CollisionMap[t].CR.x+curZone->CollisionMap[t].CR.w;
+		int other_b = curZone->CollisionMap[t].CR.y, other_t = curZone->CollisionMap[t].CR.y+curZone->CollisionMap[t].CR.h;
 		if ( hasIntersection( other_l, other_r, other_b, other_t,
 		                      character_l, character_r, character_b, character_t )) {
 			return 1;

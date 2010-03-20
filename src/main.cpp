@@ -55,7 +55,7 @@ int RES_X = dawn_configuration::screenWidth;
 int RES_Y = dawn_configuration::screenHeight;
 
 SDL_Surface *screen;
-extern CZone zone1;
+extern CZone *curZone;
 extern CMessage message;
 Player character;
 cameraFocusHandler focus(dawn_configuration::screenWidth, dawn_configuration::screenHeight);
@@ -156,17 +156,12 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 
 namespace DawnInterface
 {
-	CZone* getCurrentZone()
+	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn )
 	{
-		return &zone1;
-	}
-
-	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
-	{
-		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
+		CNPC *newMob = new CNPC(0, 0, 0, 0, 0);
 		newMob->lifebar = NULL;
 		newMob->baseOnType( mobID );
-		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
+		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );
 		NPC.push_back( newMob );
 		return newMob;
@@ -215,7 +210,7 @@ void DrawScene()
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
-	zone1.DrawZone();
+	curZone->DrawZone();
 
 	// draw items on the ground
     groundLoot->draw();
@@ -511,7 +506,8 @@ public:
 
 		progressString = "Loading Character Data";
 		progress = 0.7;
-		zone1.LoadZone("data/zone1");
+		curZone = new CZone();
+		curZone->LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
@@ -918,7 +914,7 @@ void game_loop()
 			}
 
 			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-				Editor.setEditZone( &zone1 );
+				Editor.setEditZone( curZone );
 				Editor.setEnabled( true );
 				Editor.KP_toggle_editor = true;
 			}

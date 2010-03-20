@@ -64,5 +64,5 @@
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
-CZone zone1;
+CZone *curZone;
 CMessage message;

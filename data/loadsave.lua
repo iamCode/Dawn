@@ -50,6 +50,7 @@ function saveGame( fileprefix )
 			printValue(nil,varname,value)
 		end
 	end
+	io.write( DawnInterface.getQuestSaveText() );
 	-- map = LuaInterface.getCurrentMap()
 	-- io.write( 'LuaInterface.enterMap( "',map:getFileName(),'", 3, 3 )' )
 
