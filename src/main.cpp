@@ -109,7 +109,6 @@ CEditor Editor;
 
 CInterface GUI;
 
-extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
@@ -249,8 +248,9 @@ void DrawScene()
 			fpsFont->drawText(curNPC->x_pos, curNPC->y_pos+curNPC->getHeight() + 12, "%s, Health: %d",curNPC->getName().c_str(),curNPC->getCurrentHealth());
 	}
 
-	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
 			curInteraction->drawInteractionSymbol(mouseX, mouseY);
@@ -846,8 +846,9 @@ void game_loop()
 
 								// search for new target
 								bool foundSomething = false;
-								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+								std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+								for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
 										foundSomething = true;
 										curInteraction->startInteraction();

@@ -20,6 +20,7 @@
 
 #include "CLuaFunctions.h"
 #include "CNPC.h"
+#include "interactionpoint.h"
 
 void CZone::DrawZone()
 {
@@ -324,6 +325,11 @@ int CZone::DeleteCollisionbox(int x, int y)
 	return -1;
 }
 
+std::vector<CNPC*> CZone::getNPCs()
+{
+	return npcs;
+}
+
 void CZone::addNPC( CNPC *npcToAdd )
 {
 	npcs.push_back( npcToAdd );
@@ -355,8 +361,37 @@ void CZone::cleanupNPCList()
 	}
 }
 
-std::vector<CNPC*> CZone::getNPCs()
+std::vector<InteractionPoint*> CZone::getInteractionPoints()
 {
-	return npcs;
+	return interactionPoints;
 }
 
+void CZone::addInteractionPoint( InteractionPoint *interactionPointToAdd )
+{
+	interactionPoints.push_back( interactionPointToAdd );
+}
+
+void CZone::cleanupInteractionList()
+{
+	size_t curInteractionNr = 0;
+	while ( curInteractionNr < interactionPoints.size() ) {
+		InteractionPoint *curInteraction = interactionPoints[ curInteractionNr ];
+		if ( curInteraction->isMarkedDeletable() ) {
+			// return from list
+			interactionPoints[ curInteractionNr ] = interactionPoints[ interactionPoints.size() - 1 ];
+			interactionPoints.resize( interactionPoints.size() - 1 );
+			delete curInteraction;
+		} else {
+			++curInteractionNr;
+		}
+	}
+}
+
+void CZone::purgeInteractionList()
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = interactionPoints[ curInteractionNr ];
+		delete curInteraction;
+	}
+	interactionPoints.resize(0);
+}

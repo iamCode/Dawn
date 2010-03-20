@@ -25,10 +25,11 @@
 #include "CLuaFunctions.h"
 #include "questwindow.h"
 #include "interactionpoint.h"
+#include "CZone.h"
 #include <memory>
 
-extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::auto_ptr<QuestWindow> questWindow;
+extern CZone* curZone;
 
 namespace dawn_configuration
 {
@@ -151,7 +152,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	} else if ( selectedEntry == 1 ) {
 		// clear all interaction points and quests
 		// TODO: check for deletion of interaction points
-		allInteractionPoints.clear();
+		curZone->purgeInteractionList();
 		questWindow->removeAllQuests();
 		// Load Game
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );

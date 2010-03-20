@@ -28,6 +28,7 @@
 #include "CDrawingHelpers.h"
 
 class CNPC;
+class InteractionPoint;
 
 struct sTileMap {
 	int x_pos, y_pos, id;
@@ -102,6 +103,7 @@ class CZone
 		void DrawShadows();
 		
 		std::vector <CNPC*> npcs;
+		std::vector<InteractionPoint*> interactionPoints;
 
 
 	public:
@@ -128,9 +130,15 @@ class CZone
 
 		void DeleteTile(int iId);
 		
+		std::vector<CNPC*> getNPCs();
 		void addNPC( CNPC *npcToAdd );
 		void removeNPC( CNPC *npcToDelete );
 		void cleanupNPCList();
+		
+		std::vector<InteractionPoint*> getInteractionPoints();
+		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
+		void cleanupInteractionList();
+		void purgeInteractionList();
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
@@ -138,8 +146,6 @@ class CZone
 		std::vector<sEnvironmentMap> ShadowMap;
 		std::vector<sCollisionMap> CollisionMap;
 		
-		std::vector<CNPC*> getNPCs();
-
 		CTexture ZoneTiles;
 		CTexture ZoneEnvironment;
 		CTexture ZoneShadow;

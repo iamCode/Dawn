@@ -22,10 +22,11 @@
 #include "CDrawingHelpers.h"
 #include "CLuaFunctions.h"
 #include "CCharacter.h"
+#include "CZone.h"
 
 #include <cassert>
 
-std::vector<InteractionPoint*> allInteractionPoints;
+extern CZone *curZone;
 
 InteractionPoint::InteractionPoint()
 	: interactionTexture( NULL ),
@@ -173,14 +174,14 @@ namespace DawnInterface
 	InteractionPoint* addInteractionPoint()
 	{
 		InteractionPoint *newInteractionPoint = new InteractionPoint();
-		allInteractionPoints.push_back( newInteractionPoint );
+		curZone->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character )
 	{
 		InteractionPoint *newInteractionPoint = new CharacterInteractionPoint( character );
-		allInteractionPoints.push_back( newInteractionPoint );
+		curZone->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
@@ -194,26 +195,6 @@ namespace InteractionControl
 {
 	void cleanupInteractionList()
 	{
-		size_t curInteractionNr = 0;
-		while ( curInteractionNr < allInteractionPoints.size() ) {
-			InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-			if ( curInteraction->isMarkedDeletable() ) {
-				// return from list
-				allInteractionPoints[ curInteractionNr ] = allInteractionPoints[ allInteractionPoints.size() - 1 ];
-				allInteractionPoints.resize( allInteractionPoints.size() - 1 );
-				delete curInteraction;
-			} else {
-				++curInteractionNr;
-			}
-		}
-	}
-
-	void purgeInteractionList()
-	{
-		for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-			InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-			delete curInteraction;
-		}
-		allInteractionPoints.resize(0);
+		curZone->cleanupInteractionList();
 	}
 }
