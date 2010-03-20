@@ -19,6 +19,7 @@
 #include "CZone.h"
 
 #include "CLuaFunctions.h"
+#include "CNPC.h"
 
 void CZone::DrawZone()
 {
@@ -322,3 +323,40 @@ int CZone::DeleteCollisionbox(int x, int y)
 	}
 	return -1;
 }
+
+void CZone::addNPC( CNPC *npcToAdd )
+{
+	npcs.push_back( npcToAdd );
+}
+
+void CZone::removeNPC( CNPC *npcToDelete )
+{
+		for ( size_t curNPCNr=0; curNPCNr<npcs.size(); ++curNPCNr ) {
+			CNPC *curNPC = npcs[ curNPCNr ];
+			if ( curNPC == npcToDelete ) {
+				curNPC->markAsDeleted();
+				break;
+			}
+		}
+}
+
+void CZone::cleanupNPCList()
+{
+	size_t curNPCNr = 0;
+	while ( curNPCNr < npcs.size() ) {
+		CNPC *curNPC = npcs[ curNPCNr ];
+		if ( curNPC->isMarkedAsDeletable() ) {
+			npcs.erase( npcs.begin() + curNPCNr );
+			// TODO: delete curNPC. There seem to be some problems at the moment.
+			//delete curNPC;
+		} else {
+			++curNPCNr;
+		}
+	}
+}
+
+std::vector<CNPC*> CZone::getNPCs()
+{
+	return npcs;
+}
+

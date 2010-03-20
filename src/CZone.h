@@ -27,6 +27,8 @@
 #include <fstream>
 #include "CDrawingHelpers.h"
 
+class CNPC;
+
 struct sTileMap {
 	int x_pos, y_pos, id;
 	sTileMap(int _x, int _y, int _tex_id) {
@@ -98,6 +100,8 @@ class CZone
 		void DrawTiles();
 		void DrawEnvironment();
 		void DrawShadows();
+		
+		std::vector <CNPC*> npcs;
 
 
 	public:
@@ -123,12 +127,18 @@ class CZone
 		int DeleteCollisionbox(int x, int y);
 
 		void DeleteTile(int iId);
+		
+		void addNPC( CNPC *npcToAdd );
+		void removeNPC( CNPC *npcToDelete );
+		void cleanupNPCList();
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;
 		std::vector<sCollisionMap> CollisionMap;
+		
+		std::vector<CNPC*> getNPCs();
 
 		CTexture ZoneTiles;
 		CTexture ZoneEnvironment;

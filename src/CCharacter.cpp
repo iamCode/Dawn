@@ -794,9 +794,10 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 	}
 
 	// check for collision with other characters
-	for ( size_t curNPCNr=0; curNPCNr < NPC.size(); ++curNPCNr )
+	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+	for ( size_t curNPCNr=0; curNPCNr < zoneNPCs.size(); ++curNPCNr )
 	{
-		CCharacter *curNPC = NPC[ curNPCNr ];
+		CCharacter *curNPC = zoneNPCs[ curNPCNr ];
 		if ( curNPC == this || ! curNPC->isAlive() )
 			continue;
 

@@ -109,7 +109,6 @@ CEditor Editor;
 
 CInterface GUI;
 
-std::vector <CNPC*> NPC;
 extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
@@ -206,34 +205,13 @@ namespace DawnInterface
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );
-		NPC.push_back( newMob );
+		curZone->addNPC( newMob );
 		return newMob;
 	}
 
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
 	{
-		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
-			CNPC *curNPC = NPC[ curSpawnPointNr ];
-			if ( curNPC == mobSpawnPoint ) {
-				curNPC->markAsDeleted();
-				break;
-			}
-		}
-	}
-}
-
-void cleanupSpawnPointList()
-{
-	size_t curSpawnPointNr = 0;
-	while ( curSpawnPointNr < NPC.size() ) {
-		CNPC *curNPC = NPC[ curSpawnPointNr ];
-		if ( curNPC->isMarkedAsDeletable() ) {
-			NPC.erase( NPC.begin() + curSpawnPointNr );
-			// TODO: delete curNPC. There seem to be some problems at the moment.
-			//delete curNPC;
-		} else {
-			++curSpawnPointNr;
-		}
+		curZone->removeNPC( mobSpawnPoint );
 	}
 }
 
@@ -263,10 +241,12 @@ void DrawScene()
 	// draw tooltips if we're holding left ALT key.
 	groundLoot->drawTooltip();
 
-	for (unsigned int x=0; x<NPC.size(); x++) {
-		NPC[x]->Draw();
-		if ( character.getTarget() == NPC[x] )
-			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+	for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+		CNPC *curNPC = zoneNPCs[x];
+		curNPC->Draw();
+		if ( character.getTarget() == curNPC )
+			fpsFont->drawText(curNPC->x_pos, curNPC->y_pos+curNPC->getHeight() + 12, "%s, Health: %d",curNPC->getName().c_str(),curNPC->getCurrentHealth());
 	}
 
 	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
@@ -875,10 +855,12 @@ void game_loop()
 									}
 								}
 
-								for (unsigned int x=0; x<NPC.size(); x++) {
-									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-										if ( ! NPC[x]->getAttitude() == Attitude::FRIENDLY ) {
-											character.setTarget( NPC[x] );
+								std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+								for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+									CNPC *curNPC = zoneNPCs[x];
+									if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+										if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+											character.setTarget( curNPC );
 											foundSomething = true;
 											break;
 										}
@@ -917,13 +899,15 @@ void game_loop()
 			character.regenerateLifeMana( ticksDiff );
 
 
-			for (unsigned int x=0; x<NPC.size(); x++) {
-				if ( NPC[x]->isAlive() ) {
-                    NPC[x]->giveMovePoints( ticksDiff );
-					NPC[x]->Move();
+			std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+				CNPC *curNPC = zoneNPCs[x];
+				if ( curNPC->isAlive() ) {
+                    curNPC->giveMovePoints( ticksDiff );
+					curNPC->Move();
 				}
-				NPC[x]->Respawn();
-				NPC[x]->Wander();
+				curNPC->Respawn();
+				curNPC->Wander();
 			}
 
 			// making sure our target is still alive, if not well set our target to NULL.
@@ -937,11 +921,12 @@ void game_loop()
 			}
 
 			cleanupActiveSpellActions();
-			cleanupSpawnPointList();
+			curZone->cleanupNPCList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-				for (unsigned int x=0; x<NPC.size(); x++) {
-					NPC[x]->Die();
+				std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+				for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+					zoneNPCs[x]->Die();
 				}
 			}
 
@@ -971,12 +956,14 @@ void game_loop()
 				bool FoundNewTarget = false;
 				std::vector <CNPC*> NPClist;
 				// select next npc on screen
-				for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC ) {
+				std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+				for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
 					// if NPC is in on screen (might be changed to line of sight or something)
 					// this makes a list of all visible NPCs, easier to select next target this way.
-					if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
-					        && NPC[curNPC]->isAlive() ) {
-						NPClist.push_back(NPC[curNPC]);
+					CNPC *curNPC = zoneNPCs[curNPCNr];
+					if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
+					        && curNPC->isAlive() ) {
+						NPClist.push_back(curNPC);
 					}
 				}
 				// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
