@@ -21,6 +21,8 @@
 #include "Player.h"
 #include "item.h"
 #include "shop.h"
+#include "CDrawingHelpers.h"
+#include <algorithm>
 
 class Player;
 

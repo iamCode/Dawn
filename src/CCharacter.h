@@ -20,21 +20,23 @@
 #define __CCHARACTER_H__
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
-#include "CTexture.h"
-#include "CZone.h"
-#include "CDirection.h"
-#include "inventory.h"
 #include <SDL/SDL.h> // SDL
 #include <math.h>
+#include <string>
+#include <vector>
+
+#include "CDirection.h"
+#include "elements.h"
 
 extern int RES_X,RES_Y,world_x,world_y;
-extern CZone *curZone;
 
 class CSpellActionBase;
+class GeneralBuffSpell;
 class CSpell;
 class CAction;
 class CInterface;
-
+class CTexture;
+class Item;
 
 namespace ActivityType
 {

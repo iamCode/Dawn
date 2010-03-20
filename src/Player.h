@@ -20,6 +20,7 @@
 #define __PLAYER_H__
 
 #include "CCharacter.h"
+#include "inventory.h"
 
 class Player : public CCharacter
 {

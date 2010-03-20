@@ -24,6 +24,7 @@
 #include "CCharacter.h"
 #include "CTexture.h"
 #include "StatsSystem.h"
+#include "CDrawingHelpers.h"
 
 #include <cassert>
 

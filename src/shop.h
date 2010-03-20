@@ -21,8 +21,11 @@
 
 #include <stdint.h>
 #include <string>
-#include "CNPC.h"
 #include "CharacterInfoScreen.h"
+
+class InventoryItem;
+class Item;
+class CNPC;
 
 namespace currency
 {

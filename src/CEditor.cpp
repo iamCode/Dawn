@@ -17,10 +17,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CEditor.h"
+#include "CZone.h"
 #include "GLFT_Font.h"
 
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
+
+extern CMessage message;
 
 void CEditor::initFonts()
 {

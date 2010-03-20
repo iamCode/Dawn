@@ -19,6 +19,7 @@
 #include "StatsSystem.h"
 
 #include "CCharacter.h"
+#include "debug.h"
 
 #include <memory>
 #include <limits>

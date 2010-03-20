@@ -21,6 +21,7 @@
 #include "Player.h"
 #include <cassert>
 #include <memory>
+#include "CDrawingHelpers.h"
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_)
 	:	currentTab( 0 ),

@@ -24,6 +24,7 @@
 #include "GroundLoot.h"
 #include "CAction.h"
 #include "StatsSystem.h"
+#include "CZone.h"
 
 #include "CNPC.h"
 #include "Player.h"
@@ -38,6 +39,7 @@ void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
 extern std::auto_ptr<GroundLoot> groundLoot;
+extern CZone *curZone;
 
 // Dawn LUA Interface
 namespace DawnInterface

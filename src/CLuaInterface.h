@@ -21,6 +21,7 @@
 #include "textwindow.h"
 #include "CNPC.h"
 #include "shop.h"
+#include "item.h"
 
 namespace DawnInterface
 {

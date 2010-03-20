@@ -16,10 +16,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "threadObject/Thread.h"
-
 #include "main.h"
 
+#include "threadObject/Thread.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <memory>
+#include <csignal>
+
+#ifdef _WIN32
+#include <windows.h> // Nothing uses this, perhaps it could be removed?
+#endif
+
+#include "GLee/GLee.h" // OpenGL Easy Extention Library
+
+#include <SDL/SDL.h> // SDL
+#include <SDL/SDL_opengl.h> // SDL OpenGL
+#include <SDL/SDL_image.h> // SDL Image library (image formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV)
+#include <SDL/SDL_getenv.h>
+
+#include <GL/gl.h> // OpenGL
+#include <GL/glu.h> // OpenGL Utility Library. This will have to be changed in updated versions, as it changes for different OS's
+
+#include "GLFT_Font.h"
+#include "pnglite/pnglite.h"
+
+#include "CTexture.h"
+#include "CZone.h"
+#include "CInterface.h"
+#include "CCharacter.h"
+#include "CEditor.h"
+#include "CMessage.h"
+#include "InventoryScreen.h"
+#include "cameraFocusHandler.h"
+#include "utils.h"
+#include "tooltip.h"
+#include "ActionBar.h"
+#include "Spellbook.h"
+#include "BuffWindow.h"
+#include "shop.h"
+#include "GroundLoot.h"
 #include "CLuaFunctions.h"
 #include "CSpell.h"
 #include "CAction.h"
@@ -30,10 +70,11 @@
 #include "textwindow.h"
 #include "questwindow.h"
 #include "optionswindow.h"
-#include <memory>
-#include <signal.h>
-#include <SDL/SDL_getenv.h>
 #include "loadingscreen.h"
+
+#ifdef _WIN32
+#define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
+#endif
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -54,9 +95,13 @@ namespace dawn_configuration {
 int RES_X = dawn_configuration::screenWidth;
 int RES_Y = dawn_configuration::screenHeight;
 
+int world_x = 0, world_y = 0;
+int mouseX, mouseY;
+int done = 0;
+CZone *curZone;
+CMessage message;
+
 SDL_Surface *screen;
-extern CZone *curZone;
-extern CMessage message;
 Player character;
 cameraFocusHandler focus(dawn_configuration::screenWidth, dawn_configuration::screenHeight);
 
@@ -76,8 +121,6 @@ bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
 bool KP_toggle_showShop = false;
-
-extern int world_x, world_y, mouseX, mouseY;
 
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff

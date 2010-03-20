@@ -19,14 +19,15 @@
 #ifndef __C_EDITOR_
 #define __C_EDITOR_
 
-#include "CZone.h"
-#include "CMessage.h"
 #include "CTexture.h"
+#include "CMessage.h"
 #include <stdio.h>
 #include <iostream>
 
+class CZone;
+class sEnvironmentMap;
+
 extern int world_x, world_y, mouseX, mouseY, RES_X, RES_Y, done;
-extern CMessage message;
 
 class CEditor
 {
