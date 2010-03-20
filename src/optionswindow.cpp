@@ -155,6 +155,9 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		curZone->purgeInteractionList();
 		questWindow->removeAllQuests();
 		// Load Game
+		delete curZone;
+		curZone = new CZone();
+		curZone->LoadZone("data/zone1");
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
 		// reenter map
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );

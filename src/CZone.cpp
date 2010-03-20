@@ -22,6 +22,13 @@
 #include "CNPC.h"
 #include "interactionpoint.h"
 
+extern Player character;
+
+CZone::CZone()
+	: groundLoot( &character )
+{
+}
+
 void CZone::DrawZone()
 {
 	DrawTiles(); // draw the tiles (ground) first.
@@ -395,3 +402,9 @@ void CZone::purgeInteractionList()
 	}
 	interactionPoints.resize(0);
 }
+
+GroundLoot* CZone::getGroundLoot()
+{
+	return &groundLoot;
+}
+

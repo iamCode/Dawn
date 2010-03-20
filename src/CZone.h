@@ -26,6 +26,7 @@
 #include <iostream>
 #include <fstream>
 #include "CDrawingHelpers.h"
+#include "GroundLoot.h"
 
 class CNPC;
 class InteractionPoint;
@@ -104,9 +105,12 @@ class CZone
 		
 		std::vector <CNPC*> npcs;
 		std::vector<InteractionPoint*> interactionPoints;
+		GroundLoot groundLoot;
 
 
 	public:
+		CZone();
+
 		void DrawZone();
 
 		void LoadZone(std::string file);
@@ -139,6 +143,8 @@ class CZone
 		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
 		void cleanupInteractionList();
 		void purgeInteractionList();
+		
+		GroundLoot* getGroundLoot();
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;

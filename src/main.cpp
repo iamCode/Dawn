@@ -132,7 +132,6 @@ std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
-std::auto_ptr<GroundLoot> groundLoot;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
@@ -233,12 +232,12 @@ void DrawScene()
 	curZone->DrawZone();
 
 	// draw items on the ground
-    groundLoot->draw();
+    curZone->getGroundLoot()->draw();
 
 	character.Draw();
 
 	// draw tooltips if we're holding left ALT key.
-	groundLoot->drawTooltip();
+	curZone->getGroundLoot()->drawTooltip();
 
 	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
 	for (unsigned int x=0; x<zoneNPCs.size(); x++) {
@@ -511,9 +510,6 @@ public:
 
 		/// testing the shop, should not be initialized like this!!!
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
-
-        /// setting up groundlooting system. Should we have a progress value here?
-        groundLoot = std::auto_ptr<GroundLoot>( new GroundLoot( &character ) );
 
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";
@@ -833,11 +829,11 @@ void game_loop()
 						switch (event.button.button) {
 							case 1:
 
-                                groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
+                                curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
 
                                 if ( inventoryScreen->isVisible() )
                                 {
-                                    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                    InventoryItem *floatingSelection = curZone->getGroundLoot()->getFloatingSelection( world_x + mouseX, world_y + mouseY );
                                     if ( floatingSelection != NULL )
                                     {
                                         inventoryScreen->setFloatingSelection( floatingSelection );
@@ -991,12 +987,12 @@ void game_loop()
 
 			if (keys[SDLK_LALT])
 			{
-			    groundLoot->enableTooltips();
+			    curZone->getGroundLoot()->enableTooltips();
 			}
 
 			if (!keys[SDLK_LALT])
 			{
-			    groundLoot->disableTooltips();
+			    curZone->getGroundLoot()->disableTooltips();
 			}
 
 			if (!keys[SDLK_TAB]) {

@@ -38,7 +38,6 @@
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
-extern std::auto_ptr<GroundLoot> groundLoot;
 extern CZone *curZone;
 
 // Dawn LUA Interface
@@ -1213,14 +1212,14 @@ void CCharacter::dropItems()
         double dropChance = (double)rand()/(double)RAND_MAX;
         if ( dropChance <= lootTable[tableID].dropChance )
         {
-            groundLoot->addItem( getXPos(), getYPos(), lootTable[tableID].item );
+            curZone->getGroundLoot()->addItem( getXPos(), getYPos(), lootTable[tableID].item );
         }
     }
 
     {
     	double dropChance = (double)rand()/(double)RAND_MAX;
     	if ( dropChance <= coinDropChance ) {
-    		groundLoot->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
+    		curZone->getGroundLoot()->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
     	}
     }
 }
