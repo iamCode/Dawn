@@ -21,6 +21,7 @@
 #include "GroundLoot.h"
 #include "StatsSystem.h"
 #include "CZone.h"
+#include "globals.h"
 
 #include <limits>
 #include <cassert>
@@ -29,7 +30,6 @@
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
-extern CZone *curZone;
 extern Player character;
 
 namespace DawnInterface
@@ -40,7 +40,7 @@ namespace DawnInterface
 		bool wasInserted = playerInventory->insertItem( item );
 		if ( ! wasInserted )
 		{
-			curZone->getGroundLoot()->addItem( character.getXPos(), character.getYPos(), item );
+			Globals::getCurrentZone()->getGroundLoot()->addItem( character.getXPos(), character.getYPos(), item );
 		}
 	}
 }

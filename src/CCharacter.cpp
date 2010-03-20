@@ -28,6 +28,7 @@
 
 #include "CNPC.h"
 #include "Player.h"
+#include "globals.h"
 
 #include <map>
 #include <string>
@@ -38,7 +39,6 @@
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
-extern CZone *curZone;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -782,6 +782,8 @@ bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r
 
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
+	CZone *curZone = Globals::getCurrentZone();
+
 	int character_l = x_pos, character_r = x_pos + getWidth(), character_b = y_pos, character_t = y_pos + getHeight();
 	for (unsigned int t=0;t<curZone->CollisionMap.size();t++) {
 		int other_l = curZone->CollisionMap[t].CR.x, other_r = curZone->CollisionMap[t].CR.x+curZone->CollisionMap[t].CR.w;
@@ -1207,6 +1209,8 @@ extern size_t randomSizeT( size_t min, size_t max );
 void CCharacter::dropItems()
 {
     // iterate through the loot table and see if we should drop any items.
+    CZone *curZone = Globals::getCurrentZone();
+    
     for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
     {
         double dropChance = (double)rand()/(double)RAND_MAX;

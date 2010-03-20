@@ -71,6 +71,7 @@
 #include "questwindow.h"
 #include "optionswindow.h"
 #include "loadingscreen.h"
+#include "globals.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -98,7 +99,6 @@ int RES_Y = dawn_configuration::screenHeight;
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
-CZone *curZone;
 CMessage message;
 
 SDL_Surface *screen;
@@ -203,13 +203,13 @@ namespace DawnInterface
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );
-		curZone->addNPC( newMob );
+		Globals::getCurrentZone()->addNPC( newMob );
 		return newMob;
 	}
 
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
 	{
-		curZone->removeNPC( mobSpawnPoint );
+		Globals::getCurrentZone()->removeNPC( mobSpawnPoint );
 	}
 }
 
@@ -228,6 +228,8 @@ void DrawScene()
 	world_y = focus.getY();
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
+
+	CZone *curZone = Globals::getCurrentZone();
 
 	curZone->DrawZone();
 
@@ -525,8 +527,9 @@ public:
 
 		progressString = "Loading Character Data";
 		progress = 0.7;
-		curZone = new CZone();
-		curZone->LoadZone("data/zone1");
+		CZone *newZone = new CZone();
+		Globals::setCurrentZone( newZone );
+		newZone->LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
@@ -828,7 +831,7 @@ void game_loop()
 					} else {
 						switch (event.button.button) {
 							case 1:
-
+								CZone *curZone = Globals::getCurrentZone();
                                 curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
 
                                 if ( inventoryScreen->isVisible() )
@@ -896,7 +899,7 @@ void game_loop()
 			character.regenerateLifeMana( ticksDiff );
 
 
-			std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 				CNPC *curNPC = zoneNPCs[x];
 				if ( curNPC->isAlive() ) {
@@ -918,10 +921,10 @@ void game_loop()
 			}
 
 			cleanupActiveSpellActions();
-			curZone->cleanupNPCList();
+			Globals::getCurrentZone()->cleanupNPCList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-				std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 				for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 					zoneNPCs[x]->Die();
 				}
@@ -939,7 +942,7 @@ void game_loop()
 			}
 
 			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-				Editor.setEditZone( curZone );
+				Editor.setEditZone( Globals::getCurrentZone() );
 				Editor.setEnabled( true );
 				Editor.KP_toggle_editor = true;
 			}
@@ -953,7 +956,7 @@ void game_loop()
 				bool FoundNewTarget = false;
 				std::vector <CNPC*> NPClist;
 				// select next npc on screen
-				std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 				for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
 					// if NPC is in on screen (might be changed to line of sight or something)
 					// this makes a list of all visible NPCs, easier to select next target this way.
@@ -987,12 +990,12 @@ void game_loop()
 
 			if (keys[SDLK_LALT])
 			{
-			    curZone->getGroundLoot()->enableTooltips();
+			    Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
 			}
 
 			if (!keys[SDLK_LALT])
 			{
-			    curZone->getGroundLoot()->disableTooltips();
+			    Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
 			}
 
 			if (!keys[SDLK_TAB]) {

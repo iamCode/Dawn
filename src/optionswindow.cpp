@@ -26,10 +26,10 @@
 #include "questwindow.h"
 #include "interactionpoint.h"
 #include "CZone.h"
+#include "globals.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
-extern CZone* curZone;
 
 namespace dawn_configuration
 {
@@ -152,12 +152,14 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	} else if ( selectedEntry == 1 ) {
 		// clear all interaction points and quests
 		// TODO: check for deletion of interaction points
-		curZone->purgeInteractionList();
+		Globals::getCurrentZone()->purgeInteractionList();
 		questWindow->removeAllQuests();
 		// Load Game
-		delete curZone;
-		curZone = new CZone();
-		curZone->LoadZone("data/zone1");
+		// TODO: We need to remove the old zone somehow (but what to do with monsters, items, etc)
+		CZone *newZone = new CZone();
+		Globals::setCurrentZone( newZone );
+		newZone->LoadZone("data/zone1");
+		
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
 		// reenter map
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );

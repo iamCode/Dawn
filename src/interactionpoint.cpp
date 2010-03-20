@@ -23,10 +23,9 @@
 #include "CLuaFunctions.h"
 #include "CCharacter.h"
 #include "CZone.h"
+#include "globals.h"
 
 #include <cassert>
-
-extern CZone *curZone;
 
 InteractionPoint::InteractionPoint()
 	: interactionTexture( NULL ),
@@ -174,14 +173,14 @@ namespace DawnInterface
 	InteractionPoint* addInteractionPoint()
 	{
 		InteractionPoint *newInteractionPoint = new InteractionPoint();
-		curZone->addInteractionPoint( newInteractionPoint );
+		Globals::getCurrentZone()->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character )
 	{
 		InteractionPoint *newInteractionPoint = new CharacterInteractionPoint( character );
-		curZone->addInteractionPoint( newInteractionPoint );
+		Globals::getCurrentZone()->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
@@ -195,6 +194,6 @@ namespace InteractionControl
 {
 	void cleanupInteractionList()
 	{
-		curZone->cleanupInteractionList();
+		Globals::getCurrentZone()->cleanupInteractionList();
 	}
 }
