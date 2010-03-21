@@ -114,6 +114,11 @@ Inventory* Player::getInventory()
 	return &inventory;
 }
 
+void Player::clearInventory()
+{
+	inventory.clear();
+}
+
 void Player::setTarget(CCharacter *newTarget)
 {
 	Target = newTarget;

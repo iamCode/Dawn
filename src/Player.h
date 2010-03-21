@@ -63,6 +63,7 @@ class Player : public CCharacter
 		uint16_t getModifiedMaxDamage() const;
 
 		Inventory* getInventory();
+		void clearInventory();
 };
 
 #endif // __PLAYER_H__

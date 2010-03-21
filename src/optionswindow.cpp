@@ -26,6 +26,7 @@
 #include "questwindow.h"
 #include "interactionpoint.h"
 #include "CZone.h"
+#include "Player.h"
 #include "globals.h"
 #include <memory>
 
@@ -130,6 +131,8 @@ bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
 
 void setQuitGame();
 
+extern Player character;
+
 void OptionsWindow::clicked( int mouseX, int mouseY )
 {
 	// check for quit and the other options
@@ -160,6 +163,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		Globals::setCurrentZone( newZone );
 		newZone->LoadZone("data/zone1");
 		
+		character.clearInventory();
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
 		// reenter map
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );

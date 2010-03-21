@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sat Mar 20 21:36:50 2010.
+** Generated automatically by tolua++-1.0.92 on Sun Mar 21 13:06:13 2010.
 */
 
 #ifndef __cplusplus
@@ -3712,6 +3712,65 @@ static int tolua_CLuaInterface_DawnInterface_getQuestSaveText00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::getInventorySaveText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getInventorySaveText00
+static int tolua_CLuaInterface_DawnInterface_getInventorySaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getInventorySaveText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getInventorySaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::restoreItemInBackpack */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00
+static int tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* item = ((Item*)  tolua_tousertype(tolua_S,1,0));
+  int inventoryPosX = ((int)  tolua_tonumber(tolua_S,2,0));
+  int inventoryPosY = ((int)  tolua_tonumber(tolua_S,3,0));
+  {
+   DawnInterface::restoreItemInBackpack(item,inventoryPosX,inventoryPosY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'restoreItemInBackpack'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::addShop */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addShop00
 static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
@@ -4049,6 +4108,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
    tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
+   tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);
+   tolua_function(tolua_S,"restoreItemInBackpack",tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

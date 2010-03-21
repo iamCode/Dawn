@@ -322,6 +322,58 @@ InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem
 	return blockingItem;
 }
 
+std::string Inventory::getReloadText()
+{
+	std::ostringstream oss;
+	oss << "-- Player's inventory" << std::endl;
+	oss << "-- Items in Backpack" << std::endl;
+	
+	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
+		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
+		Item *curItem = curBackpackItem->getItem();
+		oss << "-- item " << curItem->getName() << " ( " << curItem->getID() << " ) " 
+		    << " at (" << curBackpackItem->getInventoryPosX() << "," << curBackpackItem->getInventoryPosY() << ")"
+		    << std::endl;
+		oss << "DawnInterface.restoreItemInBackpack( itemDatabase[\"" << curItem->getID() << "\"], "
+		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
+		    << std::endl;
+	}
+	
+	return oss.str();
+}
+
+void Inventory::clear()
+{
+	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
+		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
+		delete curBackpackItem;
+	}
+	backpackItems.resize( 0 );
+
+	// free space in inventory so we can place new items
+	for ( size_t curX=0; curX<sizeX; ++ curX ) {
+		for ( size_t curY=0; curY<sizeY; ++curY ) {
+			slotUsed[curX][curY] = false;
+		}
+	}
+}
+
+extern Player character;
+
+namespace DawnInterface
+{
+	std::string getInventorySaveText()
+	{
+		return character.getInventory()->getReloadText();
+	}
+	
+	void restoreItemInBackpack( Item *item, size_t inventoryPosX, size_t inventoryPosY )
+	{
+		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
+		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
+	}
+}
+
 EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlot )
 {
 	switch ( itemSlot ) {
