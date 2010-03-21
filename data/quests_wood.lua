@@ -1,4 +1,4 @@
-trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0, zone );
+trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0, zone );
 trader:setAttitude( Attitude.FRIENDLY );
 traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
 traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );

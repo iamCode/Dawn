@@ -69,7 +69,7 @@ int CZone::LoadEnvironment(std::string file)
 {
 	std::ifstream input_file(file.c_str());
 	char buf[255];
-	int texture_id = 0, x_pos = 0, y_pos = 0;
+	int texture_id = 0, x_pos = 0, y_pos = 0, z_pos = 0;
 	float transparency, red, green, blue, x_scale, y_scale;
 	int count = 0;
 
@@ -82,14 +82,12 @@ int CZone::LoadEnvironment(std::string file)
 	for (count = 0 ; input_file.getline (buf, 255) ; ++count) {
 		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' &&
 		        buf[0] != '\n' && strlen(buf) != 0) {
-			sscanf(buf,"%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
-			EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale));
+			sscanf(buf,"%d %d %d %f %f %f %f %f %f %d", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale, &z_pos);
+			EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale, z_pos));
 		}
 	}
 
 	input_file.close();
-
-    std::sort(EnvironmentMap.begin(), EnvironmentMap.end());
 
 	return 0;
 }
@@ -113,7 +111,7 @@ int CZone::LoadShadow(std::string file)
 		        buf[0] != '\n' && strlen(buf) != 0) {
 			sscanf(buf, "%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
 			// the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
-			ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale));
+			ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale, 0));
 			count++;
 		}
 	}
@@ -215,7 +213,7 @@ void CZone::AddEnvironment(int x_pos, int y_pos, int texture)
 	// IF the environmenttexture has an collision_box we also push that info into the collisionvector.
 	EnvironmentMap.push_back(sEnvironmentMap(x_pos-(ZoneEnvironment.texture[texture].width/2),
 	                         y_pos-(ZoneEnvironment.texture[texture].height/2),texture,
-	                         1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+	                         1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
 	if (ZoneEnvironment.texture[texture].contains_collision_box == true) {
 		CollisionMap.push_back(sCollisionMap(x_pos-(
 		                                         ZoneEnvironment.texture[texture].width/2)+
@@ -231,7 +229,7 @@ void CZone::AddShadow(int x_pos, int y_pos, int texture)
 {
 	// the old shadowmap here, keeping it a while... ShadowMap.push_back(sShadowMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
 	ShadowMap.push_back(sEnvironmentMap(x_pos-(ZoneShadow.texture[texture].width/2),
-	                                    y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+	                                    y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
 }
 
 void CZone::AddCollisionbox(int x_pos, int y_pos)

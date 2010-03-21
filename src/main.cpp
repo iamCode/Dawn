@@ -899,7 +899,10 @@ void game_loop()
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
 				for (unsigned int x=0; x<NPC.size(); x++) {
-					NPC[x]->Die();
+					if ( NPC[x]->isAlive() )
+					{
+                        NPC[x]->Die();
+                    }
 				}
 			}
 

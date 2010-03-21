@@ -2,3 +2,5 @@ zone = DawnInterface.getCurrentZone();
 DawnInterface.addMobSpawnPoint( "Wolf", 500, 250, 10, 1, zone )
 DawnInterface.addMobSpawnPoint( "Wolf Pup", 500, 750, 5, 1, zone )
 DawnInterface.addMobSpawnPoint( "Wolf", 600, 250, 10, 1, zone )
+DawnInterface.addMobSpawnPoint( "Spider", 0, 275, 10, 1, zone )
+DawnInterface.addMobSpawnPoint( "Skeleton", 100, 100, 10, 1, zone )

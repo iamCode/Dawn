@@ -66,7 +66,7 @@ class CEditor
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-		bool KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
+		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
 
 		CTexture interfacetexture;
 		GLFT_Font *objectDescriptionFont;

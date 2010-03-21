@@ -79,17 +79,20 @@ int CEditor::SaveZone()
 	fclose(fp);
 	/////////////////////////////////////////////////////////////////////////////////////
 
+    // sort the environmentmap based on the Y-axis. Quick-fix for height positions. Should have another workaround later.
+    std::sort(zoneToEdit->EnvironmentMap.begin(), zoneToEdit->EnvironmentMap.end());
+
 	// open the environmentmap-file, so we can write our trees and stuff...
 	if ((fp=fopen("data/zone1.environmentmap", "w")) == NULL) {
 		std::cout << "ERROR opening file zone1.environmentmap" <<
 		          std::endl << std::endl;
 		return -1;
 	}
-	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
+	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale z-position");
 
 
 	for (unsigned int x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].id, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale);
+		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].id, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale, zoneToEdit->EnvironmentMap[x].z_pos);
 	}
 	fclose(fp);
 	////////////////////////////////////////////////////////////////////////
@@ -484,6 +487,40 @@ void CEditor::HandleKeys()
 		}
 	}
 
+	// increase the Z-position
+	if (keys[SDLK_m] && !KP_increase_Zpos)
+	{
+	    KP_increase_Zpos = true;
+	    if ( current_object == 1 ) // environment
+	    {
+            zoneToEdit->EnvironmentMap[objectedit_selected].z_pos++;
+	    }
+	}
+
+	if (!keys[SDLK_m])
+	{
+	    KP_increase_Zpos = false;
+	}
+
+	// decrease the Z-position
+	if (keys[SDLK_n] && !KP_decrease_Zpos)
+	{
+	    KP_decrease_Zpos = true;
+
+	    if ( current_object == 1 ) // environment
+	    {
+			if ( zoneToEdit->EnvironmentMap[objectedit_selected].z_pos > 0  )
+			{
+			    zoneToEdit->EnvironmentMap[objectedit_selected].z_pos--;
+			}
+	    }
+	}
+
+	if (!keys[SDLK_n])
+	{
+	    KP_decrease_Zpos = false;
+	}
+
 	if (keys[SDLK_F1] && !KP_toggle_tileset) {
 		current_tilepos = 1;
 		tilepos_offset = 0;
@@ -575,6 +612,7 @@ void CEditor::DrawEditor()
 		keybindingFont->drawText(world_x+500, world_y+60 - fontHeight, "[ , ]  Decrease transparency");
 		keybindingFont->drawText(world_x+500, world_y+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
 		keybindingFont->drawText(world_x+500, world_y+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
+		keybindingFont->drawText(world_x+500, world_y+30 - fontHeight, "[ n/m ] Increase / decrease Z-position");
 	}
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
@@ -664,6 +702,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 	objectDescriptionFont->drawText(world_x+312, world_y+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
 	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
 	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glScalef(1.0f,1.0f,1.0f);
