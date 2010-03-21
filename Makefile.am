@@ -51,6 +51,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
+	src/globals.cpp \
+	src/globals.h \
 	src/GroundLoot.cpp \
 	src/GroundLoot.h \
 	src/interactionpoint.cpp \
