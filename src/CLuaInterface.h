@@ -50,5 +50,6 @@ namespace DawnInterface
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
 	void restoreItemInBackpack( Item *item, size_t inventoryPosX, size_t inventoryPosY );
+	void restoreWieldItem( size_t slot, Item *item );
 }
 

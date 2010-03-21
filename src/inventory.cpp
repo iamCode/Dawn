@@ -331,12 +331,20 @@ std::string Inventory::getReloadText()
 	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
 		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
 		Item *curItem = curBackpackItem->getItem();
-		oss << "-- item " << curItem->getName() << " ( " << curItem->getID() << " ) " 
-		    << " at (" << curBackpackItem->getInventoryPosX() << "," << curBackpackItem->getInventoryPosY() << ")"
-		    << std::endl;
 		oss << "DawnInterface.restoreItemInBackpack( itemDatabase[\"" << curItem->getID() << "\"], "
 		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
 		    << std::endl;
+	}
+	
+	oss << "-- equipped Items" << std::endl;
+	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
+	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
+		if ( equippedItems[ curEquippable ] != NULL ) {
+			Item *curItem = equippedItems[ curEquippable ]->getItem();
+			oss << "DawnInterface.restoreWieldItem( " << curEquippable << ", "
+			    << "itemDatabase[\"" << curItem->getID() << "\"] " << ");"
+			    << std::endl;
+		}
 	}
 	
 	return oss.str();
@@ -344,6 +352,7 @@ std::string Inventory::getReloadText()
 
 void Inventory::clear()
 {
+	// remove backpack items
 	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
 		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
 		delete curBackpackItem;
@@ -355,6 +364,15 @@ void Inventory::clear()
 		for ( size_t curY=0; curY<sizeY; ++curY ) {
 			slotUsed[curX][curY] = false;
 		}
+	}
+
+	// remove equipped items
+	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
+	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
+		if ( equippedItems[ curEquippable ] != NULL ) {
+			delete equippedItems[ curEquippable ];
+		}
+		equippedItems[ curEquippable ] = NULL;
 	}
 }
 
@@ -371,6 +389,13 @@ namespace DawnInterface
 	{
 		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
 		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
+	}
+	
+	void restoreWieldItem( size_t slot, Item *item )
+	{
+		ItemSlot::ItemSlot slotToUse = static_cast<ItemSlot::ItemSlot>( slot );
+		InventoryItem *invItem = new InventoryItem( item, 0, 0, &character );
+		character.getInventory()->wieldItemAtSlot( slotToUse, invItem );
 	}
 }
 
