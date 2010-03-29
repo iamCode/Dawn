@@ -1436,3 +1436,17 @@ void CCharacter::setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double
 	this->coinDropChance = dropChance;
 }
 
+void CCharacter::startShopping()
+{
+    isCurrentlyShopping = true;
+}
+
+void CCharacter::stopShopping()
+{
+    isCurrentlyShopping = false;
+}
+
+bool CCharacter::isShopping() const
+{
+    return isCurrentlyShopping;
+}

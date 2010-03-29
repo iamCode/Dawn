@@ -277,6 +277,10 @@ class CCharacter
 		virtual void Die();
 		void dropItems();
 
+		void startShopping();
+        void stopShopping();
+        bool isShopping() const;
+
 		void giveCoins( uint32_t amountOfCoins );
 		void reduceCoins( uint32_t amountOfCoins );
 		uint32_t getCoins() const;
@@ -387,6 +391,8 @@ class CCharacter
         uint32_t minCoinDrop;
         uint32_t maxCoinDrop;
         double coinDropChance;
+
+        bool isCurrentlyShopping;
 };
 
 #endif

@@ -75,6 +75,7 @@ class Tooltip
         int blockNumberWidth;
         int blockNumberHeight;
         int loadedAtLevel;
+        bool shoppingState;
         CTexture textures;
         Player *player;
         std::vector<sTooltipText> tooltipText;

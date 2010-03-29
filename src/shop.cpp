@@ -84,6 +84,14 @@ bool Shop::isVisible() const
 void Shop::setVisible( bool newVisible )
 {
     visible = newVisible;
+
+    // stop shopping (well, this will be moved once we get proper close() and open() functions to our frames.
+    if ( visible == false )
+    {
+        player->stopShopping();
+    } else {
+        player->startShopping();
+    }
 }
 
 void Shop::loadTextures()
