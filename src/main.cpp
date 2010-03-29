@@ -235,7 +235,7 @@ void DrawScene()
 		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
-			curInteraction->drawInteractionSymbol(mouseX, mouseY);
+			curInteraction->drawInteractionSymbol( mouseX, mouseY, character.getXPos(), character.getYPos() );
 		}
 	}
 
@@ -809,7 +809,7 @@ void game_loop()
 
 					} else {
 						switch (event.button.button) {
-							case 1:
+							case SDL_BUTTON_LEFT:
 
                                 groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
 
@@ -823,26 +823,28 @@ void game_loop()
                                 }
 
 								// search for new target
-								bool foundSomething = false;
-								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-										foundSomething = true;
-										curInteraction->startInteraction();
-										break;
-									}
-								}
-
 								for (unsigned int x=0; x<NPC.size(); x++) {
 									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
 										if ( ! NPC[x]->getAttitude() == Attitude::FRIENDLY ) {
 											character.setTarget( NPC[x] );
-											foundSomething = true;
 											break;
 										}
 									}
 								}
 							break;
+
+							case SDL_BUTTON_RIGHT:
+
+								// look for interactionpoints when right-clicking.
+								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+										curInteraction->startInteraction( character.getXPos(), character.getYPos() );
+										break;
+									}
+								}
+
+                            break;
 						}
 					}
 				}

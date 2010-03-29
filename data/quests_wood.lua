@@ -1,7 +1,7 @@
 trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0, zone );
 trader:setAttitude( Attitude.FRIENDLY );
 traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
-traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );
+traderInteraction:setInteractionType( InteractionType.Shop );
 traderInteraction:setInteractionCode( "onActivateTrader()" );
 traderShop = DawnInterface.addShop();
 traderShop:addItem( itemDatabase["smallhealingpotion"] );
@@ -26,7 +26,7 @@ then
 	john = DawnInterface.addInteractionPoint();
 	john:setPosition( 820, 270, 25, 33 );
 	john:setBackgroundTexture( "data/character/link/link1.tga" );
-	john:setInteractionTexture( "data/interaction/talk.tga" );
+	john:setInteractionType( InteractionType.Quest );
 	john:setInteractionCode( "onActivateJohn()" );
 end
 
@@ -66,7 +66,7 @@ function onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
 	james:setPosition( 1950, 650, 20, 26 );
 	james:setBackgroundTexture( "data/character/link/link1.tga" );
-	james:setInteractionTexture( "data/interaction/talk.tga" );
+	james:setInteractionType( InteractionType.Quest );
 	james:setInteractionCode( "onActivateJames()" );
 	DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
 end

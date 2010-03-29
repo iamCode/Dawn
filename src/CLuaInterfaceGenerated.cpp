@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Wed Mar  3 21:53:42 2010.
+** Generated automatically by tolua++-1.0.93 on Mon Mar 29 12:49:58 2010.
 */
 
 #ifndef __cplusplus
@@ -2073,15 +2073,15 @@ static int tolua_CLuaInterface_InteractionPoint_setPosition00(lua_State* tolua_S
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setInteractionTexture of class  InteractionPoint */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionPoint_setInteractionTexture00
-static int tolua_CLuaInterface_InteractionPoint_setInteractionTexture00(lua_State* tolua_S)
+/* method: setInteractionType of class  InteractionPoint */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionPoint_setInteractionType00
+static int tolua_CLuaInterface_InteractionPoint_setInteractionType00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"InteractionPoint",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -2089,18 +2089,18 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionTexture00(lua_Stat
 #endif
  {
   InteractionPoint* self = (InteractionPoint*)  tolua_tousertype(tolua_S,1,0);
-  std::string texturename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  InteractionType::InteractionType interactionType = ((InteractionType::InteractionType) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionType'", NULL);
 #endif
   {
-   self->setInteractionTexture(texturename);
+   self->setInteractionType(interactionType);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setInteractionTexture'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'setInteractionType'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3962,10 +3962,15 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
    tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"InteractionType",0);
+  tolua_beginmodule(tolua_S,"InteractionType");
+   tolua_constant(tolua_S,"Quest",InteractionType::Quest);
+   tolua_constant(tolua_S,"Shop",InteractionType::Shop);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"InteractionPoint","InteractionPoint","",NULL);
   tolua_beginmodule(tolua_S,"InteractionPoint");
    tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_InteractionPoint_setPosition00);
-   tolua_function(tolua_S,"setInteractionTexture",tolua_CLuaInterface_InteractionPoint_setInteractionTexture00);
+   tolua_function(tolua_S,"setInteractionType",tolua_CLuaInterface_InteractionPoint_setInteractionType00);
    tolua_function(tolua_S,"setBackgroundTexture",tolua_CLuaInterface_InteractionPoint_setBackgroundTexture00);
    tolua_function(tolua_S,"setInteractionCode",tolua_CLuaInterface_InteractionPoint_setInteractionCode00);
   tolua_endmodule(tolua_S);

@@ -280,10 +280,19 @@ class Item
 	void setSpell( CSpell *newSpell );
 };
 
+namespace InteractionType
+{
+	enum InteractionType
+	{
+		Quest,
+		Shop
+	};
+}
+
 class InteractionPoint
 {
 	void setPosition( int posX, int posY, int width, int height );
-	void setInteractionTexture( std::string texturename );
+	void setInteractionType( InteractionType::InteractionType interactionType );
 	void setBackgroundTexture( std::string texturename );
 	void setInteractionCode( std::string interactionCode );
 };

@@ -57,15 +57,25 @@ void InteractionPoint::setPosition( int posX, int posY, int width, int height )
 	this->height = height;
 }
 
-void InteractionPoint::setInteractionTexture( std::string texturename )
+void InteractionPoint::setInteractionType( InteractionType::InteractionType interactionType )
 {
 	// We explicitely want to allow an interaction texture to change
 	if ( interactionTexture != NULL ) {
 		delete interactionTexture;
 	}
 	interactionTexture = new CTexture();
-	interactionTexture->texture.reserve(1);
-	interactionTexture->LoadIMG( texturename, 0 );
+	interactionTexture->texture.reserve(2);
+	switch ( interactionType )
+	{
+	    case InteractionType::Quest:
+            interactionTexture->LoadIMG( "data/interaction/talk0.tga", 0 );
+            interactionTexture->LoadIMG( "data/interaction/talk1.tga", 1 );
+	    break;
+	    case InteractionType::Shop:
+            interactionTexture->LoadIMG( "data/interaction/shop0.tga", 0 );
+            interactionTexture->LoadIMG( "data/interaction/shop1.tga", 1 );
+	    break;
+	}
 }
 
 void InteractionPoint::setBackgroundTexture( std::string texturename )
@@ -95,6 +105,15 @@ bool InteractionPoint::isMouseOver( int mouseX, int mouseY ) const
 	return false;
 }
 
+bool InteractionPoint::isInRange( int characterXpos, int characterYpos ) const
+{
+    if ( sqrt(pow(characterXpos-posX,2) + pow(characterYpos-posY,2)) > 120 )
+	{
+	    return false;
+	}
+	return true;
+}
+
 void InteractionPoint::draw()
 {
 	assert( backgroundTexture != NULL );
@@ -105,7 +124,7 @@ void InteractionPoint::draw()
 	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture, posX, width, posY, height );
 }
 
-void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY )
+void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY, int characterXpos, int characterYpos )
 {
 	assert( interactionTexture != NULL );
 	if ( markedAsDeletable ) {
@@ -116,20 +135,31 @@ void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY )
 		return;
 	}
 
-	DrawingHelpers::mapTextureToRect( interactionTexture->texture[0].texture,
+    uint8_t available_symbol = 0;
+
+
+    if ( isInRange(characterXpos,characterYpos) )
+	{
+	    available_symbol = 1;
+	}
+
+	DrawingHelpers::mapTextureToRect( interactionTexture->texture[available_symbol].texture,
 	                                  mouseX+world_x,
-	                                  interactionTexture->texture[0].width,
+	                                  interactionTexture->texture[available_symbol].width,
 	                                  mouseY+world_y,
-	                                  interactionTexture->texture[0].height );
+	                                  interactionTexture->texture[available_symbol].height );
 }
 
-void InteractionPoint::startInteraction()
+void InteractionPoint::startInteraction( int characterXpos, int characterYpos )
 {
 	if ( markedAsDeletable ) {
 		return;
 	}
 
-	LuaFunctions::executeLuaScript( interactionCode );
+    if ( isInRange( characterXpos, characterYpos ) )
+    {
+        LuaFunctions::executeLuaScript( interactionCode );
+    }
 }
 
 bool InteractionPoint::isMarkedDeletable() const
@@ -161,6 +191,18 @@ bool CharacterInteractionPoint::isMouseOver( int mouseX, int mouseY ) const
 		return true;
 	}
 	return false;
+}
+
+bool CharacterInteractionPoint::isInRange( int characterXpos, int characterYpos ) const
+{
+	int posX = interactionCharacter->getXPos();
+	int posY = interactionCharacter->getYPos();
+
+    if ( sqrt(pow(characterXpos-posX,2) + pow(characterYpos-posY,2)) > 120 )
+	{
+	    return false;
+	}
+	return true;
 }
 
 void CharacterInteractionPoint::draw()

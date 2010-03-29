@@ -25,6 +25,15 @@ class InteractionPoint;
 class CharacterInteractionPoint;
 class CCharacter;
 
+namespace InteractionType
+{
+    enum InteractionType
+    {
+        Quest,
+        Shop
+    };
+}
+
 namespace DawnInterface
 {
 	InteractionPoint* addInteractionPoint();
@@ -39,14 +48,15 @@ class InteractionPoint
 	public:
 		~InteractionPoint();
 		void setPosition( int posX, int posY, int width, int height );
-		void setInteractionTexture( std::string texturename );
+		void setInteractionType( InteractionType::InteractionType interactionType );
 		void setBackgroundTexture( std::string texturename );
 		void setInteractionCode( std::string interactionCode );
 
 		virtual bool isMouseOver( int mouseX, int mouseY ) const;
+		virtual bool isInRange( int characterXpos, int characterYpos ) const;
 		virtual void draw();
-		virtual void drawInteractionSymbol( int mouseX, int mouseY );
-		void startInteraction();
+		virtual void drawInteractionSymbol( int mouseX, int mouseY, int characterXpos, int characterYpos );
+		void startInteraction( int characterXpos, int characterYpos );
 
 		bool isMarkedDeletable() const;
 
@@ -76,6 +86,7 @@ class CharacterInteractionPoint : public InteractionPoint
 {
 	public:
 		virtual bool isMouseOver( int mouseX, int mouseY ) const;
+		virtual bool isInRange( int characterXpos, int characterYpos ) const;
 		virtual void draw();
 
 	private:
