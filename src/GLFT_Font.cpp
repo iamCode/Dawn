@@ -333,7 +333,7 @@ StreamFlusher GLFT_Font::endDraw()
 
 unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 {
-	if (!isValid() && processFilesDirectly) {
+	if (processFilesDirectly && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
 	}
 	unsigned int width=0;
@@ -348,7 +348,7 @@ unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 
 unsigned int GLFT_Font::getHeight() const
 {
-	if (!isValid() && processFilesDirectly) {
+	if (processFilesDirectly && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::getHeight call.");
 	}
 	return height_;
