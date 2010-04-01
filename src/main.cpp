@@ -225,10 +225,14 @@ void DrawScene()
 	// draw tooltips if we're holding left ALT key.
 	groundLoot->drawTooltip();
 
-	for (unsigned int x=0; x<NPC.size(); x++) {
+	// draw NPC (and if it's in target, their lifebar and name)
+	for (unsigned int x=0; x<NPC.size(); x++)
+	{
 		NPC[x]->Draw();
 		if ( character.getTarget() == NPC[x] )
-			fpsFont->drawText(NPC[x]->x_pos, NPC[x]->y_pos+NPC[x]->getHeight() + 12, "%s, Health: %d",NPC[x]->getName().c_str(),NPC[x]->getCurrentHealth());
+		{
+            GUI.drawTargetedNPCText();
+		}
 	}
 
 	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
@@ -238,10 +242,6 @@ void DrawScene()
 			curInteraction->drawInteractionSymbol( mouseX, mouseY, character.getXPos(), character.getYPos() );
 		}
 	}
-
-	// draws the character's target's lifebar, if we have any target.
-	if (character.getTarget())
-		character.getTarget()->DrawLifebar();
 
 	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
@@ -280,8 +280,6 @@ void DrawScene()
 	if ( inventoryScreen->isVisible() ) {
 	    inventoryScreen->draw();
 	}
-
-
 
 	if ( inventoryScreen->isVisible() )
 	{
@@ -712,10 +710,9 @@ bool dawn_init(int argc, char** argv)
 		Editor.initFonts();
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
+        GUI.initFonts();
 
 		ActionCreation::initActions();
-
-
 
 		return true;
 }

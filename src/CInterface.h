@@ -49,9 +49,12 @@ struct sDamageDisplay {
 class CInterface
 {
 	public:
+		CInterface();
 		void LoadTextures();
+		void initFonts();
 		bool enabled;
 		void DrawInterface();
+        void drawTargetedNPCText();
 		void drawCombatText();
 		void SetPlayer(CCharacter *player_);
 
@@ -67,7 +70,7 @@ class CInterface
 
 		CCharacter *player;
 
-		GLFT_Font *shortcutFont;
+		GLFT_Font *NPCTextFont;
 };
 
 

@@ -37,6 +37,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	remainingMovePoints = 0;
 	direction_texture = S;
 	attitudeTowardsPlayer = Attitude::NEUTRAL;
+	chasingPlayer = false;
 	markedAsDeleted = false;
 }
 
@@ -60,7 +61,7 @@ void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_res
 
 Direction CNPC::GetDirection()
 {
-	if ( attitudeTowardsPlayer == Attitude::HOSTILE ) {
+	if ( chasingPlayer == true ) {
 		return getDirectionTowards( (character.x_pos + character.getWidth()) / 2, (character.y_pos + character.getHeight()) / 2 );
 	}
 	if ( wandering ) {
@@ -72,7 +73,7 @@ Direction CNPC::GetDirection()
 
 void CNPC::Damage(int amount, bool criticalHit)
 {
-	attitudeTowardsPlayer = Attitude::HOSTILE;
+	chasingPlayer = true;
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -107,16 +108,16 @@ void CNPC::Respawn()
 	if (alive == false && do_respawn == true) {
 		respawn_thisframe = SDL_GetTicks();
 		if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
-			Init( x_spawn_pos, y_spawn_pos );
 			alive = true;
+			chasingPlayer = false;
 			x_pos = x_spawn_pos;
 			y_pos = y_spawn_pos;
 			respawn_thisframe = 0.0f;
 			respawn_lastframe = 0.0f;
 			setCurrentHealth( getModifiedMaxHealth() );
 			setCurrentMana( getModifiedMaxMana() );
-			attitudeTowardsPlayer = Attitude::NEUTRAL;
-		}
+			Init( x_spawn_pos, y_spawn_pos );
+        }
 	}
 }
 
@@ -151,14 +152,21 @@ void CNPC::Wander()
 
 void CNPC::Move()
 {
-	if ( mayDoAnythingAffectingSpellActionWithoutAborting() && attitudeTowardsPlayer == Attitude::HOSTILE ) {
-		// check distance to player (not exact, but acceptable, need a better function soon...)
-		double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+	double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+    // if player is inside agro range of NPC, we set NPC to attack mode.
+    if ( distance < 200 && getAttitude() == Attitude::HOSTILE )
+    {
+        chasingPlayer = true;
+    }
+
+    if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {
+		// check distance to player (not exact, but acceptable, need a better function soon...)
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
 			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
 		}
 	}
+
 	CCharacter::Move();
 }
 

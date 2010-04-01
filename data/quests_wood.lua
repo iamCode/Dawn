@@ -1,5 +1,6 @@
 trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0, zone );
 trader:setAttitude( Attitude.FRIENDLY );
+trader:setName( "Rake Fleetwood" );
 traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
 traderInteraction:setInteractionType( InteractionType.Shop );
 traderInteraction:setInteractionCode( "onActivateTrader()" );

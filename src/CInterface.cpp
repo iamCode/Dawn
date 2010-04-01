@@ -18,17 +18,31 @@
 
 #include "CInterface.h"
 #include "CSpell.h"
-
+#include "CNPC.h"
+#include "Player.h"
 #include "CDrawingHelpers.h"
+
+CInterface::CInterface()
+{
+    NPCTextFont = NULL;
+}
+
+void CInterface::initFonts()
+{
+    NPCTextFont = FontCache::getFontFromCache("data/verdana.ttf",12);
+}
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.reserve(5);
+	interfacetextures.texture.reserve(8);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
 	interfacetextures.LoadIMG("data/interface/lifebar.tga",3);
 	interfacetextures.LoadIMG("data/interface/manabar.tga",4);
+    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_background.tga",5);
+    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_left.tga",6);
+    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_right.tga",7);
 
     damageDisplayTexturesSmall.texture.reserve(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -166,4 +180,50 @@ void CInterface::drawCombatText()
         //reset color back to default.
         glColor4f(1.0f,1.0f,1.0f,1.0f);
     }
+}
+
+void CInterface::drawTargetedNPCText()
+{
+    CNPC *npc = dynamic_cast<CNPC*>( dynamic_cast<Player*>( player)->getTarget() );
+
+    glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+
+    uint8_t width = 40;
+    uint8_t stringWidth = NPCTextFont->calcStringWidth(npc->getName().c_str() );
+
+    if ( stringWidth > width+64 )
+    {
+        width = stringWidth - 56;
+    }
+
+    int fontStart = npc->x_pos+npc->getWidth()/2-stringWidth/2;
+    int tooltipStart = npc->x_pos+npc->getWidth()/2-(width+64)/2;
+
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[6].texture,
+                                      tooltipStart, 32,
+                                      npc->y_pos+npc->getHeight()-3, 32 );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[5].texture,
+                                      tooltipStart+32, width,
+                                      npc->y_pos+npc->getHeight()-3, 32 );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[7].texture,
+                                      tooltipStart+32+width, 32,
+                                      npc->y_pos+npc->getHeight()-3, 32 );
+
+    npc->DrawLifebar();
+
+    switch ( npc->getAttitude() )
+    {
+        case Attitude::FRIENDLY:
+            glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
+        break;
+        case Attitude::NEUTRAL:
+            glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+        break;
+        case Attitude::HOSTILE:
+            glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+        break;
+    }
+
+    NPCTextFont->drawText( fontStart, npc->y_pos+npc->getHeight() + 12, "%s",npc->getName().c_str() );
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
