@@ -39,7 +39,8 @@ function onActivateJohn()
 			quest_playHideAndSeek = {}
 			quest_playHideAndSeek.fulfilled = false;
 			quest_playHideAndSeek.rewardGot = false;
-			quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 1750, 650, 1, 0, zone );
+			quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 3462, 557, 1, 0, zone );
+			quest_playHideAndSeek.monsterSpawnPoint:setAttitude ( Attitude.HOSTILE );
 			onDieEventHandler = DawnInterface.createEventHandler();
 			onDieEventHandler:setExecuteText( "onKilledQuestMonster()" );
 			quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );
@@ -65,7 +66,7 @@ end
 
 function onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
-	james:setPosition( 1950, 650, 20, 26 );
+	james:setPosition( 3783,640, 20, 26 );
 	james:setBackgroundTexture( "data/character/link/link1.tga" );
 	james:setInteractionType( InteractionType.Quest );
 	james:setInteractionCode( "onActivateJames()" );

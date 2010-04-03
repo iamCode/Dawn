@@ -204,7 +204,7 @@ void CharacterInfoScreen::drawExpBar()
                                     world_x + posX + 280, 100, world_y + 533, 10 );
     glColor3f( 0.9f, 0.93f, 0.29f );
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                    world_x + posX + 280, expBarWidth, world_y + 540, 10 );
+                                    world_x + posX + 280, expBarWidth, world_y + 533, 10 );
     glColor3f( 1.0f, 1.0f, 1.0f );
 }
 
