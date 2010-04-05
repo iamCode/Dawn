@@ -101,6 +101,8 @@ class CCharacter {
 
     void addItemToLootTable( Item *item, double dropChance );
     void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
+
+	void setPosition( int xpos, int ypos );
 };
 
 namespace StatsType

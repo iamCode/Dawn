@@ -125,6 +125,7 @@ class CCharacter
 		int getYPos() const;
 		int getWidth() const;
 		int getHeight() const;
+		void setPosition( int xpos, int ypos );
 
 		virtual Direction GetDirection() = 0;
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;

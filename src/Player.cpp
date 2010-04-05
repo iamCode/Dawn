@@ -388,6 +388,8 @@ std::string Player::getSaveText() const
 	// string stream doesn't seem to have a proper overload for uint8_t and makes it the 0-character, so cast to size_t
 	oss << "thePlayer:setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
 
+	oss << "-- position" << std::endl;
+	oss << "thePlayer:setPosition( " << getXPos() << ", " << getYPos() << " );" << std::endl;
 	// no current attributes are set here because after reloading the player is completely refreshed again
 	
 	return oss.str();

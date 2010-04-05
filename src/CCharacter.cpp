@@ -771,6 +771,12 @@ int CCharacter::getHeight() const
 	return useBoundingBox ? boundingBoxH : texture[0]->texture[1].height;
 }
 
+void CCharacter::setPosition( int xpos, int ypos )
+{
+	this->x_pos = xpos;
+	this->y_pos = ypos;
+}
+
 extern std::vector <CNPC*> NPC;
 
 extern Player character;
