@@ -156,3 +156,30 @@ curSpell:setEffectType( EffectType.SelfAffectingSpell );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["manavortex"] = curSpell;
+curSpell:setName("Mana Vortex");
+curSpell:setStats( StatsType.ManaRegen, 10 );
+curSpell:setDuration( 15 );
+curSpell:setInfo("Expanding your mind with a vortex of knowledge, increasing mana regen rate.");
+curSpell:setCastTime( 500 );
+curSpell:setCooldown( 120 );
+curSpell:setSpellSymbol( "data/spells/vortex/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["earthenseeds"] = curSpell;
+curSpell:setName("Earthen Seeds");
+curSpell:setStats( StatsType.HealthRegen, 3 );
+curSpell:setDuration( 180 );
+curSpell:setInfo("Seeds in the earth increases your health regen.");
+curSpell:setManaCost( 75 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+

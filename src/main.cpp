@@ -579,6 +579,7 @@ public:
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.setManaRegen(2);
 		character.giveCoins( 576 );
 
 		dawn_debug_info("Character completed");

@@ -317,7 +317,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Life regen" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%d/sec", 0.0 );
+                                "%d/sec", player->getModifiedHealthRegen() );
             curLine++;
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
@@ -325,7 +325,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Mana regen" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + height - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%d/sec", 0.0 );
+                                "%d/sec", player->getModifiedManaRegen() );
             curLine += 2;
 
 			for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {

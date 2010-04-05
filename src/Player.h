@@ -58,6 +58,9 @@ class Player : public CCharacter
 		uint16_t getModifiedMaxHealth() const;
 		uint16_t getModifiedMaxMana() const;
 
+		uint16_t getModifiedHealthRegen() const;
+		uint16_t getModifiedManaRegen() const;
+
 		uint16_t getModifiedMinDamage() const;
 		uint16_t getModifiedMaxDamage() const;
 

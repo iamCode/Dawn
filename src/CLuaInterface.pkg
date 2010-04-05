@@ -40,11 +40,11 @@ class CCharacter {
     void setStrength( int newStrength );
     int getStrength() const;
     void modifyStrength( int strengthModifier );
-    
+
     void setDexterity( int newDexterity );
     int getDexterity() const;
     void modifyDexterity( int dexterityModifier );
-    
+
     void setVitality( int newVitality );
     int getVitality() const;
     void modifyVitality( int vitalityModifier );
@@ -83,7 +83,7 @@ class CCharacter {
 
     void setMaxDamage( int newMaxDamage );
     int getMaxDamage();
-    
+
     void setArmor( int newArmor );
     void setDamageModifierPoints( int newDamageModifierPoints );
     void setHitModifierPoints( int newHitModifierPoints );
@@ -95,6 +95,8 @@ class CCharacter {
 	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int newSpellEffectElementModifierPoints );
 	void setSpellEffectAllModifierPoints( int newSpellEffectAllModifierPoints );
 	void setSpellCriticalModifierPoints( int newSpellCriticalModifierPoints );
+	void setHealthRegen( int newHealthRegen );
+	void setManaRegen( int newManaRegen );
 
     void setBoundingBox( int bbx, int bby, int bbw, int bbh );
     void setUseBoundingBox( bool use );
@@ -123,6 +125,8 @@ namespace StatsType
         SpellCritical,
         ResistAll,
         SpellEffectAll,
+        HealthRegen,
+        ManaRegen,
         Count
     };
 }
@@ -171,10 +175,11 @@ namespace ItemQuality
 	LORE
 	};
 }
+
 namespace ItemSlot
 {
     enum ItemSlot
-{
+    {
         HEAD,
         AMULET,
         MAIN_HAND,
@@ -189,7 +194,7 @@ namespace ItemSlot
         RING_ONE,
         RING_TWO,
         COUNT // this is always the last and gives the size of the enum
-};
+    };
 }
 
 namespace EquipPosition
@@ -323,7 +328,7 @@ class Shop
 {
 	void setVisible( bool newVisible );
 	void addItem( Item *item );
-}
+};
 
 class ConfigurableSpell : public CSpell
 {
