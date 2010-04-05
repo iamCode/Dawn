@@ -217,7 +217,7 @@ std::string CNPC::getLuaSaveText() const
 	                                        << seconds_to_respawn << ", "
 	                                        << do_respawn << " );" << std::endl;
 
-	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
+	// oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
 	
 	return oss.str();
 }

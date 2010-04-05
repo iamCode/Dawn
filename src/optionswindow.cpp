@@ -28,6 +28,7 @@
 #include "CZone.h"
 #include "Player.h"
 #include "globals.h"
+#include "shop.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -132,6 +133,7 @@ bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
 void setQuitGame();
 
 extern Player character;
+extern std::auto_ptr<Shop> shopWindow;
 
 void OptionsWindow::clicked( int mouseX, int mouseY )
 {
@@ -166,6 +168,9 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		Globals::allZones.clear();
 		
 		character.clearInventory();
+		// clear shop data
+		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
+
 		// reenter map
 		// 1. Load all zones
 		// TODO: Load all zones

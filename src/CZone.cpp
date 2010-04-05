@@ -26,6 +26,7 @@
 #include "shop.h"
 
 #include <cassert>
+#include <memory>
 
 extern Player character;
 
@@ -416,11 +417,14 @@ GroundLoot* CZone::getGroundLoot()
 	return &groundLoot;
 }
 
+extern std::auto_ptr<Shop> shopWindow;
+
 std::string CZone::getLuaSaveText() const
 {
 	std::ostringstream oss;
 	oss << "DawnInterface.setCurrentZone( \"" << zoneName << "\" );" << std::endl;
 	// save all spawnpoints
+	oss << "-- spawnpoints" << std::endl;
 	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
 		CNPC *curNPC = npcs[ curNpcNr ];
 		// save cur npc
@@ -430,9 +434,17 @@ std::string CZone::getLuaSaveText() const
 	
 	// save call indirections
 	
-	// save traders (well... they are spawnpoints...)
+	// save shop data (this ought to be put into the shop somehow as soon as shops are customizable)
+	oss << "-- shops" << std::endl;
+	oss << "local curShop = DawnInterface.addShop();" << std::endl;
+	for ( size_t curTab=0; curTab<3; ++curTab ) {
+		for ( size_t curItemNr=0; curItemNr < shopWindow->shopkeeperInventory[curTab].size(); ++curItemNr ) {
+			oss << "curShop:addItem( itemDatabase[\"" << shopWindow->shopkeeperInventory[curTab][curItemNr]->getItem()->getID() << "\"] );" << std::endl;
+		}
+	}
 
 	// save interaction points
+	oss << "-- interaction points" << std::endl;
 	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteractionPoint = interactionPoints[ curInteractionNr ];
 		std::string interactionSaveText = curInteractionPoint->getLuaSaveText();
@@ -440,6 +452,7 @@ std::string CZone::getLuaSaveText() const
 	}
 	
 	// save ground loot
+	oss << "-- ground loot" << std::endl;
 	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
 		sGroundItems curGroundItem = groundLoot.groundItems[ curGroundItemNr ];
 		oss << "DawnInterface.restoreGroundLootItem( "
@@ -524,9 +537,8 @@ namespace DawnInterface
 			}
 		}
 		// not found
-		return "-- character not found"; 
-		//dawn_debug_fatal( "could not find character in any of the zones" );
-		//abort();
+		dawn_debug_fatal( "could not find character in any of the zones" );
+		abort();
 	}
 	
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint )
@@ -543,14 +555,13 @@ namespace DawnInterface
 			}
 		}
 		// not found
-		return "-- interaction point not found"; 
-		//dawn_debug_fatal( "could not find interaction point in any of the zones" );
-		//abort();
+		dawn_debug_fatal( "could not find interaction point in any of the zones" );
+		abort();
 	}
 	
 	std::string getItemReferenceRestore( Shop *shop )
 	{
-		return "nil -- shops not searched";
+		return "DawnInterface.addShop(); -- shops not really searchable, yet";
 	}
 
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
