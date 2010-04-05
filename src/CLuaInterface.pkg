@@ -303,6 +303,11 @@ class CNPC : public CCharacter
 	void setAttitude( Attitude::Attitude attitude );
 };
 
+class Player : public CCharacter
+{
+	std::string getSaveText();
+};
+
 class TextWindow
 {
 	void setText( std::string text );
@@ -396,4 +401,5 @@ namespace DawnInterface
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
 	void restoreWieldItem( int slot, Item *item );
 	Shop *addShop();
+	Player *getPlayer();
 }

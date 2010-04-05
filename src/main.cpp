@@ -211,6 +211,11 @@ namespace DawnInterface
 	{
 		Globals::getCurrentZone()->removeNPC( mobSpawnPoint );
 	}
+
+	Player* getPlayer()
+	{
+		return &character;
+	}
 }
 
 void DrawScene()

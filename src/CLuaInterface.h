@@ -20,6 +20,7 @@
 #include "interactionpoint.h"
 #include "textwindow.h"
 #include "CNPC.h"
+#include "Player.h"
 #include "shop.h"
 #include "item.h"
 
@@ -51,5 +52,6 @@ namespace DawnInterface
 	std::string getInventorySaveText();
 	void restoreItemInBackpack( Item *item, size_t inventoryPosX, size_t inventoryPosY );
 	void restoreWieldItem( size_t slot, Item *item );
+	Player* getPlayer();
 }
 

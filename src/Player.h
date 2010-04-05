@@ -64,6 +64,8 @@ class Player : public CCharacter
 
 		Inventory* getInventory();
 		void clearInventory();
+		
+		std::string getSaveText() const;
 };
 
 #endif // __PLAYER_H__

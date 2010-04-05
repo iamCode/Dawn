@@ -350,3 +350,46 @@ uint16_t Player::getModifiedMaxDamage() const
 	return inventoryMaxDamage;
 }
 
+std::string Player::getSaveText() const
+{
+	std::ostringstream oss;
+	oss << "-- General status attributes" << std::endl;
+	oss << "thePlayer = DawnInterface.getPlayer();" << std::endl;
+	oss << "thePlayer:setStrength( " << getStrength() << " );" << std::endl;
+	oss << "thePlayer:setDexterity( " << getDexterity() << " );" << std::endl;
+	oss << "thePlayer:setVitality( " << getVitality() << " );" << std::endl;
+	oss << "thePlayer:setIntellect( " << getIntellect() << " );" << std::endl;
+	oss << "thePlayer:setWisdom( " << getWisdom() << " );" << std::endl;
+	oss << "thePlayer:setMaxHealth( " << getMaxHealth() << " );" << std::endl;
+	oss << "thePlayer:setMaxMana( " << getMaxMana() << " );" << std::endl;
+	oss << "thePlayer:setMinDamage( " << getMinDamage() << " );" << std::endl;
+	oss << "thePlayer:setMaxDamage( " << getMaxDamage() << " );" << std::endl;
+	
+	// don't set activity textures here. That is determined by class of Player / NPC
+	
+	oss << "thePlayer:setDamageModifierPoints( " << getDamageModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setHitModifierPoints( " << getHitModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setEvadeModifierPoints( " << getEvadeModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setBlockModifierPoints( " << getBlockModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setMeleeCriticalModifierPoints( " << getMeleeCriticalModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setResistAllModifierPoints( " << getResistAllModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setSpellEffectAllModifierPoints( " << getSpellEffectAllModifierPoints() << " );" << std::endl;
+	for ( size_t curElement=0; curElement<static_cast<size_t>(ElementType::Count); ++curElement ) {
+		ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
+		oss << "thePlayer:setResistElementModifierPoints( "
+		            << curElementType << ", "
+		            << getResistElementModifierPoints( curElementType ) << " );" << std::endl;
+		oss << "thePlayer:setSpellEffectElementModifierPoints( "
+		            << curElementType << ", "
+		            << getSpellEffectElementModifierPoints( curElementType ) << " );" << std::endl;
+	}
+	oss << "thePlayer:setSpellCriticalModifierPoints( " << getSpellCriticalModifierPoints() << " );" << std::endl;
+	oss << "thePlayer:setName( \"" << getName() << "\" );" << std::endl;
+	// string stream doesn't seem to have a proper overload for uint8_t and makes it the 0-character, so cast to size_t
+	oss << "thePlayer:setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
+
+	// no current attributes are set here because after reloading the player is completely refreshed again
+	
+	return oss.str();
+}
+
