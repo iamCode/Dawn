@@ -19,6 +19,8 @@
 #include "CNPC.h"
 #include "Player.h"
 #include "CAction.h"
+#include "CLuaInterface.h"
+#include "callindirection.h"
 
 extern Player character;
 
@@ -216,6 +218,18 @@ std::string CNPC::getLuaSaveText() const
 	                                        << y_spawn_pos << ", "
 	                                        << seconds_to_respawn << ", "
 	                                        << do_respawn << " );" << std::endl;
+	// add onDieEventHandlers for this npc
+	for ( size_t curOnDieHandlerNr=0; curOnDieHandlerNr<onDieEventHandlers.size(); ++curOnDieHandlerNr ) {
+		LuaCallIndirection *luaHandler = dynamic_cast<LuaCallIndirection*>( onDieEventHandlers[curOnDieHandlerNr ] );
+		if ( luaHandler != NULL ) {
+			// a real LuaCallIndirection
+			oss << objectName << ":addOnDieEventHandler( " << DawnInterface::getItemReferenceRestore( luaHandler ) << " );" << std::endl;
+		} else {
+			abort();
+			dawn_debug_fatal( "unhandled event handler in CNPC::getLuaSaveText()" );
+			abort();
+		}
+	}
 
 	// oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
 	

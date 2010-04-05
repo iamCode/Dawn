@@ -155,12 +155,11 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	if ( selectedEntry == 0 ) {
 		setQuitGame();
 	} else if ( selectedEntry == 1 ) {
-		// clear all interaction points and quests
-		// TODO: check for deletion of interaction points
+		// Load Game
+		
+		// clear current game data
 		Globals::getCurrentZone()->purgeInteractionList();
 		questWindow->removeAllQuests();
-		// Load Game
-		// TODO: We need to remove the old zone somehow (but what to do with monsters, items, etc)
 		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
 			delete it->second;
 			it->second = NULL;
@@ -182,9 +181,6 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	} else if ( selectedEntry == 2 ) {
 		// Save Game
 		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
-		// TODO: 
-		// 1. Save all zones (with everything in them, including map, but map data is for later)
-		// 2. Save lua variables (by finding them in the zone information)
 	} else if ( selectedEntry == 3 ) {
 		setVisible( false );
 	}

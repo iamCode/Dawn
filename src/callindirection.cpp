@@ -19,6 +19,9 @@
 #include "callindirection.h"
 
 #include "CLuaFunctions.h"
+#include "globals.h"
+#include "CZone.h"
+#include <sstream>
 
 LuaCallIndirection::LuaCallIndirection()
 {
@@ -32,6 +35,16 @@ void LuaCallIndirection::call()
 	}
 }
 
+std::string LuaCallIndirection::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curEventHandler";
+	oss << "local " << objectName << " = DawnInterface.createEventHandler();" << std::endl;
+	oss << objectName << ":setExecuteText( [[" << luaText << "]] );" << std::endl;
+
+	return oss.str();
+}
+
 void LuaCallIndirection::setExecuteText( std::string text )
 {
 	this->luaText = text;
@@ -41,7 +54,9 @@ namespace DawnInterface
 {
 	LuaCallIndirection* createEventHandler()
 	{
-		return new LuaCallIndirection();
+		LuaCallIndirection *newEventHandler = new LuaCallIndirection();
+		Globals::getCurrentZone()->addEventHandler( newEventHandler );
+		return newEventHandler;
 	}
 
 }

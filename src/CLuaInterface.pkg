@@ -413,6 +413,9 @@ namespace DawnInterface
 	std::string getItemReferenceRestore( CCharacter *character );
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
 	std::string getItemReferenceRestore( Shop *shop );
+	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( TextWindow *textWindow );
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
 	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
 }

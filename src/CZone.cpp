@@ -24,6 +24,8 @@
 #include "CNPC.h"
 #include "interactionpoint.h"
 #include "shop.h"
+#include "callindirection.h"
+#include "textwindow.h"
 
 #include <cassert>
 #include <memory>
@@ -423,6 +425,15 @@ std::string CZone::getLuaSaveText() const
 {
 	std::ostringstream oss;
 	oss << "DawnInterface.setCurrentZone( \"" << zoneName << "\" );" << std::endl;
+
+	// save call indirections (must be added before spawnpoints since used there)
+	oss << "-- event handlers" << std::endl;
+	for ( size_t curEventHandlerNr=0; curEventHandlerNr<eventHandlers.size(); ++curEventHandlerNr ) {
+		CallIndirection *curEventHandler = eventHandlers[ curEventHandlerNr ];
+		std::string eventHandlerSaveText = curEventHandler->getLuaSaveText();
+		oss << eventHandlerSaveText;
+	}
+	
 	// save all spawnpoints
 	oss << "-- spawnpoints" << std::endl;
 	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
@@ -431,8 +442,6 @@ std::string CZone::getLuaSaveText() const
 		std::string npcSaveText = curNPC->getLuaSaveText();
 		oss << npcSaveText;
 	}
-	
-	// save call indirections
 	
 	// save shop data (this ought to be put into the shop somehow as soon as shops are customizable)
 	oss << "-- shops" << std::endl;
@@ -464,6 +473,11 @@ std::string CZone::getLuaSaveText() const
 	return oss.str();
 }
 
+void CZone::addEventHandler( CallIndirection *newEventHandler )
+{
+	eventHandlers.push_back( newEventHandler );
+}
+
 std::string CZone::getZoneName() const
 {
 	return zoneName;
@@ -493,6 +507,18 @@ void CZone::findInteractionPoint( InteractionPoint *interactionPoint, bool &foun
 	found = false;
 }
 
+void CZone::findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curEventHandlerNr=0; curEventHandlerNr < eventHandlers.size(); ++curEventHandlerNr ) {
+		if ( eventHandlers[ curEventHandlerNr ] == eventHandler ) {
+			found = true;
+			foundPos = curEventHandlerNr;
+			return;
+		}
+	}
+	found = false;
+}
+
 CCharacter* CZone::getCharacterPointer( size_t posInArray ) const
 {
 	// use checked access since we access from lua and lots of stuff could be wrong
@@ -505,6 +531,11 @@ InteractionPoint* CZone::getInteractionPointPointer( size_t posInArray ) const
 	return interactionPoints.at( posInArray );
 }
 
+CallIndirection* CZone::getEventHandlerPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return eventHandlers.at( posInArray );
+}
 
 namespace DawnInterface
 {
@@ -525,6 +556,9 @@ namespace DawnInterface
 	
 	std::string getItemReferenceRestore( CCharacter *character )
 	{
+		if ( character == NULL ) {
+			return "nil;";
+		}
 		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
 			CZone *curZone = it->second;
 			bool found;
@@ -537,12 +571,16 @@ namespace DawnInterface
 			}
 		}
 		// not found
+		abort();
 		dawn_debug_fatal( "could not find character in any of the zones" );
 		abort();
 	}
 	
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint )
 	{
+		if ( interactionPoint == NULL ) {
+			return "nil;";
+		}
 		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
 			CZone *curZone = it->second;
 			bool found;
@@ -559,9 +597,35 @@ namespace DawnInterface
 		abort();
 	}
 	
+	std::string getItemReferenceRestore( CallIndirection *eventHandler )
+	{
+		if ( eventHandler == NULL ) {
+			return "nil;";
+		}
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findEventHandler( eventHandler, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreEventHandlerReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		dawn_debug_fatal( "could not find event handler in any of the zones" );
+		abort();
+	}
+	
 	std::string getItemReferenceRestore( Shop *shop )
 	{
 		return "DawnInterface.addShop(); -- shops not really searchable, yet";
+	}
+	
+	std::string getItemReferenceRestore( TextWindow *textWindow )
+	{
+		return "DawnInterface.createTextWindow(); -- text windows are not restored";
 	}
 
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
@@ -576,6 +640,13 @@ namespace DawnInterface
 		CZone *correctZone = Globals::allZones[ zoneName ];
 		assert( correctZone != NULL );
 		return correctZone->getInteractionPointPointer( posInArray );
+	}
+
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getEventHandlerPointer( posInArray );
 	}
 }
 

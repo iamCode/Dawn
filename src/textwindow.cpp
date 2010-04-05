@@ -100,7 +100,7 @@ TextWindow::TextWindow()
 	:	positionType( PositionType::CENTER ),
 		x( 0 ),
 		y( 0 ),
-		autocloseTime( 0 ),
+		autocloseTime( 1 ),
 		creationTime( 0 )
 {
 }

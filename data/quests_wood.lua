@@ -66,6 +66,7 @@ function initializeWolfStatus()
 	elseif ( quest_playHideAndSeek.monsterSpawnPoint ~= nil and quest_playHideAndSeek.status == 2 )
 	then
 		DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
+		quest_playHideAndSeek.monsterSpawnPoint = nil;
 	end
 end
 

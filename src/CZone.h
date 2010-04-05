@@ -30,6 +30,7 @@
 
 class CNPC;
 class InteractionPoint;
+class CallIndirection;
 
 struct sTileMap {
 	int x_pos, y_pos, id;
@@ -106,6 +107,7 @@ class CZone
 		std::string zoneName;
 		std::vector <CNPC*> npcs;
 		std::vector<InteractionPoint*> interactionPoints;
+		std::vector<CallIndirection*> eventHandlers;
 		GroundLoot groundLoot;
 
 
@@ -149,11 +151,14 @@ class CZone
 		
 		std::string getZoneName() const;
 		std::string getLuaSaveText() const;
+		void addEventHandler( CallIndirection *newEventHandler );
 		// used to restore references when loading
 		void findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const;
 		void findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const;
+		void findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const;
 		CCharacter* getCharacterPointer( size_t posInArray ) const;
 		InteractionPoint* getInteractionPointPointer( size_t posInArray ) const;
+		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
