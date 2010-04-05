@@ -36,7 +36,7 @@ QuestWindow::QuestWindow()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 14);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
 
 	width = backgroundTexture->texture[0].width;

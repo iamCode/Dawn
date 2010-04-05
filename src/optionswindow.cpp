@@ -46,7 +46,7 @@ OptionsWindow::OptionsWindow()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
 
 	width = backgroundTexture->texture[0].width;
@@ -173,6 +173,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
 		CZone *newZone = Globals::allZones["data/zone1"];
 		newZone->LoadZone("data/zone1");
+		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
 	} else if ( selectedEntry == 2 ) {
 		// Save Game
 		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );

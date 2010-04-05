@@ -34,21 +34,21 @@ CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
 {
 	infoFont = NULL;
 	currentTab = 0;
-	tabs[0].tabimage.texture.reserve(1);
+	tabs[0].tabimage.texture.resize(1);
 	tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
 	tabs[0].height = 32;
 	tabs[0].width = 58;
 	tabs[0].posX = 61 + posX;
 	tabs[0].posY = 242 + posY;
 
-	tabs[1].tabimage.texture.reserve(1);
+	tabs[1].tabimage.texture.resize(1);
 	tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
 	tabs[1].height = 32;
 	tabs[1].width = 72;
 	tabs[1].posX = 196 + posX;
 	tabs[1].posY = 242 + posY;
 
-	tabs[2].tabimage.texture.reserve(1);
+	tabs[2].tabimage.texture.resize(1);
 	tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
 	tabs[2].height = 32;
 	tabs[2].width = 59;
@@ -73,7 +73,7 @@ bool CharacterInfoScreen::isVisible() const
 
 void CharacterInfoScreen::LoadTextures()
 {
-	textures.texture.reserve(2);
+	textures.texture.resize(2);
 	textures.LoadIMG("data/interface/CharacterInfoScreen/background.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
 }

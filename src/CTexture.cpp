@@ -95,6 +95,9 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 
 		// Edit the texture object's image data using the information SDL_Surface gives us
 		gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+		
+		// set the texture file name
+		texture[texture_index].textureFile = file;
 	} else {
 		dawn_debug_fatal("SDL could not load %s : %s", file.c_str(), SDL_GetError());
 	}
@@ -170,7 +173,7 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 	Needs to replace the reserve-call here with some other *better* function.
 	I think texture.reserve(highest_texture+1) would do, but not sure...
 	**/
-	texture.reserve(200/**highest_texture+1**/);
+	texture.resize(200/**highest_texture+1**/);
 	if (!try_load_collision_box) {
 		while (!feof(fp)) {
 			if ( fgets(buf, 255, fp) != NULL ) {

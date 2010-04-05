@@ -58,7 +58,7 @@ Spellbook::~Spellbook()
 
 void Spellbook::loadTextures()
 {
-    textures.texture.reserve( 3 );
+    textures.texture.resize( 3 );
     textures.LoadIMG( "data/interface/spellbook/base.tga", 0 );
     textures.LoadIMG( "data/interface/spellbook/placeholder.tga", 1 );
     textures.LoadIMG( "data/white2x2pixel.tga", 2 );

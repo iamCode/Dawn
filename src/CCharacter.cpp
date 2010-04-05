@@ -673,7 +673,7 @@ void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType acti
 	assert( texture[ activityNr ] == NULL );
 
 	texture[ activityNr ] = new CTexture();
-	texture[ activityNr ]->texture.reserve( 8 * numTextures + 1 );
+	texture[ activityNr ]->texture.resize( 8 * numTextures + 1 );
 }
 
 void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename )
@@ -689,7 +689,7 @@ void CCharacter::setLifeTexture( std::string filename )
 {
 	if ( lifebar == NULL ) {
 		lifebar = new CTexture();
-		lifebar->texture.reserve( 2 );
+		lifebar->texture.resize( 2 );
 	}
 	lifebar->LoadIMG( filename, 1 );
 }

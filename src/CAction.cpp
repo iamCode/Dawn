@@ -88,12 +88,12 @@ class AttackAction : public CAction
 
 		static void init() {
 			actionTexture = new CTexture();
-			actionTexture->texture.reserve(1);
+			actionTexture->texture.resize(1);
 			//actionTexture->LoadIMG( "data/actions/attack/attack.tga", 0 );
 			actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
 
 			actionSymbol = new CTexture();
-			actionSymbol->texture.reserve(1);
+			actionSymbol->texture.resize(1);
 			//actionSymbol->LoadIMG( "data/actions/attack/symbol.tga", 0 );
 			actionTexture->LoadIMG( "data/spells/magicmissile/magicmissile.tga", 0 );
 		}

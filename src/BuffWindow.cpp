@@ -45,7 +45,7 @@ void BuffWindow::initFonts()
 
 void BuffWindow::loadTextures()
 {
-    textures.texture.reserve(2);
+    textures.texture.resize(2);
 	textures.LoadIMG("data/interface/BuffWindow/frame.tga",0);
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
 }

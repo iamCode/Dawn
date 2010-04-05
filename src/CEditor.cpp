@@ -632,7 +632,7 @@ void CEditor::DrawEditor()
 
 void CEditor::LoadTextures()
 {
-	interfacetexture.texture.reserve(4);
+	interfacetexture.texture.resize(4);
 	interfacetexture.LoadIMG("data/background_editor.tga",0);
 	interfacetexture.LoadIMG("data/current_tile_backdrop.tga",1);
 	interfacetexture.LoadIMG("data/tile.tga",2);

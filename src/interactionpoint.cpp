@@ -24,17 +24,18 @@
 #include "CCharacter.h"
 #include "CZone.h"
 #include "globals.h"
+#include "CLuaInterface.h"
 
 #include <cassert>
 
 InteractionPoint::InteractionPoint()
 	: interactionTexture( NULL ),
 	  backgroundTexture( NULL ),
+	  interactionCode(""),
 	  posX(0),
 	  posY(0),
 	  width(0),
 	  height(0),
-	  interactionCode(""),
 	  markedAsDeletable(false)
 {
 }
@@ -64,7 +65,7 @@ void InteractionPoint::setInteractionTexture( std::string texturename )
 		delete interactionTexture;
 	}
 	interactionTexture = new CTexture();
-	interactionTexture->texture.reserve(1);
+	interactionTexture->texture.resize(1);
 	interactionTexture->LoadIMG( texturename, 0 );
 }
 
@@ -75,7 +76,7 @@ void InteractionPoint::setBackgroundTexture( std::string texturename )
 		delete backgroundTexture;
 	}
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( texturename, 0 );
 }
 
@@ -142,6 +143,24 @@ void InteractionPoint::markAsDeletable()
 	markedAsDeletable = true;
 }
 
+std::string InteractionPoint::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curInteractionPoint";
+	
+	oss << "local " << objectName << " = DawnInterface.addInteractionPoint();" << std::endl;
+	oss << objectName << ":setPosition( " << posX << ", " << posY << ", " << width << ", " << height << " );" << std::endl;
+	if ( backgroundTexture != NULL ) {
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	if ( interactionTexture != NULL ) {
+		oss << objectName << ":setInteractionTexture( \"" << interactionTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
+	
+	return oss.str();
+}
+
 CharacterInteractionPoint::CharacterInteractionPoint( CCharacter *character_ )
 	: interactionCharacter( character_ )
 {
@@ -166,6 +185,23 @@ bool CharacterInteractionPoint::isMouseOver( int mouseX, int mouseY ) const
 void CharacterInteractionPoint::draw()
 {
 	// no drawing since the character is what is drawn
+}
+
+std::string CharacterInteractionPoint::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curInteractionPoint";
+	std::string characterReference = DawnInterface::getItemReferenceRestore( interactionCharacter );
+	oss << "local " << objectName << " = DawnInterface.addCharacterInteractionPoint( " << characterReference << " );" << std::endl;
+	if ( backgroundTexture != NULL ) {
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	if ( interactionTexture != NULL ) {
+		oss << objectName << ":setInteractionTexture( \"" << interactionTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
+	
+	return oss.str();
 }
 
 namespace DawnInterface

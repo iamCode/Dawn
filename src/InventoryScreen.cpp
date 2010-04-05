@@ -51,7 +51,7 @@ InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t o
 	  sizeX( sizeX_ ),
 	  sizeY( sizeY_ )
 {
-    textures.texture.reserve( 1 );
+    textures.texture.resize( 1 );
     textures.LoadIMG( plain_file, 0 );
 }
 
@@ -152,7 +152,7 @@ InventoryScreen::~InventoryScreen()
 
 void InventoryScreen::loadTextures()
 {
-	textures.texture.reserve(5);
+	textures.texture.resize(5);
 	textures.LoadIMG("data/interface/inventory/base.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
 	textures.LoadIMG("data/interface/inventory/goldcoin.tga",2);

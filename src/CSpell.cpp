@@ -165,7 +165,7 @@ void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 {
 	assert( spellSymbol == NULL );
 	spellSymbol = new CTexture();
-	spellSymbol->texture.reserve(1);
+	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
 
@@ -285,7 +285,7 @@ void GeneralRayDamageSpell::setNumAnimations( int count )
 	assert( spellTexture == NULL );
 	spellTexture = new CTexture();
 	numTextures = count;
-	spellTexture->texture.reserve( count );
+	spellTexture->texture.resize( count );
 }
 
 void GeneralRayDamageSpell::setAnimationTexture( int num, std::string filename )
@@ -432,7 +432,7 @@ void GeneralBoltDamageSpell::setNumAnimations( int count )
 	assert( boltTexture == NULL );
 	boltTexture = new CTexture();
 	numBoltTextures = count;
-	boltTexture->texture.reserve( count );
+	boltTexture->texture.resize( count );
 }
 
 void GeneralBoltDamageSpell::setAnimationTexture( int num, std::string filename )

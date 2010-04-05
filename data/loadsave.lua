@@ -36,6 +36,10 @@ function printValue( surroundingName, varname, value )
 		do 
 			printValue(prefix..varname, innervarname, innervalue )
 		end
+	elseif ( type(value) == "userdata" )
+	then
+		restoreString = DawnInterface.getItemReferenceRestore( value );
+		io.write( prefix..varname.."="..restoreString..'\n' );
 	end
 end
 

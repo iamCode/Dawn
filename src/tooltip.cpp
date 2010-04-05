@@ -585,7 +585,7 @@ namespace Frames
 		}
 
 		frameTextures = std::auto_ptr<CTexture>(new CTexture());
-		frameTextures->texture.reserve( 12 );
+		frameTextures->texture.resize( 12 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
 		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );

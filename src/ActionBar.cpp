@@ -245,7 +245,7 @@ void ActionBar::drawSpellTooltip( int x, int y )
 
 void ActionBar::loadTextures()
 {
-    textures.texture.reserve(2);
+    textures.texture.resize(2);
 	textures.LoadIMG("data/interface/blended_bg.tga",0);
 	textures.LoadIMG("data/border.tga",1);
 }

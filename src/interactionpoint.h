@@ -50,8 +50,13 @@ class InteractionPoint
 
 		bool isMarkedDeletable() const;
 
+		virtual std::string getLuaSaveText() const;
+
 	protected:
 		InteractionPoint();
+		CTexture *interactionTexture;
+		CTexture *backgroundTexture;
+		std::string interactionCode;
 
 	private:
 		friend InteractionPoint* DawnInterface::addInteractionPoint();
@@ -59,15 +64,10 @@ class InteractionPoint
 
 		void markAsDeletable();
 
-		CTexture *interactionTexture;
-		CTexture *backgroundTexture;
-
 		int posX;
 		int posY;
 		int width;
 		int height;
-
-		std::string interactionCode;
 
 		bool markedAsDeletable;
 };
@@ -77,6 +77,8 @@ class CharacterInteractionPoint : public InteractionPoint
 	public:
 		virtual bool isMouseOver( int mouseX, int mouseY ) const;
 		virtual void draw();
+		
+		virtual std::string getLuaSaveText() const;
 
 	private:
 		friend InteractionPoint* DawnInterface::addCharacterInteractionPoint( CCharacter *character );

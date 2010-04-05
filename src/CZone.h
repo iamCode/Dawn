@@ -147,7 +147,13 @@ class CZone
 		
 		GroundLoot* getGroundLoot();
 		
+		std::string getZoneName() const;
 		std::string getLuaSaveText() const;
+		// used to restore references when loading
+		void findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const;
+		void findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const;
+		CCharacter* getCharacterPointer( size_t posInArray ) const;
+		InteractionPoint* getInteractionPointPointer( size_t posInArray ) const;
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;

@@ -23,14 +23,14 @@
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.reserve(5);
+	interfacetextures.texture.resize(5);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
 	interfacetextures.LoadIMG("data/interface/lifebar.tga",3);
 	interfacetextures.LoadIMG("data/interface/manabar.tga",4);
 
-    damageDisplayTexturesSmall.texture.reserve(10);
+    damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/1small.tga",1);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/2small.tga",2);
@@ -42,7 +42,7 @@ void CInterface::LoadTextures()
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/8small.tga",8);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/9small.tga",9);
 
-	damageDisplayTexturesBig.texture.reserve(10);
+	damageDisplayTexturesBig.texture.resize(10);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/0big.tga",0);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/1big.tga",1);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/2big.tga",2);

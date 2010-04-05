@@ -56,5 +56,10 @@ namespace DawnInterface
 	Player* getPlayer();
 	void setCurrentZone( std::string zoneName );
 	std::string getAllZonesSaveText();
+	std::string getItemReferenceRestore( CCharacter *character );
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
+	std::string getItemReferenceRestore( Shop *shop );
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
 }
 

@@ -23,6 +23,9 @@
 #include "CLuaFunctions.h"
 #include "CNPC.h"
 #include "interactionpoint.h"
+#include "shop.h"
+
+#include <cassert>
 
 extern Player character;
 
@@ -428,6 +431,13 @@ std::string CZone::getLuaSaveText() const
 	// save call indirections
 	
 	// save traders (well... they are spawnpoints...)
+
+	// save interaction points
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteractionPoint = interactionPoints[ curInteractionNr ];
+		std::string interactionSaveText = curInteractionPoint->getLuaSaveText();
+		oss << interactionSaveText;
+	}
 	
 	// save ground loot
 	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
@@ -439,6 +449,47 @@ std::string CZone::getLuaSaveText() const
 	}
 	
 	return oss.str();
+}
+
+std::string CZone::getZoneName() const
+{
+	return zoneName;
+}
+
+void CZone::findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
+		if ( npcs[ curNpcNr ] == character ) {
+			found = true;
+			foundPos = curNpcNr;
+			return;
+		}
+	}
+	found = false;
+}
+
+void CZone::findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		if ( interactionPoints[ curInteractionNr ] == interactionPoint ) {
+			found = true;
+			foundPos = curInteractionNr;
+			return;
+		}
+	}
+	found = false;
+}
+
+CCharacter* CZone::getCharacterPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return npcs.at( posInArray );
+}
+
+InteractionPoint* CZone::getInteractionPointPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return interactionPoints.at( posInArray );
 }
 
 
@@ -457,6 +508,63 @@ namespace DawnInterface
 	void restoreGroundLootItem( Item *item, int xPos, int yPos )
 	{
 		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, item );
+	}
+	
+	std::string getItemReferenceRestore( CCharacter *character )
+	{
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findCharacter( character, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreCharacterReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		return "-- character not found"; 
+		//dawn_debug_fatal( "could not find character in any of the zones" );
+		//abort();
+	}
+	
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint )
+	{
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findInteractionPoint( interactionPoint, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreInteractionPointReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		return "-- interaction point not found"; 
+		//dawn_debug_fatal( "could not find interaction point in any of the zones" );
+		//abort();
+	}
+	
+	std::string getItemReferenceRestore( Shop *shop )
+	{
+		return "nil -- shops not searched";
+	}
+
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getCharacterPointer( posInArray );
+	}
+
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getInteractionPointPointer( posInArray );
 	}
 }
 
