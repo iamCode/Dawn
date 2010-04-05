@@ -402,6 +402,7 @@ namespace DawnInterface
 	std::string getInventorySaveText();
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
 	void restoreWieldItem( int slot, Item *item );
+	void restoreGroundLootItem( Item *item, int xPos, int yPos );
 	Shop *addShop();
 	Player *getPlayer();
 	void setCurrentZone( std::string zoneName );

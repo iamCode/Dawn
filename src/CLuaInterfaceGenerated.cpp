@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Apr  5 15:01:02 2010.
+** Generated automatically by tolua++-1.0.92 on Mon Apr  5 16:06:31 2010.
 */
 
 #ifndef __cplusplus
@@ -3869,6 +3869,38 @@ static int tolua_CLuaInterface_DawnInterface_restoreWieldItem00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::restoreGroundLootItem */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_restoreGroundLootItem00
+static int tolua_CLuaInterface_DawnInterface_restoreGroundLootItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* item = ((Item*)  tolua_tousertype(tolua_S,1,0));
+  int xPos = ((int)  tolua_tonumber(tolua_S,2,0));
+  int yPos = ((int)  tolua_tonumber(tolua_S,3,0));
+  {
+   DawnInterface::restoreGroundLootItem(item,xPos,yPos);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'restoreGroundLootItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::addShop */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addShop00
 static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
@@ -4296,6 +4328,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);
    tolua_function(tolua_S,"restoreItemInBackpack",tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00);
    tolua_function(tolua_S,"restoreWieldItem",tolua_CLuaInterface_DawnInterface_restoreWieldItem00);
+   tolua_function(tolua_S,"restoreGroundLootItem",tolua_CLuaInterface_DawnInterface_restoreGroundLootItem00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
    tolua_function(tolua_S,"setCurrentZone",tolua_CLuaInterface_DawnInterface_setCurrentZone00);

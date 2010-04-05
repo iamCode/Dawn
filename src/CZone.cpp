@@ -430,7 +430,13 @@ std::string CZone::getLuaSaveText() const
 	// save traders (well... they are spawnpoints...)
 	
 	// save ground loot
-	
+	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
+		sGroundItems curGroundItem = groundLoot.groundItems[ curGroundItemNr ];
+		oss << "DawnInterface.restoreGroundLootItem( "
+	                 << "itemDatabase[ \"" << curGroundItem.item->getID() << "\" ], "
+		             << curGroundItem.xpos << ", "
+		             << curGroundItem.ypos << " );" << std::endl;
+	}
 	
 	return oss.str();
 }
@@ -446,6 +452,11 @@ namespace DawnInterface
 		}
 
 		return oss.str();
+	}
+	
+	void restoreGroundLootItem( Item *item, int xPos, int yPos )
+	{
+		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, item );
 	}
 }
 
