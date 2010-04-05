@@ -404,4 +404,6 @@ namespace DawnInterface
 	void restoreWieldItem( int slot, Item *item );
 	Shop *addShop();
 	Player *getPlayer();
+	void setCurrentZone( std::string zoneName );
+	std::string getAllZonesSaveText();
 }

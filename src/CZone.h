@@ -103,6 +103,7 @@ class CZone
 		void DrawEnvironment();
 		void DrawShadows();
 		
+		std::string zoneName;
 		std::vector <CNPC*> npcs;
 		std::vector<InteractionPoint*> interactionPoints;
 		GroundLoot groundLoot;
@@ -145,6 +146,8 @@ class CZone
 		void purgeInteractionList();
 		
 		GroundLoot* getGroundLoot();
+		
+		std::string getLuaSaveText() const;
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;

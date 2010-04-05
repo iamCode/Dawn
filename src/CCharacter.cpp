@@ -60,6 +60,10 @@ void CCharacter::baseOnType( std::string otherName )
 		abort();
 	}
 	other = allMobTypes[ otherName ];
+	// classID is only set if this was created as a new mob type with createNewMobType
+	if ( this->classID == "" ) {
+		this->classID = otherName;
+	}
 	setStrength( other->getStrength() );
 	setDexterity( other->getDexterity() );
 	setVitality( other->getVitality() );
@@ -97,6 +101,11 @@ void CCharacter::baseOnType( std::string otherName )
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
+}
+
+std::string CCharacter::getClassID() const
+{
+	return classID;
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;

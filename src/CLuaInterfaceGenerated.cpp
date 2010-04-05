@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Mon Apr  5 12:36:36 2010.
+** Generated automatically by tolua++-1.0.92 on Mon Apr  5 15:01:02 2010.
 */
 
 #ifndef __cplusplus
@@ -3923,6 +3923,61 @@ static int tolua_CLuaInterface_DawnInterface_getPlayer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::setCurrentZone */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_setCurrentZone00
+static int tolua_CLuaInterface_DawnInterface_setCurrentZone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::string zoneName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  {
+   DawnInterface::setCurrentZone(zoneName);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCurrentZone'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::getAllZonesSaveText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getAllZonesSaveText00
+static int tolua_CLuaInterface_DawnInterface_getAllZonesSaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getAllZonesSaveText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAllZonesSaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
 {
@@ -4243,6 +4298,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"restoreWieldItem",tolua_CLuaInterface_DawnInterface_restoreWieldItem00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
+   tolua_function(tolua_S,"setCurrentZone",tolua_CLuaInterface_DawnInterface_setCurrentZone00);
+   tolua_function(tolua_S,"getAllZonesSaveText",tolua_CLuaInterface_DawnInterface_getAllZonesSaveText00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

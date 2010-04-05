@@ -43,6 +43,9 @@ function saveGame( fileprefix )
 	print( "saving lua game data to " .. fileprefix..'.lua' )
 	local oldOut = io.output()
 	io.output( fileprefix..'.lua' )
+	-- save all zones (needed for variable lookups on user types)
+	io.write( DawnInterface.getAllZonesSaveText() );
+
 	for varname,value in pairs(_G) 
 	do 
 		if ( not initialGlobals[varname] )
@@ -52,6 +55,8 @@ function saveGame( fileprefix )
 	end
 	io.write( DawnInterface.getQuestSaveText() );
 	io.write( DawnInterface.getInventorySaveText() );
+	player = DawnInterface.getPlayer();
+	io.write( player:getSaveText() );
 	-- map = LuaInterface.getCurrentMap()
 	-- io.write( 'LuaInterface.enterMap( "',map:getFileName(),'", 3, 3 )' )
 

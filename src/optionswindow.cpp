@@ -159,17 +159,26 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		questWindow->removeAllQuests();
 		// Load Game
 		// TODO: We need to remove the old zone somehow (but what to do with monsters, items, etc)
-		CZone *newZone = new CZone();
-		Globals::setCurrentZone( newZone );
-		newZone->LoadZone("data/zone1");
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			delete it->second;
+			it->second = NULL;
+		}
+		Globals::allZones.clear();
 		
 		character.clearInventory();
-		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
 		// reenter map
-		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
+		// 1. Load all zones
+		// TODO: Load all zones
+		// 2. Restore lua variables
+		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
+		CZone *newZone = Globals::allZones["data/zone1"];
+		newZone->LoadZone("data/zone1");
 	} else if ( selectedEntry == 2 ) {
 		// Save Game
 		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
+		// TODO: 
+		// 1. Save all zones (with everything in them, including map, but map data is for later)
+		// 2. Save lua variables (by finding them in the zone information)
 	} else if ( selectedEntry == 3 ) {
 		setVisible( false );
 	}

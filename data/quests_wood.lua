@@ -1,30 +1,34 @@
-trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0 );
-trader:setAttitude( Attitude.FRIENDLY );
-traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
-traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );
-traderInteraction:setInteractionCode( "onActivateTrader()" );
-traderShop = DawnInterface.addShop();
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["bladeofstrength"] );
+function init()
+	trader = DawnInterface.addMobSpawnPoint( "Human", 600, 150, 1, 0 );
+	trader:setAttitude( Attitude.FRIENDLY );
+	traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
+	traderInteraction:setInteractionTexture( "data/interaction/talk.tga" );
+	traderInteraction:setInteractionCode( "onActivateTrader()" );
+	traderShop = DawnInterface.addShop();
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["bladeofstrength"] );
+
+	if ( quest_playHideAndSeek == nil )
+	then
+		quest_playHideAndSeek = {}
+		quest_playHideAndSeek.fulfilled = false
+		quest_playHideAndSeek.status = 0
+	end
+
+	initializeQuestStatus( quest_playHideAndSeek.status );
+end
 
 function onActivateTrader()
 	traderShop:setVisible( true )
-end
-
-if ( quest_playHideAndSeek == nil )
-then
-	quest_playHideAndSeek = {}
-	quest_playHideAndSeek.fulfilled = false
-	quest_playHideAndSeek.status = 0
 end
 
 function initializeJohnStatus()
@@ -130,9 +134,6 @@ function initializeQuestStatus( status )
 	end 
 end
 
-initializeQuestStatus( quest_playHideAndSeek.status );
-
-
 function onActivateJohn()
 	if ( quest_playHideAndSeek.status == 0 )
 	then
@@ -186,4 +187,8 @@ function onKilledQuestMonster()
 	initializeQuestStatus(2);
 end
 
+if ( quest_playHideAndSeek == nil )
+then
+	init()
+end
 

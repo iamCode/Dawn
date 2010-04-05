@@ -192,6 +192,36 @@ Attitude::Attitude CNPC::getAttitude() const
 	return this->attitudeTowardsPlayer;
 }
 
+static std::string attitudeToString( Attitude::Attitude attitude )
+{
+	switch ( attitude ) {
+		case Attitude::HOSTILE:
+			return "HOSTILE";
+		case Attitude::NEUTRAL:
+			return "NEUTRAL";
+		case Attitude::FRIENDLY:
+			return "FRIENDLY";
+		default:
+			dawn_debug_fatal("Attribute not handled in attitudeToString");
+			abort();
+	}
+}
+
+std::string CNPC::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curNPC";
+	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", " 
+	                                        << x_spawn_pos << ", "
+	                                        << y_spawn_pos << ", "
+	                                        << seconds_to_respawn << ", "
+	                                        << do_respawn << " );" << std::endl;
+
+	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
+	
+	return oss.str();
+}
+
 
 
 

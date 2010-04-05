@@ -18,6 +18,8 @@
 
 #include "CZone.h"
 
+#include "globals.h"
+
 #include "CLuaFunctions.h"
 #include "CNPC.h"
 #include "interactionpoint.h"
@@ -38,6 +40,9 @@ void CZone::DrawZone()
 
 void CZone::LoadZone(std::string file)
 {
+	zoneName = file;
+	Globals::allZones[ file ] = this;
+	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
 	ZoneTiles.LoadTextureMap( std::string( file ).append ( ".textures" ) );
 	ZoneEnvironment.LoadTextureMap( std::string( file ).append ( ".textureenvironment" ) ,true);
 	ZoneShadow.LoadTextureMap( std::string( file ).append ( ".textureshadow" ) );
@@ -406,5 +411,41 @@ void CZone::purgeInteractionList()
 GroundLoot* CZone::getGroundLoot()
 {
 	return &groundLoot;
+}
+
+std::string CZone::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	oss << "DawnInterface.setCurrentZone( \"" << zoneName << "\" );" << std::endl;
+	// save all spawnpoints
+	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
+		CNPC *curNPC = npcs[ curNpcNr ];
+		// save cur npc
+		std::string npcSaveText = curNPC->getLuaSaveText();
+		oss << npcSaveText;
+	}
+	
+	// save call indirections
+	
+	// save traders (well... they are spawnpoints...)
+	
+	// save ground loot
+	
+	
+	return oss.str();
+}
+
+
+namespace DawnInterface
+{
+	std::string getAllZonesSaveText()
+	{
+		std::ostringstream oss;
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			oss << it->second->getLuaSaveText();
+		}
+
+		return oss.str();
+	}
 }
 

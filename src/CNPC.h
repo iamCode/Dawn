@@ -62,6 +62,8 @@ class CNPC : public CCharacter
 		void onDie();
 		void setAttitude( Attitude::Attitude attitude );
 		Attitude::Attitude getAttitude() const;
+
+		std::string getLuaSaveText() const;
 };
 
 #endif // __CNPC_H__

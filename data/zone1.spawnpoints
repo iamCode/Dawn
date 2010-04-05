@@ -1,3 +1,8 @@
-DawnInterface.addMobSpawnPoint( "Wolf", 500, 250, 10, 1 )
-DawnInterface.addMobSpawnPoint( "Wolf Pup", 500, 750, 5, 1 )
-DawnInterface.addMobSpawnPoint( "Wolf", 600, 250, 10, 1 )
+if ( zone1 == nil )
+then
+	zone1 = {}
+	DawnInterface.addMobSpawnPoint( "Wolf", 500, 250, 10, 1 )
+	DawnInterface.addMobSpawnPoint( "Wolf Pup", 500, 750, 5, 1 )
+	DawnInterface.addMobSpawnPoint( "Wolf", 600, 250, 10, 1 )
+end
+

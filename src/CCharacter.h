@@ -64,6 +64,8 @@ class CCharacter
 {
 		friend class CSpellActionBase;
 		friend class SpellActionBaseNew;
+		
+		std::string classID;
 
 	public:
 		CCharacter();
@@ -143,6 +145,7 @@ class CCharacter
 		CCharacter *Target;
 
 		void baseOnType( std::string otherType );
+		std::string getClassID() const;
 
 		std::string getName() const;
 		void setName( std::string newName );

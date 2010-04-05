@@ -135,6 +135,11 @@ std::auto_ptr<Shop> shopWindow;
 
 std::vector<CSpellActionBase*> activeSpellActions;
 
+namespace Globals
+{
+	std::map< std::string, CZone* > allZones;
+}
+
 void enqueueActiveSpellAction( CSpellActionBase *spellaction )
 {
 	activeSpellActions.push_back( spellaction );
@@ -215,6 +220,15 @@ namespace DawnInterface
 	Player* getPlayer()
 	{
 		return &character;
+	}
+
+	void setCurrentZone( std::string zoneName )
+	{
+		if ( Globals::allZones[ zoneName ] == NULL ) {
+			Globals::allZones[ zoneName ] = new CZone();
+		}
+		CZone *newCurZone = Globals::allZones[ zoneName ];
+		Globals::setCurrentZone( newCurZone );
 	}
 }
 
@@ -533,7 +547,6 @@ public:
 		progressString = "Loading Character Data";
 		progress = 0.7;
 		CZone *newZone = new CZone();
-		Globals::setCurrentZone( newZone );
 		newZone->LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );

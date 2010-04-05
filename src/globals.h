@@ -19,11 +19,15 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-// ideally this file should not add any include dependency
+#include <string>
+#include <map>
+
+// ideally this file should not add any include dependency on dawn files
 class CZone;
 
 namespace Globals
 {
+	extern std::map< std::string, CZone* > allZones;
 	CZone *getCurrentZone();
 	void setCurrentZone( CZone *newCurZone );
 }
