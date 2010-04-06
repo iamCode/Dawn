@@ -68,5 +68,7 @@ namespace DawnInterface
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
 	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
+	std::string getActionbarSaveText();
+	void restoreActionBar( int buttonNr, CSpellActionBase *action );
 }
 

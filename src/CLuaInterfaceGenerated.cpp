@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Apr  6 21:32:44 2010.
+** Generated automatically by tolua++-1.0.92 on Tue Apr  6 22:23:34 2010.
 */
 
 #ifndef __cplusplus
@@ -18,22 +18,23 @@ TOLUA_API int  tolua_CLuaInterface_open (lua_State* tolua_S);
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"LuaCallIndirection");
+ tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"ConfigurableSpell");
- tolua_usertype(tolua_S,"TextWindow");
- tolua_usertype(tolua_S,"GeneralHealingSpell");
+ tolua_usertype(tolua_S,"CSpellActionBase");
+ tolua_usertype(tolua_S,"CSpell");
+ tolua_usertype(tolua_S,"Item");
+ tolua_usertype(tolua_S,"LuaCallIndirection");
  tolua_usertype(tolua_S,"CNPC");
  tolua_usertype(tolua_S,"CallIndirection");
- tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
- tolua_usertype(tolua_S,"GeneralRayDamageSpell");
+ tolua_usertype(tolua_S,"GeneralHealingSpell");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
  tolua_usertype(tolua_S,"CCharacter");
- tolua_usertype(tolua_S,"Item");
- tolua_usertype(tolua_S,"Shop");
- tolua_usertype(tolua_S,"GeneralDamageSpell");
- tolua_usertype(tolua_S,"CSpell");
- tolua_usertype(tolua_S,"Player");
+ tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"InteractionPoint");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
+ tolua_usertype(tolua_S,"Player");
+ tolua_usertype(tolua_S,"Shop");
+ tolua_usertype(tolua_S,"TextWindow");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -4287,6 +4288,63 @@ static int tolua_CLuaInterface_DawnInterface_restoreEventHandlerReference00(lua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::getActionbarSaveText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getActionbarSaveText00
+static int tolua_CLuaInterface_DawnInterface_getActionbarSaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getActionbarSaveText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getActionbarSaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::restoreActionBar */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_restoreActionBar00
+static int tolua_CLuaInterface_DawnInterface_restoreActionBar00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int buttonNr = ((int)  tolua_tonumber(tolua_S,1,0));
+  CSpellActionBase* action = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  {
+   DawnInterface::restoreActionBar(buttonNr,action);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'restoreActionBar'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
 {
@@ -4495,6 +4553,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"CROSSBOW",WeaponType::CROSSBOW);
    tolua_constant(tolua_S,"SHIELD",WeaponType::SHIELD);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"CSpellActionBase","CSpellActionBase","",NULL);
+  tolua_beginmodule(tolua_S,"CSpellActionBase");
+  tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"CSpell","CSpell","CSpellActionBase",NULL);
+  tolua_beginmodule(tolua_S,"CSpell");
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"Item","Item","",NULL);
   tolua_beginmodule(tolua_S,"Item");
    tolua_function(tolua_S,"setDescription",tolua_CLuaInterface_Item_setDescription00);
@@ -4620,6 +4684,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"restoreCharacterReference",tolua_CLuaInterface_DawnInterface_restoreCharacterReference00);
    tolua_function(tolua_S,"restoreInteractionPointReference",tolua_CLuaInterface_DawnInterface_restoreInteractionPointReference00);
    tolua_function(tolua_S,"restoreEventHandlerReference",tolua_CLuaInterface_DawnInterface_restoreEventHandlerReference00);
+   tolua_function(tolua_S,"getActionbarSaveText",tolua_CLuaInterface_DawnInterface_getActionbarSaveText00);
+   tolua_function(tolua_S,"restoreActionBar",tolua_CLuaInterface_DawnInterface_restoreActionBar00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;
