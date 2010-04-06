@@ -464,10 +464,19 @@ std::string CZone::getLuaSaveText() const
 	oss << "-- ground loot" << std::endl;
 	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
 		sGroundItems curGroundItem = groundLoot.groundItems[ curGroundItemNr ];
-		oss << "DawnInterface.restoreGroundLootItem( "
-	                 << "itemDatabase[ \"" << curGroundItem.item->getID() << "\" ], "
-		             << curGroundItem.xpos << ", "
-		             << curGroundItem.ypos << " );" << std::endl;
+		Item *item = curGroundItem.item;
+		if ( dynamic_cast<GoldHeap*>( item ) != NULL ) {
+			GoldHeap *goldHeap = dynamic_cast<GoldHeap*>( item );
+			oss << "DawnInterface.restoreGroundGold( "
+			             << goldHeap->numCoins() << ", "
+			             << curGroundItem.xpos << ", "
+			             << curGroundItem.ypos << " );" << std::endl;
+		} else {
+			oss << "DawnInterface.restoreGroundLootItem( "
+			             << "itemDatabase[ \"" << item->getID() << "\" ], "
+			             << curGroundItem.xpos << ", "
+			             << curGroundItem.ypos << " );" << std::endl;
+		}
 	}
 	
 	return oss.str();
@@ -554,6 +563,11 @@ namespace DawnInterface
 		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, item );
 	}
 	
+	void restoreGroundGold( int amount, int xPos, int yPos )
+	{
+		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, new GoldHeap( amount ) );
+	}
+
 	std::string getItemReferenceRestore( CCharacter *character )
 	{
 		if ( character == NULL ) {

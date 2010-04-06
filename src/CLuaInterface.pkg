@@ -408,6 +408,7 @@ namespace DawnInterface
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
 	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );
+	void restoreGroundGold( int amount, int xPos, int yPos );
 	void setCurrentZone( std::string zoneName );
 	std::string getAllZonesSaveText();
 	std::string getItemReferenceRestore( CCharacter *character );
