@@ -224,6 +224,12 @@ void Spellbook::inscribeSpell( CSpellActionBase *spell )
 	refreshPage();
 }
 
+void Spellbook::clear()
+{
+	inscribedSpells.clear();
+	refreshPage();
+}
+
 void Spellbook::nextPage()
 {
 	// don't go to a page with no spells on it
@@ -266,6 +272,17 @@ void Spellbook::refreshPage()
 	}
 }
 
+std::string Spellbook::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	for ( size_t curSpellNr=0; curSpellNr<inscribedSpells.size(); ++curSpellNr ) {
+		CSpellActionBase *curSpell = inscribedSpells[ curSpellNr ];
+		oss << "DawnInterface.inscribeSpellInPlayerSpellbook( "
+		            << "spellDatabase[ \"" << curSpell->getID() << "\" ] );" << std::endl;
+	}
+	return oss.str();
+}
+
 extern std::auto_ptr<Spellbook> spellbook;
 
 namespace DawnInterface
@@ -273,5 +290,10 @@ namespace DawnInterface
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell )
 	{
 		spellbook->inscribeSpell( inscribedSpell );
+	}
+	
+	std::string getSpellbookSaveText()
+	{
+		return spellbook->getLuaSaveText();
 	}
 }

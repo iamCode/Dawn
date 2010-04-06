@@ -48,13 +48,16 @@ namespace DawnInterface
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
+	Player *getPlayer();
+	
+	// functions used for loading only
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
-	void restoreItemInBackpack( Item *item, size_t inventoryPosX, size_t inventoryPosY );
-	void restoreWieldItem( size_t slot, Item *item );
+	std::string getSpellbookSaveText();
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );
 	void restoreGroundGold( int amount, int xPos, int yPos );
-	Player* getPlayer();
 	void setCurrentZone( std::string zoneName );
 	std::string getAllZonesSaveText();
 	std::string getItemReferenceRestore( CCharacter *character );

@@ -81,6 +81,7 @@ class CSpellActionBase
 		virtual uint16_t getCooldown() const = 0;
 		virtual uint16_t getManaCost() const = 0;
 		virtual std::string getName() const = 0;
+		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
 		virtual CTexture* getSymbol() const = 0;
 		virtual EffectType::EffectType getEffectType() const = 0;

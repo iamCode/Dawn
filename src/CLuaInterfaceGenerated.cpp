@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Apr  6 21:08:49 2010.
+** Generated automatically by tolua++-1.0.92 on Tue Apr  6 21:32:44 2010.
 */
 
 #ifndef __cplusplus
@@ -3861,6 +3861,33 @@ static int tolua_CLuaInterface_DawnInterface_getInventorySaveText00(lua_State* t
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::getSpellbookSaveText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getSpellbookSaveText00
+static int tolua_CLuaInterface_DawnInterface_getSpellbookSaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getSpellbookSaveText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSpellbookSaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::restoreItemInBackpack */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00
 static int tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00(lua_State* tolua_S)
@@ -4578,6 +4605,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
    tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
    tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);
+   tolua_function(tolua_S,"getSpellbookSaveText",tolua_CLuaInterface_DawnInterface_getSpellbookSaveText00);
    tolua_function(tolua_S,"restoreItemInBackpack",tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00);
    tolua_function(tolua_S,"restoreWieldItem",tolua_CLuaInterface_DawnInterface_restoreWieldItem00);
    tolua_function(tolua_S,"restoreGroundLootItem",tolua_CLuaInterface_DawnInterface_restoreGroundLootItem00);

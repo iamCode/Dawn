@@ -385,13 +385,13 @@ namespace DawnInterface
 		return character.getInventory()->getReloadText();
 	}
 	
-	void restoreItemInBackpack( Item *item, size_t inventoryPosX, size_t inventoryPosY )
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
 	{
 		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
 		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
 	}
 	
-	void restoreWieldItem( size_t slot, Item *item )
+	void restoreWieldItem( int slot, Item *item )
 	{
 		ItemSlot::ItemSlot slotToUse = static_cast<ItemSlot::ItemSlot>( slot );
 		InventoryItem *invItem = new InventoryItem( item, 0, 0, &character );

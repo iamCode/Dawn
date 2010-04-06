@@ -73,6 +73,8 @@ class Spellbook
         void setFloatingSpell( sSpellSlot *newFloatingSpell );
         void unsetFloatingSpell();
         void inscribeSpell( CSpellActionBase *spell );
+        void clear();
+        std::string getLuaSaveText() const;
 
     private:
 		bool isMouseOverNextPageArea( int clickX, int clickY );

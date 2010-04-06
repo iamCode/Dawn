@@ -405,6 +405,7 @@ namespace DawnInterface
 	// functions used for loading only
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
+	std::string getSpellbookSaveText();
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
 	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );

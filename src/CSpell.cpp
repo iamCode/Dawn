@@ -85,6 +85,22 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	                                  left, width, bottom, height );
 }
 
+std::string CSpellActionBase::getID() const
+{
+	std::string name = getName();
+	std::ostringstream idstream;
+	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
+		if ( isspace( name[curChar] ) ) {
+			// ignore
+		} else if ( isupper( name[curChar] ) ) {
+			idstream << char( tolower( name[curChar] ) );
+		} else {
+			idstream << char( name[curChar] );
+		}
+	}
+	return idstream.str();
+}
+
 /// ConfigurableSpell
 
 ConfigurableSpell::ConfigurableSpell()

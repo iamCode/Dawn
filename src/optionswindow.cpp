@@ -29,6 +29,7 @@
 #include "Player.h"
 #include "globals.h"
 #include "shop.h"
+#include "Spellbook.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -134,6 +135,7 @@ void setQuitGame();
 
 extern Player character;
 extern std::auto_ptr<Shop> shopWindow;
+extern std::auto_ptr<Spellbook> spellbook;
 
 void OptionsWindow::clicked( int mouseX, int mouseY )
 {
@@ -169,6 +171,8 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		character.clearInventory();
 		// clear shop data
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
+		// clear spellbook
+		spellbook->clear();
 
 		// reenter map
 		// 1. Load all zones
