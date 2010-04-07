@@ -64,7 +64,7 @@ class CCharacter
 {
 		friend class CSpellActionBase;
 		friend class SpellActionBaseNew;
-		
+
 		std::string classID;
 
 	public:
@@ -112,12 +112,14 @@ class CCharacter
 
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
-		void cleanupActiveSpells( );
+		void cleanupActiveSpells();
+		void clearActiveSpells();
 		std::vector<std::pair<GeneralBuffSpell*, uint32_t> > getActiveSpells() const;
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpell *spell );
 		void cleanupCooldownSpells();
+		void clearCooldownSpells();
 		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
 		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;

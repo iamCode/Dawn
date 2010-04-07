@@ -1225,7 +1225,7 @@ void CCharacter::dropItems()
 {
     // iterate through the loot table and see if we should drop any items.
     CZone *curZone = Globals::getCurrentZone();
-    
+
     for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
     {
         double dropChance = (double)rand()/(double)RAND_MAX;
@@ -1370,6 +1370,11 @@ void CCharacter::cleanupActiveSpells()
     }
 }
 
+void CCharacter::clearActiveSpells()
+{
+    activeSpells.clear();
+}
+
 std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells() const
 {
     return activeSpells;
@@ -1397,6 +1402,11 @@ void CCharacter::cleanupCooldownSpells()
             curSpell ++;
         }
     }
+}
+
+void CCharacter::clearCooldownSpells()
+{
+    cooldownSpells.clear();
 }
 
 std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const

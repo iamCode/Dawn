@@ -177,6 +177,10 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		spellbook->clear();
 		// clear action bar
 		actionBar->clear();
+		// clear cooldowns
+		character.clearCooldownSpells();
+		// clear buffs
+		character.clearActiveSpells();
 
 		// reenter map
 		// 1. Load all zones
