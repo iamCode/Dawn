@@ -61,10 +61,10 @@ function saveGame( fileprefix )
 	io.write( DawnInterface.getInventorySaveText() );
 	player = DawnInterface.getPlayer();
 	io.write( player:getSaveText() );
+	io.write( DawnInterface.getSpellbookSaveText() );
+	io.write( DawnInterface.getActionbarSaveText() );
 	-- map = LuaInterface.getCurrentMap()
 	-- io.write( 'LuaInterface.enterMap( "',map:getFileName(),'", 3, 3 )' )
-
-	-- TODO: save character values, inventory, monsters, items on floor(s) of all map(s)
 	io.close()
 	io.output( oldOut )
 end
