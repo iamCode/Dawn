@@ -531,7 +531,7 @@ void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
-uint16_t CCharacter::setManaRegen( uint16_t newManaRegen )
+void CCharacter::setManaRegen( uint16_t newManaRegen )
 {
     assert( newManaRegen >= NULLABLE_ATTRIBUTE_MIN );
 	manaRegen = newManaRegen;
@@ -552,7 +552,7 @@ void CCharacter::modifyManaRegen( int16_t manaRegenModifier )
     setManaRegen( getModifiedAttributeValue( manaRegen, manaRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
-uint16_t CCharacter::setHealthRegen( uint16_t newHealthRegen )
+void CCharacter::setHealthRegen( uint16_t newHealthRegen )
 {
     assert( newHealthRegen >= NULLABLE_ATTRIBUTE_MIN );
 	healthRegen = newHealthRegen;
@@ -740,6 +740,8 @@ CCharacter::CCharacter()
 	  current_health( 1 ),
 	  max_mana( 0 ),
 	  current_mana( 0 ),
+      healthRegen( 0 ),
+	  manaRegen( 0 ),
 	  armor( 0 ),
 	  damageModifierPoints( 0 ),
 	  hitModifierPoints( 0 ),
@@ -751,8 +753,6 @@ CCharacter::CCharacter()
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
 	  spellCriticalModifierPoints( 0 ),
-	  healthRegen( 0 ),
-	  manaRegen( 0 ),
 	  boundingBoxX( 0 ),
 	  boundingBoxY( 0 ),
 	  boundingBoxW( 0 ),
