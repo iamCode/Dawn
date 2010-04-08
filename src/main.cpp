@@ -920,6 +920,7 @@ void game_loop()
 			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
 				Editor.setEditZone( &zone1 );
 				Editor.setEnabled( true );
+				Editor.initFocus( &focus );
 				Editor.KP_toggle_editor = true;
 			}
 

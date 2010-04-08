@@ -24,8 +24,9 @@
 #include "CTexture.h"
 #include <stdio.h>
 #include <iostream>
+#include "cameraFocusHandler.h"
 
-extern int world_x, world_y, mouseX, mouseY, RES_X, RES_Y, done;
+extern int mouseX, mouseY, RES_X, RES_Y, done;
 extern CMessage message;
 
 class CEditor
@@ -53,6 +54,7 @@ class CEditor
 		int SaveZone();
 		void HandleKeys();
 		void LoadTextures();
+		void initFocus( cameraFocusHandler *character);
 
 		void setEditZone( CZone *zoneToEdit );
 		bool isEnabled() const;
@@ -66,7 +68,11 @@ class CEditor
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_dec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
+		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
+		
+		// Keeps track of the camera positions saves the original camera
+		// to snap back to target after done editing
+		cameraFocusHandler *editorFocus, *originalFocus;
 
 		CTexture interfacetexture;
 		GLFT_Font *objectDescriptionFont;

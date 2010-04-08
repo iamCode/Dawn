@@ -172,13 +172,13 @@ void CEditor::HandleKeys()
 				case 1: // mouse button 1, see if we can select an object being pointed at.
 					switch (current_object) {
 						case 1: // environment
-							objectedit_selected = zoneToEdit->LocateEnvironment(world_x+mouseX,world_y+mouseY);
+							objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 						break;
 						case 2: // shadows
-							objectedit_selected = zoneToEdit->LocateShadow(world_x+mouseX,world_y+mouseY);
+							objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 						break;
 						case 3: // collisionboxes
-							objectedit_selected = zoneToEdit->LocateCollisionbox(world_x+mouseX,world_y+mouseY);
+							objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 						break;
 					}
 				break;
@@ -296,18 +296,18 @@ void CEditor::HandleKeys()
 				}
 			break;
 		}
-	} else {
+	} else { // Not editting an object, use arrows to move screen
 		if (keys[SDLK_DOWN]) {
-			world_y -= 3;
+			editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()-2);
 		}
 		if (keys[SDLK_UP]) {
-			world_y += 3;
+			editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()+2);
 		}
 		if (keys[SDLK_LEFT]) {
-			world_x -= 3;
+			editorFocus->setFocus(editorFocus->getX()-2, editorFocus->getY());
 		}
 		if (keys[SDLK_RIGHT]) {
-			world_x += 3;
+			editorFocus->setFocus(editorFocus->getX()+2, editorFocus->getY());
 		}
 	}
 
@@ -320,16 +320,16 @@ void CEditor::HandleKeys()
 		KP_delete_environment = true;
 		switch (current_object) {
 			case 0: // tiles
-				zoneToEdit->DeleteTile(zoneToEdit->LocateTile(world_x+mouseX,world_y+mouseY));
+				zoneToEdit->DeleteTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY));
 			break;
 			case 1: // environment
-				zoneToEdit->DeleteEnvironment(world_x+mouseX,world_y+mouseY);
+				zoneToEdit->DeleteEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
 			case 2: // shadows
-				zoneToEdit->DeleteShadow(world_x+mouseX,world_y+mouseY);
+				zoneToEdit->DeleteShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
 			case 3: // collisionboxes
-				zoneToEdit->DeleteCollisionbox(world_x+mouseX,world_y+mouseY);
+				zoneToEdit->DeleteCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
 		}
 	}
@@ -343,16 +343,16 @@ void CEditor::HandleKeys()
 		KP_add_environment = true;
 		switch (current_object) {
 			case 0: // tiles
-				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(world_x+mouseX,world_y+mouseY),current_tilepos);
+				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY),current_tilepos);
 			break;
 			case 1: // environment
-				zoneToEdit->AddEnvironment(world_x+mouseX,world_y+mouseY,current_tilepos);
+				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
 			break;
 			case 2: // shadows
-				zoneToEdit->AddShadow(world_x+mouseX,world_y+mouseY,current_tilepos);
+				zoneToEdit->AddShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
 			break;
 			case 3: // collisionboxes
-				zoneToEdit->AddCollisionbox(world_x+mouseX,world_y+mouseY);
+				zoneToEdit->AddCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
 		}
 	}
@@ -367,6 +367,7 @@ void CEditor::HandleKeys()
 		objectedit_selected = -1;
 		enabled = false;
 		KP_toggle_editor = true;
+        (*editorFocus) = (*originalFocus);
 	}
 
 	if (!keys[SDLK_l]) {
@@ -486,41 +487,41 @@ void CEditor::HandleKeys()
 			break;
 		}
 	}
-
+    
 	// increase the Z-position
-	if (keys[SDLK_m] && !KP_increase_Zpos)
-	{
-	    KP_increase_Zpos = true;
-	    if ( current_object == 1 ) // environment
-	    {
+    if (keys[SDLK_m] && !KP_increase_Zpos)
+    {
+        KP_increase_Zpos = true;
+        if ( current_object == 1 ) // environment
+        {
             zoneToEdit->EnvironmentMap[objectedit_selected].z_pos++;
 	    }
 	}
-
+    
 	if (!keys[SDLK_m])
 	{
-	    KP_increase_Zpos = false;
+		KP_increase_Zpos = false;
 	}
-
-	// decrease the Z-position
-	if (keys[SDLK_n] && !KP_decrease_Zpos)
-	{
-	    KP_decrease_Zpos = true;
-
+	
+    	// decrease the Z-position
+    if (keys[SDLK_n] && !KP_decrease_Zpos)
+    {
+        KP_decrease_Zpos = true;
+        
 	    if ( current_object == 1 ) // environment
-	    {
-			if ( zoneToEdit->EnvironmentMap[objectedit_selected].z_pos > 0  )
-			{
-			    zoneToEdit->EnvironmentMap[objectedit_selected].z_pos--;
-			}
-	    }
-	}
-
+        {
+            if ( zoneToEdit->EnvironmentMap[objectedit_selected].z_pos > 0  )
+            {
+                zoneToEdit->EnvironmentMap[objectedit_selected].z_pos--;
+            }
+        }
+    }
+    
 	if (!keys[SDLK_n])
-	{
-	    KP_decrease_Zpos = false;
-	}
-
+    {
+        KP_decrease_Zpos = false;
+    }
+    
 	if (keys[SDLK_F1] && !KP_toggle_tileset) {
 		current_tilepos = 1;
 		tilepos_offset = 0;
@@ -541,7 +542,7 @@ void CEditor::HandleKeys()
 	if (keys[SDLK_s] && !KP_save_zone) {
 		KP_save_zone = true;
 		SaveZone();
-		message.AddText(world_x + (RES_X/2), world_y + (RES_Y/2), 1.0f, 0.625f, 0.71f, 1.0f, 15, 3.0f, "Zone saved ...");
+		message.AddText(editorFocus->getX() + (RES_X/2), editorFocus->getY() + (RES_Y/2), 1.0f, 0.625f, 0.71f, 1.0f, 15, 3.0f, "Zone saved ...");
 	}
 
 	if (!keys[SDLK_s]) {
@@ -583,53 +584,53 @@ void CEditor::DrawEditor()
 
 	// quad on the top, baseframe for the object-selection.
 	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0].texture,
-	                                  world_x, RES_X,
-	                                  world_y+RES_Y-100, 100 );
+	                                  editorFocus->getX(), RES_X,
+	                                  editorFocus->getY()+RES_Y-100, 100 );
 
 	// quad on bottom, baseframe for our helptext.
 	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0].texture,
-	                                  world_x, RES_X,
-	                                  world_y, 100 );
+	                                  editorFocus->getX(), RES_X,
+	                                  editorFocus->getY(), 100 );
 
 	int fontHeight = keybindingFont->getHeight();
 
 	// display our general help text for the editor.
 	glColor4f(1.0f,1.0f,0.13f,1.0f); // set yellow as font color
-	keybindingFont->drawText(world_x+10, world_y+90 - fontHeight, "[ Scoll Up/Down ]  Select previous/next object");
-	keybindingFont->drawText(world_x+10, world_y+80 - fontHeight, "[ F1 ]  Next set of objects");
-	keybindingFont->drawText(world_x+10, world_y+70 - fontHeight, "[ DEL ]  Delete object at mouse position");
-	keybindingFont->drawText(world_x+10, world_y+60 - fontHeight, "[ ENTER ]  Place object at mouse position");
-	keybindingFont->drawText(world_x+10, world_y+50 - fontHeight, "[ S ]  Saves the changes into zone1-files");
-	keybindingFont->drawText(world_x+10, world_y+40 - fontHeight, "[ O ]  Load a different zone (not yet implemented)");
-	keybindingFont->drawText(world_x+10, world_y+30 - fontHeight, "[ L ]  Exit the editor");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+90 - fontHeight, "[ Scoll Up/Down ]  Select previous/next object");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+80 - fontHeight, "[ F1 ]  Next set of objects");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+70 - fontHeight, "[ DEL ]  Delete object at mouse position");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+60 - fontHeight, "[ ENTER ]  Place object at mouse position");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+50 - fontHeight, "[ S ]  Saves the changes into zone1-files");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+40 - fontHeight, "[ O ]  Load a different zone (not yet implemented)");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+30 - fontHeight, "[ L ]  Exit the editor");
 
 	// if we have a selected object, display specific help text for it
 	if (objectedit_selected >= 0) {
 		glColor4f(0.5f,1.0f,0.5f,1.0f);
-		keybindingFont->drawText(world_x+500, world_y+90 - fontHeight, "[ UP, DOWN, LEFT, RIGHT ]  Move the object");
-		keybindingFont->drawText(world_x+500, world_y+80 - fontHeight, "[ Left Shift + UP, DOWN, LEFT, RIGHT ]  Change scale of object");
-		keybindingFont->drawText(world_x+500, world_y+70 - fontHeight, "[ . ]  Increase transparency");
-		keybindingFont->drawText(world_x+500, world_y+60 - fontHeight, "[ , ]  Decrease transparency");
-		keybindingFont->drawText(world_x+500, world_y+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
-		keybindingFont->drawText(world_x+500, world_y+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
-		keybindingFont->drawText(world_x+500, world_y+30 - fontHeight, "[ n/m ] Increase / decrease Z-position");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+90 - fontHeight, "[ UP, DOWN, LEFT, RIGHT ]  Move the object");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+80 - fontHeight, "[ Left Shift + UP, DOWN, LEFT, RIGHT ]  Change scale of object");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+70 - fontHeight, "[ . ]  Increase transparency");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+60 - fontHeight, "[ , ]  Decrease transparency");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+30 - fontHeight, "[ n/m ] Increase / decrease Z-position");
 	}
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
 
 	DrawingHelpers::mapTextureToRect( interfacetexture.texture[1].texture,
-	                                  world_x+(RES_X/2)-5, 50,
-	                                  world_y+RES_Y-65, 50 );
+	                                  editorFocus->getX()+(RES_X/2)-5, 50,
+	                                  editorFocus->getY()+RES_Y-65, 50 );
 
 	glBegin(GL_LINES);
 	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(mouseX-20+world_x, mouseY+world_y, 0.0f);
+	glVertex3f(mouseX-20+editorFocus->getX(), mouseY+editorFocus->getY(), 0.0f);
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(mouseX+20+world_x, mouseY+world_y, 0.0f);
+	glVertex3f(mouseX+20+editorFocus->getX(), mouseY+editorFocus->getY(), 0.0f);
 	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(mouseX+world_x, mouseY+20+world_y, 0.0f);
+	glVertex3f(mouseX+editorFocus->getX(), mouseY+20+editorFocus->getY(), 0.0f);
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(mouseX+world_x, mouseY-20+world_y, 0.0f);
+	glVertex3f(mouseX+editorFocus->getX(), mouseY-20+editorFocus->getY(), 0.0f);
 	glEnd();
 
 	switch (current_object) {
@@ -638,8 +639,8 @@ void CEditor::DrawEditor()
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneTiles.NumberOfTextures;tilepos++) {
 
 				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos].texture,
-				                                  world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  world_y+RES_Y-60, 40 );
+				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
+				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
 		break;
 
@@ -648,8 +649,8 @@ void CEditor::DrawEditor()
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneEnvironment.NumberOfTextures; tilepos++) {
 
 				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos].texture,
-				                                  world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  world_y+RES_Y-60, 40 );
+				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
+				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
 		break;
 
@@ -658,8 +659,8 @@ void CEditor::DrawEditor()
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneShadow.NumberOfTextures; tilepos++) {
 
 				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos].texture,
-				                                  world_x+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  world_y+RES_Y-60, 40 );
+				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
+				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
 		break;
 	}
@@ -678,8 +679,8 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 {
 	// draws a white quad as our editframe
 	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3].texture,
-	                                  world_x+50, 350,
-	                                  world_y+(RES_Y/2)-200, 200 );
+	                                  editorFocus->getX()+50, 350,
+	                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
 
 
 	// set the color, transparency, scale and then draws the object we are editing
@@ -688,22 +689,30 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 	glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
 
 	DrawingHelpers::mapTextureToRect( texture->texture[editobject->id].texture,
-	                                  world_x+55, texture->texture[editobject->id].width,
-	                                  world_y+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
+	                                  editorFocus->getX()+55, texture->texture[editobject->id].width,
+	                                  editorFocus->getY()+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
 
 	glPopMatrix();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	int fontHeight = objectDescriptionFont->getHeight();
 
-	objectDescriptionFont->drawText(world_x+242, world_y+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
-	objectDescriptionFont->drawText(world_x+319, world_y+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
-	objectDescriptionFont->drawText(world_x+300, world_y+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
-	objectDescriptionFont->drawText(world_x+312, world_y+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
-	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
-	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
-	objectDescriptionFont->drawText(world_x+287, world_y+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+	objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
+	objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
+	objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
+	objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
+	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
+	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glScalef(1.0f,1.0f,1.0f);
+}
+
+// Set up the focus to allow moving the camera and save
+// the original focus so when exiting editor we can pop back to position
+void CEditor::initFocus(cameraFocusHandler *original)
+{
+    originalFocus = new cameraFocusHandler(*original);
+    editorFocus = original;
 }
