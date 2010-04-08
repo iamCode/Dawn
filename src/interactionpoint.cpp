@@ -22,19 +22,20 @@
 #include "CDrawingHelpers.h"
 #include "CLuaFunctions.h"
 #include "CCharacter.h"
+#include "CZone.h"
+#include "globals.h"
+#include "CLuaInterface.h"
 
 #include <cassert>
-
-std::vector<InteractionPoint*> allInteractionPoints;
 
 InteractionPoint::InteractionPoint()
 	: interactionTexture( NULL ),
 	  backgroundTexture( NULL ),
+	  interactionCode(""),
 	  posX(0),
 	  posY(0),
 	  width(0),
 	  height(0),
-	  interactionCode(""),
 	  markedAsDeletable(false)
 {
 }
@@ -63,8 +64,9 @@ void InteractionPoint::setInteractionType( InteractionType::InteractionType inte
 	if ( interactionTexture != NULL ) {
 		delete interactionTexture;
 	}
+	this->interactionType = interactionType;
 	interactionTexture = new CTexture();
-	interactionTexture->texture.reserve(2);
+	interactionTexture->texture.resize(2);
 	switch ( interactionType )
 	{
 	    case InteractionType::Quest:
@@ -85,7 +87,7 @@ void InteractionPoint::setBackgroundTexture( std::string texturename )
 		delete backgroundTexture;
 	}
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( texturename, 0 );
 }
 
@@ -172,6 +174,38 @@ void InteractionPoint::markAsDeletable()
 	markedAsDeletable = true;
 }
 
+std::string toStringForLua( InteractionType::InteractionType interactionType )
+{
+	switch( interactionType )
+	{
+		case InteractionType::Quest:
+			return "InteractionType.Quest";
+		case InteractionType::Shop:
+			return "InteractionType.Shop";
+		default:
+			dawn_debug_warn("unhandled interaction type in toStringForLua( InteractionType::InteractionType interactionType )" );
+			abort();
+	}
+}
+
+std::string InteractionPoint::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curInteractionPoint";
+	
+	oss << "local " << objectName << " = DawnInterface.addInteractionPoint();" << std::endl;
+	oss << objectName << ":setPosition( " << posX << ", " << posY << ", " << width << ", " << height << " );" << std::endl;
+	if ( backgroundTexture != NULL ) {
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	if ( interactionTexture != NULL ) {
+		oss << objectName << ":setInteractionType( " << toStringForLua( interactionType ) << " );" << std::endl;
+	}
+	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
+	
+	return oss.str();
+}
+
 CharacterInteractionPoint::CharacterInteractionPoint( CCharacter *character_ )
 	: interactionCharacter( character_ )
 {
@@ -210,19 +244,36 @@ void CharacterInteractionPoint::draw()
 	// no drawing since the character is what is drawn
 }
 
+std::string CharacterInteractionPoint::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curInteractionPoint";
+	std::string characterReference = DawnInterface::getItemReferenceRestore( interactionCharacter );
+	oss << "local " << objectName << " = DawnInterface.addCharacterInteractionPoint( " << characterReference << " );" << std::endl;
+	if ( backgroundTexture != NULL ) {
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+	}
+	if ( interactionTexture != NULL ) {
+		oss << objectName << ":setInteractionType( " << toStringForLua( interactionType ) << " );" << std::endl;
+	}
+	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
+	
+	return oss.str();
+}
+
 namespace DawnInterface
 {
 	InteractionPoint* addInteractionPoint()
 	{
 		InteractionPoint *newInteractionPoint = new InteractionPoint();
-		allInteractionPoints.push_back( newInteractionPoint );
+		Globals::getCurrentZone()->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character )
 	{
 		InteractionPoint *newInteractionPoint = new CharacterInteractionPoint( character );
-		allInteractionPoints.push_back( newInteractionPoint );
+		Globals::getCurrentZone()->addInteractionPoint( newInteractionPoint );
 		return newInteractionPoint;
 	}
 
@@ -236,26 +287,6 @@ namespace InteractionControl
 {
 	void cleanupInteractionList()
 	{
-		size_t curInteractionNr = 0;
-		while ( curInteractionNr < allInteractionPoints.size() ) {
-			InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-			if ( curInteraction->isMarkedDeletable() ) {
-				// return from list
-				allInteractionPoints[ curInteractionNr ] = allInteractionPoints[ allInteractionPoints.size() - 1 ];
-				allInteractionPoints.resize( allInteractionPoints.size() - 1 );
-				delete curInteraction;
-			} else {
-				++curInteractionNr;
-			}
-		}
-	}
-
-	void purgeInteractionList()
-	{
-		for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-			InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
-			delete curInteraction;
-		}
-		allInteractionPoints.resize(0);
+		Globals::getCurrentZone()->cleanupInteractionList();
 	}
 }

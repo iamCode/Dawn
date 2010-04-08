@@ -22,6 +22,18 @@
 #include "GLFT_Font.h"
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
+#include "CLuaFunctions.h"
+#include "questwindow.h"
+#include "interactionpoint.h"
+#include "CZone.h"
+#include "Player.h"
+#include "globals.h"
+#include "shop.h"
+#include "Spellbook.h"
+#include "ActionBar.h"
+#include <memory>
+
+extern std::auto_ptr<QuestWindow> questWindow;
 
 namespace dawn_configuration
 {
@@ -37,7 +49,7 @@ OptionsWindow::OptionsWindow()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
 
 	width = backgroundTexture->texture[0].width;
@@ -87,7 +99,7 @@ void OptionsWindow::draw()
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 1 ) {
-		glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
 	font->drawText( textX, textY, "Load Game" );
 	if ( selectedEntry == 1 ) {
@@ -95,7 +107,7 @@ void OptionsWindow::draw()
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 2 ) {
-		glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
 	font->drawText( textX, textY, "Save Game" );
 	if ( selectedEntry == 2 ) {
@@ -122,6 +134,11 @@ bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
 
 void setQuitGame();
 
+extern Player character;
+extern std::auto_ptr<Shop> shopWindow;
+extern std::auto_ptr<Spellbook> spellbook;
+extern std::auto_ptr<ActionBar> actionBar;
+
 void OptionsWindow::clicked( int mouseX, int mouseY )
 {
 	// check for quit and the other options
@@ -141,6 +158,41 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 
 	if ( selectedEntry == 0 ) {
 		setQuitGame();
+	} else if ( selectedEntry == 1 ) {
+		// Load Game
+		
+		// clear current game data
+		Globals::getCurrentZone()->purgeInteractionList();
+		questWindow->removeAllQuests();
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			delete it->second;
+			it->second = NULL;
+		}
+		Globals::allZones.clear();
+		
+		character.clearInventory();
+		// clear shop data
+		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
+		// clear spellbook
+		spellbook->clear();
+		// clear action bar
+		actionBar->clear();
+		// clear cooldowns
+		character.clearCooldownSpells();
+		// clear buffs
+		character.clearActiveSpells();
+
+		// reenter map
+		// 1. Load all zones
+		// TODO: Load all zones
+		// 2. Restore lua variables
+		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
+		CZone *newZone = Globals::allZones["data/zone1"];
+		newZone->LoadZone("data/zone1");
+		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
+	} else if ( selectedEntry == 2 ) {
+		// Save Game
+		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 	} else if ( selectedEntry == 3 ) {
 		setVisible( false );
 	}

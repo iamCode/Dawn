@@ -17,10 +17,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "CEditor.h"
+#include "CZone.h"
 #include "GLFT_Font.h"
 
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
+
+extern CMessage message;
 
 void CEditor::initFonts()
 {
@@ -668,7 +671,7 @@ void CEditor::DrawEditor()
 
 void CEditor::LoadTextures()
 {
-	interfacetexture.texture.reserve(4);
+	interfacetexture.texture.resize(4);
 	interfacetexture.LoadIMG("data/background_editor.tga",0);
 	interfacetexture.LoadIMG("data/current_tile_backdrop.tga",1);
 	interfacetexture.LoadIMG("data/tile.tga",2);

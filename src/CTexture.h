@@ -32,12 +32,22 @@ struct sTexture {
 	int height, width;
 	bool contains_collision_box;
 	SDL_Rect collision_box;
+	std::string textureFile;
 
 	sTexture(int _height, int _width, bool _ccb) {
+		textureFile = "";
 		height = _height;
 		width = _width;
 		contains_collision_box = _ccb;
 	};
+
+	sTexture()
+	{
+		textureFile = "";
+		height = 0;
+		width = 0;
+		contains_collision_box = false;
+	}
 };
 
 class CTexture

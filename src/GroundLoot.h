@@ -51,6 +51,8 @@ struct sGroundItems
 
 class GroundLoot
 {
+	friend class CZone;
+
     public:
         GroundLoot( Player *player_ );
         ~GroundLoot();

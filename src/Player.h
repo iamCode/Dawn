@@ -20,6 +20,7 @@
 #define __PLAYER_H__
 
 #include "CCharacter.h"
+#include "inventory.h"
 
 class Player : public CCharacter
 {
@@ -65,6 +66,9 @@ class Player : public CCharacter
 		uint16_t getModifiedMaxDamage() const;
 
 		Inventory* getInventory();
+		void clearInventory();
+		
+		std::string getSaveText() const;
 };
 
 #endif // __PLAYER_H__

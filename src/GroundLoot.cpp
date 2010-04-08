@@ -21,6 +21,8 @@
 #include "Player.h"
 #include "item.h"
 #include "shop.h"
+#include "CDrawingHelpers.h"
+#include <algorithm>
 
 class Player;
 
@@ -69,7 +71,7 @@ GroundLoot::GroundLoot( Player *player_)
              drawTooltips( false )
 {
     font = FontCache::getFontFromCache("data/verdana.ttf", 11);
-    textures.texture.reserve(3);
+    textures.texture.resize(3);
     textures.LoadIMG("data/interface/tooltip/groundloot_background.tga",0);
     textures.LoadIMG("data/interface/tooltip/groundloot_left.tga",1);
     textures.LoadIMG("data/interface/tooltip/groundloot_right.tga",2);

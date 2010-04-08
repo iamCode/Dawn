@@ -21,6 +21,7 @@
 #include "Player.h"
 #include <cassert>
 #include <memory>
+#include "CDrawingHelpers.h"
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_)
 	:	currentTab( 0 ),
@@ -39,7 +40,7 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
 		player( player_ ),
 		shopkeeper( shopkeeper_ )
 		{
-		    tabs[0].tabimage.texture.reserve(1);
+		    tabs[0].tabimage.texture.resize(1);
             tabs[0].tabimage.LoadIMG("data/interface/Shop/weapontab.tga",0);
             tabs[0].height = 128;
             tabs[0].width = 128;
@@ -47,14 +48,14 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_)
             tabs[0].posX = 61 + posX;
             tabs[0].posY = 264 + posY;
 
-            tabs[1].tabimage.texture.reserve(1);
+            tabs[1].tabimage.texture.resize(1);
             tabs[1].tabimage.LoadIMG("data/interface/Shop/armortab.tga",0);
             tabs[1].height = 128;
             tabs[1].width = 128;
             tabs[1].posX = 202 + posX;
             tabs[1].posY = 264 + posY;
 
-            tabs[2].tabimage.texture.reserve(1);
+            tabs[2].tabimage.texture.resize(1);
             tabs[2].tabimage.LoadIMG("data/interface/Shop/misctab.tga",0);
             tabs[2].height = 128;
             tabs[2].width = 128;
@@ -96,7 +97,7 @@ void Shop::setVisible( bool newVisible )
 
 void Shop::loadTextures()
 {
-    textures.texture.reserve(2);
+    textures.texture.resize(2);
     textures.LoadIMG("data/interface/Shop/base.tga",0);
     textures.LoadIMG("data/white2x2pixel.tga",1);
 }

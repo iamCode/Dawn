@@ -19,10 +19,12 @@
 #include "CNPC.h"
 #include "Player.h"
 #include "CAction.h"
+#include "CLuaInterface.h"
+#include "callindirection.h"
 
 extern Player character;
 
-CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn, CZone *_zone) {
+CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn ) {
 	Init( x_spawn_pos, y_spawn_pos );
 	alive = true;
 	current_texture = 1; // this will be altered later on to draw what animation frame we want to draw.
@@ -49,14 +51,13 @@ CNPC::~CNPC()
 	onDieEventHandlers.clear();
 }
 
-void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn, CZone *_zone ) {
+void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn ) {
 	x_pos = _x_spawn_pos;
 	y_pos = _y_spawn_pos;
 	x_spawn_pos = _x_spawn_pos;
 	y_spawn_pos = _y_spawn_pos;
 	do_respawn = _do_respawn;
 	seconds_to_respawn = _seconds_to_respawn;
-	zone = _zone;
 }
 
 Direction CNPC::GetDirection()
@@ -199,6 +200,48 @@ void CNPC::setAttitude( Attitude::Attitude attitude )
 Attitude::Attitude CNPC::getAttitude() const
 {
 	return this->attitudeTowardsPlayer;
+}
+
+static std::string attitudeToString( Attitude::Attitude attitude )
+{
+	switch ( attitude ) {
+		case Attitude::HOSTILE:
+			return "HOSTILE";
+		case Attitude::NEUTRAL:
+			return "NEUTRAL";
+		case Attitude::FRIENDLY:
+			return "FRIENDLY";
+		default:
+			dawn_debug_fatal("Attribute not handled in attitudeToString");
+			abort();
+	}
+}
+
+std::string CNPC::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curNPC";
+	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", " 
+	                                        << x_spawn_pos << ", "
+	                                        << y_spawn_pos << ", "
+	                                        << seconds_to_respawn << ", "
+	                                        << do_respawn << " );" << std::endl;
+	// add onDieEventHandlers for this npc
+	for ( size_t curOnDieHandlerNr=0; curOnDieHandlerNr<onDieEventHandlers.size(); ++curOnDieHandlerNr ) {
+		LuaCallIndirection *luaHandler = dynamic_cast<LuaCallIndirection*>( onDieEventHandlers[curOnDieHandlerNr ] );
+		if ( luaHandler != NULL ) {
+			// a real LuaCallIndirection
+			oss << objectName << ":addOnDieEventHandler( " << DawnInterface::getItemReferenceRestore( luaHandler ) << " );" << std::endl;
+		} else {
+			abort();
+			dawn_debug_fatal( "unhandled event handler in CNPC::getLuaSaveText()" );
+			abort();
+		}
+	}
+
+	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
+	
+	return oss.str();
 }
 
 

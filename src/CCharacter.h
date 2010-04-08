@@ -20,21 +20,23 @@
 #define __CCHARACTER_H__
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
-#include "CTexture.h"
-#include "CZone.h"
-#include "CDirection.h"
-#include "inventory.h"
 #include <SDL/SDL.h> // SDL
 #include <math.h>
+#include <string>
+#include <vector>
+
+#include "CDirection.h"
+#include "elements.h"
 
 extern int RES_X,RES_Y,world_x,world_y;
-extern CZone zone1;
 
 class CSpellActionBase;
+class GeneralBuffSpell;
 class CSpell;
 class CAction;
 class CInterface;
-
+class CTexture;
+class Item;
 
 namespace ActivityType
 {
@@ -62,6 +64,8 @@ class CCharacter
 {
 		friend class CSpellActionBase;
 		friend class SpellActionBaseNew;
+
+		std::string classID;
 
 	public:
 		CCharacter();
@@ -108,12 +112,14 @@ class CCharacter
 
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
-		void cleanupActiveSpells( );
+		void cleanupActiveSpells();
+		void clearActiveSpells();
 		std::vector<std::pair<GeneralBuffSpell*, uint32_t> > getActiveSpells() const;
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpell *spell );
 		void cleanupCooldownSpells();
+		void clearCooldownSpells();
 		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
 		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;
@@ -123,6 +129,7 @@ class CCharacter
 		int getYPos() const;
 		int getWidth() const;
 		int getHeight() const;
+		void setPosition( int xpos, int ypos );
 
 		virtual Direction GetDirection() = 0;
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
@@ -140,6 +147,7 @@ class CCharacter
 		CCharacter *Target;
 
 		void baseOnType( std::string otherType );
+		std::string getClassID() const;
 
 		std::string getName() const;
 		void setName( std::string newName );
@@ -336,8 +344,6 @@ class CCharacter
 		int x_spawn_pos, y_spawn_pos;
 		int NPC_id;
 		int seconds_to_respawn;
-
-		CZone *zone;
 
 	protected:
 		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;

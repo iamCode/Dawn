@@ -18,7 +18,24 @@
 
 #include "CZone.h"
 
+#include "globals.h"
+
 #include "CLuaFunctions.h"
+#include "CNPC.h"
+#include "interactionpoint.h"
+#include "shop.h"
+#include "callindirection.h"
+#include "textwindow.h"
+
+#include <cassert>
+#include <memory>
+
+extern Player character;
+
+CZone::CZone()
+	: groundLoot( &character )
+{
+}
 
 void CZone::DrawZone()
 {
@@ -29,6 +46,9 @@ void CZone::DrawZone()
 
 void CZone::LoadZone(std::string file)
 {
+	zoneName = file;
+	Globals::allZones[ file ] = this;
+	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
 	ZoneTiles.LoadTextureMap( std::string( file ).append ( ".textures" ) );
 	ZoneEnvironment.LoadTextureMap( std::string( file ).append ( ".textureenvironment" ) ,true);
 	ZoneShadow.LoadTextureMap( std::string( file ).append ( ".textureshadow" ) );
@@ -88,6 +108,8 @@ int CZone::LoadEnvironment(std::string file)
 	}
 
 	input_file.close();
+
+    std::sort(EnvironmentMap.begin(), EnvironmentMap.end());
 
 	return 0;
 }
@@ -320,3 +342,325 @@ int CZone::DeleteCollisionbox(int x, int y)
 	}
 	return -1;
 }
+
+std::vector<CNPC*> CZone::getNPCs()
+{
+	return npcs;
+}
+
+void CZone::addNPC( CNPC *npcToAdd )
+{
+	npcs.push_back( npcToAdd );
+}
+
+void CZone::removeNPC( CNPC *npcToDelete )
+{
+		for ( size_t curNPCNr=0; curNPCNr<npcs.size(); ++curNPCNr ) {
+			CNPC *curNPC = npcs[ curNPCNr ];
+			if ( curNPC == npcToDelete ) {
+				curNPC->markAsDeleted();
+				break;
+			}
+		}
+}
+
+void CZone::cleanupNPCList()
+{
+	size_t curNPCNr = 0;
+	while ( curNPCNr < npcs.size() ) {
+		CNPC *curNPC = npcs[ curNPCNr ];
+		if ( curNPC->isMarkedAsDeletable() ) {
+			npcs.erase( npcs.begin() + curNPCNr );
+			// TODO: delete curNPC. There seem to be some problems at the moment.
+			//delete curNPC;
+		} else {
+			++curNPCNr;
+		}
+	}
+}
+
+std::vector<InteractionPoint*> CZone::getInteractionPoints()
+{
+	return interactionPoints;
+}
+
+void CZone::addInteractionPoint( InteractionPoint *interactionPointToAdd )
+{
+	interactionPoints.push_back( interactionPointToAdd );
+}
+
+void CZone::cleanupInteractionList()
+{
+	size_t curInteractionNr = 0;
+	while ( curInteractionNr < interactionPoints.size() ) {
+		InteractionPoint *curInteraction = interactionPoints[ curInteractionNr ];
+		if ( curInteraction->isMarkedDeletable() ) {
+			// return from list
+			interactionPoints[ curInteractionNr ] = interactionPoints[ interactionPoints.size() - 1 ];
+			interactionPoints.resize( interactionPoints.size() - 1 );
+			delete curInteraction;
+		} else {
+			++curInteractionNr;
+		}
+	}
+}
+
+void CZone::purgeInteractionList()
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = interactionPoints[ curInteractionNr ];
+		delete curInteraction;
+	}
+	interactionPoints.resize(0);
+}
+
+GroundLoot* CZone::getGroundLoot()
+{
+	return &groundLoot;
+}
+
+extern std::auto_ptr<Shop> shopWindow;
+
+std::string CZone::getLuaSaveText() const
+{
+	std::ostringstream oss;
+	oss << "DawnInterface.setCurrentZone( \"" << zoneName << "\" );" << std::endl;
+
+	// save call indirections (must be added before spawnpoints since used there)
+	oss << "-- event handlers" << std::endl;
+	for ( size_t curEventHandlerNr=0; curEventHandlerNr<eventHandlers.size(); ++curEventHandlerNr ) {
+		CallIndirection *curEventHandler = eventHandlers[ curEventHandlerNr ];
+		std::string eventHandlerSaveText = curEventHandler->getLuaSaveText();
+		oss << eventHandlerSaveText;
+	}
+	
+	// save all spawnpoints
+	oss << "-- spawnpoints" << std::endl;
+	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
+		CNPC *curNPC = npcs[ curNpcNr ];
+		// save cur npc
+		std::string npcSaveText = curNPC->getLuaSaveText();
+		oss << npcSaveText;
+	}
+	
+	// save shop data (this ought to be put into the shop somehow as soon as shops are customizable)
+	oss << "-- shops" << std::endl;
+	oss << "local curShop = DawnInterface.addShop();" << std::endl;
+	for ( size_t curTab=0; curTab<3; ++curTab ) {
+		for ( size_t curItemNr=0; curItemNr < shopWindow->shopkeeperInventory[curTab].size(); ++curItemNr ) {
+			oss << "curShop:addItem( itemDatabase[\"" << shopWindow->shopkeeperInventory[curTab][curItemNr]->getItem()->getID() << "\"] );" << std::endl;
+		}
+	}
+
+	// save interaction points
+	oss << "-- interaction points" << std::endl;
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteractionPoint = interactionPoints[ curInteractionNr ];
+		std::string interactionSaveText = curInteractionPoint->getLuaSaveText();
+		oss << interactionSaveText;
+	}
+	
+	// save ground loot
+	oss << "-- ground loot" << std::endl;
+	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
+		sGroundItems curGroundItem = groundLoot.groundItems[ curGroundItemNr ];
+		Item *item = curGroundItem.item;
+		if ( dynamic_cast<GoldHeap*>( item ) != NULL ) {
+			GoldHeap *goldHeap = dynamic_cast<GoldHeap*>( item );
+			oss << "DawnInterface.restoreGroundGold( "
+			             << goldHeap->numCoins() << ", "
+			             << curGroundItem.xpos << ", "
+			             << curGroundItem.ypos << " );" << std::endl;
+		} else {
+			oss << "DawnInterface.restoreGroundLootItem( "
+			             << "itemDatabase[ \"" << item->getID() << "\" ], "
+			             << curGroundItem.xpos << ", "
+			             << curGroundItem.ypos << " );" << std::endl;
+		}
+	}
+	
+	return oss.str();
+}
+
+void CZone::addEventHandler( CallIndirection *newEventHandler )
+{
+	eventHandlers.push_back( newEventHandler );
+}
+
+std::string CZone::getZoneName() const
+{
+	return zoneName;
+}
+
+void CZone::findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
+		if ( npcs[ curNpcNr ] == character ) {
+			found = true;
+			foundPos = curNpcNr;
+			return;
+		}
+	}
+	found = false;
+}
+
+void CZone::findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
+		if ( interactionPoints[ curInteractionNr ] == interactionPoint ) {
+			found = true;
+			foundPos = curInteractionNr;
+			return;
+		}
+	}
+	found = false;
+}
+
+void CZone::findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curEventHandlerNr=0; curEventHandlerNr < eventHandlers.size(); ++curEventHandlerNr ) {
+		if ( eventHandlers[ curEventHandlerNr ] == eventHandler ) {
+			found = true;
+			foundPos = curEventHandlerNr;
+			return;
+		}
+	}
+	found = false;
+}
+
+CCharacter* CZone::getCharacterPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return npcs.at( posInArray );
+}
+
+InteractionPoint* CZone::getInteractionPointPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return interactionPoints.at( posInArray );
+}
+
+CallIndirection* CZone::getEventHandlerPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return eventHandlers.at( posInArray );
+}
+
+namespace DawnInterface
+{
+	std::string getAllZonesSaveText()
+	{
+		std::ostringstream oss;
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			oss << it->second->getLuaSaveText();
+		}
+
+		return oss.str();
+	}
+	
+	void restoreGroundLootItem( Item *item, int xPos, int yPos )
+	{
+		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, item );
+	}
+	
+	void restoreGroundGold( int amount, int xPos, int yPos )
+	{
+		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, new GoldHeap( amount ) );
+	}
+
+	std::string getItemReferenceRestore( CCharacter *character )
+	{
+		if ( character == NULL ) {
+			return "nil;";
+		}
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findCharacter( character, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreCharacterReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		abort();
+		dawn_debug_fatal( "could not find character in any of the zones" );
+		abort();
+	}
+	
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint )
+	{
+		if ( interactionPoint == NULL ) {
+			return "nil;";
+		}
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findInteractionPoint( interactionPoint, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreInteractionPointReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		dawn_debug_fatal( "could not find interaction point in any of the zones" );
+		abort();
+	}
+	
+	std::string getItemReferenceRestore( CallIndirection *eventHandler )
+	{
+		if ( eventHandler == NULL ) {
+			return "nil;";
+		}
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findEventHandler( eventHandler, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreEventHandlerReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		dawn_debug_fatal( "could not find event handler in any of the zones" );
+		abort();
+	}
+	
+	std::string getItemReferenceRestore( Shop *shop )
+	{
+		return "DawnInterface.addShop(); -- shops not really searchable, yet";
+	}
+	
+	std::string getItemReferenceRestore( TextWindow *textWindow )
+	{
+		return "DawnInterface.createTextWindow(); -- text windows are not restored";
+	}
+
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getCharacterPointer( posInArray );
+	}
+
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getInteractionPointPointer( posInArray );
+	}
+
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getEventHandlerPointer( posInArray );
+	}
+}
+

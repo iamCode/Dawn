@@ -170,6 +170,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
+	src/globals.cpp \
+	src/globals.h \
 	src/GroundLoot.cpp \
 	src/GroundLoot.h \
 	src/interactionpoint.cpp \
@@ -232,9 +234,9 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CLuaInterfaceGenerated.$(OBJEXT) CMessage.$(OBJEXT) \
 	CNPC.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
 	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) GroundLoot.$(OBJEXT) \
-	interactionpoint.$(OBJEXT) inventory.$(OBJEXT) \
-	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
+	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) globals.$(OBJEXT) \
+	GroundLoot.$(OBJEXT) interactionpoint.$(OBJEXT) \
+	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) main.$(OBJEXT) optionswindow.$(OBJEXT) \
 	Player.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
 	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
@@ -268,7 +270,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/callindirection.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/cameraFocusHandler.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/debug.Po ./$(DEPDIR)/elements.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/fontcache.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/fontcache.Po ./$(DEPDIR)/globals.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/interactionpoint.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/inventory.Po ./$(DEPDIR)/item.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/loadingscreen.Po ./$(DEPDIR)/main.Po \
@@ -376,6 +378,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fontcache.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globals.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interactionpoint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inventory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
@@ -894,6 +897,28 @@ GLFT_Font.obj: src/GLFT_Font.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLFT_Font.Po' tmpdepfile='$(DEPDIR)/GLFT_Font.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLFT_Font.obj `if test -f 'src/GLFT_Font.cpp'; then $(CYGPATH_W) 'src/GLFT_Font.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GLFT_Font.cpp'; fi`
+
+globals.o: src/globals.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT globals.o -MD -MP -MF "$(DEPDIR)/globals.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o globals.o `test -f 'src/globals.cpp' || echo '$(srcdir)/'`src/globals.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/globals.Tpo" "$(DEPDIR)/globals.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/globals.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/globals.cpp' object='globals.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/globals.Po' tmpdepfile='$(DEPDIR)/globals.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o globals.o `test -f 'src/globals.cpp' || echo '$(srcdir)/'`src/globals.cpp
+
+globals.obj: src/globals.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT globals.obj -MD -MP -MF "$(DEPDIR)/globals.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o globals.obj `if test -f 'src/globals.cpp'; then $(CYGPATH_W) 'src/globals.cpp'; else $(CYGPATH_W) '$(srcdir)/src/globals.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/globals.Tpo" "$(DEPDIR)/globals.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/globals.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/globals.cpp' object='globals.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/globals.Po' tmpdepfile='$(DEPDIR)/globals.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o globals.obj `if test -f 'src/globals.cpp'; then $(CYGPATH_W) 'src/globals.cpp'; else $(CYGPATH_W) '$(srcdir)/src/globals.cpp'; fi`
 
 GroundLoot.o: src/GroundLoot.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GroundLoot.o -MD -MP -MF "$(DEPDIR)/GroundLoot.Tpo" \

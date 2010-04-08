@@ -24,6 +24,7 @@
 #include "CAction.h"
 #include "CSpell.h"
 #include <memory>
+#include <cassert>
 #include "fontcache.h"
 
 extern std::auto_ptr<Spellbook> spellbook;
@@ -228,9 +229,9 @@ bool ActionBar::isButtonUsed( sButton *button ) const
 {
     if ( button->action == NULL )
     {
-        return true;
-    } else {
         return false;
+    } else {
+        return true;
     }
 }
 
@@ -245,7 +246,7 @@ void ActionBar::drawSpellTooltip( int x, int y )
 
 void ActionBar::loadTextures()
 {
-    textures.texture.reserve(2);
+    textures.texture.resize(2);
 	textures.LoadIMG("data/interface/blended_bg.tga",0);
 	textures.LoadIMG("data/border.tga",1);
 }
@@ -292,3 +293,47 @@ void ActionBar::dragSpell()
         }
     }
 }
+
+std::string ActionBar::getLuaSaveText()
+{
+	std::ostringstream oss;
+	oss << "-- action bar" << std::endl;
+	for ( size_t curButtonNr=0; curButtonNr<button.size(); ++curButtonNr ) {
+		if ( isButtonUsed( &button[ curButtonNr ] ) ) {
+			oss << "DawnInterface.restoreActionBar( " << curButtonNr << ", "
+			            << "spellDatabase[ \"" << button[ curButtonNr ].action->getID() << "\" ] );" << std::endl;
+		}
+	}
+	return oss.str();
+}
+
+void ActionBar::bindActionToButtonNr( int buttonNr, CSpellActionBase *action )
+{
+	assert( ! isButtonUsed( &button[ buttonNr ] ) );
+	bindAction( &button[ buttonNr ], action );
+}
+
+void ActionBar::clear()
+{
+	for ( size_t curButtonNr=0; curButtonNr<button.size(); ++curButtonNr ) {
+		if ( isButtonUsed( &button[ curButtonNr ] ) ) {
+			unbindAction( &button[ curButtonNr ] );
+		}
+	}
+}
+
+extern std::auto_ptr<ActionBar> actionBar;
+
+namespace DawnInterface
+{
+	std::string getActionbarSaveText()
+	{
+		return actionBar->getLuaSaveText();
+	}
+	
+	void restoreActionBar( int buttonNr, CSpellActionBase *action )
+	{
+		actionBar->bindActionToButtonNr( buttonNr, action );
+	}
+}
+

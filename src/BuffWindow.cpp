@@ -45,7 +45,7 @@ void BuffWindow::initFonts()
 
 void BuffWindow::loadTextures()
 {
-    textures.texture.reserve(2);
+    textures.texture.resize(2);
 	textures.LoadIMG("data/interface/BuffWindow/frame.tga",0);
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
 }
@@ -73,8 +73,8 @@ void BuffWindow::draw()
 
             glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
             activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 32, world_y + posY - 40 * curSpell + 2, 32 );
-            spellFont->drawText(world_x+posX+40,world_y+posY+16-34*curSpell,activeSpells[curSpell].first->getName());
-            spellFont->drawText(world_x+posX+40,world_y+posY+6-34*curSpell,TimeConverter::convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
+            spellFont->drawText(world_x+posX+40,world_y+posY+18-40*curSpell,activeSpells[curSpell].first->getName());
+            spellFont->drawText(world_x+posX+40,world_y+posY+8-40*curSpell,TimeConverter::convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
     }
 
 }

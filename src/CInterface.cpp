@@ -34,7 +34,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.reserve(8);
+	interfacetextures.texture.resize(8);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -44,7 +44,7 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_left.tga",6);
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_right.tga",7);
 
-    damageDisplayTexturesSmall.texture.reserve(10);
+    damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/1small.tga",1);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/2small.tga",2);
@@ -56,7 +56,7 @@ void CInterface::LoadTextures()
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/8small.tga",8);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/9small.tga",9);
 
-	damageDisplayTexturesBig.texture.reserve(10);
+	damageDisplayTexturesBig.texture.resize(10);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/0big.tga",0);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/1big.tga",1);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/2big.tga",2);

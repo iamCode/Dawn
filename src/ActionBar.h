@@ -70,6 +70,9 @@ class ActionBar
         void unbindAction ( sButton *button );
         void loadTextures();
         void initFonts();
+        std::string getLuaSaveText();
+        void bindActionToButtonNr( int buttonNr, CSpellActionBase *action );
+        void clear();
 
     private:
         Player *player;

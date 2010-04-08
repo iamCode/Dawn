@@ -23,6 +23,8 @@
 #include <signal.h>
 #endif
 
+#include <cassert>
+
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
 	bool debug_stdout = false; // Write messages to stdout
@@ -125,6 +127,7 @@ void dawn_debug_fatal(const std::string& message ...)
 		debug_args(message.c_str(), ap, DEBUG_FATAL);
 	va_end(ap);
 
+	assert( false );
 	exit(1);
 }
 

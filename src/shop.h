@@ -21,8 +21,11 @@
 
 #include <stdint.h>
 #include <string>
-#include "CNPC.h"
 #include "CharacterInfoScreen.h"
+
+class InventoryItem;
+class Item;
+class CNPC;
 
 namespace currency
 {
@@ -75,6 +78,7 @@ class Shop
         InventoryItem *getFloatingSelection() const;
 
     private:
+		friend class CZone; // just for now to be able to save the items
         uint8_t currentTab;
 
         int posX, posY, width, height;

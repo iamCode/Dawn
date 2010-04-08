@@ -103,6 +103,8 @@ class CCharacter {
 
     void addItemToLootTable( Item *item, double dropChance );
     void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
+
+	void setPosition( int xpos, int ypos );
 };
 
 namespace StatsType
@@ -271,6 +273,14 @@ namespace WeaponType
 	};
 }
 
+class CSpellActionBase
+{
+};
+
+class CSpell : public CSpellActionBase
+{
+};
+
 class Item
 {
 	void setDescription( std::string description );
@@ -315,6 +325,11 @@ class CNPC : public CCharacter
 {
 	void addOnDieEventHandler( CallIndirection *eventHandler );
 	void setAttitude( Attitude::Attitude attitude );
+};
+
+class Player : public CCharacter
+{
+	std::string getSaveText();
 };
 
 class TextWindow
@@ -390,8 +405,7 @@ namespace DawnInterface
 		                ArmorType::ArmorType armorType,
 		                WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
-	CZone* getCurrentZone();
-	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
@@ -407,4 +421,27 @@ namespace DawnInterface
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	Shop *addShop();
+	
+	Player *getPlayer();
+	
+	// functions used for loading only
+	std::string getQuestSaveText();
+	std::string getInventorySaveText();
+	std::string getSpellbookSaveText();
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreWieldItem( int slot, Item *item );
+	void restoreGroundLootItem( Item *item, int xPos, int yPos );
+	void restoreGroundGold( int amount, int xPos, int yPos );
+	void setCurrentZone( std::string zoneName );
+	std::string getAllZonesSaveText();
+	std::string getItemReferenceRestore( CCharacter *character );
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
+	std::string getItemReferenceRestore( Shop *shop );
+	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( TextWindow *textWindow );
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
+	std::string getActionbarSaveText();
+	void restoreActionBar( int buttonNr, CSpellActionBase *action );
 }

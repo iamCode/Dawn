@@ -26,6 +26,11 @@
 #include <iostream>
 #include <fstream>
 #include "CDrawingHelpers.h"
+#include "GroundLoot.h"
+
+class CNPC;
+class InteractionPoint;
+class CallIndirection;
 
 struct sTileMap {
 	int x_pos, y_pos, id;
@@ -56,7 +61,7 @@ struct sEnvironmentMap {
 		z_pos = _z_pos;
 	};
 
-    bool operator<(const sEnvironmentMap& environmentObject) const { // instead of using a predicate in our sort call.
+	bool operator<(const sEnvironmentMap& environmentObject) const { // instead of using a predicate in our sort call.
 		if ( z_pos == environmentObject.z_pos )
 		{
 		    return y_pos > environmentObject.y_pos;
@@ -93,15 +98,28 @@ struct sShadowMap {
 	};
 };
 
+// TODO:
+// Make the CZone a real map
+// * Zone is the only point used to look for information (ok some pointers may be set by setCurrentZone)
+// * Add enterZone LUA-Interface which loads a zone if it is not loaded, yet and enters that zone at a certain position
+//   But it returns by just setting the current zone it does not call a new interface
 class CZone
 {
 	private:
 		void DrawTiles();
 		void DrawEnvironment();
 		void DrawShadows();
+		
+		std::string zoneName;
+		std::vector <CNPC*> npcs;
+		std::vector<InteractionPoint*> interactionPoints;
+		std::vector<CallIndirection*> eventHandlers;
+		GroundLoot groundLoot;
 
 
 	public:
+		CZone();
+
 		void DrawZone();
 
 		void LoadZone(std::string file);
@@ -124,13 +142,36 @@ class CZone
 		int DeleteCollisionbox(int x, int y);
 
 		void DeleteTile(int iId);
+		
+		std::vector<CNPC*> getNPCs();
+		void addNPC( CNPC *npcToAdd );
+		void removeNPC( CNPC *npcToDelete );
+		void cleanupNPCList();
+		
+		std::vector<InteractionPoint*> getInteractionPoints();
+		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
+		void cleanupInteractionList();
+		void purgeInteractionList();
+		
+		GroundLoot* getGroundLoot();
+		
+		std::string getZoneName() const;
+		std::string getLuaSaveText() const;
+		void addEventHandler( CallIndirection *newEventHandler );
+		// used to restore references when loading
+		void findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const;
+		void findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const;
+		void findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const;
+		CCharacter* getCharacterPointer( size_t posInArray ) const;
+		InteractionPoint* getInteractionPointPointer( size_t posInArray ) const;
+		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
 
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;
 		std::vector<sCollisionMap> CollisionMap;
-
+		
 		CTexture ZoneTiles;
 		CTexture ZoneEnvironment;
 		CTexture ZoneShadow;

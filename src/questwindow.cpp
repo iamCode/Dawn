@@ -36,7 +36,7 @@ QuestWindow::QuestWindow()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 14);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
 
 	width = backgroundTexture->texture[0].width;
@@ -126,6 +126,13 @@ void QuestWindow::removeQuest( std::string name )
 	}
 }
 
+void QuestWindow::removeAllQuests()
+{
+	questNames.clear();
+	questDescriptions.clear();
+	selectedQuestNr = -1;
+}
+
 void QuestWindow::changeQuestDescription( std::string name, std::string newDescription )
 {
 	size_t foundQuestNr = 0;
@@ -173,6 +180,22 @@ bool QuestWindow::isVisible() const
 	return visible;
 }
 
+std::string QuestWindow::getReloadScriptText() const
+{
+	std::ostringstream oss;
+	for ( size_t curQuestNr=0; curQuestNr<questNames.size(); ++curQuestNr ) {
+		oss << "DawnInterface.addQuest( '" << questNames[ curQuestNr ] << "', '";
+		for ( size_t curQuestDescriptionNr=0; curQuestDescriptionNr<questDescriptions[curQuestNr].size(); ++curQuestDescriptionNr ) {
+			oss << questDescriptions[curQuestNr][curQuestDescriptionNr];
+			if ( curQuestDescriptionNr < questDescriptions[curQuestNr].size() - 1 ) {
+				oss << " ";
+			}
+		}
+		oss << "' );" << std::endl;
+	}
+	return oss.str();
+}
+
 extern std::auto_ptr<QuestWindow> questWindow;
 
 namespace DawnInterface
@@ -190,6 +213,11 @@ namespace DawnInterface
 	void changeQuestDescription( std::string questName, std::string newDescription )
 	{
 		questWindow->changeQuestDescription( questName, newDescription );
+	}
+	
+	std::string getQuestSaveText()
+	{
+		return questWindow->getReloadScriptText();
 	}
 }
 

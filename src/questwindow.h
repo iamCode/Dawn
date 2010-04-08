@@ -33,11 +33,14 @@ class QuestWindow
 		void draw();
 		void addQuest( std::string name, std::string description );
 		void removeQuest( std::string name );
+		void removeAllQuests();
 		void changeQuestDescription( std::string name, std::string newDescription );
 		bool isOnThisScreen( int posX, int posY ) const;
 		void clicked( int mouseX, int mouseY );
 		void setVisible( bool visible );
 		bool isVisible() const;
+
+		std::string getReloadScriptText() const;
 
 	private:
 		std::vector< std::string > questNames;

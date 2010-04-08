@@ -1,29 +1,23 @@
-trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0, zone );
-trader:setAttitude( Attitude.FRIENDLY );
-trader:setName( "Rake Fleetwood" );
-traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
-traderInteraction:setInteractionType( InteractionType.Shop );
-traderInteraction:setInteractionCode( "onActivateTrader()" );
-traderShop = DawnInterface.addShop();
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["smallhealingpotion"] );
-traderShop:addItem( itemDatabase["bladeofstrength"] );
+function init()
+	trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0 );
+	trader:setAttitude( Attitude.FRIENDLY );
+	trader:setName( "Rake Fleetwood" );
+	traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
+	traderInteraction:setInteractionType( InteractionType.Shop );
+	traderInteraction:setInteractionCode( "onActivateTrader()" );
+	traderShop = DawnInterface.addShop();
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["smallhealingpotion"] );
+	traderShop:addItem( itemDatabase["bladeofstrength"] );
 
-function onActivateTrader()
-	traderShop:setVisible( true )
-end
-
-
-if ( quest_playHideAndSeek == nil or not quest_playHideAndSeek.fulfilled )
-then
 	john = DawnInterface.addInteractionPoint();
 	john:setPosition( 820, 270, 25, 33 );
 	john:setBackgroundTexture( "data/character/link/link1.tga" );
@@ -31,15 +25,19 @@ then
 	john:setInteractionCode( "onActivateJohn()" );
 end
 
+function onActivateTrader()
+	traderShop:setVisible( true )
+end
+
 function onActivateJohn()
-	if ( quest_playHideAndSeek == nil or not quest_playHideAndSeek.fulfilled )
+	if ( not quest_playHideAndSeek.fulfilled )
 	then
-		if ( quest_playHideAndSeek == nil )
+		if ( quest_playHideAndSeek.added == nil )
 		then
-			quest_playHideAndSeek = {}
+			quest_playHideAndSeek.added = true;
 			quest_playHideAndSeek.fulfilled = false;
 			quest_playHideAndSeek.rewardGot = false;
-			quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 3462, 557, 1, 0, zone );
+			quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 3462, 557, 1, 0 );
 			quest_playHideAndSeek.monsterSpawnPoint:setAttitude ( Attitude.HOSTILE );
 			onDieEventHandler = DawnInterface.createEventHandler();
 			onDieEventHandler:setExecuteText( "onKilledQuestMonster()" );
@@ -60,6 +58,8 @@ function onActivateJohn()
 		quest_playHideAndSeek.rewardGot = true;
 		DawnInterface.removeInteractionPoint( john );
 		DawnInterface.removeInteractionPoint( james );
+		john = nil;
+		james = nil;
 		DawnInterface.removeQuest("hide and seek");
 	end
 end
@@ -71,6 +71,7 @@ function onKilledQuestMonster()
 	james:setInteractionType( InteractionType.Quest );
 	james:setInteractionCode( "onActivateJames()" );
 	DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
+	quest_playHideAndSeek.monsterSpawnPoint = nil;
 end
 
 function onActivateJames()
@@ -90,6 +91,12 @@ function onActivateJames()
 		quest_playHideAndSeek.fulfilled = true;
 		DawnInterface.changeQuestDescription("hide and seek", "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
 	end
+end
+
+if ( quest_playHideAndSeek == nil )
+then
+	quest_playHideAndSeek = {};
+	init();
 end
 
 

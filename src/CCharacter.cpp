@@ -24,9 +24,11 @@
 #include "GroundLoot.h"
 #include "CAction.h"
 #include "StatsSystem.h"
+#include "CZone.h"
 
 #include "CNPC.h"
 #include "Player.h"
+#include "globals.h"
 
 #include <map>
 #include <string>
@@ -37,14 +39,13 @@
 void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
-extern std::auto_ptr<GroundLoot> groundLoot;
 
 // Dawn LUA Interface
 namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID )
 	{
-		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0, NULL);
+		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0);
 		newMobType->lifebar = NULL;
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
@@ -59,6 +60,10 @@ void CCharacter::baseOnType( std::string otherName )
 		abort();
 	}
 	other = allMobTypes[ otherName ];
+	// classID is only set if this was created as a new mob type with createNewMobType
+	if ( this->classID == "" ) {
+		this->classID = otherName;
+	}
 	setStrength( other->getStrength() );
 	setDexterity( other->getDexterity() );
 	setVitality( other->getVitality() );
@@ -98,6 +103,11 @@ void CCharacter::baseOnType( std::string otherName )
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
+}
+
+std::string CCharacter::getClassID() const
+{
+	return classID;
 }
 
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
@@ -707,7 +717,7 @@ void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType acti
 	assert( texture[ activityNr ] == NULL );
 
 	texture[ activityNr ] = new CTexture();
-	texture[ activityNr ]->texture.reserve( 8 * numTextures + 1 );
+	texture[ activityNr ]->texture.resize( 8 * numTextures + 1 );
 }
 
 void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename )
@@ -723,7 +733,7 @@ void CCharacter::setLifeTexture( std::string filename )
 {
 	if ( lifebar == NULL ) {
 		lifebar = new CTexture();
-		lifebar->texture.reserve( 2 );
+		lifebar->texture.resize( 2 );
 	}
 	lifebar->LoadIMG( filename, 1 );
 }
@@ -816,6 +826,12 @@ int CCharacter::getHeight() const
 	return useBoundingBox ? boundingBoxH : texture[0]->texture[1].height;
 }
 
+void CCharacter::setPosition( int xpos, int ypos )
+{
+	this->x_pos = xpos;
+	this->y_pos = ypos;
+}
+
 extern std::vector <CNPC*> NPC;
 
 extern Player character;
@@ -827,10 +843,12 @@ bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r
 
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
+	CZone *curZone = Globals::getCurrentZone();
+
 	int character_l = x_pos, character_r = x_pos + getWidth(), character_b = y_pos, character_t = y_pos + getHeight();
-	for (unsigned int t=0;t<zone1.CollisionMap.size();t++) {
-		int other_l = zone1.CollisionMap[t].CR.x, other_r = zone1.CollisionMap[t].CR.x+zone1.CollisionMap[t].CR.w;
-		int other_b = zone1.CollisionMap[t].CR.y, other_t = zone1.CollisionMap[t].CR.y+zone1.CollisionMap[t].CR.h;
+	for (unsigned int t=0;t<curZone->CollisionMap.size();t++) {
+		int other_l = curZone->CollisionMap[t].CR.x, other_r = curZone->CollisionMap[t].CR.x+curZone->CollisionMap[t].CR.w;
+		int other_b = curZone->CollisionMap[t].CR.y, other_t = curZone->CollisionMap[t].CR.y+curZone->CollisionMap[t].CR.h;
 		if ( hasIntersection( other_l, other_r, other_b, other_t,
 		                      character_l, character_r, character_b, character_t )) {
 			return 1;
@@ -838,9 +856,10 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 	}
 
 	// check for collision with other characters
-	for ( size_t curNPCNr=0; curNPCNr < NPC.size(); ++curNPCNr )
+	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+	for ( size_t curNPCNr=0; curNPCNr < zoneNPCs.size(); ++curNPCNr )
 	{
-		CCharacter *curNPC = NPC[ curNPCNr ];
+		CCharacter *curNPC = zoneNPCs[ curNPCNr ];
 		if ( curNPC == this || ! curNPC->isAlive() )
 			continue;
 
@@ -1251,19 +1270,21 @@ extern size_t randomSizeT( size_t min, size_t max );
 void CCharacter::dropItems()
 {
     // iterate through the loot table and see if we should drop any items.
+    CZone *curZone = Globals::getCurrentZone();
+
     for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
     {
         double dropChance = (double)rand()/(double)RAND_MAX;
         if ( dropChance <= lootTable[tableID].dropChance )
         {
-            groundLoot->addItem( getXPos(), getYPos(), lootTable[tableID].item );
+            curZone->getGroundLoot()->addItem( getXPos(), getYPos(), lootTable[tableID].item );
         }
     }
 
     {
     	double dropChance = (double)rand()/(double)RAND_MAX;
     	if ( dropChance <= coinDropChance ) {
-    		groundLoot->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
+    		curZone->getGroundLoot()->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
     	}
     }
 }
@@ -1395,6 +1416,11 @@ void CCharacter::cleanupActiveSpells()
     }
 }
 
+void CCharacter::clearActiveSpells()
+{
+    activeSpells.clear();
+}
+
 std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells() const
 {
     return activeSpells;
@@ -1422,6 +1448,11 @@ void CCharacter::cleanupCooldownSpells()
             curSpell ++;
         }
     }
+}
+
+void CCharacter::clearCooldownSpells()
+{
+    cooldownSpells.clear();
 }
 
 std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const

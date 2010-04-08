@@ -26,6 +26,8 @@
 #include "Spellbook.h"
 #include "GroundLoot.h"
 #include "shop.h"
+#include "CZone.h"
+#include "globals.h"
 
 #include <cassert>
 #include <memory>
@@ -40,7 +42,6 @@ namespace DawnInterface
 	extern void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 }
 
-extern std::auto_ptr<GroundLoot> groundLoot;
 extern std::auto_ptr<Spellbook> spellbook;
 
 InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t offsetX_, size_t offsetY_, size_t sizeX_, size_t sizeY_, std::string plain_file)
@@ -50,7 +51,7 @@ InventoryScreenSlot::InventoryScreenSlot( ItemSlot::ItemSlot itemSlot_, size_t o
 	  sizeX( sizeX_ ),
 	  sizeY( sizeY_ )
 {
-    textures.texture.reserve( 1 );
+    textures.texture.resize( 1 );
     textures.LoadIMG( plain_file, 0 );
 }
 
@@ -151,7 +152,7 @@ InventoryScreen::~InventoryScreen()
 
 void InventoryScreen::loadTextures()
 {
-	textures.texture.reserve(5);
+	textures.texture.resize(5);
 	textures.LoadIMG("data/interface/inventory/base.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
 	textures.LoadIMG("data/interface/inventory/goldcoin.tga",2);
@@ -163,7 +164,7 @@ void InventoryScreen::loadTextures()
 
 void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 {
-	groundLoot->addItem( player->getXPos(), player->getYPos(), inventoryItem->getItem() );
+	Globals::getCurrentZone()->getGroundLoot()->addItem( player->getXPos(), player->getYPos(), inventoryItem->getItem() );
 }
 
 void InventoryScreen::clicked( int clickX, int clickY, uint8_t mouseDown )

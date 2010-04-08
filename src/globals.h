@@ -16,31 +16,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef CALLINDIRECTION_H
-#define CALLINDIRECTION_H
+#ifndef GLOBALS_H
+#define GLOBALS_H
 
 #include <string>
+#include <map>
 
-class CallIndirection
+// ideally this file should not add any include dependency on dawn files
+class CZone;
+
+namespace Globals
 {
-	public:
-		virtual void call() = 0;
-		virtual std::string getLuaSaveText() const = 0;
-};
+	extern std::map< std::string, CZone* > allZones;
+	CZone *getCurrentZone();
+	void setCurrentZone( CZone *newCurZone );
+}
 
-class LuaCallIndirection : public CallIndirection
-{
-	public:
-		LuaCallIndirection();
-
-		virtual void call();
-		virtual std::string getLuaSaveText() const;
-
-		void setExecuteText( std::string text );
-
-	private:
-		std::string luaText;
-};
-
-#endif // CALLINDIRECTION_H
-
+#endif // GLOBALS_H

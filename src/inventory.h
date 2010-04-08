@@ -73,6 +73,9 @@ class Inventory
 		InventoryItem* insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		bool containsItem( InventoryItem *inventoryItem ) const;
 		void removeItem( InventoryItem *inventoryItem );
+		std::string getReloadText();
+
+		void clear();
 
 		static EquipPosition::EquipPosition getEquipType( ItemSlot::ItemSlot itemSlot );
 	private:

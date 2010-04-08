@@ -16,53 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
 
-#ifdef _WIN32
-#include <windows.h> // Nothing uses this, perhaps it could be removed?
-#endif
+/* Defining variables in a header is a very bad idea since it would cause the variable to be defined multiple times
+   if the file is included from multiple positions. So I moved the variable declarations from here to main.cpp... */
 
-#include <vector>
-#include <math.h>
-
-#include "GLee/GLee.h" // OpenGL Easy Extention Library
-
-#include <SDL/SDL.h> // SDL
-#include <SDL/SDL_opengl.h> // SDL OpenGL
-#include <SDL/SDL_image.h> // SDL Image library (image formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV)
-
-#include <GL/gl.h> // OpenGL
-#include <GL/glu.h> // OpenGL Utility Library. This will have to be changed in updated versions, as it changes for different OS's
-
-#include "CTexture.h"
-
-#include "GLFT_Font.h"
-
-#include "pnglite/pnglite.h"
-
-#include "CZone.h"
-#include "CInterface.h"
-#include "CCharacter.h"
-#include "CEditor.h"
-#include "CMessage.h"
-#include "InventoryScreen.h"
-#include "cameraFocusHandler.h"
-#include "utils.h"
-#include "tooltip.h"
-#include "ActionBar.h"
-#include "Spellbook.h"
-#include "BuffWindow.h"
-#include "shop.h"
-#include "GroundLoot.h"
-
-#ifdef _WIN32
-#define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
-#endif
-
-int world_x = 0, world_y = 0;
-int mouseX, mouseY;
-int done = 0;
-CZone zone1;
-CMessage message;

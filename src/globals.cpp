@@ -16,31 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef CALLINDIRECTION_H
-#define CALLINDIRECTION_H
+#include "globals.h"
 
-#include <string>
-
-class CallIndirection
+namespace Globals
 {
-	public:
-		virtual void call() = 0;
-		virtual std::string getLuaSaveText() const = 0;
-};
 
-class LuaCallIndirection : public CallIndirection
+CZone *currentZone;
+
+CZone *getCurrentZone()
 {
-	public:
-		LuaCallIndirection();
+	return currentZone;
+}
 
-		virtual void call();
-		virtual std::string getLuaSaveText() const;
+void setCurrentZone( CZone *newCurZone )
+{
+	currentZone = newCurZone;
+}
 
-		void setExecuteText( std::string text );
-
-	private:
-		std::string luaText;
-};
-
-#endif // CALLINDIRECTION_H
-
+} // namespace Globals

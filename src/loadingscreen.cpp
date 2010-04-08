@@ -37,10 +37,10 @@ LoadingScreen::LoadingScreen()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.reserve(1);
+	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/loadingScreen.tga", 0 );
 	progressTexture = new CTexture();
-	progressTexture->texture.reserve(1);
+	progressTexture->texture.resize(1);
 	progressTexture->LoadIMG( "data/interface/lifebar.tga", 0 );
 
 	width = backgroundTexture->texture[0].width;

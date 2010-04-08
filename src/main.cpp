@@ -16,10 +16,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "threadObject/Thread.h"
-
 #include "main.h"
 
+#include "threadObject/Thread.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <memory>
+#include <csignal>
+
+#ifdef _WIN32
+#include <windows.h> // Nothing uses this, perhaps it could be removed?
+#endif
+
+#include "GLee/GLee.h" // OpenGL Easy Extention Library
+
+#include <SDL/SDL.h> // SDL
+#include <SDL/SDL_opengl.h> // SDL OpenGL
+#include <SDL/SDL_image.h> // SDL Image library (image formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV)
+#include <SDL/SDL_getenv.h>
+
+#include <GL/gl.h> // OpenGL
+#include <GL/glu.h> // OpenGL Utility Library. This will have to be changed in updated versions, as it changes for different OS's
+
+#include "GLFT_Font.h"
+#include "pnglite/pnglite.h"
+
+#include "CTexture.h"
+#include "CZone.h"
+#include "CInterface.h"
+#include "CCharacter.h"
+#include "CEditor.h"
+#include "CMessage.h"
+#include "InventoryScreen.h"
+#include "cameraFocusHandler.h"
+#include "utils.h"
+#include "tooltip.h"
+#include "ActionBar.h"
+#include "Spellbook.h"
+#include "BuffWindow.h"
+#include "shop.h"
+#include "GroundLoot.h"
 #include "CLuaFunctions.h"
 #include "CSpell.h"
 #include "CAction.h"
@@ -30,10 +70,12 @@
 #include "textwindow.h"
 #include "questwindow.h"
 #include "optionswindow.h"
-#include <memory>
-#include <signal.h>
-#include <SDL/SDL_getenv.h>
 #include "loadingscreen.h"
+#include "globals.h"
+
+#ifdef _WIN32
+#define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
+#endif
 
 /* Global settings now reside in the
    dawn_configuration namespace, variables
@@ -54,9 +96,12 @@ namespace dawn_configuration {
 int RES_X = dawn_configuration::screenWidth;
 int RES_Y = dawn_configuration::screenHeight;
 
+int world_x = 0, world_y = 0;
+int mouseX, mouseY;
+int done = 0;
+CMessage message;
+
 SDL_Surface *screen;
-extern CZone zone1;
-extern CMessage message;
 Player character;
 cameraFocusHandler focus(dawn_configuration::screenWidth, dawn_configuration::screenHeight);
 
@@ -64,8 +109,6 @@ CEditor Editor;
 
 CInterface GUI;
 
-std::vector <CNPC*> NPC;
-extern std::vector<InteractionPoint*> allInteractionPoints;
 extern std::vector<TextWindow*> allTextWindows;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
@@ -76,8 +119,6 @@ bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
 bool KP_toggle_showShop = false;
-
-extern int world_x, world_y, mouseX, mouseY;
 
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
@@ -91,9 +132,13 @@ std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
-std::auto_ptr<GroundLoot> groundLoot;
 
 std::vector<CSpellActionBase*> activeSpellActions;
+
+namespace Globals
+{
+	std::map< std::string, CZone* > allZones;
+}
 
 void enqueueActiveSpellAction( CSpellActionBase *spellaction )
 {
@@ -156,46 +201,34 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 
 namespace DawnInterface
 {
-	CZone* getCurrentZone()
+	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn )
 	{
-		return &zone1;
-	}
-
-	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone )
-	{
-		CNPC *newMob = new CNPC(0, 0, 0, 0, 0, NULL);
+		CNPC *newMob = new CNPC(0, 0, 0, 0, 0);
 		newMob->lifebar = NULL;
 		newMob->baseOnType( mobID );
-		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn, zone );
+		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );
-		NPC.push_back( newMob );
+		Globals::getCurrentZone()->addNPC( newMob );
 		return newMob;
 	}
 
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
 	{
-		for ( size_t curSpawnPointNr=0; curSpawnPointNr<NPC.size(); ++curSpawnPointNr ) {
-			CNPC *curNPC = NPC[ curSpawnPointNr ];
-			if ( curNPC == mobSpawnPoint ) {
-				curNPC->markAsDeleted();
-				break;
-			}
-		}
+		Globals::getCurrentZone()->removeNPC( mobSpawnPoint );
 	}
-}
 
-void cleanupSpawnPointList()
-{
-	size_t curSpawnPointNr = 0;
-	while ( curSpawnPointNr < NPC.size() ) {
-		CNPC *curNPC = NPC[ curSpawnPointNr ];
-		if ( curNPC->isMarkedAsDeletable() ) {
-			NPC.erase( NPC.begin() + curSpawnPointNr );
-			// TODO: delete curNPC. There seem to be some problems at the moment.
-			//delete curNPC;
-		} else {
-			++curSpawnPointNr;
+	Player* getPlayer()
+	{
+		return &character;
+	}
+
+	void setCurrentZone( std::string zoneName )
+	{
+		if ( Globals::allZones[ zoneName ] == NULL ) {
+			Globals::allZones[ zoneName ] = new CZone();
 		}
+		CZone *newCurZone = Globals::allZones[ zoneName ];
+		Globals::setCurrentZone( newCurZone );
 	}
 }
 
@@ -215,28 +248,33 @@ void DrawScene()
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
-	zone1.DrawZone();
+	CZone *curZone = Globals::getCurrentZone();
+
+	curZone->DrawZone();
 
 	// draw items on the ground
-    groundLoot->draw();
+    curZone->getGroundLoot()->draw();
 
 	character.Draw();
 
 	// draw tooltips if we're holding left ALT key.
-	groundLoot->drawTooltip();
+	curZone->getGroundLoot()->drawTooltip();
 
 	// draw NPC (and if it's in target, their lifebar and name)
-	for (unsigned int x=0; x<NPC.size(); x++)
+	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+	for (unsigned int x=0; x<zoneNPCs.size(); x++)
 	{
-		NPC[x]->Draw();
-		if ( character.getTarget() == NPC[x] )
+		CNPC *curNPC = zoneNPCs[x];
+		curNPC->Draw();
+		if ( character.getTarget() == curNPC )
 		{
             GUI.drawTargetedNPCText();
 		}
 	}
 
-	for ( size_t curInteractionNr=0; curInteractionNr<allInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
 			curInteraction->drawInteractionSymbol( mouseX, mouseY, character.getXPos(), character.getYPos() );
@@ -492,9 +530,6 @@ public:
 		/// testing the shop, should not be initialized like this!!!
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
 
-        /// setting up groundlooting system. Should we have a progress value here?
-        groundLoot = std::auto_ptr<GroundLoot>( new GroundLoot( &character ) );
-
 		dawn_debug_info("Loading the game data files and objects");
 		progressString = "Loading Spell Data";
 		progress = 0.225;
@@ -509,7 +544,8 @@ public:
 
 		progressString = "Loading Character Data";
 		progress = 0.7;
-		zone1.LoadZone("data/zone1");
+		CZone *newZone = new CZone();
+		newZone->LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
@@ -584,6 +620,9 @@ public:
 
 		dawn_debug_info("Character completed");
 
+		progressString = "Initializing load/save functions";
+		progress = 0.92;
+		LuaFunctions::executeLuaFile("data/loadsave.lua");
 		progressString = "Loading Game Init Data";
 		progress = 0.95;
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
@@ -808,12 +847,13 @@ void game_loop()
 					} else {
 						switch (event.button.button) {
 							case SDL_BUTTON_LEFT:
-
-                                groundLoot->searchForItems( world_x + mouseX, world_y + mouseY );
+							{
+								CZone *curZone = Globals::getCurrentZone();
+                                curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
 
                                 if ( inventoryScreen->isVisible() )
                                 {
-                                    InventoryItem *floatingSelection = groundLoot->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                    InventoryItem *floatingSelection = curZone->getGroundLoot()->getFloatingSelection( world_x + mouseX, world_y + mouseY );
                                     if ( floatingSelection != NULL )
                                     {
                                         inventoryScreen->setFloatingSelection( floatingSelection );
@@ -821,27 +861,31 @@ void game_loop()
                                 }
 
 								// search for new target
-								for (unsigned int x=0; x<NPC.size(); x++) {
-									if ( NPC[x]->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-										if ( ! NPC[x]->getAttitude() == Attitude::FRIENDLY ) {
-											character.setTarget( NPC[x] );
+								std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+								for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+									CNPC *curNPC = zoneNPCs[x];
+									if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+										if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+											character.setTarget( curNPC );
 											break;
 										}
 									}
 								}
+							}
 							break;
 
 							case SDL_BUTTON_RIGHT:
-
+							{
 								// look for interactionpoints when right-clicking.
-								for ( size_t curInteractionNr=0; curInteractionNr < allInteractionPoints.size(); ++curInteractionNr ) {
-									InteractionPoint *curInteraction = allInteractionPoints[ curInteractionNr ];
+								std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
+								for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
 										curInteraction->startInteraction( character.getXPos(), character.getYPos() );
 										break;
 									}
 								}
-
+							}
                             break;
 						}
 					}
@@ -875,13 +919,15 @@ void game_loop()
 			character.regenerateLifeMana( ticksDiff );
 
 
-			for (unsigned int x=0; x<NPC.size(); x++) {
-				if ( NPC[x]->isAlive() ) {
-                    NPC[x]->giveMovePoints( ticksDiff );
-					NPC[x]->Move();
+			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+				CNPC *curNPC = zoneNPCs[x];
+				if ( curNPC->isAlive() ) {
+                    curNPC->giveMovePoints( ticksDiff );
+					curNPC->Move();
 				}
-				NPC[x]->Respawn();
-				NPC[x]->Wander();
+				curNPC->Respawn();
+				curNPC->Wander();
 			}
 
 			// making sure our target is still alive, if not well set our target to NULL.
@@ -895,14 +941,15 @@ void game_loop()
 			}
 
 			cleanupActiveSpellActions();
-			cleanupSpawnPointList();
+			Globals::getCurrentZone()->cleanupNPCList();
+			Globals::getCurrentZone()->cleanupInteractionList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-				for (unsigned int x=0; x<NPC.size(); x++) {
-					if ( NPC[x]->isAlive() )
-					{
-                        NPC[x]->Die();
-                    }
+				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+				for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+					if ( zoneNPCs[x]->isAlive() ) {
+						zoneNPCs[x]->Die();
+					}
 				}
 			}
 
@@ -918,7 +965,7 @@ void game_loop()
 			}
 
 			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-				Editor.setEditZone( &zone1 );
+				Editor.setEditZone( Globals::getCurrentZone() );
 				Editor.setEnabled( true );
 				Editor.initFocus( &focus );
 				Editor.KP_toggle_editor = true;
@@ -933,12 +980,14 @@ void game_loop()
 				bool FoundNewTarget = false;
 				std::vector <CNPC*> NPClist;
 				// select next npc on screen
-				for ( size_t curNPC = 0; curNPC < NPC.size(); ++curNPC ) {
+				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+				for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
 					// if NPC is in on screen (might be changed to line of sight or something)
 					// this makes a list of all visible NPCs, easier to select next target this way.
-					if ( DrawingHelpers::isRectOnScreen( NPC[curNPC]->x_pos, 1, NPC[curNPC]->y_pos, 1 )
-					        && NPC[curNPC]->isAlive() ) {
-						NPClist.push_back(NPC[curNPC]);
+					CNPC *curNPC = zoneNPCs[curNPCNr];
+					if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
+					        && curNPC->isAlive() ) {
+						NPClist.push_back(curNPC);
 					}
 				}
 				// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
@@ -965,12 +1014,12 @@ void game_loop()
 
 			if (keys[SDLK_LALT])
 			{
-			    groundLoot->enableTooltips();
+			    Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
 			}
 
 			if (!keys[SDLK_LALT])
 			{
-			    groundLoot->disableTooltips();
+			    Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
 			}
 
 			if (!keys[SDLK_TAB]) {

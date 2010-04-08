@@ -19,15 +19,16 @@
 #ifndef __C_EDITOR_
 #define __C_EDITOR_
 
-#include "CZone.h"
-#include "CMessage.h"
 #include "CTexture.h"
+#include "CMessage.h"
 #include <stdio.h>
 #include <iostream>
 #include "cameraFocusHandler.h"
 
+class CZone;
+class sEnvironmentMap;
+
 extern int mouseX, mouseY, RES_X, RES_Y, done;
-extern CMessage message;
 
 class CEditor
 {

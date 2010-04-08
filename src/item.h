@@ -145,6 +145,7 @@ class Item
 		// probably like CCharacter: baseOnType
 
 		std::string getName() const;
+		std::string getID() const;
         std::string getDescription() const;
         void setDescription( std::string description );
 

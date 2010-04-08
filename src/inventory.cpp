@@ -322,6 +322,83 @@ InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem
 	return blockingItem;
 }
 
+std::string Inventory::getReloadText()
+{
+	std::ostringstream oss;
+	oss << "-- Player's inventory" << std::endl;
+	oss << "-- Items in Backpack" << std::endl;
+	
+	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
+		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
+		Item *curItem = curBackpackItem->getItem();
+		oss << "DawnInterface.restoreItemInBackpack( itemDatabase[\"" << curItem->getID() << "\"], "
+		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
+		    << std::endl;
+	}
+	
+	oss << "-- equipped Items" << std::endl;
+	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
+	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
+		if ( equippedItems[ curEquippable ] != NULL ) {
+			Item *curItem = equippedItems[ curEquippable ]->getItem();
+			oss << "DawnInterface.restoreWieldItem( " << curEquippable << ", "
+			    << "itemDatabase[\"" << curItem->getID() << "\"] " << ");"
+			    << std::endl;
+		}
+	}
+	
+	return oss.str();
+}
+
+void Inventory::clear()
+{
+	// remove backpack items
+	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
+		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
+		delete curBackpackItem;
+	}
+	backpackItems.resize( 0 );
+
+	// free space in inventory so we can place new items
+	for ( size_t curX=0; curX<sizeX; ++ curX ) {
+		for ( size_t curY=0; curY<sizeY; ++curY ) {
+			slotUsed[curX][curY] = false;
+		}
+	}
+
+	// remove equipped items
+	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
+	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
+		if ( equippedItems[ curEquippable ] != NULL ) {
+			delete equippedItems[ curEquippable ];
+		}
+		equippedItems[ curEquippable ] = NULL;
+	}
+}
+
+extern Player character;
+
+namespace DawnInterface
+{
+	std::string getInventorySaveText()
+	{
+		return character.getInventory()->getReloadText();
+	}
+	
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
+	{
+		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
+		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
+	}
+	
+	void restoreWieldItem( int slot, Item *item )
+	{
+		ItemSlot::ItemSlot slotToUse = static_cast<ItemSlot::ItemSlot>( slot );
+		InventoryItem *invItem = new InventoryItem( item, 0, 0, &character );
+		character.getInventory()->wieldItemAtSlot( slotToUse, invItem );
+	}
+}
+
 EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlot )
 {
 	switch ( itemSlot ) {

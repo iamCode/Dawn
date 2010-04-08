@@ -24,6 +24,7 @@
 #include "CCharacter.h"
 #include "CTexture.h"
 #include "StatsSystem.h"
+#include "CDrawingHelpers.h"
 
 #include <cassert>
 
@@ -82,6 +83,22 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	CTexture *texture = getSymbol();
 	DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
 	                                  left, width, bottom, height );
+}
+
+std::string CSpellActionBase::getID() const
+{
+	std::string name = getName();
+	std::ostringstream idstream;
+	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
+		if ( isspace( name[curChar] ) ) {
+			// ignore
+		} else if ( isupper( name[curChar] ) ) {
+			idstream << char( tolower( name[curChar] ) );
+		} else {
+			idstream << char( name[curChar] );
+		}
+	}
+	return idstream.str();
 }
 
 /// ConfigurableSpell
@@ -164,7 +181,7 @@ void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 {
 	assert( spellSymbol == NULL );
 	spellSymbol = new CTexture();
-	spellSymbol->texture.reserve(1);
+	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
 
@@ -284,7 +301,7 @@ void GeneralRayDamageSpell::setNumAnimations( int count )
 	assert( spellTexture == NULL );
 	spellTexture = new CTexture();
 	numTextures = count;
-	spellTexture->texture.reserve( count );
+	spellTexture->texture.resize( count );
 }
 
 void GeneralRayDamageSpell::setAnimationTexture( int num, std::string filename )
@@ -431,7 +448,7 @@ void GeneralBoltDamageSpell::setNumAnimations( int count )
 	assert( boltTexture == NULL );
 	boltTexture = new CTexture();
 	numBoltTextures = count;
-	boltTexture->texture.reserve( count );
+	boltTexture->texture.resize( count );
 }
 
 void GeneralBoltDamageSpell::setAnimationTexture( int num, std::string filename )

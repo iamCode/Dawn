@@ -20,15 +20,14 @@
 #include "interactionpoint.h"
 #include "textwindow.h"
 #include "CNPC.h"
+#include "Player.h"
 #include "shop.h"
-
-class CZone;
+#include "item.h"
 
 namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID );
-	CZone* getCurrentZone();
-	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn, CZone *zone );
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 	void removeMobSpawnPoint( CNPC *spawnPointToRemove );
 	LuaCallIndirection* createEventHandler();
 	Item* createNewItem(std::string name,
@@ -49,5 +48,27 @@ namespace DawnInterface
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
+	Player *getPlayer();
+	
+	// functions used for loading only
+	std::string getQuestSaveText();
+	std::string getInventorySaveText();
+	std::string getSpellbookSaveText();
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreWieldItem( int slot, Item *item );
+	void restoreGroundLootItem( Item *item, int xPos, int yPos );
+	void restoreGroundGold( int amount, int xPos, int yPos );
+	void setCurrentZone( std::string zoneName );
+	std::string getAllZonesSaveText();
+	std::string getItemReferenceRestore( CCharacter *character );
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
+	std::string getItemReferenceRestore( Shop *shop );
+	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( TextWindow *textWindow );
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
+	std::string getActionbarSaveText();
+	void restoreActionBar( int buttonNr, CSpellActionBase *action );
 }
 
