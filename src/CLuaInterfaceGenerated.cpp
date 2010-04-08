@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Apr  6 22:23:34 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Apr  7 22:46:53 2010.
 */
 
 #ifndef __cplusplus
@@ -1555,6 +1555,72 @@ static int tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00(lua_S
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setHealthRegen of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setHealthRegen00
+static int tolua_CLuaInterface_CCharacter_setHealthRegen00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newHealthRegen = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHealthRegen'", NULL);
+#endif
+  {
+   self->setHealthRegen(newHealthRegen);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setHealthRegen'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setManaRegen of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setManaRegen00
+static int tolua_CLuaInterface_CCharacter_setManaRegen00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newManaRegen = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManaRegen'", NULL);
+#endif
+  {
+   self->setManaRegen(newManaRegen);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setManaRegen'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setBoundingBox of class  CCharacter */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setBoundingBox00
 static int tolua_CLuaInterface_CCharacter_setBoundingBox00(lua_State* tolua_S)
@@ -2109,15 +2175,15 @@ static int tolua_CLuaInterface_InteractionPoint_setPosition00(lua_State* tolua_S
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setInteractionTexture of class  InteractionPoint */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionPoint_setInteractionTexture00
-static int tolua_CLuaInterface_InteractionPoint_setInteractionTexture00(lua_State* tolua_S)
+/* method: setInteractionType of class  InteractionPoint */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionPoint_setInteractionType00
+static int tolua_CLuaInterface_InteractionPoint_setInteractionType00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"InteractionPoint",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
@@ -2125,18 +2191,18 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionTexture00(lua_Stat
 #endif
  {
   InteractionPoint* self = (InteractionPoint*)  tolua_tousertype(tolua_S,1,0);
-  std::string texturename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  InteractionType::InteractionType interactionType = ((InteractionType::InteractionType) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionType'", NULL);
 #endif
   {
-   self->setInteractionTexture(texturename);
+   self->setInteractionType(interactionType);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setInteractionTexture'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'setInteractionType'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4422,6 +4488,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setSpellEffectElementModifierPoints",tolua_CLuaInterface_CCharacter_setSpellEffectElementModifierPoints00);
    tolua_function(tolua_S,"setSpellEffectAllModifierPoints",tolua_CLuaInterface_CCharacter_setSpellEffectAllModifierPoints00);
    tolua_function(tolua_S,"setSpellCriticalModifierPoints",tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00);
+   tolua_function(tolua_S,"setHealthRegen",tolua_CLuaInterface_CCharacter_setHealthRegen00);
+   tolua_function(tolua_S,"setManaRegen",tolua_CLuaInterface_CCharacter_setManaRegen00);
    tolua_function(tolua_S,"setBoundingBox",tolua_CLuaInterface_CCharacter_setBoundingBox00);
    tolua_function(tolua_S,"setUseBoundingBox",tolua_CLuaInterface_CCharacter_setUseBoundingBox00);
    tolua_function(tolua_S,"addItemToLootTable",tolua_CLuaInterface_CCharacter_addItemToLootTable00);
@@ -4446,6 +4514,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"SpellCritical",StatsType::SpellCritical);
    tolua_constant(tolua_S,"ResistAll",StatsType::ResistAll);
    tolua_constant(tolua_S,"SpellEffectAll",StatsType::SpellEffectAll);
+   tolua_constant(tolua_S,"HealthRegen",StatsType::HealthRegen);
+   tolua_constant(tolua_S,"ManaRegen",StatsType::ManaRegen);
    tolua_constant(tolua_S,"Count",StatsType::Count);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"ElementType",0);
@@ -4572,10 +4642,15 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
    tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"InteractionType",0);
+  tolua_beginmodule(tolua_S,"InteractionType");
+   tolua_constant(tolua_S,"Quest",InteractionType::Quest);
+   tolua_constant(tolua_S,"Shop",InteractionType::Shop);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"InteractionPoint","InteractionPoint","",NULL);
   tolua_beginmodule(tolua_S,"InteractionPoint");
    tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_InteractionPoint_setPosition00);
-   tolua_function(tolua_S,"setInteractionTexture",tolua_CLuaInterface_InteractionPoint_setInteractionTexture00);
+   tolua_function(tolua_S,"setInteractionType",tolua_CLuaInterface_InteractionPoint_setInteractionType00);
    tolua_function(tolua_S,"setBackgroundTexture",tolua_CLuaInterface_InteractionPoint_setBackgroundTexture00);
    tolua_function(tolua_S,"setInteractionCode",tolua_CLuaInterface_InteractionPoint_setInteractionCode00);
   tolua_endmodule(tolua_S);

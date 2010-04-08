@@ -39,6 +39,7 @@ class CNPC : public CCharacter
 		std::vector<sLootTable> lootTable;
 		std::vector<CallIndirection*> onDieEventHandlers;
 		bool markedAsDeleted;
+		bool chasingPlayer;
 	public:
 
 		CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn );

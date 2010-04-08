@@ -40,6 +40,8 @@ wolfbase:setIntellect( 10 )
 wolfbase:setWisdom( 10 )
 wolfbase:setMaxHealth( 250 )
 wolfbase:setMaxMana( 0 )
+wolfbase:setHealthRegen( 0 )
+wolfbase:setManaRegen( 0 )
 wolfbase:setMinDamage( 5 )
 wolfbase:setMaxDamage( 10 )
 wolfbase:setArmor( 20 )
@@ -105,6 +107,8 @@ humanbase:setIntellect( 10 )
 humanbase:setWisdom( 10 )
 humanbase:setMaxHealth( 250 )
 humanbase:setMaxMana( 0 )
+humanbase:setHealthRegen( 0 )
+humanbase:setManaRegen( 0 )
 humanbase:setMinDamage( 5 )
 humanbase:setMaxDamage( 10 )
 humanbase:setArmor( 20 )
@@ -114,3 +118,117 @@ humanbase:setEvadeModifierPoints( 0 )
 humanbase:setName("A swordsman")
 humanbase:setWanderRadius( 250 )
 humanbase:setLevel( 2 )
+
+spiderbase = DawnInterface.createNewMobType("Spider")
+spiderbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
+for index=0,7,1 do
+	spiderbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/spider/walking n000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/spider/walking nw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/spider/walking w000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/spider/walking sw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/spider/walking s000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/spider/walking se000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/spider/walking e000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/spider/walking ne000"..index..".tga" );
+end
+
+spiderbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 9 );
+for index=0,8,1 do
+	spiderbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/spider/attacking n000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/spider/attacking nw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/spider/attacking w000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/spider/attacking sw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/spider/attacking s000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/spider/attacking se000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/spider/attacking e000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/spider/attacking ne000"..index..".tga" );
+end
+
+spiderbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
+spiderbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/spider/walking n0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/spider/walking nw0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/spider/walking w0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/spider/walking sw0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/spider/walking s0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/spider/walking se0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/spider/walking e0000.tga" );
+spiderbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/spider/walking ne0000.tga" );
+
+spiderbase:setLifeTexture( "data/lifebar.tga" );
+
+spiderbase:setStrength( 20 )
+spiderbase:setDexterity( 30 )
+spiderbase:setVitality( 20 )
+spiderbase:setIntellect( 15 )
+spiderbase:setWisdom( 15 )
+spiderbase:setMaxHealth( 450 )
+spiderbase:setMaxMana( 0 )
+spiderbase:setHealthRegen( 0 )
+spiderbase:setManaRegen( 0 )
+spiderbase:setMinDamage( 15 )
+spiderbase:setMaxDamage( 25 )
+spiderbase:setArmor( 150 )
+spiderbase:setDamageModifierPoints( 10 )
+spiderbase:setHitModifierPoints( 10 )
+spiderbase:setEvadeModifierPoints( 10 )
+spiderbase:setName("Spider")
+spiderbase:setWanderRadius( 250 )
+spiderbase:setLevel( 4 )
+spiderbase:setCoinDrop( 0, 0, 0.00 );
+
+skeletonbase = DawnInterface.createNewMobType("Skeleton")
+skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 9 );
+for index=0,8,1 do
+	skeletonbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/skeleton/walking n000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/skeleton/walking nw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/skeleton/walking w000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/skeleton/walking sw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/skeleton/walking s000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/skeleton/walking se000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/skeleton/walking e000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/skeleton/walking ne000"..index..".tga" );
+end
+
+skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 10 );
+for index=0,9,1 do
+	skeletonbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/skeleton/attacking n000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/skeleton/attacking nw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/skeleton/attacking w000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/skeleton/attacking sw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/skeleton/attacking s000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/skeleton/attacking se000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/skeleton/attacking e000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/skeleton/attacking ne000"..index..".tga" );
+end
+
+skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
+skeletonbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/skeleton/walking n0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/skeleton/walking nw0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/skeleton/walking w0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/skeleton/walking sw0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/skeleton/walking s0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/skeleton/walking se0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/skeleton/walking e0000.tga" );
+skeletonbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/skeleton/walking ne0000.tga" );
+
+skeletonbase:setLifeTexture( "data/lifebar.tga" );
+
+skeletonbase:setStrength( 25 )
+skeletonbase:setDexterity( 40 )
+skeletonbase:setVitality( 45 )
+skeletonbase:setIntellect( 10 )
+skeletonbase:setWisdom( 10 )
+skeletonbase:setMaxHealth( 650 )
+skeletonbase:setMaxMana( 0 )
+skeletonbase:setHealthRegen( 0 )
+skeletonbase:setManaRegen( 0 )
+skeletonbase:setMinDamage( 35 )
+skeletonbase:setMaxDamage( 55 )
+skeletonbase:setArmor( 450 )
+skeletonbase:setDamageModifierPoints( 15 )
+skeletonbase:setHitModifierPoints( 15 )
+skeletonbase:setEvadeModifierPoints( 15 )
+skeletonbase:setName("Skeleton")
+skeletonbase:setWanderRadius( 250 )
+skeletonbase:setLevel( 6 )
+skeletonbase:setCoinDrop( 25, 75, 0.75 );

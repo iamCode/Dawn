@@ -38,7 +38,7 @@ function printValue( surroundingName, varname, value )
 		end
 	elseif ( type(value) == "userdata" )
 	then
-		restoreString = DawnInterface.getItemReferenceRestore( value );
+		local restoreString = DawnInterface.getItemReferenceRestore( value );
 		io.write( prefix..varname.."="..restoreString..'\n' );
 	end
 end
@@ -59,7 +59,7 @@ function saveGame( fileprefix )
 	end
 	io.write( DawnInterface.getQuestSaveText() );
 	io.write( DawnInterface.getInventorySaveText() );
-	player = DawnInterface.getPlayer();
+	local player = DawnInterface.getPlayer();
 	io.write( player:getSaveText() );
 	io.write( DawnInterface.getSpellbookSaveText() );
 	io.write( DawnInterface.getActionbarSaveText() );

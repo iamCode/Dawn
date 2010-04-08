@@ -39,6 +39,8 @@ namespace StatsType
         SpellCritical,
         ResistAll,
         SpellEffectAll,
+        HealthRegen,
+        ManaRegen,
         Count
     };
 }

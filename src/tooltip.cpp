@@ -83,6 +83,7 @@ void Tooltip::loadTextures()
 void Tooltip::reloadTooltip()
 {
     loadedAtLevel = player->getLevel();
+    shoppingState = player->isShopping();
     tooltipText.clear();
     getParentText();
 }
@@ -113,6 +114,13 @@ void itemTooltip::draw( int x, int y )
     if ( loadedAtLevel != player->getLevel() )
     {
         reloadTooltip();
+    }
+
+    // check the players shopping state and see if it's the same as when we loaded the tooltip.
+    // if not, reload the tooltip. ;)
+    if ( shoppingState != player->isShopping() )
+    {
+       reloadTooltip();
     }
 
     // we also check to see if the bound spell has changed the displayed cooldown.
@@ -325,6 +333,7 @@ void itemTooltip::getParentText()
 {
     // remember what level we generated this tooltip
     loadedAtLevel = player->getLevel();
+    shoppingState = player->isShopping();
 
     GLfloat grey[] = { 0.5f, 0.5f, 0.5f };
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
@@ -517,17 +526,20 @@ void itemTooltip::getParentText()
 
     int32_t coins = parent->getValue();
 
-    if ( isShopItem )
+    if ( player->isShopping() )
     {
-        itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins );
-        itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins );
-        itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins );
-        addTooltipText( white, 12, "Buy price:             " );
-    } else {
-        itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins * 0.75 );
-        itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins * 0.75 );
-        itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins * 0.75 );
-        addTooltipText( white, 12, "Sell price:            " );
+        if ( isShopItem )
+        {
+            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins );
+            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins );
+            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins );
+            addTooltipText( white, 12, "Buy price:             " );
+        } else {
+            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins * 0.75 );
+            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins * 0.75 );
+            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins * 0.75 );
+            addTooltipText( white, 12, "Sell price:            " );
+    	}
     }
 }
 

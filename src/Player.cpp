@@ -126,16 +126,14 @@ void Player::setTarget(CCharacter *newTarget)
 
 void Player::regenerateLifeMana(uint32_t regenPoints)
 {
-    /** Regenerate life and mana every 500 ms.
-	For now, we're regenerating a static amount.
-	In the future this will be calculated based on characters stats. **/
+    /** Regenerate life and mana every 1000 ms. **/
 
 	remainingRegenPoints += regenPoints;
 
-	if ( remainingRegenPoints > 500 ) {
-		modifyCurrentMana( 1 );
-		modifyCurrentHealth( 1 );
-		remainingRegenPoints -= 500;
+	if ( remainingRegenPoints > 1000 ) {
+		modifyCurrentMana( getModifiedManaRegen() );
+		modifyCurrentHealth( getModifiedHealthRegen() );
+		remainingRegenPoints -= 1000;
 	}
 }
 
@@ -171,6 +169,8 @@ static int16_t getItemMeleeCriticalModifierPointsHelper( Item * item ) { return 
 static int16_t getItemResistElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getResistElementModifierPoints( elementType ) + item->getStats( StatsType::ResistAll ); }
 static int16_t getItemSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getSpellEffectElementModifierPoints( elementType ) + item->getStats( StatsType::SpellEffectAll ); }
 static int16_t getItemSpellCriticalModifierPointsHelper( Item * item ) { return item->getStats( StatsType::SpellCritical ); }
+static int16_t getItemHealthRegenHelper( Item * item ) { return item->getStats( StatsType::HealthRegen ); }
+static int16_t getItemManaRegenHelper( Item * item ) { return item->getStats( StatsType::ManaRegen ); }
 
 static int16_t getItemMinDamageHelper( Item * item ) { return item->getMinDamage(); }
 static int16_t getItemMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
@@ -192,6 +192,8 @@ static int16_t getSpellMeleeCriticalModifierPointsHelper( GeneralBuffSpell *spel
 static int16_t getSpellResistElementModifierPointsHelper( ElementType::ElementType elementType, GeneralBuffSpell *spell ) { return spell->getResistElementModifierPoints( elementType ) + spell->getStats( StatsType::ResistAll ); }
 static int16_t getSpellSpellEffectElementModifierPointsHelper( ElementType::ElementType elementType, GeneralBuffSpell *spell ) { return spell->getSpellEffectElementModifierPoints( elementType ) + spell->getStats( StatsType::SpellEffectAll ); }
 static int16_t getSpellSpellCriticalModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::SpellCritical ); }
+static int16_t getSpellHealthRegenHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::HealthRegen ); }
+static int16_t getSpellManaRegenHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::ManaRegen); }
 
 static int16_t getSpellMinDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
 static int16_t getSpellMaxDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
@@ -348,6 +350,16 @@ uint16_t Player::getModifiedMaxDamage() const
 {
 	uint16_t inventoryMaxDamage = getModifiedAttribute( inventory, this, 0, &getItemMaxDamageHelper, &getSpellMaxDamageHelper, getModifiedMinDamage() );
 	return inventoryMaxDamage;
+}
+
+uint16_t Player::getModifiedHealthRegen() const
+{
+    return getModifiedAttribute( inventory, this, getHealthRegen(), &getItemHealthRegenHelper, &getSpellHealthRegenHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
+uint16_t Player::getModifiedManaRegen() const
+{
+    return getModifiedAttribute( inventory, this, getManaRegen(), &getItemManaRegenHelper, &getSpellManaRegenHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
 std::string Player::getSaveText() const

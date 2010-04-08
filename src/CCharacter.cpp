@@ -81,6 +81,8 @@ void CCharacter::baseOnType( std::string otherName )
 	}
 	setLifebar( other->getLifebar() );
 	setArmor( other->getArmor() );
+	setHealthRegen( other->getHealthRegen() );
+	setManaRegen( other->getManaRegen() );
 	setDamageModifierPoints( other->getDamageModifierPoints() );
 	setHitModifierPoints( other->getHitModifierPoints() );
 	setEvadeModifierPoints( other->getEvadeModifierPoints() );
@@ -539,6 +541,48 @@ void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
+uint16_t CCharacter::setManaRegen( uint16_t newManaRegen )
+{
+    assert( newManaRegen >= NULLABLE_ATTRIBUTE_MIN );
+	manaRegen = newManaRegen;
+}
+
+uint16_t CCharacter::getModifiedManaRegen() const
+{
+    return getManaRegen();
+}
+
+uint16_t CCharacter::getManaRegen() const
+{
+    return manaRegen;
+}
+
+void CCharacter::modifyManaRegen( int16_t manaRegenModifier )
+{
+    setManaRegen( getModifiedAttributeValue( manaRegen, manaRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+uint16_t CCharacter::setHealthRegen( uint16_t newHealthRegen )
+{
+    assert( newHealthRegen >= NULLABLE_ATTRIBUTE_MIN );
+	healthRegen = newHealthRegen;
+}
+
+uint16_t CCharacter::getModifiedHealthRegen() const
+{
+    return getHealthRegen();
+}
+
+uint16_t CCharacter::getHealthRegen() const
+{
+    return healthRegen;
+}
+
+void CCharacter::modifyHealthRegen( int16_t healthRegenModifier )
+{
+    setHealthRegen( getModifiedAttributeValue( healthRegen, healthRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
 void CCharacter::setMinDamage( uint16_t newMinDamage )
 {
 	min_damage = newMinDamage;
@@ -717,6 +761,8 @@ CCharacter::CCharacter()
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
 	  spellCriticalModifierPoints( 0 ),
+	  healthRegen( 0 ),
+	  manaRegen( 0 ),
 	  boundingBoxX( 0 ),
 	  boundingBoxY( 0 ),
 	  boundingBoxW( 0 ),
@@ -1467,3 +1513,17 @@ void CCharacter::setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double
 	this->coinDropChance = dropChance;
 }
 
+void CCharacter::startShopping()
+{
+    isCurrentlyShopping = true;
+}
+
+void CCharacter::stopShopping()
+{
+    isCurrentlyShopping = false;
+}
+
+bool CCharacter::isShopping() const
+{
+    return isCurrentlyShopping;
+}

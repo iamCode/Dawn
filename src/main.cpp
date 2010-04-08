@@ -260,12 +260,16 @@ void DrawScene()
 	// draw tooltips if we're holding left ALT key.
 	curZone->getGroundLoot()->drawTooltip();
 
+	// draw NPC (and if it's in target, their lifebar and name)
 	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-	for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+	for (unsigned int x=0; x<zoneNPCs.size(); x++)
+	{
 		CNPC *curNPC = zoneNPCs[x];
 		curNPC->Draw();
 		if ( character.getTarget() == curNPC )
-			fpsFont->drawText(curNPC->x_pos, curNPC->y_pos+curNPC->getHeight() + 12, "%s, Health: %d",curNPC->getName().c_str(),curNPC->getCurrentHealth());
+		{
+            GUI.drawTargetedNPCText();
+		}
 	}
 
 	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
@@ -273,13 +277,9 @@ void DrawScene()
 		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
-			curInteraction->drawInteractionSymbol(mouseX, mouseY);
+			curInteraction->drawInteractionSymbol( mouseX, mouseY, character.getXPos(), character.getYPos() );
 		}
 	}
-
-	// draws the character's target's lifebar, if we have any target.
-	if (character.getTarget())
-		character.getTarget()->DrawLifebar();
 
 	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
@@ -318,8 +318,6 @@ void DrawScene()
 	if ( inventoryScreen->isVisible() ) {
 	    inventoryScreen->draw();
 	}
-
-
 
 	if ( inventoryScreen->isVisible() )
 	{
@@ -617,6 +615,7 @@ public:
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.setManaRegen(2);
 		character.giveCoins( 576 );
 
 		dawn_debug_info("Character completed");
@@ -751,10 +750,9 @@ bool dawn_init(int argc, char** argv)
 		Editor.initFonts();
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
+        GUI.initFonts();
 
 		ActionCreation::initActions();
-
-
 
 		return true;
 }
@@ -848,7 +846,8 @@ void game_loop()
 
 					} else {
 						switch (event.button.button) {
-							case 1:
+							case SDL_BUTTON_LEFT:
+							{
 								CZone *curZone = Globals::getCurrentZone();
                                 curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
 
@@ -862,29 +861,32 @@ void game_loop()
                                 }
 
 								// search for new target
-								bool foundSomething = false;
-								std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
-								for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
-									InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-										foundSomething = true;
-										curInteraction->startInteraction();
-										break;
-									}
-								}
-
 								std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
 								for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 									CNPC *curNPC = zoneNPCs[x];
 									if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
 										if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
 											character.setTarget( curNPC );
-											foundSomething = true;
 											break;
 										}
 									}
 								}
+							}
 							break;
+
+							case SDL_BUTTON_RIGHT:
+							{
+								// look for interactionpoints when right-clicking.
+								std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
+								for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+									InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+										curInteraction->startInteraction( character.getXPos(), character.getYPos() );
+										break;
+									}
+								}
+							}
+                            break;
 						}
 					}
 				}
@@ -940,11 +942,14 @@ void game_loop()
 
 			cleanupActiveSpellActions();
 			Globals::getCurrentZone()->cleanupNPCList();
+			Globals::getCurrentZone()->cleanupInteractionList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
 				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 				for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-					zoneNPCs[x]->Die();
+					if ( zoneNPCs[x]->isAlive() ) {
+						zoneNPCs[x]->Die();
+					}
 				}
 			}
 
