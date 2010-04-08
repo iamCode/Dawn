@@ -248,12 +248,12 @@ class CCharacter
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
 
-		uint16_t setManaRegen( uint16_t newManaRegen );
+		void setManaRegen( uint16_t newManaRegen );
 		virtual uint16_t getModifiedManaRegen() const;
 		uint16_t getManaRegen() const;
 		void modifyManaRegen( int16_t manaRegenModifier );
 
-		uint16_t setHealthRegen( uint16_t newHealthRegen );
+		void setHealthRegen( uint16_t newHealthRegen );
 		virtual uint16_t getModifiedHealthRegen() const;
 		uint16_t getHealthRegen() const;
 		void modifyHealthRegen( int16_t healthRegenModifier );
