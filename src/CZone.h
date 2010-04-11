@@ -115,6 +115,7 @@ class CZone
 		std::vector<InteractionPoint*> interactionPoints;
 		std::vector<CallIndirection*> eventHandlers;
 		GroundLoot groundLoot;
+		bool mapLoaded;
 
 
 	public:
@@ -127,6 +128,7 @@ class CZone
 		int LoadEnvironment(std::string file);
 		int LoadShadow(std::string file);
 		int LoadCollisions(std::string file);
+		bool zoneDataLoaded() const;
 
 		int LocateTile(int x, int y);
 		int LocateShadow(int x, int y);

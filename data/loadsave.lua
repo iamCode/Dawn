@@ -63,6 +63,7 @@ function saveGame( fileprefix )
 	io.write( player:getSaveText() );
 	io.write( DawnInterface.getSpellbookSaveText() );
 	io.write( DawnInterface.getActionbarSaveText() );
+	io.write( DawnInterface.getReenterCurrentZoneText() );
 	-- map = LuaInterface.getCurrentMap()
 	-- io.write( 'LuaInterface.enterMap( "',map:getFileName(),'", 3, 3 )' )
 	io.close()

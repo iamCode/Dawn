@@ -421,6 +421,7 @@ namespace DawnInterface
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	Shop *addShop();
+	void enterZone( std::string zoneName, int enterX, int enterY );
 	
 	Player *getPlayer();
 	
@@ -434,6 +435,7 @@ namespace DawnInterface
 	void restoreGroundGold( int amount, int xPos, int yPos );
 	void setCurrentZone( std::string zoneName );
 	std::string getAllZonesSaveText();
+	std::string getReenterCurrentZoneText();
 	std::string getItemReferenceRestore( CCharacter *character );
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
 	std::string getItemReferenceRestore( Shop *shop );

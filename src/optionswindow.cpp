@@ -187,8 +187,8 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		// TODO: Load all zones
 		// 2. Restore lua variables
 		LuaFunctions::executeLuaScript( "loadGame( 'savegame' )" );
-		CZone *newZone = Globals::allZones["data/zone1"];
-		newZone->LoadZone("data/zone1");
+		//CZone *newZone = Globals::allZones["data/zone1"];
+		//newZone->LoadZone("data/zone1");
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
 	} else if ( selectedEntry == 2 ) {
 		// Save Game

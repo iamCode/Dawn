@@ -48,6 +48,8 @@ namespace DawnInterface
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
+	void enterZone( std::string zoneName, int enterX, int enterY );
+	
 	Player *getPlayer();
 	
 	// functions used for loading only
@@ -60,6 +62,7 @@ namespace DawnInterface
 	void restoreGroundGold( int amount, int xPos, int yPos );
 	void setCurrentZone( std::string zoneName );
 	std::string getAllZonesSaveText();
+	std::string getReenterCurrentZoneText();
 	std::string getItemReferenceRestore( CCharacter *character );
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
 	std::string getItemReferenceRestore( Shop *shop );

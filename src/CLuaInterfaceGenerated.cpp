@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Wed Apr  7 22:46:53 2010.
+** Generated automatically by tolua++-1.0.92 on Sun Apr 11 17:01:45 2010.
 */
 
 #ifndef __cplusplus
@@ -3847,6 +3847,38 @@ static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::enterZone */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_enterZone00
+static int tolua_CLuaInterface_DawnInterface_enterZone00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::string zoneName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  int enterX = ((int)  tolua_tonumber(tolua_S,2,0));
+  int enterY = ((int)  tolua_tonumber(tolua_S,3,0));
+  {
+   DawnInterface::enterZone(zoneName,enterX,enterY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'enterZone'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::getPlayer */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getPlayer00
 static int tolua_CLuaInterface_DawnInterface_getPlayer00(lua_State* tolua_S)
@@ -4131,6 +4163,33 @@ static int tolua_CLuaInterface_DawnInterface_getAllZonesSaveText00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getAllZonesSaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::getReenterCurrentZoneText */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getReenterCurrentZoneText00
+static int tolua_CLuaInterface_DawnInterface_getReenterCurrentZoneText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getReenterCurrentZoneText();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getReenterCurrentZoneText'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4741,6 +4800,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
+   tolua_function(tolua_S,"enterZone",tolua_CLuaInterface_DawnInterface_enterZone00);
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
    tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
    tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);
@@ -4751,6 +4811,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"restoreGroundGold",tolua_CLuaInterface_DawnInterface_restoreGroundGold00);
    tolua_function(tolua_S,"setCurrentZone",tolua_CLuaInterface_DawnInterface_setCurrentZone00);
    tolua_function(tolua_S,"getAllZonesSaveText",tolua_CLuaInterface_DawnInterface_getAllZonesSaveText00);
+   tolua_function(tolua_S,"getReenterCurrentZoneText",tolua_CLuaInterface_DawnInterface_getReenterCurrentZoneText00);
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore00);
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore01);
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02);

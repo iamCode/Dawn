@@ -26,6 +26,7 @@
 #include "shop.h"
 #include "callindirection.h"
 #include "textwindow.h"
+#include "CLuaInterface.h"
 
 #include <cassert>
 #include <memory>
@@ -33,7 +34,8 @@
 extern Player character;
 
 CZone::CZone()
-	: groundLoot( &character )
+	: groundLoot( &character ),
+	  mapLoaded( false )
 {
 }
 
@@ -58,6 +60,8 @@ void CZone::LoadZone(std::string file)
 	LoadShadow( std::string( file ).append ( ".shadowmap" ) );
 	LoadCollisions( std::string( file ).append ( ".collisionmap" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
+	
+	mapLoaded = true;
 }
 
 int CZone::LoadCollisions(std::string file)
@@ -167,9 +171,14 @@ int CZone::LoadMap(std::string file)
 	std::sort(TileMap.begin(), TileMap.end()); // sort our vector based on texture, less calls to glBindTexture() = more performance.
 
 	input_file.close();
+	
 	return 0;
 }
 
+bool CZone::zoneDataLoaded() const
+{
+	return mapLoaded;
+}
 
 void CZone::DrawTiles()
 {
@@ -556,6 +565,28 @@ namespace DawnInterface
 		}
 
 		return oss.str();
+	}
+	
+	std::string getReenterCurrentZoneText()
+	{
+		std::ostringstream oss;
+		oss << "DawnInterface.enterZone( \"" << Globals::getCurrentZone()->getZoneName() << "\", " << getPlayer()->getXPos() << ", " << getPlayer()->getYPos() << " );" << std::endl;
+
+		return oss.str();
+	}
+	
+	void enterZone( std::string zoneName, int enterX, int enterY )
+	{
+		CZone *newZone = Globals::allZones[ zoneName ];
+		if ( newZone == NULL ) {
+			newZone = new CZone();
+			Globals::allZones[ zoneName ] = newZone;
+		}
+		if ( ! newZone->zoneDataLoaded() ) {
+			newZone->LoadZone( zoneName );
+		}
+		Globals::setCurrentZone( newZone );
+		getPlayer()->setPosition( enterX, enterY );
 	}
 	
 	void restoreGroundLootItem( Item *item, int xPos, int yPos )
