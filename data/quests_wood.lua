@@ -1,10 +1,17 @@
-function init()
+-- init quest namespace so different quests / zones don't conflict in names
+if ( quest_playHideAndSeek == nil )
+then
+	quest_playHideAndSeek = {}
+end
+
+
+function quest_playHideAndSeek.init()
 	trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0 );
 	trader:setAttitude( Attitude.FRIENDLY );
 	trader:setName( "Rake Fleetwood" );
 	traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
 	traderInteraction:setInteractionType( InteractionType.Shop );
-	traderInteraction:setInteractionCode( "onActivateTrader()" );
+	traderInteraction:setInteractionCode( "quest_playHideAndSeek.onActivateTrader()" );
 	traderShop = DawnInterface.addShop();
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
@@ -22,14 +29,14 @@ function init()
 	john:setPosition( 820, 270, 25, 33 );
 	john:setBackgroundTexture( "data/character/link/link1.tga" );
 	john:setInteractionType( InteractionType.Quest );
-	john:setInteractionCode( "onActivateJohn()" );
+	john:setInteractionCode( "quest_playHideAndSeek.onActivateJohn()" );
 end
 
-function onActivateTrader()
+function quest_playHideAndSeek.onActivateTrader()
 	traderShop:setVisible( true )
 end
 
-function onActivateJohn()
+function quest_playHideAndSeek.onActivateJohn()
 	if ( not quest_playHideAndSeek.fulfilled )
 	then
 		if ( quest_playHideAndSeek.added == nil )
@@ -40,7 +47,7 @@ function onActivateJohn()
 			quest_playHideAndSeek.monsterSpawnPoint = DawnInterface.addMobSpawnPoint( "Giant Wolf", 3462, 557, 1, 0 );
 			quest_playHideAndSeek.monsterSpawnPoint:setAttitude ( Attitude.HOSTILE );
 			onDieEventHandler = DawnInterface.createEventHandler();
-			onDieEventHandler:setExecuteText( "onKilledQuestMonster()" );
+			onDieEventHandler:setExecuteText( "quest_playHideAndSeek.onKilledQuestMonster()" );
 			quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );
 			DawnInterface.addQuest("hide and seek", "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 		end
@@ -64,17 +71,17 @@ function onActivateJohn()
 	end
 end
 
-function onKilledQuestMonster()
+function quest_playHideAndSeek.onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
 	james:setPosition( 3783,640, 20, 26 );
 	james:setBackgroundTexture( "data/character/link/link1.tga" );
 	james:setInteractionType( InteractionType.Quest );
-	james:setInteractionCode( "onActivateJames()" );
+	james:setInteractionCode( "quest_playHideAndSeek.onActivateJames()" );
 	DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
 	quest_playHideAndSeek.monsterSpawnPoint = nil;
 end
 
-function onActivateJames()
+function quest_playHideAndSeek.onActivateJames()
 	if ( quest_playHideAndSeek == nil or quest_playHideAndSeek.fulfilled )
 	then
 		textWindow = DawnInterface.createTextWindow();
@@ -93,10 +100,11 @@ function onActivateJames()
 	end
 end
 
-if ( quest_playHideAndSeek == nil )
+-- init quest if this has not been done yet
+if ( quest_playHideAndSeek.inited == nil )
 then
-	quest_playHideAndSeek = {};
-	init();
+	quest_playHideAndSeek.inited = true;
+	quest_playHideAndSeek.init();
 end
 
 

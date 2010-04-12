@@ -186,6 +186,8 @@ std::string toStringForLua( InteractionType::InteractionType interactionType )
 			return "InteractionType.Quest";
 		case InteractionType::Shop:
 			return "InteractionType.Shop";
+		case InteractionType::Zone:
+			return "InteractionType.Zone";
 		default:
 			dawn_debug_warn("unhandled interaction type in toStringForLua( InteractionType::InteractionType interactionType )" );
 			abort();
