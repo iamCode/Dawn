@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sun Apr 11 17:01:45 2010.
+** Generated automatically by tolua++-1.0.92 on Mon Apr 12 09:08:23 2010.
 */
 
 #ifndef __cplusplus
@@ -4705,6 +4705,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"InteractionType");
    tolua_constant(tolua_S,"Quest",InteractionType::Quest);
    tolua_constant(tolua_S,"Shop",InteractionType::Shop);
+   tolua_constant(tolua_S,"Zone",InteractionType::Zone);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"InteractionPoint","InteractionPoint","",NULL);
   tolua_beginmodule(tolua_S,"InteractionPoint");

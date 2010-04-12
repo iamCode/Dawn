@@ -300,7 +300,8 @@ namespace InteractionType
 	enum InteractionType
 	{
 		Quest,
-		Shop
+		Shop,
+		Zone
 	};
 }
 
@@ -422,9 +423,9 @@ namespace DawnInterface
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	Shop *addShop();
 	void enterZone( std::string zoneName, int enterX, int enterY );
-	
+
 	Player *getPlayer();
-	
+
 	// functions used for loading only
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();

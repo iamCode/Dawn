@@ -18,5 +18,11 @@ then
 	npc = DawnInterface.addMobSpawnPoint( "Spider", 0, 275, 180, 1 )
 	npc:setAttitude( Attitude.HOSTILE )
 	DawnInterface.addMobSpawnPoint( "Skeleton", 100, 100, 180, 1 )
+
+    zone1.leavePoint = DawnInterface.addInteractionPoint();
+    zone1.leavePoint:setPosition( 822, 2570, 128, 128 );
+    zone1.leavePoint:setBackgroundTexture( "data/village/stairs.tga" );
+    zone1.leavePoint:setInteractionType( InteractionType.Zone );
+    zone1.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone2", -426, 1390 );' );
 end
 

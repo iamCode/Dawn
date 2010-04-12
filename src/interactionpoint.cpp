@@ -77,6 +77,10 @@ void InteractionPoint::setInteractionType( InteractionType::InteractionType inte
             interactionTexture->LoadIMG( "data/interaction/shop0.tga", 0 );
             interactionTexture->LoadIMG( "data/interaction/shop1.tga", 1 );
 	    break;
+	    case InteractionType::Zone:
+            interactionTexture->LoadIMG( "data/interaction/zone0.tga", 0 );
+            interactionTexture->LoadIMG( "data/interaction/zone1.tga", 1 );
+        break;
 	}
 }
 

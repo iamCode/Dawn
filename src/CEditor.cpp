@@ -22,6 +22,7 @@
 
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
+#include "globals.h"
 
 extern CMessage message;
 
@@ -68,9 +69,9 @@ void CEditor::dec_tilepos()
 int CEditor::SaveZone()
 {
 	FILE *fp;
-	// open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
-	if ((fp=fopen("data/zone1.tilemap", "w")) == NULL) {
-		std::cout << "ERROR opening file zone1.tilemap" << std::endl;
+    // open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
+	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".tilemap").c_str(), "w")) == NULL) {
+		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".tilemap" << std::endl;
 		return -1;
 	}
 	fprintf(fp,"#x-pos y-pos tile-id");
@@ -86,8 +87,8 @@ int CEditor::SaveZone()
     std::sort(zoneToEdit->EnvironmentMap.begin(), zoneToEdit->EnvironmentMap.end());
 
 	// open the environmentmap-file, so we can write our trees and stuff...
-	if ((fp=fopen("data/zone1.environmentmap", "w")) == NULL) {
-		std::cout << "ERROR opening file zone1.environmentmap" <<
+	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".environmentmap").c_str(), "w")) == NULL) {
+		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".environmentmap" <<
 		          std::endl << std::endl;
 		return -1;
 	}
@@ -102,8 +103,8 @@ int CEditor::SaveZone()
 
 
 	// open the shadowmap-file, so we can save our shadow...
-	if ((fp=fopen("data/zone1.shadowmap", "w")) == NULL) {
-		std::cout << "ERROR opening file zone1.shadowmap" <<
+	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".shadowmap").c_str(), "w")) == NULL) {
+		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".shadowmap" <<
 		          std::endl << std::endl;
 		return -1;
 	}
@@ -116,8 +117,8 @@ int CEditor::SaveZone()
 	/////////////////////////////////////////////////////////
 
 	// open the collisionmap-file, so we can save our shadow...
-	if ((fp=fopen("data/zone1.collisionmap", "w")) == NULL) {
-		std::cout << "ERROR opening file zone1.collisionmap" <<
+	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".collisionmap").c_str(), "w")) == NULL) {
+		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".collisionmap" <<
 		          std::endl << std::endl;
 		return -1;
 	}

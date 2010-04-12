@@ -30,7 +30,8 @@ namespace InteractionType
     enum InteractionType
     {
         Quest,
-        Shop
+        Shop,
+        Zone
     };
 }
 

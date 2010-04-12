@@ -255,6 +255,13 @@ void DrawScene()
 	// draw items on the ground
     curZone->getGroundLoot()->draw();
 
+    // draw the interactions on screen
+    std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+		curInteraction->draw();
+	}
+
 	character.Draw();
 
 	// draw tooltips if we're holding left ALT key.
@@ -272,10 +279,8 @@ void DrawScene()
 		}
 	}
 
-	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
 	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-		curInteraction->draw();
 		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
 			curInteraction->drawInteractionSymbol( mouseX, mouseY, character.getXPos(), character.getYPos() );
 		}
