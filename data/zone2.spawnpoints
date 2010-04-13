@@ -1,10 +1,13 @@
 if ( zone2 == nil )
 then
 	zone2 = {};
-	zone2.leavePoint = DawnInterface.addInteractionPoint();
-        zone2.leavePoint:setPosition( 3700, 640, 25, 33 );
-        zone2.leavePoint:setBackgroundTexture( "data/character/link/link1.tga" );
-        zone2.leavePoint:setInteractionType( InteractionType.Quest );
-        zone2.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone1", 620, 270 );' );
+	npc = DawnInterface.addMobSpawnPoint( "Skeleton", -1145, 1321, 180, 1 )
+	npc:setAttitude( Attitude.HOSTILE )
+
+    zone2.leavePoint = DawnInterface.addInteractionPoint();
+    zone2.leavePoint:setPosition( -670, 1568, 48, 70 );
+    zone2.leavePoint:setBackgroundTexture( "data/transparent2x2pixel.tga" );
+    zone2.leavePoint:setInteractionType( InteractionType.Zone );
+    zone2.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone1", 870, 2520 );' );
 end
 

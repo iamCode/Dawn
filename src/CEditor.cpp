@@ -300,7 +300,7 @@ void CEditor::HandleKeys()
 				}
 			break;
 		}
-	} else { // Not editting an object, use arrows to move screen
+	} else if ( objectedit_selected < 0 ) { // Not editting an object, use arrows to move screen
 		if (keys[SDLK_DOWN]) {
 			editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()-2);
 		}
@@ -491,7 +491,7 @@ void CEditor::HandleKeys()
 			break;
 		}
 	}
-    
+
 	// increase the Z-position
     if (keys[SDLK_m] && !KP_increase_Zpos)
     {
@@ -501,17 +501,17 @@ void CEditor::HandleKeys()
             zoneToEdit->EnvironmentMap[objectedit_selected].z_pos++;
 	    }
 	}
-    
+
 	if (!keys[SDLK_m])
 	{
 		KP_increase_Zpos = false;
 	}
-	
+
     	// decrease the Z-position
     if (keys[SDLK_n] && !KP_decrease_Zpos)
     {
         KP_decrease_Zpos = true;
-        
+
 	    if ( current_object == 1 ) // environment
         {
             if ( zoneToEdit->EnvironmentMap[objectedit_selected].z_pos > 0  )
@@ -520,12 +520,12 @@ void CEditor::HandleKeys()
             }
         }
     }
-    
+
 	if (!keys[SDLK_n])
     {
         KP_decrease_Zpos = false;
     }
-    
+
 	if (keys[SDLK_F1] && !KP_toggle_tileset) {
 		current_tilepos = 1;
 		tilepos_offset = 0;
