@@ -371,7 +371,8 @@ void CEditor::HandleKeys()
 		objectedit_selected = -1;
 		enabled = false;
 		KP_toggle_editor = true;
-        (*editorFocus) = (*originalFocus);
+		*editorFocus = *originalFocus;
+		delete originalFocus;
 	}
 
 	if (!keys[SDLK_l]) {
