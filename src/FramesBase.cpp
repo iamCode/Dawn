@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "FramesBase.h"
-#include "vector.h"
+#include <vector>
 
 extern std::vector <FramesBase*> activeFrames;
 
@@ -33,7 +33,7 @@ FramesBase::FramesBase( int posX_, int posY_, int width_, int height_ )
 {
 }
 
-void FramesBase::Draw( int mouseX, int mouseY )
+void FramesBase::draw( int mouseX, int mouseY )
 {
 }
 

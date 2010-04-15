@@ -166,6 +166,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
+	src/FramesBase.cpp \
+	src/FramesBase.h \
 	src/fontcache.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
@@ -234,9 +236,10 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CLuaInterfaceGenerated.$(OBJEXT) CMessage.$(OBJEXT) \
 	CNPC.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
 	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) globals.$(OBJEXT) \
-	GroundLoot.$(OBJEXT) interactionpoint.$(OBJEXT) \
-	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
+	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) \
+	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
+	interactionpoint.$(OBJEXT) inventory.$(OBJEXT) \
+	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) main.$(OBJEXT) optionswindow.$(OBJEXT) \
 	Player.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
 	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
@@ -261,8 +264,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/CSpell.Po ./$(DEPDIR)/CTexture.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/CZone.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/CharacterInfoScreen.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/EventClass.Po ./$(DEPDIR)/GLFT_Font.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/GLee.Po ./$(DEPDIR)/GroundLoot.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/EventClass.Po ./$(DEPDIR)/FramesBase.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/GLFT_Font.Po ./$(DEPDIR)/GLee.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/GroundLoot.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/InventoryScreen.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MutexClass.Po ./$(DEPDIR)/Player.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Spellbook.Po ./$(DEPDIR)/StatsSystem.Po \
@@ -364,6 +368,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CZone.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CharacterInfoScreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EventClass.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FramesBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLFT_Font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLee.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GroundLoot.Po@am__quote@
@@ -853,6 +858,28 @@ elements.obj: src/elements.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/elements.Po' tmpdepfile='$(DEPDIR)/elements.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o elements.obj `if test -f 'src/elements.cpp'; then $(CYGPATH_W) 'src/elements.cpp'; else $(CYGPATH_W) '$(srcdir)/src/elements.cpp'; fi`
+
+FramesBase.o: src/FramesBase.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FramesBase.o -MD -MP -MF "$(DEPDIR)/FramesBase.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o FramesBase.o `test -f 'src/FramesBase.cpp' || echo '$(srcdir)/'`src/FramesBase.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FramesBase.Tpo" "$(DEPDIR)/FramesBase.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/FramesBase.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/FramesBase.cpp' object='FramesBase.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/FramesBase.Po' tmpdepfile='$(DEPDIR)/FramesBase.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FramesBase.o `test -f 'src/FramesBase.cpp' || echo '$(srcdir)/'`src/FramesBase.cpp
+
+FramesBase.obj: src/FramesBase.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FramesBase.obj -MD -MP -MF "$(DEPDIR)/FramesBase.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o FramesBase.obj `if test -f 'src/FramesBase.cpp'; then $(CYGPATH_W) 'src/FramesBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FramesBase.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/FramesBase.Tpo" "$(DEPDIR)/FramesBase.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/FramesBase.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/FramesBase.cpp' object='FramesBase.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/FramesBase.Po' tmpdepfile='$(DEPDIR)/FramesBase.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o FramesBase.obj `if test -f 'src/FramesBase.cpp'; then $(CYGPATH_W) 'src/FramesBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FramesBase.cpp'; fi`
 
 fontcache.o: src/fontcache.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fontcache.o -MD -MP -MF "$(DEPDIR)/fontcache.Tpo" \

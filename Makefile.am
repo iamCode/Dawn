@@ -47,6 +47,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
+	src/FramesBase.cpp \
+	src/FramesBase.h \
 	src/fontcache.cpp \
 	src/fontcache.h \
 	src/GLFT_Font.cpp \
