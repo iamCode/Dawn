@@ -72,6 +72,7 @@
 #include "optionswindow.h"
 #include "loadingscreen.h"
 #include "globals.h"
+#include "FramesBase.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -110,6 +111,8 @@ CEditor Editor;
 CInterface GUI;
 
 extern std::vector<TextWindow*> allTextWindows;
+
+std::vector<FramesBase*> activeFrames;
 
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_screenshot = false;
