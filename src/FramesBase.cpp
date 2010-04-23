@@ -57,7 +57,6 @@ bool FramesBase::isVisible() const
     return visible;
 }
 
-
 void FramesBase::setVisible( bool visible )
 {
     this->visible = visible;
@@ -82,5 +81,19 @@ void FramesBase::toggle()
         // else add it to the frame vector and make it visible.
         activeFrames.push_back( this );
         setVisible( true );
+    }
+}
+
+void FramesBase::setOnTop()
+{
+    // loop through all frames and put that on top.
+    for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
+    {
+        if ( this == activeFrames[ curFrame ] )
+        {
+            activeFrames.erase( activeFrames.begin() + curFrame );
+            activeFrames.push_back( this );
+            return;
+        }
     }
 }

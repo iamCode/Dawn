@@ -20,6 +20,7 @@
 #define _CharacterInfoScreen_h_
 
 #include "CTexture.h"
+#include "FramesBase.h"
 
 class Player;
 class GLFT_Font;
@@ -30,12 +31,10 @@ struct sTabs
     CTexture tabimage;
 };
 
-class CharacterInfoScreen
+class CharacterInfoScreen : public FramesBase
 {
 	private:
 		Player *player;
-		bool visible;
-		int posX, posY, width, height;
 		uint8_t currentTab;
 		CTexture textures;
 		GLFT_Font *infoFont;
@@ -43,19 +42,15 @@ class CharacterInfoScreen
 
 
 	public:
-		CharacterInfoScreen( Player *player_ );
+		CharacterInfoScreen( Player *player );
 		~CharacterInfoScreen();
 
-		void setVisible( bool newVisible );
-		bool isVisible() const;
-		bool isOnThisScreen( int x, int y );
-
-		void clicked( int clickX, int clickY );
+		void clicked( int mouseX, int mouseY );
 
 		void LoadTextures();
 		void initFonts();
 
-		void drawScreen();
+		void draw( int mouseX, int mouseY );
 		void drawExpBar();
 		void drawTabs();
 };

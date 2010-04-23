@@ -24,14 +24,13 @@
 #include "StatsSystem.h"
 #include "GLFT_Font.h"
 
-CharacterInfoScreen::CharacterInfoScreen( Player *player_ )
-	:	player( player_ ),
-		visible(false),
-		posX(25),
-		posY(100),
-		width(462),
-		height(512)
+CharacterInfoScreen::CharacterInfoScreen( Player *player )
 {
+	this->player = player;
+	posX = 25;
+	posY = 100;
+	width = 462;
+	height = 512;
 	infoFont = NULL;
 	currentTab = 0;
 	tabs[0].tabimage.texture.resize(1);
@@ -61,16 +60,6 @@ CharacterInfoScreen::~CharacterInfoScreen()
 {
 }
 
-void CharacterInfoScreen::setVisible( bool newVisible )
-{
-	visible = newVisible;
-}
-
-bool CharacterInfoScreen::isVisible() const
-{
-	return visible;
-}
-
 void CharacterInfoScreen::LoadTextures()
 {
 	textures.texture.resize(2);
@@ -83,7 +72,7 @@ void CharacterInfoScreen::initFonts()
 	infoFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 }
 
-void CharacterInfoScreen::drawScreen()
+void CharacterInfoScreen::draw( int mouseX, int mouseY )
 {
 	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
 	                                  world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height );
@@ -167,29 +156,17 @@ void CharacterInfoScreen::drawScreen()
 	drawTabs();
 }
 
-void CharacterInfoScreen::clicked( int clickX, int clickY )
+void CharacterInfoScreen::clicked( int mouseX, int mouseY )
 {
     // loop through our tabs, see if any got clicked.
     for (size_t tabIndex = 0; tabIndex <= 2; tabIndex++) {
-        if ( clickX > tabs[tabIndex].posX
-            && clickY > tabs[tabIndex].posY
-            && clickX < tabs[tabIndex].posX + tabs[tabIndex].width
-            && clickY < tabs[tabIndex].posY + tabs[tabIndex].height ) {
+        if ( mouseX > tabs[tabIndex].posX
+            && mouseY > tabs[tabIndex].posY
+            && mouseX < tabs[tabIndex].posX + tabs[tabIndex].width
+            && mouseY < tabs[tabIndex].posY + tabs[tabIndex].height ) {
             currentTab = tabIndex;
         }
     }
-}
-
-bool CharacterInfoScreen::isOnThisScreen( int x, int y )
-{
-    if ( x < posX
-	     || y < posY
-	     || x > posX + width
-	     || y > posY + height ) {
-		return false;
-	}
-	return true;
-
 }
 
 void CharacterInfoScreen::drawExpBar()

@@ -27,7 +27,9 @@ class FramesBase
         virtual bool isOnThisScreen( int posX, int posY ) const;
         virtual void clicked( int mouseX, int mouseY );
         virtual void draw( int mouseX, int mouseY );
+
         virtual void toggle();
+        void setOnTop();
 
         bool isVisible() const;
         void setVisible( bool visible );

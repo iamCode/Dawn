@@ -317,11 +317,13 @@ void DrawScene()
 		GUI.DrawInterface();
 	}
 
-	buffWindow->draw();
-
-	if ( characterInfoScreen->isVisible() ) {
-		characterInfoScreen->drawScreen();
+	// loop through our vector of active frames and draw them. If they are in the vector they are visible...
+	for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
+	{
+	    activeFrames[ curFrame ]->draw( mouseX, mouseY );
 	}
+
+	buffWindow->draw();
 
 	if ( inventoryScreen->isVisible() ) {
 	    inventoryScreen->draw();
@@ -352,10 +354,6 @@ void DrawScene()
 
 	if ( questWindow->isVisible() ) {
 		questWindow->draw();
-	}
-
-	if ( optionsWindow->isVisible() ) {
-		optionsWindow->draw();
 	}
 
 	if ( shopWindow->isVisible() ) {
@@ -802,10 +800,23 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
-                    if ( characterInfoScreen->isVisible()
-                            && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
-                        characterInfoScreen->clicked( mouseX, mouseY );
-                    } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
+
+                    // iterate through all our active frames and click on them if mouse is over.
+                    //
+                    // TODO: fix backwards loop here.
+                    //
+                    //
+                    /**for ( curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isOnThisScreen( mouseX, mouseY ) )
+                        {
+                            activeFrames[ curFrame ]->setOnTop();
+                            activeFrames[ curFrame ]->clicked( mouseX, mouseY );
+                            break;
+                        }
+                    }**/
+
+                    if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
                         if ( spellbook->hasFloatingSpell() )
                         {
                             actionBar->clicked( mouseX, mouseY, spellbook->getFloatingSpell()->action );
@@ -820,13 +831,7 @@ void game_loop()
 					} else if ( questWindow->isVisible()
 					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						questWindow->clicked( mouseX, mouseY );
-					} else if ( optionsWindow->isVisible()
-					            && ( optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						optionsWindow->clicked( mouseX, mouseY );
-					} else if ( optionsWindow->isVisible()
-					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						optionsWindow->clicked( mouseX, mouseY );
-                    } else if ( shopWindow->isVisible()
+					} else if ( shopWindow->isVisible()
                                 && (shopWindow->isOnThisScreen(mouseX, mouseY )
                                 || (shopWindow->hasFloatingSelection()
                                 && (!inventoryScreen->isOnBackpackScreen( mouseX, mouseY )) ) ) )  {
@@ -1036,7 +1041,7 @@ void game_loop()
 
 			if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
 				KP_toggle_showOptionsWindow = true;
-				optionsWindow->setVisible( ! optionsWindow->isVisible() );
+				optionsWindow->toggle();
 			}
 
 			if ( !keys[SDLK_ESCAPE] ) {
@@ -1045,7 +1050,7 @@ void game_loop()
 
 			if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
 				KP_toggle_showCharacterInfo = true;
-				characterInfoScreen->setVisible( ! characterInfoScreen->isVisible() );
+				characterInfoScreen->toggle();
 			}
 
 			if ( !keys[SDLK_c] ) {

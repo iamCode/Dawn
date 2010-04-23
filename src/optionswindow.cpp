@@ -69,7 +69,7 @@ OptionsWindow::~OptionsWindow()
 extern int mouseX;
 extern int mouseY;
 
-void OptionsWindow::draw()
+void OptionsWindow::draw( int mouseX, int mouseY )
 {
 	// show screen
 	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
@@ -160,7 +160,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		setQuitGame();
 	} else if ( selectedEntry == 1 ) {
 		// Load Game
-		
+
 		// clear current game data
 		Globals::getCurrentZone()->purgeInteractionList();
 		questWindow->removeAllQuests();
@@ -169,7 +169,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 			it->second = NULL;
 		}
 		Globals::allZones.clear();
-		
+
 		character.clearInventory();
 		// clear shop data
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
@@ -194,16 +194,6 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		// Save Game
 		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 	} else if ( selectedEntry == 3 ) {
-		setVisible( false );
+		toggle(); // close the window
 	}
-}
-
-void OptionsWindow::setVisible( bool visible )
-{
-	this->visible = visible;
-}
-
-bool OptionsWindow::isVisible() const
-{
-	return visible;
 }
