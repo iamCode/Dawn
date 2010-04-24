@@ -5,14 +5,15 @@ then
 end
 
 function quest_playHideAndSeek.enterTown()
-	local textWindow = DawnInterface.createTextWindow();
-	textWindow:setPosition( PositionType.CENTER, 512, 382 );
 	if ( not DawnInterface.isSavingAllowed() )
 	then
 		DawnInterface.setSavingAllowed( true );
+
+		local textWindow = DawnInterface.createTextWindow();
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "The town of Arinox." );
+		textWindow:setAutocloseTime( 1000 );
 	end
-	textWindow:setAutocloseTime( 1000 );
 end
 
 function quest_playHideAndSeek.leaveTown()
