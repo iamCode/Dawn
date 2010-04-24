@@ -288,11 +288,3 @@ namespace DawnInterface
 		pointToRemove->markAsDeletable();
 	}
 }
-
-namespace InteractionControl
-{
-	void cleanupInteractionList()
-	{
-		Globals::getCurrentZone()->cleanupInteractionList();
-	}
-}

@@ -64,6 +64,12 @@ function saveGame( fileprefix )
 	io.write( DawnInterface.getSpellbookSaveText() );
 	io.write( DawnInterface.getActionbarSaveText() );
 	io.write( DawnInterface.getReenterCurrentZoneText() );
+	local saveAllowedBoolText = "false";
+	if ( DawnInterface.isSavingAllowed() )
+	then
+		saveAllowedBoolText = "true";
+	end
+	io.write( "DawnInterface.setSavingAllowed( " .. saveAllowedBoolText .. " );\n" );
 	-- map = LuaInterface.getCurrentMap()
 	-- io.write( 'LuaInterface.enterMap( "',map:getFileName(),'", 3, 3 )' )
 	io.close()

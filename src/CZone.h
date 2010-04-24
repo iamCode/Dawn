@@ -30,6 +30,7 @@
 
 class CNPC;
 class InteractionPoint;
+class InteractionRegion;
 class CallIndirection;
 
 struct sTileMap {
@@ -113,6 +114,7 @@ class CZone
 		std::string zoneName;
 		std::vector <CNPC*> npcs;
 		std::vector<InteractionPoint*> interactionPoints;
+		std::vector<InteractionRegion*> interactionRegions;
 		std::vector<CallIndirection*> eventHandlers;
 		GroundLoot groundLoot;
 		bool mapLoaded;
@@ -154,6 +156,11 @@ class CZone
 		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
 		void cleanupInteractionList();
 		void purgeInteractionList();
+
+		std::vector<InteractionRegion*> getInteractionRegions();
+		void addInteractionRegion( InteractionRegion *interactionRegionToAdd );
+		void cleanupInteractionRegionList();
+		void purgeInteractionRegionList();
 		
 		GroundLoot* getGroundLoot();
 		
@@ -163,11 +170,13 @@ class CZone
 		// used to restore references when loading
 		void findCharacter( CCharacter *character, bool &found, size_t &foundPos ) const;
 		void findInteractionPoint( InteractionPoint *interactionPoint, bool &found, size_t &foundPos ) const;
+		void findInteractionRegion( InteractionRegion *interactionRegion, bool &found, size_t &foundPos ) const;
 		void findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const;
 		CCharacter* getCharacterPointer( size_t posInArray ) const;
 		InteractionPoint* getInteractionPointPointer( size_t posInArray ) const;
+		InteractionRegion* getInteractionRegionPointer( size_t posInArray ) const;
 		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
-
+		
 		std::vector<sTileMap> TileMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;

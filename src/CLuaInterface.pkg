@@ -313,6 +313,13 @@ class InteractionPoint
 	void setInteractionCode( std::string interactionCode );
 };
 
+class InteractionRegion
+{
+	void setPosition( int left, int bottom, int width, int height );
+	void setOnEnterText( std::string enterCode );
+	void setOnLeaveText( std::string leaveCode );
+};
+
 class CallIndirection
 {
 };
@@ -415,14 +422,18 @@ namespace DawnInterface
 	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
+	InteractionRegion* addInteractionRegion();
 	TextWindow *createTextWindow();
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
+	void removeInteractionRegion( InteractionRegion *regionToRemove );
 	LuaCallIndirection* createEventHandler();
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	Shop *addShop();
 	void enterZone( std::string zoneName, int enterX, int enterY );
+	bool isSavingAllowed();
+	void setSavingAllowed( bool savingAllowed );
 
 	Player *getPlayer();
 

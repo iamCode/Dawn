@@ -4,8 +4,39 @@ then
 	quest_playHideAndSeek = {}
 end
 
+function quest_playHideAndSeek.enterTown()
+	local textWindow = DawnInterface.createTextWindow();
+	textWindow:setPosition( PositionType.CENTER, 512, 382 );
+	if ( not DawnInterface.isSavingAllowed() )
+	then
+		DawnInterface.setSavingAllowed( true );
+		textWindow:setText( "The town of Arinox." );
+	end
+	textWindow:setAutocloseTime( 1000 );
+end
+
+function quest_playHideAndSeek.leaveTown()
+	if ( DawnInterface.isSavingAllowed() )
+	then
+		DawnInterface.setSavingAllowed( false );
+	end
+end
+
+function quest_playHideAndSeek.testInteractionRegionLeave()
+	local textWindow = DawnInterface.createTextWindow();
+	textWindow:setPosition( PositionType.CENTER, 512, 382 );
+	textWindow:setText( "Left test region." );
+	textWindow:setAutocloseTime( 1000 );
+end
 
 function quest_playHideAndSeek.init()
+	local townEnterRegion = DawnInterface.addInteractionRegion();
+	townEnterRegion:setPosition( 550, 1300, 300, 100 );
+	townEnterRegion:setOnEnterText( "quest_playHideAndSeek.enterTown()" );
+	local townLeaveRegion = DawnInterface.addInteractionRegion();
+	townLeaveRegion:setPosition( 550, 1200, 300, 100 );
+	townLeaveRegion:setOnEnterText( "quest_playHideAndSeek.leaveTown()" );
+
 	trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0 );
 	trader:setAttitude( Attitude.FRIENDLY );
 	trader:setName( "Rake Fleetwood" );

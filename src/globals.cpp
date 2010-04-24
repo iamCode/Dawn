@@ -22,6 +22,7 @@ namespace Globals
 {
 
 CZone *currentZone;
+bool savingAllowed = false;
 
 CZone *getCurrentZone()
 {
@@ -33,4 +34,27 @@ void setCurrentZone( CZone *newCurZone )
 	currentZone = newCurZone;
 }
 
+bool isSavingAllowed()
+{
+	return savingAllowed;
+}
+
+void setSavingAllowed( bool savingAllowed_ )
+{
+	savingAllowed = savingAllowed_;
+}
+
 } // namespace Globals
+
+namespace DawnInterface
+{
+	bool isSavingAllowed()
+	{
+		return Globals::isSavingAllowed();
+	}
+
+	void setSavingAllowed( bool savingAllowed )
+	{
+		Globals::setSavingAllowed( savingAllowed );
+	}
+}

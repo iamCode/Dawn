@@ -23,6 +23,7 @@
 #include "CLuaFunctions.h"
 #include "CNPC.h"
 #include "interactionpoint.h"
+#include "interactionregion.h"
 #include "shop.h"
 #include "callindirection.h"
 #include "textwindow.h"
@@ -423,6 +424,41 @@ void CZone::purgeInteractionList()
 	interactionPoints.resize(0);
 }
 
+std::vector<InteractionRegion*> CZone::getInteractionRegions()
+{
+	return interactionRegions;
+}
+
+void CZone::addInteractionRegion( InteractionRegion *interactionRegionToAdd )
+{
+	interactionRegions.push_back( interactionRegionToAdd );
+}
+
+void CZone::cleanupInteractionRegionList()
+{
+	size_t curInteractionNr = 0;
+	while ( curInteractionNr < interactionRegions.size() ) {
+		InteractionRegion *curInteraction = interactionRegions[ curInteractionNr ];
+		if ( curInteraction->isMarkedDeletable() ) {
+			// return from list
+			interactionRegions[ curInteractionNr ] = interactionRegions[ interactionRegions.size() - 1 ];
+			interactionRegions.resize( interactionRegions.size() - 1 );
+			delete curInteraction;
+		} else {
+			++curInteractionNr;
+		}
+	}
+}
+
+void CZone::purgeInteractionRegionList()
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionRegions.size(); ++curInteractionNr ) {
+		InteractionRegion *curInteraction = interactionRegions[ curInteractionNr ];
+		delete curInteraction;
+	}
+	interactionPoints.resize(0);
+}
+
 GroundLoot* CZone::getGroundLoot()
 {
 	return &groundLoot;
@@ -466,6 +502,14 @@ std::string CZone::getLuaSaveText() const
 	for ( size_t curInteractionNr=0; curInteractionNr < interactionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteractionPoint = interactionPoints[ curInteractionNr ];
 		std::string interactionSaveText = curInteractionPoint->getLuaSaveText();
+		oss << interactionSaveText;
+	}
+
+	// save interaction regions
+	oss << "-- interaction regions" << std::endl;
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionRegions.size(); ++curInteractionNr ) {
+		InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionNr ];
+		std::string interactionSaveText = curInteractionRegion->getLuaSaveText();
 		oss << interactionSaveText;
 	}
 	
@@ -525,6 +569,18 @@ void CZone::findInteractionPoint( InteractionPoint *interactionPoint, bool &foun
 	found = false;
 }
 
+void CZone::findInteractionRegion( InteractionRegion *interactionRegion, bool &found, size_t &foundPos ) const
+{
+	for ( size_t curInteractionNr=0; curInteractionNr < interactionRegions.size(); ++curInteractionNr ) {
+		if ( interactionRegions[ curInteractionNr ] == interactionRegion ) {
+			found = true;
+			foundPos = curInteractionNr;
+			return;
+		}
+	}
+	found = false;
+}
+
 void CZone::findEventHandler( CallIndirection *eventHandler, bool &found, size_t &foundPos ) const
 {
 	for ( size_t curEventHandlerNr=0; curEventHandlerNr < eventHandlers.size(); ++curEventHandlerNr ) {
@@ -547,6 +603,12 @@ InteractionPoint* CZone::getInteractionPointPointer( size_t posInArray ) const
 {
 	// use checked access since we access from lua and lots of stuff could be wrong
 	return interactionPoints.at( posInArray );
+}
+
+InteractionRegion* CZone::getInteractionRegionPointer( size_t posInArray ) const
+{
+	// use checked access since we access from lua and lots of stuff could be wrong
+	return interactionRegions.at( posInArray );
 }
 
 CallIndirection* CZone::getEventHandlerPointer( size_t posInArray ) const

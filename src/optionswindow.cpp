@@ -107,10 +107,16 @@ void OptionsWindow::draw()
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 2 ) {
-		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+		if ( Globals::isSavingAllowed() ) {
+			glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+		} else {
+			glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+		}
+	} else if ( ! Globals::isSavingAllowed() ) {
+		glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
 	}
 	font->drawText( textX, textY, "Save Game" );
-	if ( selectedEntry == 2 ) {
+	if ( selectedEntry == 2 || ! Globals::isSavingAllowed() ) {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 	textY -= font->getHeight() * 1.5;
@@ -163,6 +169,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		
 		// clear current game data
 		Globals::getCurrentZone()->purgeInteractionList();
+		Globals::getCurrentZone()->purgeInteractionRegionList();
 		questWindow->removeAllQuests();
 		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
 			delete it->second;
@@ -191,8 +198,10 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		//newZone->LoadZone("data/zone1");
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
 	} else if ( selectedEntry == 2 ) {
-		// Save Game
-		LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
+		if ( Globals::isSavingAllowed() ) {
+			// Save Game
+			LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
+		}
 	} else if ( selectedEntry == 3 ) {
 		setVisible( false );
 	}

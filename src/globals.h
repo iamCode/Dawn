@@ -30,6 +30,8 @@ namespace Globals
 	extern std::map< std::string, CZone* > allZones;
 	CZone *getCurrentZone();
 	void setCurrentZone( CZone *newCurZone );
+	bool isSavingAllowed();
+	void setSavingAllowed( bool savingAllowed );
 }
 
 #endif // GLOBALS_H

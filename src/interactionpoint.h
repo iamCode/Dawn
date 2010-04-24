@@ -100,10 +100,4 @@ class CharacterInteractionPoint : public InteractionPoint
 		CCharacter *interactionCharacter;
 };
 
-namespace InteractionControl
-{
-	void cleanupInteractionList();
-	void purgeInteractionList();
-}
-
 #endif // INTERACTIONPOINT_H

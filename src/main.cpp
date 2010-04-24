@@ -67,6 +67,7 @@
 #include "CharacterInfoScreen.h"
 #include "item.h"
 #include "interactionpoint.h"
+#include "interactionregion.h"
 #include "textwindow.h"
 #include "questwindow.h"
 #include "optionswindow.h"
@@ -945,9 +946,15 @@ void game_loop()
 				activeSpellActions[ curActiveSpellNr ]->inEffect();
 			}
 
+			std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
+			for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
+				InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionRegionNr ];
+				curInteractionRegion->interactWithPlayer( &character );
+			}
 			cleanupActiveSpellActions();
 			Globals::getCurrentZone()->cleanupNPCList();
 			Globals::getCurrentZone()->cleanupInteractionList();
+			Globals::getCurrentZone()->cleanupInteractionRegionList();
 
 			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
 				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();

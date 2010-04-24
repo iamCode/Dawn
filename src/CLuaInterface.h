@@ -18,6 +18,7 @@
 
 #include "CCharacter.h"
 #include "interactionpoint.h"
+#include "interactionregion.h"
 #include "textwindow.h"
 #include "CNPC.h"
 #include "Player.h"
@@ -49,6 +50,8 @@ namespace DawnInterface
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	void enterZone( std::string zoneName, int enterX, int enterY );
+	bool isSavingAllowed();
+	void setSavingAllowed( bool savingAllowed );
 	
 	Player *getPlayer();
 	
