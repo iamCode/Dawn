@@ -23,7 +23,8 @@ class FramesBase
 {
     public:
         FramesBase();
-        FramesBase( int posX_, int posY_, int width_, int height_ );
+        FramesBase( int posX_, int posY_, int frameWidth_, int frameHeight_, int frameOffsetX_, int frameOffsetY_, int titleWidth_, int titleHeight_, int titleOffsetX_, int titleOffsetY_ );
+
         virtual bool isOnThisScreen( int posX, int posY ) const;
         virtual void clicked( int mouseX, int mouseY );
         virtual void draw( int mouseX, int mouseY );
@@ -39,8 +40,16 @@ class FramesBase
 
         int posX;
 		int posY;
-		int width;
-		int height;
+
+		int frameWidth;
+		int frameHeight;
+		int frameOffsetX;
+		int frameOffsetY;
+
+		int titleWidth;
+		int titleHeight;
+		int titleOffsetX;
+		int titleOffsetY;
 };
 
 #endif

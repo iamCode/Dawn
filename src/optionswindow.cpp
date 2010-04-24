@@ -52,11 +52,11 @@ OptionsWindow::OptionsWindow()
 	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
 
-	width = backgroundTexture->texture[0].width;
-	height = backgroundTexture->texture[0].height;
+	frameWidth = backgroundTexture->texture[0].width;
+	frameHeight = backgroundTexture->texture[0].height;
 	// center on screen
-	posX = (dawn_configuration::screenWidth - width) / 2;
-	posY = (dawn_configuration::screenHeight - height) / 2;
+	posX = (dawn_configuration::screenWidth - frameWidth) / 2;
+	posY = (dawn_configuration::screenHeight - frameHeight) / 2;
 }
 
 OptionsWindow::~OptionsWindow()
@@ -73,19 +73,19 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 {
 	// show screen
 	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
-	                                  posX + world_x, width,
-	                                  posY + world_y, height );
+	                                  posX + world_x, frameWidth,
+	                                  posY + world_y, frameHeight );
 
 	// show option names (continue, quit, load, save, settings)
 	int textX = world_x + posX + 64;
-	int textY = world_y + posY + height - 64 - font->getHeight();
+	int textY = world_y + posY + frameHeight - 64 - font->getHeight();
 	std::string curText = "Quit Game";
 	int selectedEntry = -1;
-	if ( mouseX < posX + 64 || mouseX > posX + width - 64 || posY + height - 64 < mouseY) {
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 64 < mouseY) {
 		selectedEntry = -1;
 	} else {
-		selectedEntry = (posY + height - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
-		if ( (posY + height - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+		selectedEntry = (posY + frameHeight - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
 			selectedEntry = -1;
 		}
 	}
@@ -125,8 +125,8 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 
 bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
 {
-	if ( posX < this->posX + 64 || posX > this->posX + width - 64
-	     || posY > this->posY + height - 64 || posY < this->posY + 64 ) {
+	if ( posX < this->posX + 64 || posX > this->posX + frameWidth  - 64
+	     || posY > this->posY + frameHeight - 64 || posY < this->posY + 64 ) {
 	     return false;
 	}
 	return true;
@@ -147,11 +147,11 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 	}
 
 	int selectedEntry = -1;
-	if ( mouseX < posX + 64 || mouseX > posX + width - 64 || posY + height - 64 < mouseY) {
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 64 < mouseY) {
 		selectedEntry = -1;
 	} else {
-		selectedEntry = (posY + height - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
-		if ( (posY + height - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+		selectedEntry = (posY + frameHeight - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
 			selectedEntry = -1;
 		}
 	}

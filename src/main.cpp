@@ -802,11 +802,7 @@ void game_loop()
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
 
                     // iterate through all our active frames and click on them if mouse is over.
-                    //
-                    // TODO: fix backwards loop here.
-                    //
-                    //
-                    /**for ( curFrame )
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
                     {
                         if ( activeFrames[ curFrame ]->isOnThisScreen( mouseX, mouseY ) )
                         {
@@ -814,7 +810,7 @@ void game_loop()
                             activeFrames[ curFrame ]->clicked( mouseX, mouseY );
                             break;
                         }
-                    }**/
+                    }
 
                     if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
                         if ( spellbook->hasFloatingSpell() )

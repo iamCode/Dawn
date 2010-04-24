@@ -22,14 +22,22 @@
 extern std::vector <FramesBase*> activeFrames;
 
 FramesBase::FramesBase()
+    :   visible( false )
 {
 }
 
-FramesBase::FramesBase( int posX_, int posY_, int width_, int height_ )
+FramesBase::FramesBase( int posX_, int posY_, int frameWidth_, int frameHeight_, int frameOffsetX_, int frameOffsetY_, int titleWidth_, int titleHeight_, int titleOffsetX_, int titleOffsetY_ )
     :   posX( posX_ ),
         posY( posY_ ),
-        width( width_ ),
-        height( height_ )
+        frameWidth( frameWidth_ ),
+        frameHeight( frameHeight_ ),
+        frameOffsetX( frameOffsetX_ ),
+        frameOffsetY( frameOffsetY_ ),
+        titleWidth( titleWidth_ ),
+        titleHeight( titleHeight_ ),
+        titleOffsetX( titleOffsetX_ ),
+        titleOffsetY( titleOffsetY_ ),
+        visible( false )
 {
 }
 
@@ -43,10 +51,10 @@ void FramesBase::clicked( int mouseX, int mouseY )
 
 bool FramesBase::isOnThisScreen( int x, int y ) const
 {
-	if ( x < posX
-	     || y < posY
-	     || x > posX + width
-	     || y > posY + height ) {
+	if ( x < posX + frameOffsetX
+	     || y < posY + frameOffsetY
+	     || x > posX + frameOffsetX + frameWidth
+	     || y > posY + frameOffsetY + frameHeight ) {
 	    return false;
 	}
 	return true;
