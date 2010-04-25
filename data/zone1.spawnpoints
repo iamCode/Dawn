@@ -22,6 +22,6 @@ then
     zone1.leavePoint:setPosition( 822, 2570, 128, 128 );
     zone1.leavePoint:setBackgroundTexture( "data/village/stairs.tga" );
     zone1.leavePoint:setInteractionType( InteractionType.Zone );
-    zone1.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone2", -670, 1529 );' );
+    zone1.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone2", -670, 1529 );\nDawnInterface.setSavingAllowed( false );' );
 end
 

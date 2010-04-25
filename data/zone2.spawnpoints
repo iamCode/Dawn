@@ -8,6 +8,6 @@ then
     zone2.leavePoint:setPosition( -670, 1568, 48, 70 );
     zone2.leavePoint:setBackgroundTexture( "data/transparent2x2pixel.tga" );
     zone2.leavePoint:setInteractionType( InteractionType.Zone );
-    zone2.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone1", 870, 2520 );' );
+    zone2.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone1", 870, 2520 );\nDawnInterface.setSavingAllowed( true );' );
 end
 

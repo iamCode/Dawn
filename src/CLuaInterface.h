@@ -68,11 +68,13 @@ namespace DawnInterface
 	std::string getReenterCurrentZoneText();
 	std::string getItemReferenceRestore( CCharacter *character );
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
+	std::string getItemReferenceRestore( InteractionRegion *interactionRegion );
 	std::string getItemReferenceRestore( Shop *shop );
 	std::string getItemReferenceRestore( CallIndirection *eventHandler );
 	std::string getItemReferenceRestore( TextWindow *textWindow );
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
 	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
+	InteractionRegion* restoreInteractionRegionReference( std::string zoneName, int posInArray );
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );

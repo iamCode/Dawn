@@ -704,6 +704,27 @@ namespace DawnInterface
 		abort();
 	}
 	
+	std::string getItemReferenceRestore( InteractionRegion *interactionRegion )
+	{
+		if ( interactionRegion == NULL ) {
+			return "nil;";
+		}
+		for ( std::map< std::string, CZone* >::iterator it = Globals::allZones.begin(); it != Globals::allZones.end(); ++it ) {
+			CZone *curZone = it->second;
+			bool found;
+			size_t foundPos;
+			curZone->findInteractionRegion( interactionRegion, found, foundPos );
+			if ( found ) {
+				std::ostringstream oss;
+				oss << "DawnInterface.restoreInteractionRegionReference( \"" << curZone->getZoneName() << "\", " << foundPos << " )";
+				return oss.str();
+			}
+		}
+		// not found
+		dawn_debug_fatal( "could not find interaction region in any of the zones" );
+		abort();
+	}
+	
 	std::string getItemReferenceRestore( CallIndirection *eventHandler )
 	{
 		if ( eventHandler == NULL ) {
@@ -748,6 +769,14 @@ namespace DawnInterface
 		assert( correctZone != NULL );
 		return correctZone->getInteractionPointPointer( posInArray );
 	}
+
+	InteractionRegion* restoreInteractionRegionReference( std::string zoneName, int posInArray )
+	{
+		CZone *correctZone = Globals::allZones[ zoneName ];
+		assert( correctZone != NULL );
+		return correctZone->getInteractionRegionPointer( posInArray );
+	}
+
 
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray )
 	{
