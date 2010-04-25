@@ -57,6 +57,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/GroundLoot.h \
 	src/interactionpoint.cpp \
 	src/interactionpoint.h \
+	src/interactionregion.cpp \
+	src/interactionregion.h \
 	src/inventory.cpp \
 	src/inventory.h \
 	src/InventoryScreen.cpp \
