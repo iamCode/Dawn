@@ -18,9 +18,6 @@
 
 #include "FramesBase.h"
 #include <vector>
-#include <iostream>
-
-#include "CDrawingHelpers.h"
 
 extern std::vector <FramesBase*> activeFrames;
 
@@ -98,7 +95,7 @@ void FramesBase::draw( int mouseX, int mouseY )
 {
 }
 
-void FramesBase::clicked( int mouseX, int mouseY )
+void FramesBase::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
 }
 

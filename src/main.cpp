@@ -121,7 +121,6 @@ bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
-bool KP_toggle_showShop = false;
 
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
@@ -356,20 +355,12 @@ void DrawScene()
 		questWindow->draw();
 	}
 
-	if ( shopWindow->isVisible() ) {
-	    shopWindow->draw();
-	    shopWindow->drawItemTooltip( mouseX, mouseY );
-	}
-
-	if ( shopWindow->hasFloatingSelection() )
-	{
-	    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
-
     if ( inventoryScreen->hasFloatingSelection() ) {
-	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
 		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 	}
+
+    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+    shopWindow->drawItemTooltip( mouseX, mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -817,11 +808,12 @@ void game_loop()
                             if ( activeFrames[ curFrame ]->isMouseOnTitlebar( mouseX, mouseY ) == true )
                             {
                                 activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+                                activeFrames[ curFrame ]->setOnTop();
                                 break;
                             }
 
                             activeFrames[ curFrame ]->setOnTop();
-                            activeFrames[ curFrame ]->clicked( mouseX, mouseY );
+                            activeFrames[ curFrame ]->clicked( mouseX, mouseY, event.button.button );
                             break;
                         }
                     }
@@ -841,19 +833,7 @@ void game_loop()
 					} else if ( questWindow->isVisible()
 					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						questWindow->clicked( mouseX, mouseY );
-					} else if ( shopWindow->isVisible()
-                                && (shopWindow->isOnThisScreen(mouseX, mouseY )
-                                || (shopWindow->hasFloatingSelection()
-                                && (!inventoryScreen->isOnBackpackScreen( mouseX, mouseY )) ) ) )  {
-                        if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
-                                    && ( inventoryScreen->hasFloatingSelection() ) ) {
-                            shopWindow->sellToShop( inventoryScreen->getFloatingSelection(), true );
-                            inventoryScreen->unsetFloatingSelection();
-                        } else {
-                            shopWindow->clicked( mouseX, mouseY, event.button.button );
-                        }
-
-                    } else if ( ( inventoryScreen->isVisible()
+					} else if ( ( inventoryScreen->isVisible()
                                 && !shopWindow->hasFloatingSelection()
                                 && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
 					     || inventoryScreen->hasFloatingSelection() ) {
@@ -1083,15 +1063,6 @@ void game_loop()
 
 			if ( !keys[SDLK_c] ) {
 				KP_toggle_showCharacterInfo = false;
-			}
-
-			if ( keys[SDLK_s] && !KP_toggle_showShop ) {
-				KP_toggle_showShop = true;
-				shopWindow->setVisible( ! shopWindow->isVisible() );
-			}
-
-			if ( !keys[SDLK_s] ) {
-				KP_toggle_showShop= false;
 			}
 
 			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {

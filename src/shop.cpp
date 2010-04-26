@@ -22,77 +22,74 @@
 #include <cassert>
 #include <memory>
 #include "CDrawingHelpers.h"
+#include "FramesBase.h"
+#include "InventoryScreen.h"
 
-Shop::Shop( Player *player_, CNPC *shopkeeper_)
-	:	currentTab( 0 ),
-		posX( 30 ),
-		posY( 80 ),
-		backpackFieldWidth( 32 ),
-		backpackFieldHeight( 32 ),
-		backpackSeparatorWidth( 3 ),
-		backpackSeparatorHeight( 3 ),
-		backpackOffsetX( 67 ),
-		backpackOffsetY( 56 ),
-		numSlotsX( 10 ),
-		numSlotsY( 6 ),
-		visible(false),
-		floatingSelection( NULL ),
-		player( player_ ),
-		shopkeeper( shopkeeper_ )
-		{
-		    tabs[0].tabimage.texture.resize(1);
-            tabs[0].tabimage.LoadIMG("data/interface/Shop/weapontab.tga",0);
-            tabs[0].height = 128;
-            tabs[0].width = 128;
+extern std::auto_ptr<InventoryScreen> inventoryScreen;
 
-            tabs[0].posX = 61 + posX;
-            tabs[0].posY = 264 + posY;
+Shop::Shop( Player *player_, CNPC *shopkeeper_) : FramesBase( 30, 80, 454, 404, 13, 15 )
+{
+    addMoveableFrame( 454, 21, 13, 398 );
+    addCloseButton( 22, 22, 444, 398 );
+    currentTab = 0;
+    backpackFieldWidth = 32;
+    backpackFieldHeight = 32;
+    backpackSeparatorWidth = 3;
+    backpackSeparatorHeight = 3;
+    backpackOffsetX = 67;
+    backpackOffsetY = 56;
+    numSlotsX = 10;
+    numSlotsY = 6;
+    floatingSelection = NULL;
+    player = player_;
+    shopkeeper = shopkeeper_;
 
-            tabs[1].tabimage.texture.resize(1);
-            tabs[1].tabimage.LoadIMG("data/interface/Shop/armortab.tga",0);
-            tabs[1].height = 128;
-            tabs[1].width = 128;
-            tabs[1].posX = 202 + posX;
-            tabs[1].posY = 264 + posY;
+    tabs[0].tabimage.texture.resize(1);
+    tabs[0].tabimage.LoadIMG("data/interface/Shop/weapontab.tga",0);
+    tabs[0].height = 128;
+    tabs[0].width = 128;
 
-            tabs[2].tabimage.texture.resize(1);
-            tabs[2].tabimage.LoadIMG("data/interface/Shop/misctab.tga",0);
-            tabs[2].height = 128;
-            tabs[2].width = 128;
-            tabs[2].posX = 343 + posX;
-            tabs[2].posY = 264 + posY;
+    tabs[0].posX = 61;
+    tabs[0].posY = 264;
 
-		    loadShopkeeperInventory();
-            loadTextures();
+    tabs[1].tabimage.texture.resize(1);
+    tabs[1].tabimage.LoadIMG("data/interface/Shop/armortab.tga",0);
+    tabs[1].height = 128;
+    tabs[1].width = 128;
+    tabs[1].posX = 202;
+    tabs[1].posY = 264;
 
-            slotUsed = new bool**[3];
-            for ( size_t curItemTab=0; curItemTab<3; ++curItemTab ) {
-                slotUsed[ curItemTab ] = new bool*[numSlotsX];
-                for ( size_t curX=0; curX<numSlotsX; ++curX ) {
-                    slotUsed[ curItemTab ][ curX ] = new bool[numSlotsY];
-                    for ( size_t curY=0; curY<numSlotsY; ++curY ) {
-                        slotUsed[ curItemTab ][ curX ][ curY ] = false;
-                    }
-                }
+    tabs[2].tabimage.texture.resize(1);
+    tabs[2].tabimage.LoadIMG("data/interface/Shop/misctab.tga",0);
+    tabs[2].height = 128;
+    tabs[2].width = 128;
+    tabs[2].posX = 343;
+    tabs[2].posY = 264;
+
+    loadShopkeeperInventory();
+    loadTextures();
+
+    slotUsed = new bool**[3];
+    for ( size_t curItemTab=0; curItemTab<3; ++curItemTab ) {
+        slotUsed[ curItemTab ] = new bool*[numSlotsX];
+        for ( size_t curX=0; curX<numSlotsX; ++curX ) {
+            slotUsed[ curItemTab ][ curX ] = new bool[numSlotsY];
+            for ( size_t curY=0; curY<numSlotsY; ++curY ) {
+                slotUsed[ curItemTab ][ curX ][ curY ] = false;
             }
-        };
+        }
+    }
+};
 
-bool Shop::isVisible() const
+void Shop::toggle()
 {
-    return visible;
-}
-
-void Shop::setVisible( bool newVisible )
-{
-    visible = newVisible;
-
-    // stop shopping (well, this will be moved once we get proper close() and open() functions to our frames.
-    if ( visible == false )
+    if ( isVisible() == false )
     {
         player->stopShopping();
     } else {
         player->startShopping();
     }
+    FramesBase::toggle();
 }
 
 void Shop::loadTextures()
@@ -107,18 +104,20 @@ void Shop::loadShopkeeperInventory()
 
 }
 
-void Shop::draw()
+void Shop::draw( int mouseX, int mouseY )
 {
     DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                       world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
     drawTabs();
     drawItems();
+    drawItemTooltip( mouseX, mouseY );
+    drawFloatingSelection( mouseX, mouseY );
 }
 
 void Shop::drawTabs()
 {
     DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
-                                      world_x + tabs[currentTab].posX, tabs[currentTab].width , world_y + tabs[currentTab].posY, tabs[currentTab].height );
+                                      world_x + tabs[currentTab].posX + posX, tabs[currentTab].width , world_y + tabs[currentTab].posY + posY, tabs[currentTab].height );
 }
 
 void Shop::drawItems()
@@ -162,19 +161,19 @@ void Shop::drawItems()
         }
 }
 
-void Shop::drawItemTooltip( int x, int y )
+void Shop::drawItemTooltip( int mouseX, int mouseY )
 {
     // draws tooltip over item in the shop
-    if ( isOnSlotsScreen(x,y) && isVisible() && floatingSelection == NULL ) {
+    if ( isOnSlotsScreen(mouseX,mouseY) && isVisible() && floatingSelection == NULL ) {
         InventoryItem *tooltipItem;
-        int fieldIndexX = ( x - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
-        int fieldIndexY = ( y - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
+        int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+        int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
         if ( !isPositionFree( fieldIndexX, fieldIndexY, currentTab ) ) {
             // draw tooltip of the current item in the shop.
             tooltipItem = getItemAt( fieldIndexX, fieldIndexY, currentTab );
             tooltipItem->getTooltip()->setShopItem( true );
-            tooltipItem->getTooltip()->draw( x, y );
+            tooltipItem->getTooltip()->draw( mouseX, mouseY );
 
             //if player is holding down right shift and has an
             // item with same slot equipped, we draw that too.
@@ -196,7 +195,7 @@ void Shop::drawItemTooltip( int x, int y )
                             equippedItemOffset += tooltipItem->getTooltip()->getTooltipWidth() + 30;
                         }
                         previousFrameWidth = playersInventory[ curItem ]->getTooltip()->getTooltipWidth();
-                        playersInventory[ curItem ]->getTooltip()->draw( x + equippedItemOffset, y );
+                        playersInventory[ curItem ]->getTooltip()->draw( mouseX + equippedItemOffset, mouseY );
                     }
                 }
             }
@@ -204,24 +203,30 @@ void Shop::drawItemTooltip( int x, int y )
     }
 }
 
-void Shop::drawFloatingSelection( int x, int y )
+void Shop::drawFloatingSelection( int mouseX, int mouseY )
 {
 	// draw floating selection
-	if ( floatingSelection != NULL ) {
+	if ( hasFloatingSelection() != NULL ) {
 		Item *floatingItem = floatingSelection->getItem();
 		size_t sizeX = floatingItem->getSizeX();
 		size_t sizeY = floatingItem->getSizeY();
 
 		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0].texture,
-		                                  x, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
-		                                  y-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
+		                                  mouseX, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
+		                                  mouseY-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}
 }
 
-void Shop::clicked( int clickX, int clickY, uint8_t mouseButton )
+void Shop::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
-    if ( isOnSlotsScreen( clickX, clickY ) )
+    if ( isOnSlotsScreen( mouseX, mouseY ) )
     {
+        if ( inventoryScreen->hasFloatingSelection() )
+        {
+            sellToShop( inventoryScreen->getFloatingSelection(), true );
+            inventoryScreen->unsetFloatingSelection();
+        }
+
         if ( hasFloatingSelection() )
         {
             sellToShop( getFloatingSelection(), false );
@@ -229,15 +234,15 @@ void Shop::clicked( int clickX, int clickY, uint8_t mouseButton )
             return;
         }
 
-        int fieldIndexX = ( clickX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
-        int fieldIndexY = ( clickY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
+        int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+        int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
         if ( !isPositionFree( fieldIndexX, fieldIndexY, currentTab ) )
         {
             InventoryItem *curItem = getItemAt( fieldIndexX, fieldIndexY, currentTab );
             if ( player->getCoins() >= curItem->getItem()->getValue() )
             {
-                if ( mouseButton == SDL_BUTTON_RIGHT ) {
+                if ( mouseState == SDL_BUTTON_RIGHT ) {
                     // direct buy on right button
                     bool inserted = player->getInventory()->insertItem( curItem->getItem() );
                     if ( inserted ) {
@@ -257,16 +262,16 @@ void Shop::clicked( int clickX, int clickY, uint8_t mouseButton )
 
     // loop through our tabs, see if any got clicked.
     for (size_t tabIndex = 0; tabIndex <= 2; tabIndex++) {
-        if ( clickX > tabs[tabIndex].posX
-            && clickY > tabs[tabIndex].posY
-            && clickX < tabs[tabIndex].posX + tabs[tabIndex].width
-            && clickY < tabs[tabIndex].posY + tabs[tabIndex].height ) {
+        if ( mouseX > tabs[tabIndex].posX + posX
+            && mouseY > tabs[tabIndex].posY + posY
+            && mouseX < tabs[tabIndex].posX + posX + tabs[tabIndex].width
+            && mouseY < tabs[tabIndex].posY + posY + tabs[tabIndex].height ) {
             currentTab = tabIndex;
             return;
         }
     }
 
-    if ( !isOnSlotsScreen( clickX, clickY ) )
+    if ( !isOnSlotsScreen( mouseX, mouseY ) )
     {
         if ( hasFloatingSelection() )
         {
@@ -275,18 +280,6 @@ void Shop::clicked( int clickX, int clickY, uint8_t mouseButton )
             return;
         }
     }
-}
-
-bool Shop::isOnThisScreen( int x, int y ) const
-{
-    if ( x < posX
-	     || y < posY
-	     || x > posX + textures.texture[0].width
-	     || y > posY + textures.texture[0].height ) {
-		return false;
-	}
-	return true;
-
 }
 
 bool Shop::isOnSlotsScreen( int x, int y )

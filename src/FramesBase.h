@@ -20,7 +20,6 @@
 #define __FRAMESBASE_H__
 
 #include <stdint.h>
-#include "CTexture.h"
 
 class FramesBase
 {
@@ -38,7 +37,7 @@ class FramesBase
         bool isMouseOnTitlebar( int mouseX, int mouseY ) const;
         bool isMouseOnCloseButton( int mouseX, int mouseY ) const;
         virtual bool isMouseOnFrame( int mouseX, int mouseY ) const;
-        virtual void clicked( int mouseX, int mouseY );
+        virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
         virtual void draw( int mouseX, int mouseY );
 
         virtual void toggle();

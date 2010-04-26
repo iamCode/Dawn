@@ -158,7 +158,7 @@ void CharacterInfoScreen::draw( int mouseX, int mouseY )
 	drawTabs();
 }
 
-void CharacterInfoScreen::clicked( int mouseX, int mouseY )
+void CharacterInfoScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
     // loop through our tabs, see if any got clicked.
     for (size_t tabIndex = 0; tabIndex <= 2; tabIndex++) {

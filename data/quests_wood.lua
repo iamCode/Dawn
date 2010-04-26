@@ -33,7 +33,7 @@ function quest_playHideAndSeek.init()
 end
 
 function quest_playHideAndSeek.onActivateTrader()
-	traderShop:setVisible( true )
+	traderShop:toggle()
 end
 
 function quest_playHideAndSeek.onActivateJohn()

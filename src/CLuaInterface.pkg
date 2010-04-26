@@ -342,7 +342,7 @@ class TextWindow
 
 class Shop
 {
-	void setVisible( bool newVisible );
+	void toggle();
 	void addItem( Item *item );
 };
 

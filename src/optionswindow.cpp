@@ -139,7 +139,7 @@ extern std::auto_ptr<Shop> shopWindow;
 extern std::auto_ptr<Spellbook> spellbook;
 extern std::auto_ptr<ActionBar> actionBar;
 
-void OptionsWindow::clicked( int mouseX, int mouseY )
+void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
 	// check for quit and the other options
 	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {

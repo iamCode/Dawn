@@ -331,6 +331,7 @@ void InventoryScreen::drawBackpack()
 
 void InventoryScreen::drawFloatingSelection( int x, int y )
 {
+    drawItemPlacement( x, y );
 	// draw floating selection
 	if ( floatingSelection != NULL ) {
 		Item *floatingItem = floatingSelection->getItem();

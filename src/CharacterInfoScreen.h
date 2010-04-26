@@ -45,7 +45,7 @@ class CharacterInfoScreen : public FramesBase
 		CharacterInfoScreen( Player *player );
 		~CharacterInfoScreen();
 
-		void clicked( int mouseX, int mouseY );
+		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 		void LoadTextures();
 		void initFonts();
