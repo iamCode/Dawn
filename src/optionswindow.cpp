@@ -123,7 +123,7 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	}
 }
 
-bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
+bool OptionsWindow::isMouseOnFrame( int posX, int posY ) const
 {
 	if ( posX < this->posX + 64 || posX > this->posX + frameWidth  - 64
 	     || posY > this->posY + frameHeight - 64 || posY < this->posY + 64 ) {
@@ -142,7 +142,7 @@ extern std::auto_ptr<ActionBar> actionBar;
 void OptionsWindow::clicked( int mouseX, int mouseY )
 {
 	// check for quit and the other options
-	if ( ! isOnThisScreen( mouseX, mouseY ) ) {
+	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {
 		return;
 	}
 

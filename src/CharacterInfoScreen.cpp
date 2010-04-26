@@ -25,8 +25,14 @@
 #include "GLFT_Font.h"
 
 CharacterInfoScreen::CharacterInfoScreen( Player *player )
-    :   FramesBase( 25, 100, 434, 492, 13, 15, 21, 434, 13, 486 )
+    :   FramesBase( 25, 100, 434, 492, 13, 15 )
 {
+	// add moveability to the frame, allwoing to drag the frame by the title
+	addMoveableFrame( 434, 21, 13, 486 );
+
+	// add a close button to the frame (not a graphical one, that's still handled by the base graphic file).
+	addCloseButton( 22, 22, 422, 483);
+
 	this->player = player;
 	infoFont = NULL;
 	currentTab = 0;
@@ -34,22 +40,22 @@ CharacterInfoScreen::CharacterInfoScreen( Player *player )
 	tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
 	tabs[0].height = 32;
 	tabs[0].width = 58;
-	tabs[0].posX = 61 + posX;
-	tabs[0].posY = 242 + posY;
+	tabs[0].posX = 61;
+	tabs[0].posY = 242;
 
 	tabs[1].tabimage.texture.resize(1);
 	tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
 	tabs[1].height = 32;
 	tabs[1].width = 72;
-	tabs[1].posX = 196 + posX;
-	tabs[1].posY = 242 + posY;
+	tabs[1].posX = 196;
+	tabs[1].posY = 242;
 
 	tabs[2].tabimage.texture.resize(1);
 	tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
 	tabs[2].height = 32;
 	tabs[2].width = 59;
-	tabs[2].posX = 340 + posX;
-	tabs[2].posY = 242 + posY;
+	tabs[2].posX = 340;
+	tabs[2].posY = 242;
 }
 
 CharacterInfoScreen::~CharacterInfoScreen()
@@ -156,10 +162,10 @@ void CharacterInfoScreen::clicked( int mouseX, int mouseY )
 {
     // loop through our tabs, see if any got clicked.
     for (size_t tabIndex = 0; tabIndex <= 2; tabIndex++) {
-        if ( mouseX > tabs[tabIndex].posX
-            && mouseY > tabs[tabIndex].posY
-            && mouseX < tabs[tabIndex].posX + tabs[tabIndex].width
-            && mouseY < tabs[tabIndex].posY + tabs[tabIndex].height ) {
+        if ( mouseX > tabs[tabIndex].posX + posX
+            && mouseY > tabs[tabIndex].posY + posY
+            && mouseX < tabs[tabIndex].posX + posX + tabs[tabIndex].width
+            && mouseY < tabs[tabIndex].posY + posY + tabs[tabIndex].height ) {
             currentTab = tabIndex;
         }
     }
@@ -174,17 +180,17 @@ void CharacterInfoScreen::drawExpBar()
 
     glColor3f( 0.7f, 0.73f, 0.29f );
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                    world_x + posX + 280, 100, world_y + 533, 10 );
+                                    world_x + posX + 280, 100, world_y + posY + 433, 10 );
     glColor3f( 0.9f, 0.93f, 0.29f );
     DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                    world_x + posX + 280, expBarWidth, world_y + 533, 10 );
+                                    world_x + posX + 280, expBarWidth, world_y + posY + 433, 10 );
     glColor3f( 1.0f, 1.0f, 1.0f );
 }
 
 void CharacterInfoScreen::drawTabs()
 {
     DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
-                                      world_x + tabs[currentTab].posX, tabs[currentTab].tabimage.texture[0].width, world_y + tabs[currentTab].posY, tabs[currentTab].tabimage.texture[0].height );
+                                      world_x + tabs[currentTab].posX + posX, tabs[currentTab].tabimage.texture[0].width, world_y + tabs[currentTab].posY + posY, tabs[currentTab].tabimage.texture[0].height );
 
 	const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
 

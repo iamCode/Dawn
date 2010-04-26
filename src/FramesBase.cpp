@@ -18,27 +18,80 @@
 
 #include "FramesBase.h"
 #include <vector>
+#include <iostream>
+
+#include "CDrawingHelpers.h"
 
 extern std::vector <FramesBase*> activeFrames;
 
 FramesBase::FramesBase()
-    :   visible( false )
+    :   visible( false ),
+        moveableFrame( false),
+        closeButton( false ),
+        movingFrame( false )
 {
 }
 
-FramesBase::FramesBase( int posX_, int posY_, int frameWidth_, int frameHeight_, int frameOffsetX_, int frameOffsetY_, int titleWidth_, int titleHeight_, int titleOffsetX_, int titleOffsetY_ )
+FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ )
     :   posX( posX_ ),
         posY( posY_ ),
         frameWidth( frameWidth_ ),
         frameHeight( frameHeight_ ),
         frameOffsetX( frameOffsetX_ ),
         frameOffsetY( frameOffsetY_ ),
-        titleWidth( titleWidth_ ),
-        titleHeight( titleHeight_ ),
-        titleOffsetX( titleOffsetX_ ),
-        titleOffsetY( titleOffsetY_ ),
-        visible( false )
+        visible( false ),
+        moveableFrame( false),
+        closeButton( false ),
+        movingFrame( false )
 {
+}
+
+void FramesBase::addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY )
+{
+    moveableFrame = true;
+    this->titleWidth = titleWidth;
+    this->titleHeight = titleHeight;
+    this->titleOffsetX = titleOffsetX;
+    this->titleOffsetY = titleOffsetY;
+}
+
+void FramesBase::addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY )
+{
+    closeButton = true;
+    this->buttonWidth = buttonWidth;
+    this->buttonHeight = buttonHeight;
+    this->buttonOffsetX = buttonOffsetX;
+    this->buttonOffsetY = buttonOffsetY;
+}
+
+void FramesBase::moveFrame( uint16_t mouseX, uint16_t mouseY )
+{
+    // start moving the frame if we're not.
+    // if we are already moving the frame then update the coordinates.
+    if ( movingFrame == false )
+    {
+        movingFrame = true;
+        startMovingFrameXpos = mouseX;
+        startMovingFrameYpos = mouseY;
+    } else {
+        posX += mouseX - startMovingFrameXpos;
+        posY += mouseY - startMovingFrameYpos;
+
+        startMovingFrameXpos = mouseX;
+        startMovingFrameYpos = mouseY;
+    }
+}
+
+void FramesBase::stopMovingFrame( uint16_t mouseX, uint16_t mouseY )
+{
+    movingFrame = false;
+    startMovingFrameXpos = 0;
+    startMovingFrameYpos = 0;
+}
+
+bool FramesBase::isMovingFrame() const
+{
+    return movingFrame;
 }
 
 void FramesBase::draw( int mouseX, int mouseY )
@@ -49,12 +102,46 @@ void FramesBase::clicked( int mouseX, int mouseY )
 {
 }
 
-bool FramesBase::isOnThisScreen( int x, int y ) const
+bool FramesBase::isMouseOnTitlebar( int mouseX, int mouseY ) const
 {
-	if ( x < posX + frameOffsetX
-	     || y < posY + frameOffsetY
-	     || x > posX + frameOffsetX + frameWidth
-	     || y > posY + frameOffsetY + frameHeight ) {
+    // if the frame has no titlebar we return false right away...
+    if ( moveableFrame == false )
+    {
+        return false;
+    }
+
+    if ( mouseX < posX + titleOffsetX
+	     || mouseY < posY + titleOffsetY
+	     || mouseX > posX + titleOffsetX + titleWidth
+	     || mouseY > posY + titleOffsetY + titleHeight ) {
+	    return false;
+	}
+	return true;
+}
+
+bool FramesBase::isMouseOnCloseButton( int mouseX, int mouseY ) const
+{
+    // if the frame has no closebutton we return false right away...
+    if ( closeButton == false )
+    {
+        return false;
+    }
+
+    if ( mouseX < posX + buttonOffsetX
+	     || mouseY < posY + buttonOffsetY
+	     || mouseX > posX + buttonOffsetX + buttonWidth
+	     || mouseY > posY + buttonOffsetY + buttonHeight ) {
+	    return false;
+	}
+	return true;
+}
+
+bool FramesBase::isMouseOnFrame( int mouseX, int mouseY ) const
+{
+	if ( mouseX < posX + frameOffsetX
+	     || mouseY < posY + frameOffsetY
+	     || mouseX > posX + frameOffsetX + frameWidth
+	     || mouseY > posY + frameOffsetY + frameHeight ) {
 	    return false;
 	}
 	return true;

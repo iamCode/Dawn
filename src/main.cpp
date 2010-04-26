@@ -804,8 +804,22 @@ void game_loop()
                     // iterate through all our active frames and click on them if mouse is over.
                     for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
                     {
-                        if ( activeFrames[ curFrame ]->isOnThisScreen( mouseX, mouseY ) )
+                        if ( activeFrames[ curFrame ]->isMouseOnFrame( mouseX, mouseY ) )
                         {
+                            // check if mouse is over closebutton (if any) and then we try and close the frame
+                            if ( activeFrames[ curFrame ]->isMouseOnCloseButton( mouseX, mouseY ) == true )
+                            {
+                                activeFrames[ curFrame ]->toggle();
+                                break;
+                            }
+
+                            // check to see if mouse is over titlebar, then we try to move the frame.
+                            if ( activeFrames[ curFrame ]->isMouseOnTitlebar( mouseX, mouseY ) == true )
+                            {
+                                activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+                                break;
+                            }
+
                             activeFrames[ curFrame ]->setOnTop();
                             activeFrames[ curFrame ]->clicked( mouseX, mouseY );
                             break;
@@ -909,11 +923,29 @@ void game_loop()
 					{
 					    actionBar->dragSpell();
 					}
+
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isMovingFrame() == true )
+                        {
+                            activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+                            break;
+                        }
+                    }
 				}
 
 				if (event.type == SDL_MOUSEBUTTONUP)
 				{
                     actionBar->executeSpellQueue();
+
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isMovingFrame() == true )
+                        {
+                            activeFrames[ curFrame ]->stopMovingFrame( mouseX, mouseY );
+                            break;
+                        }
+                    }
 				}
 			}
 

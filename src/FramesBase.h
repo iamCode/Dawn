@@ -19,13 +19,25 @@
 #ifndef __FRAMESBASE_H__
 #define __FRAMESBASE_H__
 
+#include <stdint.h>
+#include "CTexture.h"
+
 class FramesBase
 {
     public:
         FramesBase();
-        FramesBase( int posX_, int posY_, int frameWidth_, int frameHeight_, int frameOffsetX_, int frameOffsetY_, int titleWidth_, int titleHeight_, int titleOffsetX_, int titleOffsetY_ );
+        FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ );
 
-        virtual bool isOnThisScreen( int posX, int posY ) const;
+        void addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY );
+        void addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY );
+
+        void moveFrame( uint16_t mouseX, uint16_t mouseY );
+        void stopMovingFrame( uint16_t mouseX, uint16_t mouseY );
+        bool isMovingFrame() const;
+
+        bool isMouseOnTitlebar( int mouseX, int mouseY ) const;
+        bool isMouseOnCloseButton( int mouseX, int mouseY ) const;
+        virtual bool isMouseOnFrame( int mouseX, int mouseY ) const;
         virtual void clicked( int mouseX, int mouseY );
         virtual void draw( int mouseX, int mouseY );
 
@@ -38,18 +50,31 @@ class FramesBase
     protected:
         bool visible;
 
-        int posX;
-		int posY;
+        int16_t posX;
+		int16_t posY;
 
-		int frameWidth;
-		int frameHeight;
-		int frameOffsetX;
-		int frameOffsetY;
+		uint16_t frameWidth;
+		uint16_t frameHeight;
+		int16_t frameOffsetX;
+		int16_t frameOffsetY;
 
-		int titleWidth;
-		int titleHeight;
-		int titleOffsetX;
-		int titleOffsetY;
+		uint16_t titleWidth;
+		uint16_t titleHeight;
+		int16_t titleOffsetX;
+		int16_t titleOffsetY;
+
+		uint16_t buttonWidth;
+		uint16_t buttonHeight;
+		int16_t buttonOffsetX;
+		int16_t buttonOffsetY;
+
+		uint16_t startMovingFrameXpos;
+        uint16_t startMovingFrameYpos;
+
+    private:
+        bool closeButton;
+        bool moveableFrame;
+        bool movingFrame;
 };
 
 #endif
