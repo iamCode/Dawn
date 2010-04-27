@@ -470,51 +470,6 @@ void InventoryScreen::draw( int mouseX, int mouseY )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		drawSlot( static_cast<ItemSlot::ItemSlot>(curSlotNr) );
 	}
-
-    /****/
-
-    if ( isOnBackpackScreen( mouseX, mouseY ) )
-	{
-	    GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
-	    size_t sizeX = 1;
-		size_t sizeY = 1;
-
-        // calculate which backpack-slot we are looking at.
-		int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
-        int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
-
-        shade[1] = 1.0f; // green color
-
-        // calculate the size of the shade, if too big, we resize it.
-        int shadePosX = world_x + posX + backpackOffsetX
-		                + fieldIndexX * backpackFieldWidth
-		                + fieldIndexX * backpackSeparatorWidth;
-        int shadePosY = world_y + posY + backpackOffsetY-1
-		                + fieldIndexY * backpackFieldHeight
-		                + fieldIndexY * backpackSeparatorHeight;
-        int shadeWidth = backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth;
-        int shadeHeight = backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight;
-
-        if ( sizeY + fieldIndexY > numSlotsY )
-        {
-            shadeHeight = backpackFieldWidth * ( sizeY - (( sizeY + fieldIndexY ) - numSlotsY ))
-			              + ( sizeY - (( sizeY + fieldIndexY ) - (numSlotsY-1) ))*backpackSeparatorWidth;
-        }
-
-        if ( sizeX + fieldIndexX > numSlotsX )
-        {
-            shadeWidth = backpackFieldHeight * ( sizeX - (( sizeX + fieldIndexX ) - numSlotsX ))
-			             + ( sizeX - (( sizeX + fieldIndexX ) - (numSlotsX-1) ))*backpackSeparatorHeight;
-        }
-
-        glColor4fv(shade);
-        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                          shadePosX,
-                                          shadeWidth,
-                                          shadePosY,
-                                          shadeHeight);
-        glColor4f(1.0f,1.0f,1.0f,1.0f);
-	}
 }
 
 void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )

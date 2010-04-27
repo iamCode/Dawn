@@ -30,7 +30,7 @@ class OptionsWindow : public FramesBase
 		OptionsWindow();
 		~OptionsWindow();
 		void draw( int mouseX, int mouseY );
-		bool isMouseOnFrame( int posX, int posY ) const;
+		//bool isMouseOnFrame( int posX, int posY ) const;
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 	private:

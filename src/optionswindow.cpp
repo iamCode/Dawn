@@ -31,6 +31,7 @@
 #include "shop.h"
 #include "Spellbook.h"
 #include "ActionBar.h"
+#include "FramesBase.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -41,7 +42,7 @@ namespace dawn_configuration
 	extern int screenHeight;
 }
 
-OptionsWindow::OptionsWindow()
+OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
 {
 	visible = false;
 	font = NULL;
@@ -123,14 +124,14 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	}
 }
 
-bool OptionsWindow::isMouseOnFrame( int posX, int posY ) const
+/**bool OptionsWindow::isMouseOnFrame( int posX, int posY ) const
 {
 	if ( posX < this->posX + 64 || posX > this->posX + frameWidth  - 64
 	     || posY > this->posY + frameHeight - 64 || posY < this->posY + 64 ) {
 	     return false;
 	}
 	return true;
-}
+}**/
 
 void setQuitGame();
 
