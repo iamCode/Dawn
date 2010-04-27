@@ -324,15 +324,6 @@ void DrawScene()
 
 	buffWindow->draw();
 
-	if ( inventoryScreen->isVisible() ) {
-	    inventoryScreen->draw();
-	}
-
-	if ( inventoryScreen->isVisible() )
-	{
-	    inventoryScreen->drawItemTooltip( mouseX, mouseY );
-	}
-
 	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
 	{
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
@@ -355,12 +346,11 @@ void DrawScene()
 		questWindow->draw();
 	}
 
-    if ( inventoryScreen->hasFloatingSelection() ) {
-		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
-
-    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
     shopWindow->drawItemTooltip( mouseX, mouseY );
+    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+    inventoryScreen->drawItemTooltip( mouseX, mouseY );
+    inventoryScreen->drawItemPlacement( mouseX, mouseY );
+    inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -792,6 +782,8 @@ void game_loop()
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
 
+                    bool clickedInFrame = false;
+
                     // iterate through all our active frames and click on them if mouse is over.
                     for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
                     {
@@ -801,6 +793,7 @@ void game_loop()
                             if ( activeFrames[ curFrame ]->isMouseOnCloseButton( mouseX, mouseY ) == true )
                             {
                                 activeFrames[ curFrame ]->toggle();
+                                clickedInFrame = true;
                                 break;
                             }
 
@@ -809,12 +802,33 @@ void game_loop()
                             {
                                 activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
                                 activeFrames[ curFrame ]->setOnTop();
+                                clickedInFrame = true;
                                 break;
                             }
 
                             activeFrames[ curFrame ]->setOnTop();
                             activeFrames[ curFrame ]->clicked( mouseX, mouseY, event.button.button );
+                            clickedInFrame = true;
                             break;
+                        }
+                    }
+
+                    // looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
+                    if ( clickedInFrame == false )
+                    {
+                        if ( shopWindow->hasFloatingSelection() )
+                        {
+                            shopWindow->clicked( mouseX, mouseY, event.button.button );
+                        }
+
+                        if ( inventoryScreen->hasFloatingSelection() )
+                        {
+                            inventoryScreen->clicked( mouseX, mouseY, event.button.button );
+                        }
+
+                        if ( spellbook->hasFloatingSpell() )
+                        {
+                            spellbook->clicked( mouseX, mouseY );
                         }
                     }
 
@@ -833,20 +847,6 @@ void game_loop()
 					} else if ( questWindow->isVisible()
 					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
 						questWindow->clicked( mouseX, mouseY );
-					} else if ( ( inventoryScreen->isVisible()
-                                && !shopWindow->hasFloatingSelection()
-                                && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
-					     || inventoryScreen->hasFloatingSelection() ) {
-						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
-                    } else if ( inventoryScreen->isVisible()
-                                && shopWindow->hasFloatingSelection()
-                                && inventoryScreen->isOnBackpackScreen( mouseX, mouseY ) ) {
-                            bool purchased = character.getInventory()->insertItem( shopWindow->getFloatingSelection()->getItem() );
-                            if ( purchased )
-                            {
-                                shopWindow->buyFromShop();
-                            }
-
 					} else {
 						switch (event.button.button) {
 							case SDL_BUTTON_LEFT:
@@ -1076,7 +1076,7 @@ void game_loop()
 
 			if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
 			    KP_toggle_showInventory = true;
-			    inventoryScreen->setVisible( !inventoryScreen->isVisible() );
+			    inventoryScreen->toggle();
 			}
 
 			if ( !keys[SDLK_i] ) {

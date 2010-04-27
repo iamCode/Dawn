@@ -22,6 +22,7 @@
 #include "CTexture.h"
 #include "GLFT_Font.h"
 #include "item.h" // for EquipPosition
+#include "FramesBase.h"
 
 class Player;
 class InventoryItem;
@@ -47,12 +48,10 @@ class InventoryScreenSlot
 		ItemSlot::ItemSlot getItemSlot() const;
 };
 
-class InventoryScreen
+class InventoryScreen : public FramesBase
 {
 	private:
 		Player *player;
-		bool visible;
-		int posX, posY, width, height;
 		CTexture textures;
 
 		InventoryItem *floatingSelection;
@@ -77,28 +76,25 @@ class InventoryScreen
 		InventoryScreen( Player *player_ );
 		~InventoryScreen();
 
-		void setVisible( bool newVisible );
-		bool isVisible() const;
-
-		void clicked( int clickX, int clickY, uint8_t mouseDown );
+		void clicked( int clickX, int clickY, uint8_t mouseState );
 
 		void loadTextures();
 
-		void draw();
+		void draw( int mouseX, int mouseY );
 		void drawCoins();
 		void drawSlot( ItemSlot::ItemSlot curSlot );
-		void drawFloatingSelection( int x, int y );
-		void drawItemPlacement( int x, int y );
-		void drawItemTooltip( int x, int y );
+		void drawFloatingSelection( int mouseX, int mouseY );
+		void drawItemPlacement( int mouseX, int mouseY );
+		void drawItemTooltip( int mouseX, int mouseY );
 
-		bool isOnThisScreen( int x, int y ) const;
-		bool isOnBackpackScreen( int x, int y ) const;
-		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int x, int y ) const;
+		bool isMouseOnThisFrame( int mouseX, int mouseY ) const;
+		bool isOnBackpackScreen( int mouseX, int mouseY ) const;
+		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int mouseX, int mouseY ) const;
 		bool hasFloatingSelection() const;
 
         InventoryItem *getFloatingSelection() const;
 
-		ItemSlot::ItemSlot getMouseOverSlot(int x, int y) const;
+		ItemSlot::ItemSlot getMouseOverSlot( int mouseX, int mouseY ) const;
 
 		void setFloatingSelection( InventoryItem *item );
 		void unsetFloatingSelection();

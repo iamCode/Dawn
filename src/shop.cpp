@@ -206,7 +206,7 @@ void Shop::drawItemTooltip( int mouseX, int mouseY )
 void Shop::drawFloatingSelection( int mouseX, int mouseY )
 {
 	// draw floating selection
-	if ( hasFloatingSelection() != NULL ) {
+	if ( hasFloatingSelection() ) {
 		Item *floatingItem = floatingSelection->getItem();
 		size_t sizeX = floatingItem->getSizeX();
 		size_t sizeY = floatingItem->getSizeY();
