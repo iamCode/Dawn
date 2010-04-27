@@ -342,10 +342,6 @@ void DrawScene()
 	    spellbook->drawFloatingSpell( mouseX, mouseY );
 	}
 
-	if ( questWindow->isVisible() ) {
-		questWindow->draw();
-	}
-
     shopWindow->drawItemTooltip( mouseX, mouseY );
     shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
     inventoryScreen->drawItemTooltip( mouseX, mouseY );
@@ -844,9 +840,6 @@ void game_loop()
                                 && (spellbook->isOnThisScreen( mouseX, mouseY )
                                 || spellbook->hasFloatingSpell()) ) {
                         spellbook->clicked( mouseX, mouseY );
-					} else if ( questWindow->isVisible()
-					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						questWindow->clicked( mouseX, mouseY );
 					} else {
 						switch (event.button.button) {
 							case SDL_BUTTON_LEFT:
@@ -1085,7 +1078,7 @@ void game_loop()
 
 			if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
 			    KP_toggle_showQuestWindow = true;
-			    questWindow->setVisible( !questWindow->isVisible() );
+			    questWindow->toggle();
 			}
 
 			if ( !keys[SDLK_q] ) {

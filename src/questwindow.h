@@ -21,24 +21,22 @@
 
 #include <string>
 #include <vector>
+#include "FramesBase.h"
 
 class CTexture;
 class GLFT_Font;
 
-class QuestWindow
+class QuestWindow : public FramesBase
 {
 	public:
 		QuestWindow();
 		~QuestWindow();
-		void draw();
+		void draw( int mouseX, int mouseY );
 		void addQuest( std::string name, std::string description );
 		void removeQuest( std::string name );
 		void removeAllQuests();
 		void changeQuestDescription( std::string name, std::string newDescription );
-		bool isOnThisScreen( int posX, int posY ) const;
-		void clicked( int mouseX, int mouseY );
-		void setVisible( bool visible );
-		bool isVisible() const;
+		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 		std::string getReloadScriptText() const;
 
@@ -47,11 +45,6 @@ class QuestWindow
 		/// \brief For each quest the description. Formatted for multiline output.
 		std::vector< std::vector< std::string > > questDescriptions;
 		int selectedQuestNr;
-		int posX;
-		int posY;
-		int width;
-		int height;
-		bool visible;
 		CTexture *backgroundTexture;
 		GLFT_Font *font;
 };

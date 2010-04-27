@@ -22,14 +22,16 @@
 #include "GLFT_Font.h"
 #include <memory>
 #include "fontcache.h"
+#include "FramesBase.h"
 
 void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
-QuestWindow::QuestWindow()
+QuestWindow::QuestWindow() : FramesBase( 20, 100, 375, 376, 20, 20 )
 {
+	addMoveableFrame( 375, 22, 20, 374 );
+	addCloseButton( 22, 22, 373, 376 );
+
 	selectedQuestNr = -1;
-	posX = 20;
-	posY = 100;
 	visible = false;
 	font = NULL;
 	backgroundTexture = NULL;
@@ -38,9 +40,6 @@ QuestWindow::QuestWindow()
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
-
-	width = backgroundTexture->texture[0].width;
-	height = backgroundTexture->texture[0].height;
 }
 
 QuestWindow::~QuestWindow()
@@ -50,14 +49,14 @@ QuestWindow::~QuestWindow()
 	}
 }
 
-void QuestWindow::draw()
+void QuestWindow::draw( int mouseX, int mouseY )
 {
 	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
-	                                  posX + world_x, width,
-	                                  posY + world_y, height );
+	                                  posX + world_x, backgroundTexture->texture[0].width,
+	                                  posY + world_y, backgroundTexture->texture[0].height );
 
 	int textX = world_x + posX + 64;
-	int textY = world_y + posY + height - 64 - font->getHeight();
+	int textY = world_y + posY + frameHeight - 24 - font->getHeight();
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	for ( size_t curQuestNameNr = 0; curQuestNameNr<questNames.size(); ++curQuestNameNr ) {
@@ -94,7 +93,7 @@ void QuestWindow::addQuest( std::string name, std::string description )
 	questNames.push_back( name );
 	size_t newQuestNr = questDescriptions.size();
 	questDescriptions.push_back( std::vector<std::string>() );
-	formatMultilineText( description, questDescriptions[ newQuestNr ], width - 128, font );
+	formatMultilineText( description, questDescriptions[ newQuestNr ], frameWidth - 88, font );
 
 	if ( selectedQuestNr == -1 && questNames.size() > 0) {
 		selectedQuestNr = 0;
@@ -145,39 +144,20 @@ void QuestWindow::changeQuestDescription( std::string name, std::string newDescr
 	if ( foundQuestNr < questNames.size() ) {
 		// found the quest
 		questDescriptions[ foundQuestNr ].clear();
-		formatMultilineText( newDescription, questDescriptions[ foundQuestNr ], width - 128, font );
+		formatMultilineText( newDescription, questDescriptions[ foundQuestNr ], frameWidth - 88, font );
 	}
 }
 
-bool QuestWindow::isOnThisScreen( int posX, int posY ) const
+void QuestWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
-	if ( posX < this->posX + 64 || posX > this->posX + width - 64
-	     || posY > this->posY + height - 64 || posY < this->posY + 246 ) {
-	     return false;
-	}
-	return true;
-}
-
-void QuestWindow::clicked( int mouseX, int mouseY )
-{
-	if ( ! isOnThisScreen( mouseX, mouseY ) ) {
+	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {
 		return;
 	}
 
-	size_t curEntryNr = (posY + height - 64 - mouseY) / (font->getHeight() * 1.5);
+	size_t curEntryNr = (posY + frameHeight - 24 - mouseY) / (font->getHeight() * 1.5);
 	if ( curEntryNr < questNames.size() ) {
 		selectedQuestNr = curEntryNr;
 	}
-}
-
-void QuestWindow::setVisible( bool visible )
-{
-	this->visible = visible;
-}
-
-bool QuestWindow::isVisible() const
-{
-	return visible;
 }
 
 std::string QuestWindow::getReloadScriptText() const
@@ -214,7 +194,7 @@ namespace DawnInterface
 	{
 		questWindow->changeQuestDescription( questName, newDescription );
 	}
-	
+
 	std::string getQuestSaveText()
 	{
 		return questWindow->getReloadScriptText();
