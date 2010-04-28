@@ -122,10 +122,7 @@ void Spellbook::draw( int mouseX, int mouseY )
     if ( !hasFloatingSpell() )
     {
         drawSpellTooltip( mouseX, mouseY );
-    } else {
-	    drawFloatingSpell( mouseX, mouseY );
-	}
-
+    }
 }
 
 void Spellbook::drawSpellTooltip( int mouseX, int mouseY )

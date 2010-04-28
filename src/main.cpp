@@ -333,6 +333,7 @@ void DrawScene()
     shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
     inventoryScreen->drawItemTooltip( mouseX, mouseY );
     inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+    spellbook->drawFloatingSpell( mouseX, mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
