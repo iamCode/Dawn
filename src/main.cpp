@@ -329,19 +329,6 @@ void DrawScene()
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
 
-	if ( spellbook->isVisible() )
-	{
-	    spellbook->draw();
-		if ( spellbook->isOnThisScreen( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
-		{
-			spellbook->drawSpellTooltip( mouseX, mouseY );
-		}
-	}
-
-    if ( spellbook->hasFloatingSpell() ) {
-	    spellbook->drawFloatingSpell( mouseX, mouseY );
-	}
-
     shopWindow->drawItemTooltip( mouseX, mouseY );
     shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
     inventoryScreen->drawItemTooltip( mouseX, mouseY );
@@ -824,7 +811,7 @@ void game_loop()
 
                         if ( spellbook->hasFloatingSpell() )
                         {
-                            spellbook->clicked( mouseX, mouseY );
+                            spellbook->clicked( mouseX, mouseY, event.button.button );
                         }
                     }
 
@@ -837,9 +824,9 @@ void game_loop()
                             actionBar->clicked( mouseX, mouseY );
                         }
                     } else if ( spellbook->isVisible()
-                                && (spellbook->isOnThisScreen( mouseX, mouseY )
+                                && (spellbook->isMouseOnFrame( mouseX, mouseY )
                                 || spellbook->hasFloatingSpell()) ) {
-                        spellbook->clicked( mouseX, mouseY );
+                        spellbook->clicked( mouseX, mouseY, event.button.button );
 					} else {
 						switch (event.button.button) {
 							case SDL_BUTTON_LEFT:
@@ -1060,7 +1047,7 @@ void game_loop()
 
 			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
 				KP_toggle_showSpellbook = true;
-				spellbook->setVisible( ! spellbook->isVisible() );
+				spellbook->toggle();
 			}
 
 			if ( !keys[SDLK_b] ) {

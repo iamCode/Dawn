@@ -24,32 +24,35 @@
 #include <cassert>
 #include <memory>
 #include "fontcache.h"
+#include "FramesBase.h"
 
 void sSpellSlot::initFont()
 {
 	font = FontCache::getFontFromCache("data/verdana.ttf", 11);
 }
 
-Spellbook::Spellbook( Player *player_ )
-        :   player( player_ ),
-			curPage( 0 ),
-            floatingSpell( NULL ),
-            visible( false ),
-            posX( 200 ),
-            posY( 150 )
+
+Spellbook::Spellbook( Player *player_ ) : FramesBase( 125, 50, 454, 672, 13, 15 )
 {
-    // spellslots on the left side of the book.
-    spellSlot.push_back(sSpellSlot(100,400,50,50));
-    spellSlot.push_back(sSpellSlot(220,400,50,50));
+    addMoveableFrame( 454, 22, 13, 665 );
+    addCloseButton( 22, 22, 444, 666 );
 
-    spellSlot.push_back(sSpellSlot(95,290,50,50));
-    spellSlot.push_back(sSpellSlot(215,290,50,50));
+    player = player_;
+    curPage = 0;
+    floatingSpell = NULL;
 
-    spellSlot.push_back(sSpellSlot(90,180,50,50));
-    spellSlot.push_back(sSpellSlot(210,180,50,50));
+    // spellslots in the spellbook
+    spellSlot.push_back(sSpellSlot(139,539,50,50));
+    spellSlot.push_back(sSpellSlot(291,539,50,50));
 
-    spellSlot.push_back(sSpellSlot(85,70,50,50));
-    spellSlot.push_back(sSpellSlot(205,70,50,50));
+    spellSlot.push_back(sSpellSlot(139,422,50,50));
+    spellSlot.push_back(sSpellSlot(291,422,50,50));
+
+    spellSlot.push_back(sSpellSlot(139,307,50,50));
+    spellSlot.push_back(sSpellSlot(291,307,50,50));
+
+    spellSlot.push_back(sSpellSlot(139,190,50,50));
+    spellSlot.push_back(sSpellSlot(291,190,50,50));
 }
 
 Spellbook::~Spellbook()
@@ -64,7 +67,7 @@ void Spellbook::loadTextures()
     textures.LoadIMG( "data/white2x2pixel.tga", 2 );
 }
 
-void Spellbook::draw()
+void Spellbook::draw( int mouseX, int mouseY )
 {
     // draw spellbook base
     DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
@@ -88,91 +91,77 @@ void Spellbook::draw()
         }
     }
 
+    if ( !hasFloatingSpell() )
+    {
+        drawSpellTooltip( mouseX, mouseY );
+    } else {
+	    drawFloatingSpell( mouseX, mouseY );
+	}
+
 }
 
-void Spellbook::drawSpellTooltip( int x, int y )
+void Spellbook::drawSpellTooltip( int mouseX, int mouseY )
 {
-    int spellSlotId = getMouseOverSpellSlotId( x, y );
+    int spellSlotId = getMouseOverSpellSlotId( mouseX, mouseY );
     if ( spellSlotId >= 0 && spellSlot[spellSlotId].tooltip != NULL )
     {
-        spellSlot[spellSlotId].tooltip->draw( x, y );
+        spellSlot[spellSlotId].tooltip->draw( mouseX, mouseY );
     }
 }
 
-void Spellbook::drawFloatingSpell( int x, int y )
+void Spellbook::drawFloatingSpell( int mouseX, int mouseY )
 {
     if ( floatingSpell != NULL )
     {
         // draw background and borders
         DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-                                          world_x + x, 50,
-                                          world_y + y + 20, 50 );
+                                          world_x + mouseX, 50,
+                                          world_y + mouseY + 20, 50 );
 
         // draw the spell icon
-        floatingSpell->action->drawSymbol( world_x + x + 2, 46,
-                                   world_y + y + 20 + 2, 46 );
+        floatingSpell->action->drawSymbol( world_x + mouseX + 2, 46,
+                                   world_y + mouseY + 20 + 2, 46 );
 
         // draw the spell name
-        floatingSpell->font->drawText( static_cast<float>( world_x ) + x,
-                                     static_cast<float>( world_y ) + y + 20 - floatingSpell->font->getHeight()-5,
+        floatingSpell->font->drawText( static_cast<float>( world_x ) + mouseX,
+                                     static_cast<float>( world_y ) + mouseY + 20 - floatingSpell->font->getHeight()-5,
                                      floatingSpell->action->getName() );
     }
 }
 
-bool Spellbook::isVisible() const
+void Spellbook::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
-    return visible;
-}
-
-void Spellbook::setVisible( bool newVisible )
-{
-    visible = newVisible;
-}
-
-bool Spellbook::isOnThisScreen( int x, int y ) const
-{
-	if ( x < posX
-	     || y < posY
-	     || x > posX + textures.texture[0].width
-	     || y > posY + textures.texture[0].height ) {
-	    return false;
-	}
-	return true;
-}
-
-void Spellbook::clicked( int clickX, int clickY )
-{
-    int spellSlotIndex = getMouseOverSpellSlotId( clickX, clickY );
+    int spellSlotIndex = getMouseOverSpellSlotId( mouseX, mouseY );
     if (  spellSlotIndex >= 0 && spellSlot[spellSlotIndex].action != NULL )
     {
         floatingSpell = &spellSlot[spellSlotIndex];
-    } else if ( isMouseOverNextPageArea( clickX, clickY ) ) {
+    } else if ( isMouseOverNextPageArea( mouseX, mouseY ) ) {
 		nextPage();
-	} else if ( isMouseOverPreviousPageArea( clickX, clickY ) ) {
+	} else if ( isMouseOverPreviousPageArea( mouseX, mouseY ) ) {
 		previousPage();
 	} else {
         floatingSpell = NULL;
     }
 }
 
-bool Spellbook::isMouseOverNextPageArea( int clickX, int clickY )
+bool Spellbook::isMouseOverNextPageArea( int mouseX, int mouseY )
 {
-	return (clickX > posX + textures.texture[0].width - 40);
+	return (mouseX > posX + textures.texture[0].width - 40);
 }
 
-bool Spellbook::isMouseOverPreviousPageArea( int clickX, int clickY )
+bool Spellbook::isMouseOverPreviousPageArea( int mouseX, int mouseY )
 {
-	return (clickX < posX + 40 );
+	return (mouseX < posX + 40 );
 }
 
-int8_t Spellbook::getMouseOverSpellSlotId( int x, int y ) const
+int8_t Spellbook::getMouseOverSpellSlotId( int mouseX, int mouseY ) const
 {
     for ( size_t index = 0; index < spellSlot.size(); index++ )
     {
-        if ( x > spellSlot[index].posX + posX
-        && x < spellSlot[index].posX + spellSlot[index].width + posX
-        && y > spellSlot[index].posY + posY
-        && y < spellSlot[index].posY + spellSlot[index].height + posY )
+        if ( mouseX > spellSlot[index].posX + posX
+        && mouseX < spellSlot[index].posX + spellSlot[index].width + posX
+        && mouseY > spellSlot[index].posY + posY
+        && mouseY < spellSlot[index].posY + spellSlot[index].height + posY )
         {
             return index;
         }
@@ -291,7 +280,7 @@ namespace DawnInterface
 	{
 		spellbook->inscribeSpell( inscribedSpell );
 	}
-	
+
 	std::string getSpellbookSaveText()
 	{
 		return spellbook->getLuaSaveText();
