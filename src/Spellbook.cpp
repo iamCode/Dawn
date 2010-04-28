@@ -53,6 +53,15 @@ Spellbook::Spellbook( Player *player_ ) : FramesBase( 125, 50, 454, 672, 13, 15 
 
     spellSlot.push_back(sSpellSlot(139,190,50,50));
     spellSlot.push_back(sSpellSlot(291,190,50,50));
+
+    nextPageButtonOffsetX = 386;
+    nextPageButtonOffsetY = 53;
+
+    previousPageButtonOffsetX = 63;
+    previousPageButtonOffsetY = 53;
+
+    pageButtonWidth = 32;
+    pageButtonHeight = 32;
 }
 
 Spellbook::~Spellbook()
@@ -61,10 +70,12 @@ Spellbook::~Spellbook()
 
 void Spellbook::loadTextures()
 {
-    textures.texture.resize( 3 );
+    textures.texture.resize( 5 );
     textures.LoadIMG( "data/interface/spellbook/base.tga", 0 );
     textures.LoadIMG( "data/interface/spellbook/placeholder.tga", 1 );
     textures.LoadIMG( "data/white2x2pixel.tga", 2 );
+    textures.LoadIMG( "data/interface/spellbook/arrow_right.tga", 3 );
+    textures.LoadIMG( "data/interface/spellbook/arrow_left.tga", 4 );
 }
 
 void Spellbook::draw( int mouseX, int mouseY )
@@ -89,6 +100,23 @@ void Spellbook::draw( int mouseX, int mouseY )
                                          static_cast<float>( world_y ) + spellSlot[x].posY+posY-spellSlot[x].font->getHeight()-5,
                                          spellSlot[x].action->getName() );
         }
+    }
+
+    // draw the right arrowsymbol if there are spells on the next page
+    size_t numSlots = spellSlot.size();
+	size_t numSpells = inscribedSpells.size();
+    if ( numSlots * (curPage+1) < numSpells ) {
+        DrawingHelpers::mapTextureToRect( textures.texture[3].texture,
+                                            world_x + posX + nextPageButtonOffsetX, pageButtonWidth,
+                                            world_y + posY + nextPageButtonOffsetY, pageButtonHeight );
+    }
+
+    // if we are on another page than first page, draw left arrowsymbol to show that there are spells on a previous page.
+    if ( curPage > 0 )
+    {
+        DrawingHelpers::mapTextureToRect( textures.texture[4].texture,
+                                            world_x + posX + previousPageButtonOffsetX, pageButtonWidth,
+                                            world_y + posY + previousPageButtonOffsetY, pageButtonHeight );
     }
 
     if ( !hasFloatingSpell() )
@@ -146,12 +174,26 @@ void Spellbook::clicked( int mouseX, int mouseY, uint8_t mouseState )
 
 bool Spellbook::isMouseOverNextPageArea( int mouseX, int mouseY )
 {
-	return (mouseX > posX + textures.texture[0].width - 40);
+	if ( mouseX > posX + nextPageButtonOffsetX
+        && mouseX < posX + nextPageButtonOffsetX + pageButtonWidth
+        && mouseY > posY + nextPageButtonOffsetY
+        && mouseY < posY + nextPageButtonOffsetY + pageButtonHeight )
+        {
+            return true;
+        }
+	return false;
 }
 
 bool Spellbook::isMouseOverPreviousPageArea( int mouseX, int mouseY )
 {
-	return (mouseX < posX + 40 );
+    if ( mouseX > posX + previousPageButtonOffsetX
+    && mouseX < posX + previousPageButtonOffsetX + pageButtonWidth
+    && mouseY > posY + previousPageButtonOffsetY
+    && mouseY < posY + previousPageButtonOffsetY + pageButtonHeight )
+    {
+        return true;
+    }
+	return false;
 }
 
 int8_t Spellbook::getMouseOverSpellSlotId( int mouseX, int mouseY ) const

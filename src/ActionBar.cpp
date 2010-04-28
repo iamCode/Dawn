@@ -137,22 +137,24 @@ void ActionBar::draw()
 void ActionBar::clicked( int clickX, int clickY )
 {
     int buttonId = getMouseOverButtonId( clickX, clickY );
-    if ( buttonId >= 0 && button[buttonId].action != NULL )
-    {
-        spellQueue = &button[buttonId];
-    }
-}
-
-void ActionBar::clicked( int clickX, int clickY, CSpellActionBase* floatingSpell )
-{
-    int buttonId = getMouseOverButtonId( clickX, clickY );
     if ( buttonId >= 0 )
     {
-        if ( isButtonUsed( &button[buttonId] ) )
+        // we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
+        if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
         {
-            unbindAction( &button[buttonId] );
+            spellQueue = &button[buttonId];
         }
-        bindAction( &button[buttonId], floatingSpell );
+
+        // check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
+        if ( spellbook->hasFloatingSpell() )
+        {
+
+            if ( isButtonUsed( &button[buttonId] ) )
+            {
+                unbindAction( &button[buttonId] );
+            }
+            bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
+        }
     }
 }
 
@@ -330,7 +332,7 @@ namespace DawnInterface
 	{
 		return actionBar->getLuaSaveText();
 	}
-	
+
 	void restoreActionBar( int buttonNr, CSpellActionBase *action )
 	{
 		actionBar->bindActionToButtonNr( buttonNr, action );

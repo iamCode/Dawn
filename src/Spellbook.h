@@ -81,6 +81,16 @@ class Spellbook : public FramesBase
 		void previousPage();
 		void refreshPage();
 
+		int nextPageButtonOffsetX;
+		int nextPageButtonOffsetY;
+
+		int previousPageButtonOffsetX;
+		int previousPageButtonOffsetY;
+
+		int pageButtonWidth;
+		int pageButtonHeight;
+
+
         CTexture textures;
         std::vector<sSpellSlot> spellSlot;
         std::vector<CSpellActionBase*> inscribedSpells;
