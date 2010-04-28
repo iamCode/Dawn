@@ -470,6 +470,7 @@ void InventoryScreen::draw( int mouseX, int mouseY )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		drawSlot( static_cast<ItemSlot::ItemSlot>(curSlotNr) );
 	}
+    drawItemPlacement( mouseX, mouseY );
 }
 
 void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )

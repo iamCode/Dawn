@@ -332,7 +332,6 @@ void DrawScene()
     shopWindow->drawItemTooltip( mouseX, mouseY );
     shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
     inventoryScreen->drawItemTooltip( mouseX, mouseY );
-    inventoryScreen->drawItemPlacement( mouseX, mouseY );
     inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
@@ -799,6 +798,7 @@ void game_loop()
                     // looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
                     if ( clickedInFrame == false )
                     {
+                        actionBar->clicked( mouseX, mouseY );
                         if ( shopWindow->hasFloatingSelection() )
                         {
                             shopWindow->clicked( mouseX, mouseY, event.button.button );
@@ -814,51 +814,49 @@ void game_loop()
                             spellbook->clicked( mouseX, mouseY, event.button.button );
                         }
 
-                        actionBar->clicked( mouseX, mouseY );
-                    }
-
-                    switch (event.button.button) {
-                        case SDL_BUTTON_LEFT:
-                        {
-                            CZone *curZone = Globals::getCurrentZone();
-                            curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
-
-                            if ( inventoryScreen->isVisible() )
+                        switch (event.button.button) {
+                            case SDL_BUTTON_LEFT:
                             {
-                                InventoryItem *floatingSelection = curZone->getGroundLoot()->getFloatingSelection( world_x + mouseX, world_y + mouseY );
-                                if ( floatingSelection != NULL )
+                                CZone *curZone = Globals::getCurrentZone();
+                                curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
+
+                                if ( inventoryScreen->isVisible() )
                                 {
-                                    inventoryScreen->setFloatingSelection( floatingSelection );
+                                    InventoryItem *floatingSelection = curZone->getGroundLoot()->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+                                    if ( floatingSelection != NULL )
+                                    {
+                                        inventoryScreen->setFloatingSelection( floatingSelection );
+                                    }
+                                }
+
+                                // search for new target
+                                std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+                                for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                                    CNPC *curNPC = zoneNPCs[x];
+                                    if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+                                        if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+                                            character.setTarget( curNPC );
+                                            break;
+                                        }
+                                    }
                                 }
                             }
+                            break;
 
-                            // search for new target
-                            std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-                            for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-                                CNPC *curNPC = zoneNPCs[x];
-                                if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-                                    if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
-                                        character.setTarget( curNPC );
+                            case SDL_BUTTON_RIGHT:
+                            {
+                                // look for interactionpoints when right-clicking.
+                                std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
+                                for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+                                    InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+                                    if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+                                        curInteraction->startInteraction( character.getXPos(), character.getYPos() );
                                         break;
                                     }
                                 }
                             }
+                            break;
                         }
-                        break;
-
-                        case SDL_BUTTON_RIGHT:
-                        {
-                            // look for interactionpoints when right-clicking.
-                            std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
-                            for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
-                                InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-                                if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-                                    curInteraction->startInteraction( character.getXPos(), character.getYPos() );
-                                    break;
-                                }
-                            }
-                        }
-                        break;
                     }
                 }
 
