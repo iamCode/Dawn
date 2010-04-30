@@ -190,7 +190,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
         }
 	}
 
-	if ( ! isMouseOnFrame(mouseX,mouseY) ) {
+	if ( !isMouseOnFrame( mouseX, mouseY ) && !shopWindow->isMouseOnFrame( mouseX, mouseY ) ) {
 		// clicked outside inventory window
 		if ( floatingSelection != NULL ) {
 			// drop item...

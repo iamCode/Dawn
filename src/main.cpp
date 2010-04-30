@@ -790,8 +790,8 @@ void game_loop()
                                 break;
                             }
 
-                            activeFrames[ curFrame ]->setOnTop();
                             activeFrames[ curFrame ]->clicked( mouseX, mouseY, event.button.button );
+                            activeFrames[ curFrame ]->setOnTop();
                             clickedInFrame = true;
                             break;
                         }

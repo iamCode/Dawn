@@ -135,6 +135,11 @@ bool FramesBase::isMouseOnCloseButton( int mouseX, int mouseY ) const
 
 bool FramesBase::isMouseOnFrame( int mouseX, int mouseY ) const
 {
+	if ( !isVisible() )
+	{
+	    return false;
+	}
+
 	if ( mouseX < posX + frameOffsetX
 	     || mouseY < posY + frameOffsetY
 	     || mouseX > posX + frameOffsetX + frameWidth
