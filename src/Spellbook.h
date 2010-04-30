@@ -23,6 +23,7 @@
 #include "CSpell.h"
 #include "GLFT_Font.h"
 #include "tooltip.h"
+#include "FramesBase.h"
 
 class Player;
 
@@ -51,23 +52,20 @@ struct sSpellSlot
     }
 };
 
-class Spellbook
+class Spellbook : public FramesBase
 {
     public:
         Spellbook( Player *player );
         ~Spellbook();
         void loadTextures();
-        void draw();
-        void setVisible( bool newVisible );
-        void drawSpellTooltip( int x, int y );
-        void drawFloatingSpell( int x, int y );
-        void clicked( int clickX, int clickY );
+        void draw( int mouseX, int mouseY );
+        void drawSpellTooltip( int mouseX, int mouseY );
+        void drawFloatingSpell( int mouseY, int mouseX );
+        void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-        bool isVisible() const;
-        bool isOnThisScreen( int x, int y ) const;
         bool hasFloatingSpell() const;
 
-        int8_t getMouseOverSpellSlotId( int x, int y ) const;
+        int8_t getMouseOverSpellSlotId( int mouseX, int mouseY ) const;
         sSpellSlot *getFloatingSpell() const;
         sSpellSlot *getSpellSlotBySpell( CSpellActionBase *spell ) const;
         void setFloatingSpell( sSpellSlot *newFloatingSpell );
@@ -77,11 +75,21 @@ class Spellbook
         std::string getLuaSaveText() const;
 
     private:
-		bool isMouseOverNextPageArea( int clickX, int clickY );
-		bool isMouseOverPreviousPageArea( int clickX, int clickY );
+		bool isMouseOverNextPageArea( int mouseX, int mouseY );
+		bool isMouseOverPreviousPageArea( int mouseX, int mouseY );
 		void nextPage();
 		void previousPage();
 		void refreshPage();
+
+		int nextPageButtonOffsetX;
+		int nextPageButtonOffsetY;
+
+		int previousPageButtonOffsetX;
+		int previousPageButtonOffsetY;
+
+		int pageButtonWidth;
+		int pageButtonHeight;
+
 
         CTexture textures;
         std::vector<sSpellSlot> spellSlot;
@@ -89,9 +97,6 @@ class Spellbook
         Player *player;
         int curPage;
         sSpellSlot *floatingSpell;
-        bool visible;
-        int posX;
-        int posY;
 };
 
 #endif

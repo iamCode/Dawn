@@ -73,6 +73,7 @@
 #include "optionswindow.h"
 #include "loadingscreen.h"
 #include "globals.h"
+#include "FramesBase.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -112,6 +113,8 @@ CInterface GUI;
 
 extern std::vector<TextWindow*> allTextWindows;
 
+std::vector<FramesBase*> activeFrames;
+
 bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
 bool KP_screenshot = false;
 bool KP_toggle_showCharacterInfo = false;
@@ -119,7 +122,6 @@ bool KP_toggle_showInventory = false;
 bool KP_toggle_showSpellbook = false;
 bool KP_toggle_showQuestWindow = false;
 bool KP_toggle_showOptionsWindow = false;
-bool KP_toggle_showShop = false;
 
 float lastframe,thisframe;           // FPS Stuff
 int ff, fps;                         // FPS Stuff
@@ -315,61 +317,24 @@ void DrawScene()
 		GUI.DrawInterface();
 	}
 
-	buffWindow->draw();
-
-	if ( characterInfoScreen->isVisible() ) {
-		characterInfoScreen->drawScreen();
-	}
-
-	if ( inventoryScreen->isVisible() ) {
-	    inventoryScreen->draw();
-	}
-
-	if ( inventoryScreen->isVisible() )
+	// loop through our vector of active frames and draw them. If they are in the vector they are visible...
+	for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
 	{
-	    inventoryScreen->drawItemTooltip( mouseX, mouseY );
+	    activeFrames[ curFrame ]->draw( mouseX, mouseY );
 	}
+
+	buffWindow->draw();
 
 	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
 	{
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
 
-	if ( spellbook->isVisible() )
-	{
-	    spellbook->draw();
-		if ( spellbook->isOnThisScreen( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
-		{
-			spellbook->drawSpellTooltip( mouseX, mouseY );
-		}
-	}
-
-    if ( spellbook->hasFloatingSpell() ) {
-	    spellbook->drawFloatingSpell( mouseX, mouseY );
-	}
-
-	if ( questWindow->isVisible() ) {
-		questWindow->draw();
-	}
-
-	if ( optionsWindow->isVisible() ) {
-		optionsWindow->draw();
-	}
-
-	if ( shopWindow->isVisible() ) {
-	    shopWindow->draw();
-	    shopWindow->drawItemTooltip( mouseX, mouseY );
-	}
-
-	if ( shopWindow->hasFloatingSelection() )
-	{
-	    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
-
-    if ( inventoryScreen->hasFloatingSelection() ) {
-	    inventoryScreen->drawItemPlacement( mouseX, mouseY );
-		inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-	}
+    shopWindow->drawItemTooltip( mouseX, mouseY );
+    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+    inventoryScreen->drawItemTooltip( mouseX, mouseY );
+    inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+    spellbook->drawFloatingSpell( mouseX, mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -800,61 +765,61 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONDOWN) {
                     mouseDownXY = std::pair<int,int>( mouseX, mouseY );
-                    if ( characterInfoScreen->isVisible()
-                            && characterInfoScreen->isOnThisScreen( mouseX, mouseY ) ) {
-                        characterInfoScreen->clicked( mouseX, mouseY );
-                    } else if ( actionBar->isMouseOver( mouseX, mouseY ) ) {
-                        if ( spellbook->hasFloatingSpell() )
+
+                    bool clickedInFrame = false;
+
+                    // iterate through all our active frames and click on them if mouse is over.
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isMouseOnFrame( mouseX, mouseY ) )
                         {
-                            actionBar->clicked( mouseX, mouseY, spellbook->getFloatingSpell()->action );
-                            spellbook->unsetFloatingSpell();
-                        } else {
-                            actionBar->clicked( mouseX, mouseY );
+                            // check if mouse is over closebutton (if any) and then we try and close the frame
+                            if ( activeFrames[ curFrame ]->isMouseOnCloseButton( mouseX, mouseY ) == true )
+                            {
+                                activeFrames[ curFrame ]->toggle();
+                                clickedInFrame = true;
+                                break;
+                            }
+
+                            // check to see if mouse is over titlebar, then we try to move the frame.
+                            if ( activeFrames[ curFrame ]->isMouseOnTitlebar( mouseX, mouseY ) == true )
+                            {
+                                activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+                                activeFrames[ curFrame ]->setOnTop();
+                                clickedInFrame = true;
+                                break;
+                            }
+
+                            activeFrames[ curFrame ]->setOnTop();
+                            activeFrames[ curFrame ]->clicked( mouseX, mouseY, event.button.button );
+                            clickedInFrame = true;
+                            break;
                         }
-                    } else if ( spellbook->isVisible()
-                                && (spellbook->isOnThisScreen( mouseX, mouseY )
-                                || spellbook->hasFloatingSpell()) ) {
-                        spellbook->clicked( mouseX, mouseY );
-					} else if ( questWindow->isVisible()
-					            && (questWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						questWindow->clicked( mouseX, mouseY );
-					} else if ( optionsWindow->isVisible()
-					            && ( optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						optionsWindow->clicked( mouseX, mouseY );
-					} else if ( optionsWindow->isVisible()
-					            && (optionsWindow->isOnThisScreen( mouseX, mouseY ) ) ) {
-						optionsWindow->clicked( mouseX, mouseY );
-                    } else if ( shopWindow->isVisible()
-                                && (shopWindow->isOnThisScreen(mouseX, mouseY )
-                                || (shopWindow->hasFloatingSelection()
-                                && (!inventoryScreen->isOnBackpackScreen( mouseX, mouseY )) ) ) )  {
-                        if ( shopWindow->isOnSlotsScreen( mouseX, mouseY )
-                                    && ( inventoryScreen->hasFloatingSelection() ) ) {
-                            shopWindow->sellToShop( inventoryScreen->getFloatingSelection(), true );
-                            inventoryScreen->unsetFloatingSelection();
-                        } else {
+                    }
+
+                    // looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
+                    if ( clickedInFrame == false )
+                    {
+                        actionBar->clicked( mouseX, mouseY );
+                        if ( shopWindow->hasFloatingSelection() )
+                        {
                             shopWindow->clicked( mouseX, mouseY, event.button.button );
                         }
 
-                    } else if ( ( inventoryScreen->isVisible()
-                                && !shopWindow->hasFloatingSelection()
-                                && inventoryScreen->isOnThisScreen( mouseX, mouseY ) )
-					     || inventoryScreen->hasFloatingSelection() ) {
-						inventoryScreen->clicked( mouseX, mouseY, event.button.button );
-                    } else if ( inventoryScreen->isVisible()
-                                && shopWindow->hasFloatingSelection()
-                                && inventoryScreen->isOnBackpackScreen( mouseX, mouseY ) ) {
-                            bool purchased = character.getInventory()->insertItem( shopWindow->getFloatingSelection()->getItem() );
-                            if ( purchased )
-                            {
-                                shopWindow->buyFromShop();
-                            }
+                        if ( inventoryScreen->hasFloatingSelection() )
+                        {
+                            inventoryScreen->clicked( mouseX, mouseY, event.button.button );
+                        }
 
-					} else {
-						switch (event.button.button) {
-							case SDL_BUTTON_LEFT:
-							{
-								CZone *curZone = Globals::getCurrentZone();
+                        if ( spellbook->hasFloatingSpell() )
+                        {
+                            spellbook->clicked( mouseX, mouseY, event.button.button );
+                        }
+
+                        switch (event.button.button) {
+                            case SDL_BUTTON_LEFT:
+                            {
+                                CZone *curZone = Globals::getCurrentZone();
                                 curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
 
                                 if ( inventoryScreen->isVisible() )
@@ -866,85 +831,104 @@ void game_loop()
                                     }
                                 }
 
-								// search for new target
-								std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-								for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-									CNPC *curNPC = zoneNPCs[x];
-									if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-										if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
-											character.setTarget( curNPC );
-											break;
-										}
-									}
-								}
-							}
-							break;
-
-							case SDL_BUTTON_RIGHT:
-							{
-								// look for interactionpoints when right-clicking.
-								std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
-								for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
-									InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-									if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
-										curInteraction->startInteraction( character.getXPos(), character.getYPos() );
-										break;
-									}
-								}
-							}
+                                // search for new target
+                                std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+                                for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                                    CNPC *curNPC = zoneNPCs[x];
+                                    if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+                                        if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+                                            character.setTarget( curNPC );
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             break;
-						}
-					}
-				}
 
-				if (event.type == SDL_MOUSEMOTION)
-				{
-				    mouseX = event.motion.x;
-					mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
+                            case SDL_BUTTON_RIGHT:
+                            {
+                                // look for interactionpoints when right-clicking.
+                                std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
+                                for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+                                    InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+                                    if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+                                        curInteraction->startInteraction( character.getXPos(), character.getYPos() );
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
 
-					if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
-					{
-					    actionBar->dragSpell();
-					}
-				}
+                if (event.type == SDL_MOUSEMOTION)
+                {
+                    mouseX = event.motion.x;
+                    mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
 
-				if (event.type == SDL_MOUSEBUTTONUP)
-				{
+                    if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+                    {
+                        actionBar->dragSpell();
+                    }
+
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isMovingFrame() == true )
+                        {
+                            activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+                            break;
+                        }
+                    }
+                }
+
+                if (event.type == SDL_MOUSEBUTTONUP)
+                {
                     actionBar->executeSpellQueue();
-				}
-			}
 
-			keys = SDL_GetKeyState(NULL);
+                    for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+                    {
+                        if ( activeFrames[ curFrame ]->isMovingFrame() == true )
+                        {
+                            activeFrames[ curFrame ]->stopMovingFrame( mouseX, mouseY );
+                            break;
+                        }
+                    }
+                }
+            }
 
-			curTicks  = SDL_GetTicks();
-			ticksDiff = curTicks - lastTicks;
-			lastTicks = curTicks;
 
-			character.giveMovePoints( ticksDiff );
-			character.Move();
-			character.regenerateLifeMana( ticksDiff );
+            keys = SDL_GetKeyState(NULL);
+
+            curTicks  = SDL_GetTicks();
+            ticksDiff = curTicks - lastTicks;
+            lastTicks = curTicks;
+
+            character.giveMovePoints( ticksDiff );
+            character.Move();
+            character.regenerateLifeMana( ticksDiff );
 
 
-			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
-			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-				CNPC *curNPC = zoneNPCs[x];
-				if ( curNPC->isAlive() ) {
+            std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+            for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                CNPC *curNPC = zoneNPCs[x];
+                if ( curNPC->isAlive() ) {
                     curNPC->giveMovePoints( ticksDiff );
-					curNPC->Move();
-				}
-				curNPC->Respawn();
-				curNPC->Wander();
-			}
+                    curNPC->Move();
+                }
+                curNPC->Respawn();
+                curNPC->Wander();
+            }
 
-			// making sure our target is still alive, if not well set our target to NULL.
-			if (character.getTarget()) {
-				if ( !character.getTarget()->isAlive() )
-					character.setTarget(0);
-			}
+            // making sure our target is still alive, if not well set our target to NULL.
+            if (character.getTarget()) {
+                if ( !character.getTarget()->isAlive() )
+                    character.setTarget(0);
+            }
 
-			for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-				activeSpellActions[ curActiveSpellNr ]->inEffect();
-			}
+            for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+                activeSpellActions[ curActiveSpellNr ]->inEffect();
+            }
 
 			std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
 			for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
@@ -956,167 +940,158 @@ void game_loop()
 			Globals::getCurrentZone()->cleanupInteractionList();
 			Globals::getCurrentZone()->cleanupInteractionRegionList();
 
-			if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
-				for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-					if ( zoneNPCs[x]->isAlive() ) {
-						zoneNPCs[x]->Die();
-					}
-				}
-			}
+            if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
+                std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+                for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                    if ( zoneNPCs[x]->isAlive() ) {
+                        zoneNPCs[x]->Die();
+                    }
+                }
+            }
 
-			if (event.key.keysym.sym == SDLK_PRINT && !KP_screenshot)
+            if (event.key.keysym.sym == SDLK_PRINT && !KP_screenshot)
             {
                 KP_screenshot = true;
                 utils::takeScreenshot();
-			}
+            }
 
-			if (event.key.keysym.sym != SDLK_PRINT)
-			{
-			    KP_screenshot = false;
-			}
+            if (event.key.keysym.sym != SDLK_PRINT)
+            {
+                KP_screenshot = false;
+            }
 
-			if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-				Editor.setEditZone( Globals::getCurrentZone() );
-				Editor.setEnabled( true );
-				Editor.initFocus( &focus );
-				Editor.KP_toggle_editor = true;
-			}
+            if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
+                Editor.setEditZone( Globals::getCurrentZone() );
+                Editor.setEnabled( true );
+                Editor.initFocus( &focus );
+                Editor.KP_toggle_editor = true;
+            }
 
-			if (!keys[SDLK_l]) {
-				Editor.KP_toggle_editor = false;
-			}
+            if (!keys[SDLK_l]) {
+                Editor.KP_toggle_editor = false;
+            }
 
-			if (keys[SDLK_TAB] && !KP_select_next) {
-				KP_select_next = true;
-				bool FoundNewTarget = false;
-				std::vector <CNPC*> NPClist;
-				// select next npc on screen
-				std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
-				for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
-					// if NPC is in on screen (might be changed to line of sight or something)
-					// this makes a list of all visible NPCs, easier to select next target this way.
-					CNPC *curNPC = zoneNPCs[curNPCNr];
-					if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
-					        && curNPC->isAlive() ) {
-						NPClist.push_back(curNPC);
-					}
-				}
-				// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
-				for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
-					if (!character.getTarget()) {
-						character.setTarget(NPClist[0]);
-					}
+            if (keys[SDLK_TAB] && !KP_select_next) {
+                KP_select_next = true;
+                bool FoundNewTarget = false;
+                std::vector <CNPC*> NPClist;
+                // select next npc on screen
+                std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+                for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
+                    // if NPC is in on screen (might be changed to line of sight or something)
+                    // this makes a list of all visible NPCs, easier to select next target this way.
+                    CNPC *curNPC = zoneNPCs[curNPCNr];
+                    if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
+                            && curNPC->isAlive() ) {
+                        NPClist.push_back(curNPC);
+                    }
+                }
+                // selects next target in the list, if target = NULL, set target to first NPC on the visible list.
+                for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
+                    if (!character.getTarget()) {
+                        character.setTarget(NPClist[0]);
+                    }
 
-					if ( character.getTarget() == NPClist[curNPC] ) {
-						if ( curNPC+1 == NPClist.size() ) {
-							character.setTarget(NPClist[0]);
-						} else {
-							character.setTarget(NPClist[curNPC+1]);
-						}
-						FoundNewTarget = true;
-						break;
-					}
-				}
+                    if ( character.getTarget() == NPClist[curNPC] ) {
+                        if ( curNPC+1 == NPClist.size() ) {
+                            character.setTarget(NPClist[0]);
+                        } else {
+                            character.setTarget(NPClist[curNPC+1]);
+                        }
+                        FoundNewTarget = true;
+                        break;
+                    }
+                }
 
-				if ( !FoundNewTarget && NPClist.size() > 0) {
-					character.setTarget(NPClist[0]);
-				}
-			}
+                if ( !FoundNewTarget && NPClist.size() > 0) {
+                    character.setTarget(NPClist[0]);
+                }
+            }
 
-			if (keys[SDLK_LALT])
-			{
-			    Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
-			}
+            if (keys[SDLK_LALT])
+            {
+                Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
+            }
 
-			if (!keys[SDLK_LALT])
-			{
-			    Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
-			}
+            if (!keys[SDLK_LALT])
+            {
+                Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
+            }
 
-			if (!keys[SDLK_TAB]) {
-				KP_select_next = false;
-			}
+            if (!keys[SDLK_TAB]) {
+                KP_select_next = false;
+            }
 
-			if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
-				KP_toggle_showOptionsWindow = true;
-				optionsWindow->setVisible( ! optionsWindow->isVisible() );
-			}
+            if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
+                KP_toggle_showOptionsWindow = true;
+                optionsWindow->toggle();
+            }
 
-			if ( !keys[SDLK_ESCAPE] ) {
-				KP_toggle_showOptionsWindow = false;
-			}
+            if ( !keys[SDLK_ESCAPE] ) {
+                KP_toggle_showOptionsWindow = false;
+            }
 
-			if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
-				KP_toggle_showCharacterInfo = true;
-				characterInfoScreen->setVisible( ! characterInfoScreen->isVisible() );
-			}
+            if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
+                KP_toggle_showCharacterInfo = true;
+                characterInfoScreen->toggle();
+            }
 
-			if ( !keys[SDLK_c] ) {
-				KP_toggle_showCharacterInfo = false;
-			}
+            if ( !keys[SDLK_c] ) {
+                KP_toggle_showCharacterInfo = false;
+            }
 
-			if ( keys[SDLK_s] && !KP_toggle_showShop ) {
-				KP_toggle_showShop = true;
-				shopWindow->setVisible( ! shopWindow->isVisible() );
-			}
+            if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
+                KP_toggle_showSpellbook = true;
+                spellbook->toggle();
+            }
 
-			if ( !keys[SDLK_s] ) {
-				KP_toggle_showShop= false;
-			}
+            if ( !keys[SDLK_b] ) {
+                KP_toggle_showSpellbook = false;
+            }
 
-			if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
-				KP_toggle_showSpellbook = true;
-				spellbook->setVisible( ! spellbook->isVisible() );
-			}
+            if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
+                KP_toggle_showInventory = true;
+                inventoryScreen->toggle();
+            }
 
-			if ( !keys[SDLK_b] ) {
-				KP_toggle_showSpellbook = false;
-			}
+            if ( !keys[SDLK_i] ) {
+                KP_toggle_showInventory = false;
+            }
 
-			if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
-			    KP_toggle_showInventory = true;
-			    inventoryScreen->setVisible( !inventoryScreen->isVisible() );
-			}
+            if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
+                KP_toggle_showQuestWindow = true;
+                questWindow->toggle();
+            }
 
-			if ( !keys[SDLK_i] ) {
-			    KP_toggle_showInventory = false;
-			}
+            if ( !keys[SDLK_q] ) {
+                KP_toggle_showQuestWindow = false;
+            }
 
-			if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
-			    KP_toggle_showQuestWindow = true;
-			    questWindow->setVisible( !questWindow->isVisible() );
-			}
+            actionBar->handleKeys();
 
-			if ( !keys[SDLK_q] ) {
-				KP_toggle_showQuestWindow = false;
-			}
+            if (keys[SDLK_5] && !KP_interrupt) {
+                KP_interrupt = true;
+                character.CastingInterrupted();
+            }
 
-			actionBar->handleKeys();
+            if (!keys[SDLK_5]) {
+                KP_interrupt = false;
+            }
 
-			if (keys[SDLK_5] && !KP_interrupt) {
-				KP_interrupt = true;
-				character.CastingInterrupted();
-			}
+            if (keys[SDLK_SPACE] && !KP_attack) {
+                KP_attack = true;
+                if ( character.getTarget() != NULL ) {
+                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
+                    character.executeAction(action);
+                }
+            }
 
-			if (!keys[SDLK_5]) {
-				KP_interrupt = false;
-			}
-
-			if (keys[SDLK_SPACE] && !KP_attack) {
-				KP_attack = true;
-				if ( character.getTarget() != NULL ) {
-					CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-					character.executeAction(action);
-				}
-			}
-
-			if (!keys[SDLK_SPACE]) {
-				KP_attack = false;
-			}
-		}
-		DrawScene();
-		focus.updateFocus();
+            if (!keys[SDLK_SPACE]) {
+                KP_attack = false;
+            }
+        }
+        DrawScene();
+        focus.updateFocus();
 	}
 }
 

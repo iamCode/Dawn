@@ -31,6 +31,7 @@
 #include "shop.h"
 #include "Spellbook.h"
 #include "ActionBar.h"
+#include "FramesBase.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -41,7 +42,7 @@ namespace dawn_configuration
 	extern int screenHeight;
 }
 
-OptionsWindow::OptionsWindow()
+OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
 {
 	visible = false;
 	font = NULL;
@@ -52,11 +53,11 @@ OptionsWindow::OptionsWindow()
 	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
 
-	width = backgroundTexture->texture[0].width;
-	height = backgroundTexture->texture[0].height;
+	frameWidth = backgroundTexture->texture[0].width;
+	frameHeight = backgroundTexture->texture[0].height;
 	// center on screen
-	posX = (dawn_configuration::screenWidth - width) / 2;
-	posY = (dawn_configuration::screenHeight - height) / 2;
+	posX = (dawn_configuration::screenWidth - frameWidth) / 2;
+	posY = (dawn_configuration::screenHeight - frameHeight) / 2;
 }
 
 OptionsWindow::~OptionsWindow()
@@ -69,23 +70,23 @@ OptionsWindow::~OptionsWindow()
 extern int mouseX;
 extern int mouseY;
 
-void OptionsWindow::draw()
+void OptionsWindow::draw( int mouseX, int mouseY )
 {
 	// show screen
 	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
-	                                  posX + world_x, width,
-	                                  posY + world_y, height );
+	                                  posX + world_x, frameWidth,
+	                                  posY + world_y, frameHeight );
 
 	// show option names (continue, quit, load, save, settings)
 	int textX = world_x + posX + 64;
-	int textY = world_y + posY + height - 64 - font->getHeight();
+	int textY = world_y + posY + frameHeight - 64 - font->getHeight();
 	std::string curText = "Quit Game";
 	int selectedEntry = -1;
-	if ( mouseX < posX + 64 || mouseX > posX + width - 64 || posY + height - 64 < mouseY) {
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 64 < mouseY) {
 		selectedEntry = -1;
 	} else {
-		selectedEntry = (posY + height - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
-		if ( (posY + height - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+		selectedEntry = (posY + frameHeight - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
 			selectedEntry = -1;
 		}
 	}
@@ -129,14 +130,14 @@ void OptionsWindow::draw()
 	}
 }
 
-bool OptionsWindow::isOnThisScreen( int posX, int posY ) const
+/**bool OptionsWindow::isMouseOnFrame( int posX, int posY ) const
 {
-	if ( posX < this->posX + 64 || posX > this->posX + width - 64
-	     || posY > this->posY + height - 64 || posY < this->posY + 64 ) {
+	if ( posX < this->posX + 64 || posX > this->posX + frameWidth  - 64
+	     || posY > this->posY + frameHeight - 64 || posY < this->posY + 64 ) {
 	     return false;
 	}
 	return true;
-}
+}**/
 
 void setQuitGame();
 
@@ -145,19 +146,19 @@ extern std::auto_ptr<Shop> shopWindow;
 extern std::auto_ptr<Spellbook> spellbook;
 extern std::auto_ptr<ActionBar> actionBar;
 
-void OptionsWindow::clicked( int mouseX, int mouseY )
+void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
 	// check for quit and the other options
-	if ( ! isOnThisScreen( mouseX, mouseY ) ) {
+	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {
 		return;
 	}
 
 	int selectedEntry = -1;
-	if ( mouseX < posX + 64 || mouseX > posX + width - 64 || posY + height - 64 < mouseY) {
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 64 < mouseY) {
 		selectedEntry = -1;
 	} else {
-		selectedEntry = (posY + height - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
-		if ( (posY + height - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+		selectedEntry = (posY + frameHeight - 64 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 64 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
 			selectedEntry = -1;
 		}
 	}
@@ -166,7 +167,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 		setQuitGame();
 	} else if ( selectedEntry == 1 ) {
 		// Load Game
-		
+
 		// clear current game data
 		Globals::getCurrentZone()->purgeInteractionList();
 		Globals::getCurrentZone()->purgeInteractionRegionList();
@@ -176,7 +177,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 			it->second = NULL;
 		}
 		Globals::allZones.clear();
-		
+
 		character.clearInventory();
 		// clear shop data
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
@@ -203,16 +204,6 @@ void OptionsWindow::clicked( int mouseX, int mouseY )
 			LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 		}
 	} else if ( selectedEntry == 3 ) {
-		setVisible( false );
+		toggle(); // close the window
 	}
-}
-
-void OptionsWindow::setVisible( bool visible )
-{
-	this->visible = visible;
-}
-
-bool OptionsWindow::isVisible() const
-{
-	return visible;
 }

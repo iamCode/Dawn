@@ -19,26 +19,21 @@
 #ifndef OPTIONSWINDOW_H
 #define OPTIONSWINDOW_H
 
+#include "FramesBase.h"
+
 class CTexture;
 class GLFT_Font;
 
-class OptionsWindow
+class OptionsWindow : public FramesBase
 {
 	public:
 		OptionsWindow();
 		~OptionsWindow();
-		void draw();
-		bool isOnThisScreen( int posX, int posY ) const;
-		void clicked( int mouseX, int mouseY );
-		void setVisible( bool visible );
-		bool isVisible() const;
+		void draw( int mouseX, int mouseY );
+		//bool isMouseOnFrame( int posX, int posY ) const;
+		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 	private:
-		int posX;
-		int posY;
-		int width;
-		int height;
-		bool visible;
 		CTexture *backgroundTexture;
 		GLFT_Font *font;
 };

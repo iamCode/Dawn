@@ -39,27 +39,25 @@ namespace currency
     std::string convertCoinsToString( currency::currency currency, uint32_t coins );
 }
 
-class Shop
+class Shop : public FramesBase
 {
     public:
         Shop( Player *player_, CNPC *shopkeeper_);
         void loadShopkeeperInventory();
         void loadTextures();
 
-        bool isVisible() const;
-        void setVisible( bool newVisible );
+        void toggle();
 
-        void draw();
+        void draw( int mouseX, int mouseY );
         void drawItems();
         void drawTabs();
-        void drawItemTooltip( int x, int y );
-        void drawFloatingSelection( int x, int y );
+        void drawItemTooltip( int mouseX, int mouseY );
+        void drawFloatingSelection( int mouseX, int mouseY );
 
-        void clicked( int clickX, int clickY, uint8_t mouseButton );
+        void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
         size_t getItemTab( Item *item );
 
-        bool isOnThisScreen ( int x, int y ) const;
         bool isOnSlotsScreen( int x, int y );
         bool isPositionFree( size_t invPosX, size_t invPosY, size_t curTab ) const;
 
@@ -81,8 +79,6 @@ class Shop
 		friend class CZone; // just for now to be able to save the items
         uint8_t currentTab;
 
-        int posX, posY, width, height;
-
 		size_t backpackFieldWidth;
 		size_t backpackFieldHeight;
 		size_t backpackSeparatorWidth;
@@ -96,7 +92,6 @@ class Shop
 
 		sTabs tabs[3];
 
-		bool visible;
 		bool ***slotUsed;
 
 		InventoryItem *floatingSelection;

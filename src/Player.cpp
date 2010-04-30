@@ -78,31 +78,31 @@ Direction Player::GetDirection()
 {
 	keys = SDL_GetKeyState(NULL);
 
-	if (keys[SDLK_UP]) {
-		if (keys[SDLK_LEFT]) {
+	if (keys[SDLK_w]) {
+		if (keys[SDLK_a]) {
 			return NW;
-		} else if (keys[SDLK_RIGHT]) {
+		} else if (keys[SDLK_d]) {
 			return NE;
 		} else {
 			return N;
 		}
 	}
 
-	if (keys[SDLK_DOWN]) {
-		if (keys[SDLK_LEFT]) {
+	if (keys[SDLK_s]) {
+		if (keys[SDLK_a]) {
 			return SW;
-		} else if (keys[SDLK_RIGHT]) {
+		} else if (keys[SDLK_d]) {
 			return SE;
 		} else {
 			return S;
 		}
 	}
 
-	if (keys[SDLK_LEFT]) {
+	if (keys[SDLK_a]) {
 		return W;
 	}
 
-	if (keys[SDLK_RIGHT]) {
+	if (keys[SDLK_d]) {
 		return E;
 	}
 
@@ -377,9 +377,9 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setMaxMana( " << getMaxMana() << " );" << std::endl;
 	oss << objectName << ":setMinDamage( " << getMinDamage() << " );" << std::endl;
 	oss << objectName << ":setMaxDamage( " << getMaxDamage() << " );" << std::endl;
-	
+
 	// don't set activity textures here. That is determined by class of Player / NPC
-	
+
 	oss << objectName << ":setDamageModifierPoints( " << getDamageModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setHitModifierPoints( " << getHitModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setEvadeModifierPoints( " << getEvadeModifierPoints() << " );" << std::endl;

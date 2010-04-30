@@ -61,7 +61,6 @@ class ActionBar
         void draw();
         void drawSpellTooltip( int x, int y );
         void clicked( int clickX, int clickY );
-        void clicked( int clickX, int clickY, CSpellActionBase* floatingSpellName );
         void executeSpellQueue();
         void handleKeys();
         void dragSpell();
