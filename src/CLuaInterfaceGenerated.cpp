@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on 04/26/10 22:48:51.
+** Generated automatically by tolua++-1.0.92 on 04/30/10 23:55:28.
 */
 
 #ifndef __cplusplus
@@ -21,20 +21,21 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"GeneralRayDamageSpell");
  tolua_usertype(tolua_S,"ConfigurableSpell");
  tolua_usertype(tolua_S,"CSpellActionBase");
- tolua_usertype(tolua_S,"CSpell");
+ tolua_usertype(tolua_S,"InteractionRegion");
  tolua_usertype(tolua_S,"Item");
  tolua_usertype(tolua_S,"LuaCallIndirection");
  tolua_usertype(tolua_S,"CNPC");
  tolua_usertype(tolua_S,"CallIndirection");
+ tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
  tolua_usertype(tolua_S,"CCharacter");
- tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"InteractionPoint");
- tolua_usertype(tolua_S,"GeneralDamageSpell");
- tolua_usertype(tolua_S,"Player");
  tolua_usertype(tolua_S,"Shop");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"TextWindow");
+ tolua_usertype(tolua_S,"CSpell");
+ tolua_usertype(tolua_S,"Player");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -2274,6 +2275,111 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionCode00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setPosition of class  InteractionRegion */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionRegion_setPosition00
+static int tolua_CLuaInterface_InteractionRegion_setPosition00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"InteractionRegion",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  InteractionRegion* self = (InteractionRegion*)  tolua_tousertype(tolua_S,1,0);
+  int left = ((int)  tolua_tonumber(tolua_S,2,0));
+  int bottom = ((int)  tolua_tonumber(tolua_S,3,0));
+  int width = ((int)  tolua_tonumber(tolua_S,4,0));
+  int height = ((int)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'",NULL);
+#endif
+  {
+   self->setPosition(left,bottom,width,height);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setPosition'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setOnEnterText of class  InteractionRegion */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionRegion_setOnEnterText00
+static int tolua_CLuaInterface_InteractionRegion_setOnEnterText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"InteractionRegion",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  InteractionRegion* self = (InteractionRegion*)  tolua_tousertype(tolua_S,1,0);
+  std::string enterCode = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnEnterText'",NULL);
+#endif
+  {
+   self->setOnEnterText(enterCode);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setOnEnterText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setOnLeaveText of class  InteractionRegion */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_InteractionRegion_setOnLeaveText00
+static int tolua_CLuaInterface_InteractionRegion_setOnLeaveText00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"InteractionRegion",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  InteractionRegion* self = (InteractionRegion*)  tolua_tousertype(tolua_S,1,0);
+  std::string leaveCode = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnLeaveText'",NULL);
+#endif
+  {
+   self->setOnLeaveText(leaveCode);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setOnLeaveText'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setExecuteText of class  LuaCallIndirection */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_LuaCallIndirection_setExecuteText00
 static int tolua_CLuaInterface_LuaCallIndirection_setExecuteText00(lua_State* tolua_S)
@@ -3648,6 +3754,33 @@ static int tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00(lua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::addInteractionRegion */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_addInteractionRegion00
+static int tolua_CLuaInterface_DawnInterface_addInteractionRegion00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   InteractionRegion* tolua_ret = (InteractionRegion*)  DawnInterface::addInteractionRegion();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addInteractionRegion'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::createTextWindow */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createTextWindow00
 static int tolua_CLuaInterface_DawnInterface_createTextWindow00(lua_State* tolua_S)
@@ -3698,6 +3831,34 @@ static int tolua_CLuaInterface_DawnInterface_removeInteractionPoint00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'removeInteractionPoint'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::removeInteractionRegion */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_removeInteractionRegion00
+static int tolua_CLuaInterface_DawnInterface_removeInteractionRegion00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"InteractionRegion",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  InteractionRegion* regionToRemove = ((InteractionRegion*)  tolua_tousertype(tolua_S,1,0));
+  {
+   DawnInterface::removeInteractionRegion(regionToRemove);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeInteractionRegion'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3872,6 +4033,61 @@ static int tolua_CLuaInterface_DawnInterface_enterZone00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'enterZone'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::isSavingAllowed */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_isSavingAllowed00
+static int tolua_CLuaInterface_DawnInterface_isSavingAllowed00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   bool tolua_ret = (bool)  DawnInterface::isSavingAllowed();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isSavingAllowed'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::setSavingAllowed */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_setSavingAllowed00
+static int tolua_CLuaInterface_DawnInterface_setSavingAllowed00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool savingAllowed = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   DawnInterface::setSavingAllowed(savingAllowed);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSavingAllowed'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4252,6 +4468,30 @@ static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02(lua_State
 {
  tolua_Error tolua_err;
  if (
+     !tolua_isusertype(tolua_S,1,"InteractionRegion",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  InteractionRegion* interactionRegion = ((InteractionRegion*)  tolua_tousertype(tolua_S,1,0));
+  {
+   std::string tolua_ret = (std::string)  DawnInterface::getItemReferenceRestore(interactionRegion);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::getItemReferenceRestore */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03
+static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
      !tolua_isusertype(tolua_S,1,"Shop",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
@@ -4266,13 +4506,13 @@ static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02(lua_State
  }
  return 1;
 tolua_lerror:
- return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore01(tolua_S);
+ return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: DawnInterface::getItemReferenceRestore */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03
-static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04
+static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -4290,13 +4530,13 @@ static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03(lua_State
  }
  return 1;
 tolua_lerror:
- return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02(tolua_S);
+ return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: DawnInterface::getItemReferenceRestore */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04
-static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getItemReferenceRestore05
+static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore05(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -4314,7 +4554,7 @@ static int tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04(lua_State
  }
  return 1;
 tolua_lerror:
- return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03(tolua_S);
+ return tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -4375,6 +4615,37 @@ static int tolua_CLuaInterface_DawnInterface_restoreInteractionPointReference00(
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'restoreInteractionPointReference'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::restoreInteractionRegionReference */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_restoreInteractionRegionReference00
+static int tolua_CLuaInterface_DawnInterface_restoreInteractionRegionReference00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::string zoneName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  int posInArray = ((int)  tolua_tonumber(tolua_S,2,0));
+  {
+   InteractionRegion* tolua_ret = (InteractionRegion*)  DawnInterface::restoreInteractionRegionReference(zoneName,posInArray);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'restoreInteractionRegionReference'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4712,6 +4983,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setBackgroundTexture",tolua_CLuaInterface_InteractionPoint_setBackgroundTexture00);
    tolua_function(tolua_S,"setInteractionCode",tolua_CLuaInterface_InteractionPoint_setInteractionCode00);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"InteractionRegion","InteractionRegion","",NULL);
+  tolua_beginmodule(tolua_S,"InteractionRegion");
+   tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_InteractionRegion_setPosition00);
+   tolua_function(tolua_S,"setOnEnterText",tolua_CLuaInterface_InteractionRegion_setOnEnterText00);
+   tolua_function(tolua_S,"setOnLeaveText",tolua_CLuaInterface_InteractionRegion_setOnLeaveText00);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CallIndirection","CallIndirection","",NULL);
   tolua_beginmodule(tolua_S,"CallIndirection");
   tolua_endmodule(tolua_S);
@@ -4792,14 +5069,18 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
    tolua_function(tolua_S,"addInteractionPoint",tolua_CLuaInterface_DawnInterface_addInteractionPoint00);
    tolua_function(tolua_S,"addCharacterInteractionPoint",tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00);
+   tolua_function(tolua_S,"addInteractionRegion",tolua_CLuaInterface_DawnInterface_addInteractionRegion00);
    tolua_function(tolua_S,"createTextWindow",tolua_CLuaInterface_DawnInterface_createTextWindow00);
    tolua_function(tolua_S,"removeInteractionPoint",tolua_CLuaInterface_DawnInterface_removeInteractionPoint00);
+   tolua_function(tolua_S,"removeInteractionRegion",tolua_CLuaInterface_DawnInterface_removeInteractionRegion00);
    tolua_function(tolua_S,"createEventHandler",tolua_CLuaInterface_DawnInterface_createEventHandler00);
    tolua_function(tolua_S,"addQuest",tolua_CLuaInterface_DawnInterface_addQuest00);
    tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
    tolua_function(tolua_S,"enterZone",tolua_CLuaInterface_DawnInterface_enterZone00);
+   tolua_function(tolua_S,"isSavingAllowed",tolua_CLuaInterface_DawnInterface_isSavingAllowed00);
+   tolua_function(tolua_S,"setSavingAllowed",tolua_CLuaInterface_DawnInterface_setSavingAllowed00);
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
    tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
    tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);
@@ -4816,8 +5097,10 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore02);
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore03);
    tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore04);
+   tolua_function(tolua_S,"getItemReferenceRestore",tolua_CLuaInterface_DawnInterface_getItemReferenceRestore05);
    tolua_function(tolua_S,"restoreCharacterReference",tolua_CLuaInterface_DawnInterface_restoreCharacterReference00);
    tolua_function(tolua_S,"restoreInteractionPointReference",tolua_CLuaInterface_DawnInterface_restoreInteractionPointReference00);
+   tolua_function(tolua_S,"restoreInteractionRegionReference",tolua_CLuaInterface_DawnInterface_restoreInteractionRegionReference00);
    tolua_function(tolua_S,"restoreEventHandlerReference",tolua_CLuaInterface_DawnInterface_restoreEventHandlerReference00);
    tolua_function(tolua_S,"getActionbarSaveText",tolua_CLuaInterface_DawnInterface_getActionbarSaveText00);
    tolua_function(tolua_S,"restoreActionBar",tolua_CLuaInterface_DawnInterface_restoreActionBar00);
