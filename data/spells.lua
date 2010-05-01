@@ -39,7 +39,6 @@ curSpell:setInfo("A bolt of raw lightning aimed at the target causing 20-40 poin
 curSpell:setCastTime( 1500 );
 curSpell:setManaCost( 25 );
 curSpell:setDirectDamage(  20, 40, ElementType.Air );
---curSpell:setContinuousDamage( 10, 20, 2000, ElementType.Dark );
 curSpell:setSpellSymbol( "data/spells/lightning/symbol.tga" );
 curSpell:setNumAnimations( 5 );
 curSpell:setAnimationTexture( 0, "data/spells/lightning/1.tga" );
@@ -60,7 +59,7 @@ curSpell:setCastTime( 2000 );
 curSpell:setManaCost( 30 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setHealEffect( 50, 50, ElementType.Light );
+curSpell:setDirectHealing( 50, 50, ElementType.Light );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -73,7 +72,21 @@ curSpell:setCastTime( 2000 );
 curSpell:setManaCost( 40 );
 curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
 curSpell:setEffectType( EffectType.SingleTargetSpell );
-curSpell:setHealEffect( 50, 70, ElementType.Dark );
+curSpell:setDirectHealing( 50, 70, ElementType.Dark );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["forcedhealing"] = curSpell;
+curSpell:setName("Hymn of restoration");
+curSpell:setInfo("Heals you for 120-180 points of damage over 12 seconds.");
+curSpell:setCastTime( 500 );
+curSpell:setManaCost( 25 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setCooldown( 30 );
+curSpell:setContinuousHealing( 10, 15, 12000, ElementType.Light );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -112,7 +125,7 @@ curSpell:setCooldown( 600 );
 curSpell:setManaCost( 10 );
 curSpell:setSpellSymbol( "data/spells/layingofhands/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setHealEffect( 500, 500, ElementType.Light );
+curSpell:setDirectHealing( 500, 500, ElementType.Light );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -127,7 +140,7 @@ curSpell:setManaCost( 0 );
 curSpell:setCooldown( 120 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setHealEffect( 10, 25, ElementType.Light );
+curSpell:setDirectHealing( 10, 25, ElementType.Light );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["callingofthegrave"] = curSpell;

@@ -41,7 +41,7 @@ class BuffWindow
         int posY;
         GLFT_Font *spellFont;
         CTexture textures;
-        std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 };
 
 

@@ -387,7 +387,8 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 class GeneralHealingSpell : public ConfigurableSpell
 {
 	void setEffectType( EffectType::EffectType newEffectType );
-	void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+	void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+	void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, int continuousHealingTime, ElementType::ElementType elementContinuous );
 };
 
 class GeneralBuffSpell : public ConfigurableSpell

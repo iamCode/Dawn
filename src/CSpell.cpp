@@ -110,6 +110,7 @@ ConfigurableSpell::ConfigurableSpell()
 	castTime = 0;
 	cooldown = 0;
 	manaCost = 0;
+	duration = 0;
 
 	name = "";
 	info = "";
@@ -122,6 +123,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	castTime = other->castTime;
 	cooldown = other->cooldown;
 	manaCost = other->manaCost;
+	duration = other->duration;
 
 	name = other->name;
 	info = other->info;
@@ -175,6 +177,16 @@ void ConfigurableSpell::setInfo( std::string newInfo )
 std::string ConfigurableSpell::getInfo() const
 {
 	return info;
+}
+
+void ConfigurableSpell::setDuration( uint16_t newDuration )
+{
+    duration = newDuration;
+}
+
+uint16_t ConfigurableSpell::getDuration() const
+{
+    return duration;
 }
 
 void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
@@ -549,6 +561,12 @@ GeneralHealingSpell::GeneralHealingSpell()
 	healEffectMin = 0;
 	healEffectMax = 0;
 	healEffectElement = ElementType::Light;
+	minContinuousHealingPerSecond = 0.0;
+	maxContinuousHealingPerSecond = 0.0;
+	elementContinuous = ElementType::Light;
+	remainingEffect = 0.0;
+    lastEffect = effectStart;
+    continuousHealingTime = 0;
 }
 
 GeneralHealingSpell::GeneralHealingSpell( GeneralHealingSpell *other )
@@ -558,6 +576,11 @@ GeneralHealingSpell::GeneralHealingSpell( GeneralHealingSpell *other )
 	healEffectMin = other->healEffectMin;
 	healEffectMax = other->healEffectMax;
 	healEffectElement = other->healEffectElement;
+	minContinuousHealingPerSecond = other->minContinuousHealingPerSecond;
+	maxContinuousHealingPerSecond = other->maxContinuousHealingPerSecond;
+	elementContinuous = other->elementContinuous;
+	remainingEffect = other->remainingEffect;
+    continuousHealingTime = other->continuousHealingTime;
 }
 
 CSpellActionBase* GeneralHealingSpell::cast( CCharacter *creator, CCharacter *target )
@@ -581,21 +604,33 @@ EffectType::EffectType GeneralHealingSpell::getEffectType() const
 	return effectType;
 }
 
-void GeneralHealingSpell::setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement )
+void GeneralHealingSpell::setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement )
 {
 	this->healEffectMin = healEffectMin;
 	this->healEffectMax = healEffectMax;
 	this->healEffectElement = healEffectElement;
 }
 
-int GeneralHealingSpell::getHealEffectMin() const
+void GeneralHealingSpell::setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, uint16_t continuousHealingTime, ElementType::ElementType elementContinuous )
 {
-	return healEffectMin;
+	this->minContinuousHealingPerSecond = minContinuousHealingPerSecond;
+	this->maxContinuousHealingPerSecond = maxContinuousHealingPerSecond;
+	this->continuousHealingTime = continuousHealingTime;
+	this->elementContinuous = elementContinuous;
+
+	// setting a continous heal also sets a duration of the spell (so we can see it in the buffwindow)
+	setDuration( static_cast<uint16_t> ( floor( continuousHealingTime / 1000 ) ) );
 }
 
-int GeneralHealingSpell::getHealEffectMax() const
+double GeneralHealingSpell::calculateContinuousHealing( uint64_t timePassed )
 {
-	return healEffectMax;
+	double secondsPassed = (timePassed) / 1000.0;
+
+	double curRandHealing = randomDouble( minContinuousHealingPerSecond * secondsPassed, maxContinuousHealingPerSecond * secondsPassed );
+
+	double healingFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
+	double realHealing = curRandHealing * healingFactor;
+	return realHealing;
 }
 
 ElementType::ElementType GeneralHealingSpell::getElementType() const
@@ -605,26 +640,67 @@ ElementType::ElementType GeneralHealingSpell::getElementType() const
 
 void GeneralHealingSpell::startEffect()
 {
+	remainingEffect = 0.0;
+    effectStart = SDL_GetTicks();
+	lastEffect = effectStart;
+
 	int healing = randomSizeT( healEffectMin, healEffectMax );
 
-	double effectFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( healEffectElement ), creator->getLevel() );
-	double realEffect = healing * effectFactor;
-	double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
-	if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
-		int criticalEffectMultiplier = 2;
-		realEffect *= criticalEffectMultiplier;
+    // only do a heal if we've set a healing value to the spell.
+	if ( ( healEffectMin + healEffectMax ) > 0 )
+	{
+	    double healingFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( healEffectElement ), creator->getLevel() );
+        double realHealing = healing * healingFactor;
+        double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
+        if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+            int criticalEffectMultiplier = 2;
+            realHealing *= criticalEffectMultiplier;
+        }
+        int healingCaused = round( realHealing );
+
+        target->Heal( healingCaused );
 	}
-	int healEffectCaused = round( realEffect );
 
-
-	target->Heal( healEffectCaused );
+    creator->addActiveSpell( cast( NULL, NULL ) );
     creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
-	markSpellActionAsFinished();
 }
 
 void GeneralHealingSpell::inEffect()
 {
+    uint32_t curTime = SDL_GetTicks();
+	uint32_t elapsedSinceLast  = curTime - lastEffect;
+	uint32_t elapsedSinceStart = curTime - effectStart;
+	if ( curTime - lastEffect < 1000 ) {
+		// heal every second
+		if ( elapsedSinceStart >= continuousHealingTime )
+		{
+			elapsedSinceLast = continuousHealingTime - (lastEffect - effectStart);
+		}
+		return;
+	}
+
+	remainingEffect += calculateContinuousHealing( elapsedSinceLast );
+
+	bool callFinish = false;
+	if ( elapsedSinceStart >= continuousHealingTime ) {
+		callFinish = true;
+	}
+
+	if ( floor(remainingEffect) > 0 ) {
+		target->Heal( floor(remainingEffect ) );
+		remainingEffect = remainingEffect - floor( remainingEffect );
+		lastEffect = curTime;
+	}
+
+	if ( callFinish ) {
+		finishEffect();
+	}
+}
+
+void GeneralHealingSpell::finishEffect()
+{
+	markSpellActionAsFinished();
 }
 
 void GeneralHealingSpell::drawEffect()
@@ -636,7 +712,6 @@ void GeneralHealingSpell::drawEffect()
 GeneralBuffSpell::GeneralBuffSpell()
 {
 	effectType = EffectType::SelfAffectingSpell;
-	duration = 0;
 
     resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -657,7 +732,6 @@ GeneralBuffSpell::GeneralBuffSpell( GeneralBuffSpell *other )
 	: ConfigurableSpell( other )
 {
 	effectType = other->effectType;
-	duration = other->duration;
     statsModifier = other->statsModifier;
     resistElementModifier = other->resistElementModifier;
     spellEffectElementModifier = other->spellEffectElementModifier;
@@ -682,16 +756,6 @@ void GeneralBuffSpell::setEffectType( EffectType::EffectType newEffectType )
 EffectType::EffectType GeneralBuffSpell::getEffectType() const
 {
 	return effectType;
-}
-
-void GeneralBuffSpell::setDuration( uint16_t newDuration )
-{
-    duration = newDuration;
-}
-
-uint16_t GeneralBuffSpell::getDuration() const
-{
-    return duration;
 }
 
 int16_t GeneralBuffSpell::getStats( StatsType::StatsType statsType ) const

@@ -114,7 +114,7 @@ class CCharacter
 		void addActiveSpell( CSpellActionBase *spell );
 		void cleanupActiveSpells();
 		void clearActiveSpells();
-		std::vector<std::pair<GeneralBuffSpell*, uint32_t> > getActiveSpells() const;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpell *spell );
@@ -391,7 +391,7 @@ class CCharacter
 		float preparationPercentage;
         CInterface *activeGUI;
 
-        std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 
         std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
 

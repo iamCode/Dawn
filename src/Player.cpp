@@ -210,13 +210,16 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, const CCharact
 		attributeModifier += getItemAttribute( curItem );
 	}
 
-	std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
     activeSpells = character ->getActiveSpells();
     size_t numSpells = activeSpells.size();
     for ( size_t curSpellNr=0; curSpellNr<numSpells; ++curSpellNr ) {
-        GeneralBuffSpell* curSpell = activeSpells[ curSpellNr ].first;
-        assert( curSpell != NULL );
-        attributeModifier += getSpellAttribute( curSpell );
+        GeneralBuffSpell *curSpell = dynamic_cast<GeneralBuffSpell*> ( activeSpells[ curSpellNr ].first );
+        // since more than Buffspells can be active, we want to check to see that we're getting a buff here...
+        if ( curSpell != NULL )
+        {
+            attributeModifier += getSpellAttribute( curSpell );
+        }
     }
 
 	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {
@@ -240,13 +243,16 @@ static uint16_t getModifiedAttribute( ElementType::ElementType elementType, cons
 		attributeModifier += getItemAttribute( elementType, curItem );
 	}
 
-    std::vector<std::pair<GeneralBuffSpell*, uint32_t> > activeSpells;
+    std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
     activeSpells = character->getActiveSpells();
     size_t numSpells = activeSpells.size();
     for ( size_t curSpellNr=0; curSpellNr<numSpells; ++curSpellNr ) {
-        GeneralBuffSpell* curSpell = activeSpells[ curSpellNr ].first;
-        assert( curSpell != NULL );
-        attributeModifier += getSpellAttribute( elementType, curSpell );
+        GeneralBuffSpell* curSpell = dynamic_cast<GeneralBuffSpell*> ( activeSpells[ curSpellNr ].first );
+        // since more than Buffspells can be active, we want to check to see that we're getting a buff here...
+        if ( curSpell != NULL )
+        {
+            attributeModifier += getSpellAttribute( elementType, curSpell );
+        }
     }
 
 	if ( static_cast<int32_t>( basicAttributeValue ) + attributeModifier < static_cast<int32_t>( minValue ) ) {

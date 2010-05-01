@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on 04/30/10 23:55:28.
+** Generated automatically by tolua++-1.0.92 on 05/01/10 21:11:31.
 */
 
 #ifndef __cplusplus
@@ -3187,9 +3187,9 @@ static int tolua_CLuaInterface_GeneralHealingSpell_setEffectType00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setHealEffect of class  GeneralHealingSpell */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00
-static int tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00(lua_State* tolua_S)
+/* method: setDirectHealing of class  GeneralHealingSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralHealingSpell_setDirectHealing00
+static int tolua_CLuaInterface_GeneralHealingSpell_setDirectHealing00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3209,16 +3209,55 @@ static int tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00(lua_State* to
   int healEffectMax = ((int)  tolua_tonumber(tolua_S,3,0));
   ElementType::ElementType healEffectElement = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHealEffect'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDirectHealing'",NULL);
 #endif
   {
-   self->setHealEffect(healEffectMin,healEffectMax,healEffectElement);
+   self->setDirectHealing(healEffectMin,healEffectMax,healEffectElement);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setHealEffect'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'setDirectHealing'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setContinuousHealing of class  GeneralHealingSpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_GeneralHealingSpell_setContinuousHealing00
+static int tolua_CLuaInterface_GeneralHealingSpell_setContinuousHealing00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralHealingSpell",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  GeneralHealingSpell* self = (GeneralHealingSpell*)  tolua_tousertype(tolua_S,1,0);
+  double minContinuousHealingPerSecond = ((double)  tolua_tonumber(tolua_S,2,0));
+  double maxContinuousHealingPerSecond = ((double)  tolua_tonumber(tolua_S,3,0));
+  int continuousHealingTime = ((int)  tolua_tonumber(tolua_S,4,0));
+  ElementType::ElementType elementContinuous = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setContinuousHealing'",NULL);
+#endif
+  {
+   self->setContinuousHealing(minContinuousHealingPerSecond,maxContinuousHealingPerSecond,continuousHealingTime,elementContinuous);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setContinuousHealing'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5045,7 +5084,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_cclass(tolua_S,"GeneralHealingSpell","GeneralHealingSpell","ConfigurableSpell",NULL);
   tolua_beginmodule(tolua_S,"GeneralHealingSpell");
    tolua_function(tolua_S,"setEffectType",tolua_CLuaInterface_GeneralHealingSpell_setEffectType00);
-   tolua_function(tolua_S,"setHealEffect",tolua_CLuaInterface_GeneralHealingSpell_setHealEffect00);
+   tolua_function(tolua_S,"setDirectHealing",tolua_CLuaInterface_GeneralHealingSpell_setDirectHealing00);
+   tolua_function(tolua_S,"setContinuousHealing",tolua_CLuaInterface_GeneralHealingSpell_setContinuousHealing00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"GeneralBuffSpell","GeneralBuffSpell","ConfigurableSpell",NULL);
   tolua_beginmodule(tolua_S,"GeneralBuffSpell");

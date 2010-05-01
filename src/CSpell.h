@@ -80,6 +80,7 @@ class CSpellActionBase
 		virtual uint16_t getCastTime() const = 0;
 		virtual uint16_t getCooldown() const = 0;
 		virtual uint16_t getManaCost() const = 0;
+		virtual uint16_t getDuration() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -140,6 +141,8 @@ class ConfigurableSpell : public CSpell
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
 		virtual std::string getInfo() const;
+		void setDuration( uint16_t newDuration );
+		virtual uint16_t getDuration() const;
 
 		void setSpellSymbol( std::string symbolFile );
 		CTexture* getSymbol() const;
@@ -151,6 +154,7 @@ class ConfigurableSpell : public CSpell
 		uint16_t castTime;
 		uint16_t manaCost;
 		uint16_t cooldown;
+		uint16_t duration;
 
 		std::string name;
 		std::string info;
@@ -260,14 +264,15 @@ class GeneralHealingSpell : public ConfigurableSpell
 
 		void setEffectType( EffectType::EffectType newEffectType );
 		EffectType::EffectType getEffectType() const;
-		void setHealEffect( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
-		int getHealEffectMin() const;
-		int getHealEffectMax() const;
+		void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+		void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, uint16_t continuousHealingTime, ElementType::ElementType elementContinuous );
 		ElementType::ElementType getElementType() const;
 
 		virtual void drawEffect();
 		virtual void startEffect();
 		virtual void inEffect();
+		virtual void finishEffect();
+		double calculateContinuousHealing( uint64_t timePassed );
 
 	protected:
 		GeneralHealingSpell();
@@ -279,8 +284,16 @@ class GeneralHealingSpell : public ConfigurableSpell
 		CCharacter *target;
 
 		EffectType::EffectType effectType;
+		uint32_t effectStart;
+		uint32_t lastEffect;
+        double remainingEffect;
 		int healEffectMin;
 		int healEffectMax;
+        double minContinuousHealingPerSecond;
+        double maxContinuousHealingPerSecond;
+        uint16_t continuousHealingTime;
+
+        ElementType::ElementType elementContinuous;
 		ElementType::ElementType healEffectElement;
 };
 
@@ -291,8 +304,6 @@ class GeneralBuffSpell : public ConfigurableSpell
 
 		void setEffectType( EffectType::EffectType newEffectType );
 		EffectType::EffectType getEffectType() const;
-		uint16_t getDuration() const;
-		void setDuration( uint16_t newDuration );
         int16_t getStats( StatsType::StatsType statsType ) const;
 		void setStats( StatsType::StatsType statsType, int16_t amount );
 		int16_t getResistElementModifierPoints( ElementType::ElementType elementType ) const;
@@ -314,7 +325,6 @@ class GeneralBuffSpell : public ConfigurableSpell
 		CCharacter *target;
 
 		EffectType::EffectType effectType;
-		uint16_t duration;
 		int16_t *statsModifier;
 		int16_t *resistElementModifier;
 		int16_t *spellEffectElementModifier;

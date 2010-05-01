@@ -1392,14 +1392,14 @@ void CCharacter::addActiveSpell( CSpellActionBase *spell )
         if ( activeSpells[curSpell].first->getName() == spell->getName() )
         {
             // we replace the old spell with a new, in case a more powerful spell is cast (a higher rank)
-            activeSpells[curSpell].first = dynamic_cast<GeneralBuffSpell*>( spell );
+            activeSpells[curSpell].first = spell;
             activeSpells[curSpell].second = SDL_GetTicks();
             return;
         }
     }
 
     // add new spell on character.
-    activeSpells.push_back( std::pair<GeneralBuffSpell*, uint32_t>( dynamic_cast<GeneralBuffSpell*>( spell ), SDL_GetTicks() ) );
+    activeSpells.push_back( std::pair<CSpellActionBase*, uint32_t>( spell, SDL_GetTicks() ) );
 }
 
 void CCharacter::cleanupActiveSpells()
@@ -1421,7 +1421,7 @@ void CCharacter::clearActiveSpells()
     activeSpells.clear();
 }
 
-std::vector<std::pair<GeneralBuffSpell*, uint32_t> > CCharacter::getActiveSpells() const
+std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getActiveSpells() const
 {
     return activeSpells;
 }
