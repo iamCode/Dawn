@@ -27,6 +27,8 @@
 #include "shop.h"
 #include <memory>
 
+extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
+
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
             :   parent( parent_ )
 {
@@ -168,7 +170,7 @@ void itemTooltip::draw( int x, int y )
             tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
             glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
-        font_y -= tooltipText[i].font->getHeight()+19;
+        font_y -= tooltipText[i].font->getHeight()+11;
     }
 }
 
@@ -232,7 +234,7 @@ void spellTooltip::draw( int x, int y )
         glColor4fv(tooltipText[i].color);
         tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
         glColor4f(1.0f,1.0f,1.0f,1.0f);
-        font_y -= tooltipText[i].font->getHeight()+19;
+        font_y -= tooltipText[i].font->getHeight()+11;
     }
 }
 
@@ -275,7 +277,7 @@ void Tooltip::drawSmallTooltip( int x, int y )
     DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+16,16); // top border
 
     // draw the name of the tooltip, since it's a small tooltip.
-    glColor4fv(tooltipText[0].color);
+    glColor4fv(tooltipText[ 0].color);
     tooltipText[0].font->drawText(x+15,font_y,tooltipText[0].text);
     glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
@@ -289,8 +291,19 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
 	vsnprintf(buf, 1024, str.c_str(), args);
 	va_end(args);
 
-    // push the data to the vector.
-    tooltipText.push_back(sTooltipText(buf, color, fontSize));
+    // if it's just a newline we're adding then do so, else parse the line...
+    if ( str.empty() == true ) {
+        tooltipText.push_back( sTooltipText( "", color, fontSize ) );
+    } else {
+        // format the text into several lines so that the tooltip doesnt get too wide,
+        //then push all the text lines to our vector.
+        GLFT_Font *tempfont = FontCache::getFontFromCache("data/verdana.ttf",fontSize);
+        std::vector<std::string> formattedLines;
+        formatMultilineText( buf, formattedLines, 300, tempfont );
+        for ( size_t curLine = 0; curLine < formattedLines.size(); curLine++ ) {
+            tooltipText.push_back( sTooltipText( formattedLines[ curLine ], color, fontSize ) );
+        }
+    }
 
     // adjust width and height depending on the content of the tooltip.
     width = 0;
@@ -309,7 +322,7 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
         // add line and line distance
         newHeight += tooltipText[i].font->getHeight();
         if ( i+1 < tooltipText.size() ) {
-        	newHeight += 19;
+        	newHeight += 11;
         }
     }
     height = newHeight;
@@ -501,7 +514,9 @@ void itemTooltip::getParentText()
 	if ( parent->isUseable() )
 	{
 	    addTooltipText( green, 11, parent->getUseableDescription() );
-	    addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
+	    if ( parent->getSpellCharges() > 0 ) {
+	        addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
+	    }
 	    if ( parent->getSpell() != NULL )
 	    {
 	        if ( player->isSpellOnCooldown( parent->getSpell()->getName()) == true )
@@ -521,6 +536,7 @@ void itemTooltip::getParentText()
     // display item level requirements if player's level is too low.
     if ( parent->getLevelReq() > player->getLevel() )
     {
+        addTooltipText( white, 12, "" );
         addTooltipText( red, 12, "Requires level %d", parent->getLevelReq() );
     }
 
@@ -550,6 +566,7 @@ void spellTooltip::getParentText()
 
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
     GLfloat blue[] = { 0.3f, 0.3f, 1.0f };
+    GLfloat green[] = { 0.0f, 1.0f, 0.0f };
 
     // name of the spell
     addTooltipText( white, 14, parent->getName() );
@@ -562,8 +579,10 @@ void spellTooltip::getParentText()
     // display mana-cost
     addTooltipText( blue, 12, "Mana: %d", parent->getManaCost() );
 
-    // display duration
-//    addTooltipText( blue, 12, "Duration: %d", parent->getDuration() );
+    // display duration if we have any
+    if ( parent->getDuration() > 0 ) {
+        addTooltipText( white, 12, "Duration: %s", TimeConverter::convertTime( parent->getDuration() ).c_str() );
+    }
 
     if ( parent->getCooldown() > 0 )
     {
@@ -580,7 +599,7 @@ void spellTooltip::getParentText()
 
     // display description. This shouldnt say "does x amount of damage" but more of a general description.
     addTooltipText( white, 12, "" ); // newline
-    addTooltipText( white, 12, parent->getInfo() );
+    addTooltipText( green, 12, parent->getInfo() );
 }
 
 /// FRAMES

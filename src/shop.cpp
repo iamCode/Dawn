@@ -85,9 +85,9 @@ void Shop::toggle()
 {
     if ( isVisible() == false )
     {
-        player->stopShopping();
-    } else {
         player->startShopping();
+    } else {
+        player->stopShopping();
     }
     FramesBase::toggle();
 }
