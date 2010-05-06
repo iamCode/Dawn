@@ -291,9 +291,12 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
 	vsnprintf(buf, 1024, str.c_str(), args);
 	va_end(args);
 
-    // if it's just a newline we're adding then do so, else parse the line...
+    // if it's just a newline we're adding then just add it without checking for multiline...
     if ( str.empty() == true ) {
         tooltipText.push_back( sTooltipText( "", color, fontSize ) );
+    } else if ( str.find("price:") != str.npos ) {
+        // else check to see if the text contains price information. if so we dont wordwrap.
+        tooltipText.push_back( sTooltipText( buf, color, fontSize ) );
     } else {
         // format the text into several lines so that the tooltip doesnt get too wide,
         //then push all the text lines to our vector.
@@ -549,12 +552,12 @@ void itemTooltip::getParentText()
             itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins );
             itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins );
             itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins );
-            addTooltipText( white, 12, "Buy price:             " );
+            addTooltipText( white, 12, "Buy price: xxxxxxxxxxxx" );
         } else {
             itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins * 0.75 );
             itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins * 0.75 );
             itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins * 0.75 );
-            addTooltipText( white, 12, "Sell price:            " );
+            addTooltipText( white, 12, "Sell price: xxxxxxxxxxx" );
     	}
     }
 }

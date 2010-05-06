@@ -923,7 +923,7 @@ void game_loop()
             // making sure our target is still alive, if not well set our target to NULL.
             if (character.getTarget()) {
                 if ( !character.getTarget()->isAlive() )
-                    character.setTarget(0);
+                    character.setTarget(NULL);
             }
 
             for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
