@@ -78,7 +78,7 @@ curSpell:setDirectHealing( 50, 70, ElementType.Dark );
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
-spellDatabase["forcedhealing"] = curSpell;
+spellDatabase["hymnofrestoration"] = curSpell;
 curSpell:setName("Hymn of restoration");
 curSpell:setInfo("Heals you for 120-180 points of damage over 12 seconds.");
 curSpell:setCastTime( 500 );

@@ -63,6 +63,7 @@ class Tooltip
         virtual void getParentText() = 0;
         virtual void draw( int x, int y ) = 0;
         int getTooltipWidth() const;
+        int getTooltipHeight() const;
         void reloadTooltip();
 
     private:

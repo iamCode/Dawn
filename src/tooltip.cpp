@@ -104,6 +104,11 @@ int Tooltip::getTooltipWidth() const
     return blockWidth * blockNumberWidth + blockWidth;
 }
 
+int Tooltip::getTooltipHeight() const
+{
+    return blockHeight * blockNumberHeight + blockHeight;
+}
+
 void itemTooltip::draw( int x, int y )
 {
     if ( tooltipText.empty() )

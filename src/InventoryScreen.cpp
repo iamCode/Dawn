@@ -581,6 +581,43 @@ void InventoryScreen::drawItemTooltip( int mouseX, int mouseY )
             tooltipItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
             tooltipItem->getTooltip()->setShopItem( false );
             tooltipItem->getTooltip()->draw( mouseX, mouseY );
+
+            //if player is holding down right shift and has an
+            // item with same slot equipped, we draw that too.
+            Uint8 *keys;
+            keys = SDL_GetKeyState(NULL);
+            int thisTooltipPosX;
+            int previousFrameHeight;
+            bool firstItemCompared = false;
+            if ( keys[SDLK_LSHIFT] )
+            {
+                std::vector<InventoryItem*> equippedItems = inventory->getEquippedItems();
+                for ( size_t curItem = 0; curItem < equippedItems.size(); curItem++ )
+                {
+                    if ( equippedItems[ curItem ]->getItem()->getEquipPosition() == tooltipItem->getItem()->getEquipPosition() )
+                    {
+                        int thisTooltipPosY = mouseY;
+                        // if this is our second item we're adding to the compare, then we need to position it next to the previous tooltip.
+                        if ( firstItemCompared == true )
+                        {
+                            thisTooltipPosY += previousFrameHeight + 30;
+                        }
+
+                        // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
+                        if ( firstItemCompared == false ) {
+                            if ( dawn_configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+                                thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
+                            } else {
+                                thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();
+                            }
+                        }
+
+                        previousFrameHeight = equippedItems[ curItem ]->getTooltip()->getTooltipHeight();
+                        equippedItems[ curItem ]->getTooltip()->draw( thisTooltipPosX, thisTooltipPosY );
+                        firstItemCompared = true;
+                    }
+                }
+            }
         }
     }
 

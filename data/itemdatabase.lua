@@ -128,4 +128,8 @@ curItem:setSpell( spellDatabase["magicmissile"] );
 curItem:setSpellCharges( 0 );
 curItem:setValue( 2500 );
 
-
+itemDatabase["coppernecklace"]=DawnInterface.createNewItem( "Copper necklace", 1, 1, "data/items/Necklace1.tga", ItemQuality.ENHANCED, EquipPosition.AMULET,ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["coppernecklace"];
+curItem:setStats( StatsType.Vitality, 1 );
+curItem:setStats( StatsType.Wisdom, 1 );
+curItem:setValue( 20 );

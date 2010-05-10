@@ -179,23 +179,35 @@ void Shop::drawItemTooltip( int mouseX, int mouseY )
             // item with same slot equipped, we draw that too.
             Uint8 *keys;
             keys = SDL_GetKeyState(NULL);
-            int equippedItemOffset = 0;
-            int previousFrameWidth = 0;
+            int thisTooltipPosX;
+            int previousFrameHeight;
+            bool firstItemCompared = false;
             if ( keys[SDLK_LSHIFT] )
             {
-                std::vector<InventoryItem*> playersInventory = player->getInventory()->getEquippedItems();
-                for ( size_t curItem = 0; curItem < playersInventory.size(); curItem++ )
+                std::vector<InventoryItem*> equippedItems = player->getInventory()->getEquippedItems();
+                for ( size_t curItem = 0; curItem < equippedItems.size(); curItem++ )
                 {
-                    if ( playersInventory[ curItem ]->getItem()->getEquipPosition() == tooltipItem->getItem()->getEquipPosition() )
+                    if ( equippedItems[ curItem ]->getItem()->getEquipPosition() == tooltipItem->getItem()->getEquipPosition() )
                     {
-                        if ( equippedItemOffset != 0 )
+                        int thisTooltipPosY = mouseY;
+                        // if this is our second item we're adding to the compare, then we need to position it next to the previous tooltip.
+                        if ( firstItemCompared == true )
                         {
-                            equippedItemOffset += previousFrameWidth + 30;
-                        } else {
-                            equippedItemOffset += tooltipItem->getTooltip()->getTooltipWidth() + 30;
+                            thisTooltipPosY += previousFrameHeight + 30;
                         }
-                        previousFrameWidth = playersInventory[ curItem ]->getTooltip()->getTooltipWidth();
-                        playersInventory[ curItem ]->getTooltip()->draw( mouseX + equippedItemOffset, mouseY );
+
+                        // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
+                        if ( firstItemCompared == false ) {
+                            if ( dawn_configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+                                thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
+                            } else {
+                                thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();
+                            }
+                        }
+
+                        previousFrameHeight = equippedItems[ curItem ]->getTooltip()->getTooltipHeight();
+                        equippedItems[ curItem ]->getTooltip()->draw( thisTooltipPosX, thisTooltipPosY );
+                        firstItemCompared = true;
                     }
                 }
             }
