@@ -24,6 +24,7 @@
 #include <memory>
 #include "GLFT_Font.h"
 #include "fontcache.h"
+#include "CLuaFunctions.h"
 
 GLFT_Font *textWindowFont = NULL;
 
@@ -96,13 +97,18 @@ void initTextWindowFont()
 	textWindowFont = FontCache::getFontFromCache("data/verdana.ttf", 14);
 }
 
-TextWindow::TextWindow()
-	:	positionType( PositionType::CENTER ),
+TextWindow::TextWindow( bool destroyOnClose_ )
+	:	FramesBase( 0, 0, 0, 0, 0, 0 ),
+		positionType( PositionType::CENTER ),
 		x( 0 ),
 		y( 0 ),
 		autocloseTime( 1 ),
-		creationTime( 0 )
+		creationTime( 0 ),
+		executeTextOnClose( "" ),
+		destroyOnClose( destroyOnClose_ ),
+		explicitClose( false )
 {
+	updateFramesPosition();
 }
 
 void TextWindow::setText( std::string text )
@@ -115,6 +121,8 @@ void TextWindow::setText( std::string text )
 	const int lineWidth = 416;
 
 	formatMultilineText( text, textLines, lineWidth, textWindowFont );
+	
+	updateFramesPosition();
 }
 
 void TextWindow::setAutocloseTime( int autocloseTime )
@@ -128,14 +136,96 @@ void TextWindow::setPosition( PositionType::PositionType positionType, int x, in
 	this->positionType = positionType;
 	this->x = x;
 	this->y = y;
+	
+	updateFramesPosition();
+}
+
+void TextWindow::setOnCloseText( std::string onCloseText )
+{
+	this->executeTextOnClose = onCloseText;
+}
+
+void TextWindow::updateFramesPosition()
+{
+	const int blockSizeX = 32;
+	const int blockSizeY = 32;
+	const int lineWidth = 416;
+
+	int neededWidth = lineWidth;
+	int neededHeight = 0;
+	if ( textLines.size() > 0 ) {
+		const int lineSpace = textWindowFont->getHeight() * 0.5;
+		neededHeight = textWindowFont->getHeight() * textLines.size()
+		               + lineSpace * (textLines.size() - 1);
+	}
+	int neededInnerBlocksX = neededWidth / blockSizeX;
+	if ( neededWidth % blockSizeX != 0 ) {
+		++neededInnerBlocksX;
+	}
+	int neededInnerBlocksY = neededHeight / blockSizeY;
+	if ( neededHeight % blockSizeY != 0 ) {
+		++neededInnerBlocksY;
+	}
+
+	int leftX = 0;
+	int bottomY = 0;
+
+	switch ( positionType )
+	{
+		case PositionType::CENTER:
+			leftX = x - (neededInnerBlocksX * blockSizeX / 2);
+			bottomY = y - (neededInnerBlocksY * blockSizeY / 2);
+		break;
+		case PositionType::BOTTOMLEFT:
+			leftX = x;
+			bottomY = y;
+		break;
+		case PositionType::LEFTCENTER:
+			leftX = x;
+			bottomY = y - (neededInnerBlocksY * blockSizeY / 2);
+		break;
+		case PositionType::BOTTOMCENTER:
+			leftX = x + (neededInnerBlocksX * blockSizeX / 2);
+			bottomY = y;
+		break;
+	}
+	
+	FramesBase::posX = leftX;
+	FramesBase::posY = bottomY;
+	FramesBase::frameWidth  = (neededInnerBlocksX + 2) * blockSizeX;
+	FramesBase::frameHeight = (neededInnerBlocksY + 2) * blockSizeY;
+}
+
+bool TextWindow::canBeClosed() const
+{
+	return ( explicitClose || ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) );
+}
+
+void TextWindow::close()
+{
+	if ( executeTextOnClose != "" ) {
+		LuaFunctions::executeLuaScript( executeTextOnClose );
+	}
+}
+
+bool TextWindow::destroyAfterClose() const
+{
+	return destroyOnClose;
+}
+
+void TextWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
+{
+	if ( (mouseState == SDL_BUTTON_LEFT) && isMouseOnFrame( mouseX, mouseY ) ) {
+		explicitClose = true;
+	}
 }
 
 extern int world_x;
 extern int world_y;
 
-void TextWindow::draw()
+void TextWindow::draw( int mouseX, int mouseY )
 {
-	if ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) {
+	if ( explicitClose || ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) ) {
 		return;
 	}
 	const int blockSizeX = 32;
@@ -202,10 +292,11 @@ std::vector<TextWindow*> allTextWindows;
 
 namespace DawnInterface
 {
-	TextWindow *createTextWindow()
+	TextWindow *createTextWindow( bool destroyAfterClose )
 	{
-		TextWindow *newTextWindow = new TextWindow();
+		TextWindow *newTextWindow = new TextWindow( destroyAfterClose );
 		allTextWindows.push_back( newTextWindow );
+		newTextWindow->toggle();
 		return newTextWindow;
 	}
 }

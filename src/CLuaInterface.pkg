@@ -345,6 +345,7 @@ class TextWindow
 	void setText( std::string text );
 	void setAutocloseTime( int autocloseTime );
 	void setPosition( PositionType::PositionType, int x, int y );
+	void setOnCloseText( std::string onCloseText );
 };
 
 class Shop
@@ -424,7 +425,7 @@ namespace DawnInterface
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
 	InteractionRegion* addInteractionRegion();
-	TextWindow *createTextWindow();
+	TextWindow *createTextWindow( bool destroyAfterClose );
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 	void removeInteractionRegion( InteractionRegion *regionToRemove );
 	LuaCallIndirection* createEventHandler();

@@ -23,6 +23,8 @@
 #include <vector>
 #include <stdint.h>
 
+#include "FramesBase.h"
+
 namespace PositionType
 {
 	enum PositionType
@@ -38,28 +40,39 @@ class TextWindow;
 
 namespace DawnInterface
 {
-	TextWindow *createTextWindow();
+	TextWindow *createTextWindow( bool destroyAfterClose );
 }
 
-class TextWindow
+class TextWindow : public FramesBase
 {
 	public:
 		void setText( std::string text );
 		void setAutocloseTime( int autocloseTime );
 		void setPosition( PositionType::PositionType, int x, int y );
+		void setOnCloseText( std::string onCloseText );
+		bool canBeClosed() const;
+		void close();
+		bool destroyAfterClose() const;
 
-		void draw();
+		void clicked( int mouseX, int mouseY, uint8_t mouseState );
+		void draw( int mouseX, int mouseY );
 
 	private:
-		friend TextWindow* DawnInterface::createTextWindow();
+		friend TextWindow* DawnInterface::createTextWindow( bool destroyAfterClose );
 
-		TextWindow();
+		TextWindow( bool destroyOnClose );
+
+		void updateFramesPosition();
+
 		PositionType::PositionType positionType;
 		int x;
 		int y;
 		uint32_t autocloseTime;
 		uint32_t creationTime;
 		std::vector<std::string> textLines;
+		std::string executeTextOnClose;
+		bool destroyOnClose;
+		bool explicitClose;
 };
 
 #endif // TEXTWINDOW_H

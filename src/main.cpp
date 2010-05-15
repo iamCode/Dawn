@@ -295,12 +295,6 @@ void DrawScene()
 		}
 	}
 
-	// draw textwindows
-	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
-		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
-		curTextWindow->draw();
-	}
-
 	// check our FPS and output it
 	thisframe=SDL_GetTicks();     // Count the FPS
 	ff++;
@@ -897,6 +891,19 @@ void game_loop()
                 }
             }
 
+            // close and possibly delete closed windows
+            for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
+                TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
+                if ( curTextWindow->canBeClosed() ) {
+                    curTextWindow->close();
+                    curTextWindow->toggle();
+                    if ( curTextWindow->destroyAfterClose() )
+                    {
+                        delete curTextWindow;
+                        allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
+                    }
+                }
+            }
 
             keys = SDL_GetKeyState(NULL);
 
