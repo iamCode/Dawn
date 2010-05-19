@@ -172,6 +172,11 @@ class CCharacter
 		uint16_t getEvadeModifierPoints() const;
 		void modifyEvadeModifierPoints( int16_t evadeModifierModifierPoints );
 
+        void setParryModifierPoints( uint16_t newParryModifierPoints );
+		virtual uint16_t getModifiedParryModifierPoints() const;
+		uint16_t getParryModifierPoints() const;
+		void modifyParryModifierPoints( int16_t parryModifierModifierPoints );
+
 		void setBlockModifierPoints( uint16_t newBlockModifierPoints );
 		virtual uint16_t getModifiedBlockModifierPoints() const;
 		uint16_t getBlockModifierPoints() const;
@@ -369,6 +374,7 @@ class CCharacter
 		uint16_t damageModifierPoints;
 		uint16_t hitModifierPoints;
 		uint16_t evadeModifierPoints;
+		uint16_t parryModifierPoints;
 		uint16_t blockModifierPoints;
 		uint16_t meleeCriticalModifierPoints;
 		uint16_t *resistElementModifierPoints;

@@ -37,6 +37,7 @@ class StatsSystem
 		double maxDamageModifier;
 		double maxHitChance;
 		double maxEvadeChance;
+		double maxParryChance;
 		double maxDamageReductionModifier;
 		double maxBlockChance;
 		double maxMeleeCriticalChance;
@@ -52,6 +53,7 @@ class StatsSystem
 		double complexGetDamageModifier( int myLevel, int myDamageModifierPoints, int opponentLevel ) const;
 		double complexGetHitChance( int myLevel, int myHitModifierPoints, int opponentLevel ) const;
 		double complexGetEvadeChance( int myLevel, int myEvadeModifierPoints, int opponentLevel ) const;
+		double complexGetParryChance( int myLevel, int myParryModifierPoints, int opponentLevel ) const;
 		double complexGetDamageReductionModifier( int myLevel, int myDamageReductionPoints, int opponentLevel ) const;
 		double complexGetBlockChance( int myLevel, int myBlockModifierPoints, int opponentLevel ) const;
 		double complexGetMeleeCriticalStrikeChance( int myLevel, int myMeleeCriticalModifierPoints, int opponentLevel ) const;
@@ -62,6 +64,7 @@ class StatsSystem
 		int calculateDamageModifierPoints( const CCharacter *character ) const;
 		int calculateHitModifierPoints( const CCharacter *character ) const;
 		int calculateEvadeModifierPoints( const CCharacter *character ) const;
+		int calculateParryModifierPoints( const CCharacter *character ) const;
 		int calculateDamageReductionPoints( const CCharacter *character ) const;
 		int calculateBlockModifierPoints( const CCharacter *character ) const;
 		int calculateMeleeCriticalModifierPoints( const CCharacter *character ) const;

@@ -267,7 +267,7 @@ void CharacterInfoScreen::drawTabs()
                                 "Parry" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + frameHeight - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "%.2f%%", 0.0 );
+                                "%.2f%%", (statsSystem->complexGetParryChance( player->getLevel(), player->getModifiedParryModifierPoints(), player->getLevel() ) * 100.0) );
 			curLine++;
 
 			for ( size_t curElement=0; curElement< static_cast<size_t>(ElementType::Count); ++curElement ) {

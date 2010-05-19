@@ -34,6 +34,7 @@ namespace StatsType
         DamageModifier,
         HitModifier,
         EvadeModifier,
+        ParryModifier,
         BlockModifier,
         MeleeCritical,
         SpellCritical,

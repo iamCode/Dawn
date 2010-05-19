@@ -53,6 +53,7 @@ curItem:setValue( 1090 );
 itemDatabase["gnollshield"]=DawnInterface.createNewItem( "Gnoll shield", 2, 2, "data/items/Shield1.tga", ItemQuality.ENHANCED, EquipPosition.OFF_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.SHIELD );
 curItem = itemDatabase["gnollshield"];
 curItem:setStats( StatsType.Vitality, 3 );
+curItem:setStats( StatsType.ParryModifier, 3 );
 curItem:setStats( StatsType.Armor, 70 );
 curItem:setValue( 225 );
 
@@ -133,3 +134,18 @@ curItem = itemDatabase["coppernecklace"];
 curItem:setStats( StatsType.Vitality, 1 );
 curItem:setStats( StatsType.Wisdom, 1 );
 curItem:setValue( 20 );
+
+itemDatabase["daggerofflowingthought"]=DawnInterface.createNewItem( "Dagger of flowing thought", 1, 2, "data/items/Dagger1.tga", ItemQuality.RARE, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.DAGGER );
+curItem = itemDatabase["daggerofflowingthought"];
+curItem:setStats( StatsType.SpellCritical, 7 );
+curItem:setStats( StatsType.Wisdom, 3 );
+curItem:setStats( StatsType.ManaRegen, 2 );
+curItem:setMinDamage( 2 );
+curItem:setMaxDamage( 6 );
+curItem:setValue( 216 );
+
+itemDatabase["fungalboots"]=DawnInterface.createNewItem( "Fungal boots", 2, 2, "data/items/Boots1.tga", ItemQuality.ENHANCED, EquipPosition.BOOTS, ItemType.ARMOR, ArmorType.LEATHER, WeaponType.NO_WEAPON );
+curItem = itemDatabase["fungalboots"];
+curItem:setStats( StatsType.Armor, 7 );
+curItem:setStats( StatsType.HealthRegen, 2 );
+curItem:setValue( 78 );

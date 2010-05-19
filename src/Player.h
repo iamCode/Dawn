@@ -44,6 +44,7 @@ class Player : public CCharacter
 		uint16_t getModifiedDamageModifierPoints() const;
 		uint16_t getModifiedHitModifierPoints() const;
 		uint16_t getModifiedEvadeModifierPoints() const;
+		uint16_t getModifiedParryModifierPoints() const;
 		uint16_t getModifiedBlockModifierPoints() const;
 		uint16_t getModifiedMeleeCriticalModifierPoints() const;
 		uint16_t getModifiedResistElementModifierPoints( ElementType::ElementType elementType ) const;
@@ -67,7 +68,7 @@ class Player : public CCharacter
 
 		Inventory* getInventory();
 		void clearInventory();
-		
+
 		std::string getSaveText() const;
 };
 

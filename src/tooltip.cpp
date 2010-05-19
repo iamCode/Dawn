@@ -363,8 +363,8 @@ void itemTooltip::getParentText()
     GLfloat red[] = { 1.0f, 0.0f, 0.0f };
     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
     GLfloat brownish[] = { 0.7f, 0.7f, 0.0f };
-    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana" };
-    int8_t attribute_values[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana", "health regen / s", "mana regen / s" };
+    int8_t attribute_values[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     // setting the title of the tooltip based on item quality
     switch ( parent->getItemQuality() )
@@ -449,8 +449,10 @@ void itemTooltip::getParentText()
     attribute_values[5] = parent->getStats( StatsType::Wisdom );
     attribute_values[6] = parent->getStats( StatsType::Health );
     attribute_values[7] = parent->getStats( StatsType::Mana );
+    attribute_values[8] = parent->getStats( StatsType::HealthRegen );
+    attribute_values[9] = parent->getStats( StatsType::ManaRegen );
 
-    for (unsigned int i = 0; i < 8; i++ )
+    for (unsigned int i = 0; i < 10; i++ )
     {
         if ( attribute_values[i] != 0 )
         {
@@ -480,6 +482,12 @@ void itemTooltip::getParentText()
 	if ( evadeModifier != 0 ) {
 		double evadeBonus = (StatsSystem::getStatsSystem()->complexGetEvadeChance( player->getLevel(), evadeModifier, player->getLevel() )) * 100;
 		addTooltipTextForPercentageAttribute( "chance to evade", evadeBonus );
+	}
+
+    int16_t parryModifier = parent->getStats( StatsType::ParryModifier );
+	if ( parryModifier != 0 ) {
+		double parryBonus = (StatsSystem::getStatsSystem()->complexGetParryChance( player->getLevel(), parryModifier, player->getLevel() )) * 100;
+		addTooltipTextForPercentageAttribute( "chance to parry", parryBonus );
 	}
 
 	int16_t blockModifier = parent->getStats( StatsType::BlockModifier );

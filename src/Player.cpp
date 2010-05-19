@@ -164,6 +164,7 @@ static int16_t getItemArmorHelper( Item * item ) { return item->getStats( StatsT
 static int16_t getItemDamageModifierPointsHelper( Item * item ) { return item->getStats( StatsType::DamageModifier ); }
 static int16_t getItemHitModifierPointsHelper( Item * item ) { return item->getStats( StatsType::HitModifier ); }
 static int16_t getItemEvadeModifierPointsHelper( Item * item ) { return item->getStats( StatsType::EvadeModifier ); }
+static int16_t getItemParryModifierPointsHelper( Item * item ) { return item->getStats( StatsType::ParryModifier ); }
 static int16_t getItemBlockModifierPointsHelper( Item * item ) { return item->getStats( StatsType::BlockModifier ); }
 static int16_t getItemMeleeCriticalModifierPointsHelper( Item * item ) { return item->getStats( StatsType::MeleeCritical ); }
 static int16_t getItemResistElementModifierPointsHelper( ElementType::ElementType elementType, Item * item ) { return item->getResistElementModifierPoints( elementType ) + item->getStats( StatsType::ResistAll ); }
@@ -187,6 +188,7 @@ static int16_t getSpellArmorHelper( GeneralBuffSpell *spell ) { return spell->ge
 static int16_t getSpellDamageModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::DamageModifier ); }
 static int16_t getSpellHitModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::HitModifier ); }
 static int16_t getSpellEvadeModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::EvadeModifier ); }
+static int16_t getSpellParryModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::ParryModifier ); }
 static int16_t getSpellBlockModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::BlockModifier ); }
 static int16_t getSpellMeleeCriticalModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::MeleeCritical ); }
 static int16_t getSpellResistElementModifierPointsHelper( ElementType::ElementType elementType, GeneralBuffSpell *spell ) { return spell->getResistElementModifierPoints( elementType ) + spell->getStats( StatsType::ResistAll ); }
@@ -284,6 +286,11 @@ uint16_t Player::getModifiedHitModifierPoints() const
 uint16_t Player::getModifiedEvadeModifierPoints() const
 {
 	return getModifiedAttribute( inventory, this, getEvadeModifierPoints(), &getItemEvadeModifierPointsHelper, &getSpellEvadeModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateEvadeModifierPoints( this );
+}
+
+uint16_t Player::getModifiedParryModifierPoints() const
+{
+	return getModifiedAttribute( inventory, this, getParryModifierPoints(), &getItemParryModifierPointsHelper, &getSpellParryModifierPointsHelper, NULLABLE_ATTRIBUTE_MIN ) + StatsSystem::getStatsSystem()->calculateParryModifierPoints( this );
 }
 
 uint16_t Player::getModifiedBlockModifierPoints() const
@@ -389,6 +396,7 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setDamageModifierPoints( " << getDamageModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setHitModifierPoints( " << getHitModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setEvadeModifierPoints( " << getEvadeModifierPoints() << " );" << std::endl;
+	oss << objectName << ":setParryModifierPoints( " << getParryModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setBlockModifierPoints( " << getBlockModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setMeleeCriticalModifierPoints( " << getMeleeCriticalModifierPoints() << " );" << std::endl;
 	oss << objectName << ":setResistAllModifierPoints( " << getResistAllModifierPoints() << " );" << std::endl;

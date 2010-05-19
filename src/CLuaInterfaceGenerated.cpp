@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Fri May 14 21:38:28 2010.
+** Generated automatically by tolua++-1.0.92 on 05/18/10 23:53:48.
 */
 
 #ifndef __cplusplus
@@ -56,7 +56,7 @@ static int tolua_CLuaInterface_CCharacter_baseOnType00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   std::string otherType = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'baseOnType'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'baseOnType'",NULL);
 #endif
   {
    self->baseOnType(otherType);
@@ -89,7 +89,7 @@ static int tolua_CLuaInterface_CCharacter_setStrength00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newStrength = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStrength'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStrength'",NULL);
 #endif
   {
    self->setStrength(newStrength);
@@ -120,7 +120,7 @@ static int tolua_CLuaInterface_CCharacter_getStrength00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getStrength'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getStrength'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getStrength();
@@ -154,7 +154,7 @@ static int tolua_CLuaInterface_CCharacter_modifyStrength00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int strengthModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyStrength'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyStrength'",NULL);
 #endif
   {
    self->modifyStrength(strengthModifier);
@@ -187,7 +187,7 @@ static int tolua_CLuaInterface_CCharacter_setDexterity00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newDexterity = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDexterity'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDexterity'",NULL);
 #endif
   {
    self->setDexterity(newDexterity);
@@ -218,7 +218,7 @@ static int tolua_CLuaInterface_CCharacter_getDexterity00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDexterity'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDexterity'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getDexterity();
@@ -252,7 +252,7 @@ static int tolua_CLuaInterface_CCharacter_modifyDexterity00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int dexterityModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyDexterity'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyDexterity'",NULL);
 #endif
   {
    self->modifyDexterity(dexterityModifier);
@@ -285,7 +285,7 @@ static int tolua_CLuaInterface_CCharacter_setVitality00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newVitality = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVitality'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setVitality'",NULL);
 #endif
   {
    self->setVitality(newVitality);
@@ -316,7 +316,7 @@ static int tolua_CLuaInterface_CCharacter_getVitality00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVitality'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getVitality'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getVitality();
@@ -350,7 +350,7 @@ static int tolua_CLuaInterface_CCharacter_modifyVitality00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int vitalityModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyVitality'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyVitality'",NULL);
 #endif
   {
    self->modifyVitality(vitalityModifier);
@@ -383,7 +383,7 @@ static int tolua_CLuaInterface_CCharacter_setIntellect00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newIntellect = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setIntellect'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setIntellect'",NULL);
 #endif
   {
    self->setIntellect(newIntellect);
@@ -414,7 +414,7 @@ static int tolua_CLuaInterface_CCharacter_getIntellect00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getIntellect'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getIntellect'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getIntellect();
@@ -448,7 +448,7 @@ static int tolua_CLuaInterface_CCharacter_modifyIntellect00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int intellectModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyIntellect'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyIntellect'",NULL);
 #endif
   {
    self->modifyIntellect(intellectModifier);
@@ -481,7 +481,7 @@ static int tolua_CLuaInterface_CCharacter_setWisdom00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newWisdom = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setWisdom'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setWisdom'",NULL);
 #endif
   {
    self->setWisdom(newWisdom);
@@ -512,7 +512,7 @@ static int tolua_CLuaInterface_CCharacter_getWisdom00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWisdom'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWisdom'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getWisdom();
@@ -546,7 +546,7 @@ static int tolua_CLuaInterface_CCharacter_modifyWisdom00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int wisdomModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyWisdom'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyWisdom'",NULL);
 #endif
   {
    self->modifyWisdom(wisdomModifier);
@@ -579,7 +579,7 @@ static int tolua_CLuaInterface_CCharacter_setMaxHealth00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newMaxHealth = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxHealth'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxHealth'",NULL);
 #endif
   {
    self->setMaxHealth(newMaxHealth);
@@ -610,7 +610,7 @@ static int tolua_CLuaInterface_CCharacter_getMaxHealth00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxHealth'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxHealth'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getMaxHealth();
@@ -644,7 +644,7 @@ static int tolua_CLuaInterface_CCharacter_modifyMaxHealth00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int maxHealthModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyMaxHealth'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyMaxHealth'",NULL);
 #endif
   {
    self->modifyMaxHealth(maxHealthModifier);
@@ -677,7 +677,7 @@ static int tolua_CLuaInterface_CCharacter_setMaxMana00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newMaxMana = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxMana'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxMana'",NULL);
 #endif
   {
    self->setMaxMana(newMaxMana);
@@ -708,7 +708,7 @@ static int tolua_CLuaInterface_CCharacter_getMaxMana00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxMana'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxMana'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getMaxMana();
@@ -742,7 +742,7 @@ static int tolua_CLuaInterface_CCharacter_modifyMaxMana00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int maxManaModifier = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyMaxMana'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'modifyMaxMana'",NULL);
 #endif
   {
    self->modifyMaxMana(maxManaModifier);
@@ -777,7 +777,7 @@ static int tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00(lua_S
   ActivityType::ActivityType activity = ((ActivityType::ActivityType) (int)  tolua_tonumber(tolua_S,2,0));
   int numTextures = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumMoveTexturesPerDirection'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumMoveTexturesPerDirection'",NULL);
 #endif
   {
    self->setNumMoveTexturesPerDirection(activity,numTextures);
@@ -816,7 +816,7 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
   int index = ((int)  tolua_tonumber(tolua_S,4,0));
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveTexture'",NULL);
 #endif
   {
    self->setMoveTexture(activity,direction,index,filename);
@@ -849,7 +849,7 @@ static int tolua_CLuaInterface_CCharacter_setLifeTexture00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLifeTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLifeTexture'",NULL);
 #endif
   {
    self->setLifeTexture(filename);
@@ -882,7 +882,7 @@ static int tolua_CLuaInterface_CCharacter_setWanderRadius00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newWanderRadius = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setWanderRadius'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setWanderRadius'",NULL);
 #endif
   {
    self->setWanderRadius(newWanderRadius);
@@ -913,7 +913,7 @@ static int tolua_CLuaInterface_CCharacter_getWanderRadius00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWanderRadius'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWanderRadius'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getWanderRadius();
@@ -947,7 +947,7 @@ static int tolua_CLuaInterface_CCharacter_setName00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   std::string newName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setName'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setName'",NULL);
 #endif
   {
    self->setName(newName);
@@ -978,7 +978,7 @@ static int tolua_CLuaInterface_CCharacter_getName00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
 #endif
   {
    std::string tolua_ret = (std::string)  self->getName();
@@ -1012,7 +1012,7 @@ static int tolua_CLuaInterface_CCharacter_setLevel00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newLevel = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLevel'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLevel'",NULL);
 #endif
   {
    self->setLevel(newLevel);
@@ -1043,7 +1043,7 @@ static int tolua_CLuaInterface_CCharacter_getLevel00(lua_State* tolua_S)
  {
   const CCharacter* self = (const CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLevel'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getLevel'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getLevel();
@@ -1077,7 +1077,7 @@ static int tolua_CLuaInterface_CCharacter_setMinDamage00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newMinDamage = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinDamage'",NULL);
 #endif
   {
    self->setMinDamage(newMinDamage);
@@ -1108,7 +1108,7 @@ static int tolua_CLuaInterface_CCharacter_getMinDamage00(lua_State* tolua_S)
  {
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMinDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMinDamage'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getMinDamage();
@@ -1142,7 +1142,7 @@ static int tolua_CLuaInterface_CCharacter_setMaxDamage00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newMaxDamage = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxDamage'",NULL);
 #endif
   {
    self->setMaxDamage(newMaxDamage);
@@ -1173,7 +1173,7 @@ static int tolua_CLuaInterface_CCharacter_getMaxDamage00(lua_State* tolua_S)
  {
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaxDamage'",NULL);
 #endif
   {
    int tolua_ret = (int)  self->getMaxDamage();
@@ -1207,7 +1207,7 @@ static int tolua_CLuaInterface_CCharacter_setArmor00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newArmor = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setArmor'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setArmor'",NULL);
 #endif
   {
    self->setArmor(newArmor);
@@ -1240,7 +1240,7 @@ static int tolua_CLuaInterface_CCharacter_setDamageModifierPoints00(lua_State* t
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newDamageModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDamageModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDamageModifierPoints'",NULL);
 #endif
   {
    self->setDamageModifierPoints(newDamageModifierPoints);
@@ -1273,7 +1273,7 @@ static int tolua_CLuaInterface_CCharacter_setHitModifierPoints00(lua_State* tolu
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newHitModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHitModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHitModifierPoints'",NULL);
 #endif
   {
    self->setHitModifierPoints(newHitModifierPoints);
@@ -1306,7 +1306,7 @@ static int tolua_CLuaInterface_CCharacter_setEvadeModifierPoints00(lua_State* to
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newEvadeModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEvadeModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEvadeModifierPoints'",NULL);
 #endif
   {
    self->setEvadeModifierPoints(newEvadeModifierPoints);
@@ -1316,6 +1316,39 @@ static int tolua_CLuaInterface_CCharacter_setEvadeModifierPoints00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setEvadeModifierPoints'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setParryModifierPoints of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setParryModifierPoints00
+static int tolua_CLuaInterface_CCharacter_setParryModifierPoints00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int newParryModifierPoitns = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setParryModifierPoints'",NULL);
+#endif
+  {
+   self->setParryModifierPoints(newParryModifierPoitns);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setParryModifierPoints'.",&tolua_err);
  return 0;
 #endif
 }
@@ -1339,7 +1372,7 @@ static int tolua_CLuaInterface_CCharacter_setBlockModifierPoints00(lua_State* to
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newBlockModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBlockModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBlockModifierPoints'",NULL);
 #endif
   {
    self->setBlockModifierPoints(newBlockModifierPoints);
@@ -1372,7 +1405,7 @@ static int tolua_CLuaInterface_CCharacter_setMeleeCriticalModifierPoints00(lua_S
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newMeleeCriticalModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMeleeCriticalModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMeleeCriticalModifierPoints'",NULL);
 #endif
   {
    self->setMeleeCriticalModifierPoints(newMeleeCriticalModifierPoints);
@@ -1407,7 +1440,7 @@ static int tolua_CLuaInterface_CCharacter_setResistElementModifierPoints00(lua_S
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int newResistElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'",NULL);
 #endif
   {
    self->setResistElementModifierPoints(elementType,newResistElementModifierPoints);
@@ -1440,7 +1473,7 @@ static int tolua_CLuaInterface_CCharacter_setResistAllModifierPoints00(lua_State
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newResistAllModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistAllModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistAllModifierPoints'",NULL);
 #endif
   {
    self->setResistAllModifierPoints(newResistAllModifierPoints);
@@ -1475,7 +1508,7 @@ static int tolua_CLuaInterface_CCharacter_setSpellEffectElementModifierPoints00(
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int newSpellEffectElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'",NULL);
 #endif
   {
    self->setSpellEffectElementModifierPoints(elementType,newSpellEffectElementModifierPoints);
@@ -1508,7 +1541,7 @@ static int tolua_CLuaInterface_CCharacter_setSpellEffectAllModifierPoints00(lua_
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newSpellEffectAllModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectAllModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectAllModifierPoints'",NULL);
 #endif
   {
    self->setSpellEffectAllModifierPoints(newSpellEffectAllModifierPoints);
@@ -1541,7 +1574,7 @@ static int tolua_CLuaInterface_CCharacter_setSpellCriticalModifierPoints00(lua_S
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newSpellCriticalModifierPoints = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCriticalModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCriticalModifierPoints'",NULL);
 #endif
   {
    self->setSpellCriticalModifierPoints(newSpellCriticalModifierPoints);
@@ -1574,7 +1607,7 @@ static int tolua_CLuaInterface_CCharacter_setHealthRegen00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newHealthRegen = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHealthRegen'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setHealthRegen'",NULL);
 #endif
   {
    self->setHealthRegen(newHealthRegen);
@@ -1607,7 +1640,7 @@ static int tolua_CLuaInterface_CCharacter_setManaRegen00(lua_State* tolua_S)
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   int newManaRegen = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManaRegen'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManaRegen'",NULL);
 #endif
   {
    self->setManaRegen(newManaRegen);
@@ -1646,7 +1679,7 @@ static int tolua_CLuaInterface_CCharacter_setBoundingBox00(lua_State* tolua_S)
   int bbw = ((int)  tolua_tonumber(tolua_S,4,0));
   int bbh = ((int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBoundingBox'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBoundingBox'",NULL);
 #endif
   {
    self->setBoundingBox(bbx,bby,bbw,bbh);
@@ -1679,7 +1712,7 @@ static int tolua_CLuaInterface_CCharacter_setUseBoundingBox00(lua_State* tolua_S
   CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
   bool use = ((bool)  tolua_toboolean(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUseBoundingBox'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUseBoundingBox'",NULL);
 #endif
   {
    self->setUseBoundingBox(use);
@@ -1714,7 +1747,7 @@ static int tolua_CLuaInterface_CCharacter_addItemToLootTable00(lua_State* tolua_
   Item* item = ((Item*)  tolua_tousertype(tolua_S,2,0));
   double dropChance = ((double)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addItemToLootTable'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addItemToLootTable'",NULL);
 #endif
   {
    self->addItemToLootTable(item,dropChance);
@@ -1751,7 +1784,7 @@ static int tolua_CLuaInterface_CCharacter_setCoinDrop00(lua_State* tolua_S)
   int maxCoinDrop = ((int)  tolua_tonumber(tolua_S,3,0));
   double dropChance = ((double)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCoinDrop'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCoinDrop'",NULL);
 #endif
   {
    self->setCoinDrop(minCoinDrop,maxCoinDrop,dropChance);
@@ -1786,7 +1819,7 @@ static int tolua_CLuaInterface_CCharacter_setPosition00(lua_State* tolua_S)
   int xpos = ((int)  tolua_tonumber(tolua_S,2,0));
   int ypos = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'",NULL);
 #endif
   {
    self->setPosition(xpos,ypos);
@@ -1819,7 +1852,7 @@ static int tolua_CLuaInterface_Item_setDescription00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   std::string description = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDescription'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDescription'",NULL);
 #endif
   {
    self->setDescription(description);
@@ -1854,7 +1887,7 @@ static int tolua_CLuaInterface_Item_setStats00(lua_State* tolua_S)
   StatsType::StatsType statsType = ((StatsType::StatsType) (int)  tolua_tonumber(tolua_S,2,0));
   int amount = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStats'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStats'",NULL);
 #endif
   {
    self->setStats(statsType,amount);
@@ -1889,7 +1922,7 @@ static int tolua_CLuaInterface_Item_setResistElementModifierPoints00(lua_State* 
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int resistModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'",NULL);
 #endif
   {
    self->setResistElementModifierPoints(elementType,resistModifierPoints);
@@ -1924,7 +1957,7 @@ static int tolua_CLuaInterface_Item_setSpellEffectElementModifierPoints00(lua_St
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int spellEffectElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'",NULL);
 #endif
   {
    self->setSpellEffectElementModifierPoints(elementType,spellEffectElementModifierPoints);
@@ -1957,7 +1990,7 @@ static int tolua_CLuaInterface_Item_setMinDamage00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   int minDamage = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMinDamage'",NULL);
 #endif
   {
    self->setMinDamage(minDamage);
@@ -1990,7 +2023,7 @@ static int tolua_CLuaInterface_Item_setMaxDamage00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   int maxDamage = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxDamage'",NULL);
 #endif
   {
    self->setMaxDamage(maxDamage);
@@ -2023,7 +2056,7 @@ static int tolua_CLuaInterface_Item_setLevelReq00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   int levelReq = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLevelReq'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLevelReq'",NULL);
 #endif
   {
    self->setLevelReq(levelReq);
@@ -2056,7 +2089,7 @@ static int tolua_CLuaInterface_Item_setValue00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   int newValue = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setValue'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setValue'",NULL);
 #endif
   {
    self->setValue(newValue);
@@ -2089,7 +2122,7 @@ static int tolua_CLuaInterface_Item_setSpellCharges00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   int newSpellCharges = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCharges'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCharges'",NULL);
 #endif
   {
    self->setSpellCharges(newSpellCharges);
@@ -2122,7 +2155,7 @@ static int tolua_CLuaInterface_Item_setSpell00(lua_State* tolua_S)
   Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
   CSpell* newSpell = ((CSpell*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpell'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpell'",NULL);
 #endif
   {
    self->setSpell(newSpell);
@@ -2161,7 +2194,7 @@ static int tolua_CLuaInterface_InteractionPoint_setPosition00(lua_State* tolua_S
   int width = ((int)  tolua_tonumber(tolua_S,4,0));
   int height = ((int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'",NULL);
 #endif
   {
    self->setPosition(posX,posY,width,height);
@@ -2194,7 +2227,7 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionType00(lua_State* 
   InteractionPoint* self = (InteractionPoint*)  tolua_tousertype(tolua_S,1,0);
   InteractionType::InteractionType interactionType = ((InteractionType::InteractionType) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionType'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionType'",NULL);
 #endif
   {
    self->setInteractionType(interactionType);
@@ -2227,7 +2260,7 @@ static int tolua_CLuaInterface_InteractionPoint_setBackgroundTexture00(lua_State
   InteractionPoint* self = (InteractionPoint*)  tolua_tousertype(tolua_S,1,0);
   std::string texturename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBackgroundTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setBackgroundTexture'",NULL);
 #endif
   {
    self->setBackgroundTexture(texturename);
@@ -2260,7 +2293,7 @@ static int tolua_CLuaInterface_InteractionPoint_setInteractionCode00(lua_State* 
   InteractionPoint* self = (InteractionPoint*)  tolua_tousertype(tolua_S,1,0);
   std::string interactionCode = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionCode'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInteractionCode'",NULL);
 #endif
   {
    self->setInteractionCode(interactionCode);
@@ -2299,7 +2332,7 @@ static int tolua_CLuaInterface_InteractionRegion_setPosition00(lua_State* tolua_
   int width = ((int)  tolua_tonumber(tolua_S,4,0));
   int height = ((int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'",NULL);
 #endif
   {
    self->setPosition(left,bottom,width,height);
@@ -2332,7 +2365,7 @@ static int tolua_CLuaInterface_InteractionRegion_setOnEnterText00(lua_State* tol
   InteractionRegion* self = (InteractionRegion*)  tolua_tousertype(tolua_S,1,0);
   std::string enterCode = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnEnterText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnEnterText'",NULL);
 #endif
   {
    self->setOnEnterText(enterCode);
@@ -2365,7 +2398,7 @@ static int tolua_CLuaInterface_InteractionRegion_setOnLeaveText00(lua_State* tol
   InteractionRegion* self = (InteractionRegion*)  tolua_tousertype(tolua_S,1,0);
   std::string leaveCode = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnLeaveText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnLeaveText'",NULL);
 #endif
   {
    self->setOnLeaveText(leaveCode);
@@ -2398,7 +2431,7 @@ static int tolua_CLuaInterface_LuaCallIndirection_setExecuteText00(lua_State* to
   LuaCallIndirection* self = (LuaCallIndirection*)  tolua_tousertype(tolua_S,1,0);
   std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExecuteText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExecuteText'",NULL);
 #endif
   {
    self->setExecuteText(text);
@@ -2431,7 +2464,7 @@ static int tolua_CLuaInterface_CNPC_addOnDieEventHandler00(lua_State* tolua_S)
   CNPC* self = (CNPC*)  tolua_tousertype(tolua_S,1,0);
   CallIndirection* eventHandler = ((CallIndirection*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addOnDieEventHandler'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addOnDieEventHandler'",NULL);
 #endif
   {
    self->addOnDieEventHandler(eventHandler);
@@ -2464,7 +2497,7 @@ static int tolua_CLuaInterface_CNPC_setAttitude00(lua_State* tolua_S)
   CNPC* self = (CNPC*)  tolua_tousertype(tolua_S,1,0);
   Attitude::Attitude attitude = ((Attitude::Attitude) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAttitude'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAttitude'",NULL);
 #endif
   {
    self->setAttitude(attitude);
@@ -2495,7 +2528,7 @@ static int tolua_CLuaInterface_Player_getSaveText00(lua_State* tolua_S)
  {
   Player* self = (Player*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSaveText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSaveText'",NULL);
 #endif
   {
    std::string tolua_ret = (std::string)  self->getSaveText();
@@ -2529,7 +2562,7 @@ static int tolua_CLuaInterface_TextWindow_setText00(lua_State* tolua_S)
   TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
   std::string text = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setText'",NULL);
 #endif
   {
    self->setText(text);
@@ -2562,7 +2595,7 @@ static int tolua_CLuaInterface_TextWindow_setAutocloseTime00(lua_State* tolua_S)
   TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
   int autocloseTime = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAutocloseTime'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAutocloseTime'",NULL);
 #endif
   {
    self->setAutocloseTime(autocloseTime);
@@ -2599,7 +2632,7 @@ static int tolua_CLuaInterface_TextWindow_setPosition00(lua_State* tolua_S)
   int x = ((int)  tolua_tonumber(tolua_S,3,0));
   int y = ((int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setPosition'",NULL);
 #endif
   {
    self->setPosition(tolua_var_1,x,y);
@@ -2632,7 +2665,7 @@ static int tolua_CLuaInterface_TextWindow_setOnCloseText00(lua_State* tolua_S)
   TextWindow* self = (TextWindow*)  tolua_tousertype(tolua_S,1,0);
   std::string onCloseText = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnCloseText'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setOnCloseText'",NULL);
 #endif
   {
    self->setOnCloseText(onCloseText);
@@ -2663,7 +2696,7 @@ static int tolua_CLuaInterface_Shop_toggle00(lua_State* tolua_S)
  {
   Shop* self = (Shop*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toggle'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'toggle'",NULL);
 #endif
   {
    self->toggle();
@@ -2696,7 +2729,7 @@ static int tolua_CLuaInterface_Shop_addItem00(lua_State* tolua_S)
   Shop* self = (Shop*)  tolua_tousertype(tolua_S,1,0);
   Item* item = ((Item*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addItem'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addItem'",NULL);
 #endif
   {
    self->addItem(item);
@@ -2729,7 +2762,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setCastTime00(lua_State* tolua_
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   int newCastTime = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCastTime'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCastTime'",NULL);
 #endif
   {
    self->setCastTime(newCastTime);
@@ -2762,7 +2795,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setCooldown00(lua_State* tolua_
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   int newCooldown = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCooldown'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCooldown'",NULL);
 #endif
   {
    self->setCooldown(newCooldown);
@@ -2795,7 +2828,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setManaCost00(lua_State* tolua_
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   int newManaCost = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManaCost'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setManaCost'",NULL);
 #endif
   {
    self->setManaCost(newManaCost);
@@ -2828,7 +2861,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setName00(lua_State* tolua_S)
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   std::string newName = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setName'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setName'",NULL);
 #endif
   {
    self->setName(newName);
@@ -2861,7 +2894,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setInfo00(lua_State* tolua_S)
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   std::string newInfo = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInfo'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInfo'",NULL);
 #endif
   {
    self->setInfo(newInfo);
@@ -2894,7 +2927,7 @@ static int tolua_CLuaInterface_ConfigurableSpell_setSpellSymbol00(lua_State* tol
   ConfigurableSpell* self = (ConfigurableSpell*)  tolua_tousertype(tolua_S,1,0);
   std::string symbolFile = ((std::string)  tolua_tocppstring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellSymbol'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellSymbol'",NULL);
 #endif
   {
    self->setSpellSymbol(symbolFile);
@@ -2931,7 +2964,7 @@ static int tolua_CLuaInterface_GeneralDamageSpell_setDirectDamage00(lua_State* t
   int newMaxDirectDamage = ((int)  tolua_tonumber(tolua_S,3,0));
   ElementType::ElementType newElementDirect = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDirectDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDirectDamage'",NULL);
 #endif
   {
    self->setDirectDamage(newMinDirectDamage,newMaxDirectDamage,newElementDirect);
@@ -2970,7 +3003,7 @@ static int tolua_CLuaInterface_GeneralDamageSpell_setContinuousDamage00(lua_Stat
   int newContDamageTime = ((int)  tolua_tonumber(tolua_S,4,0));
   ElementType::ElementType newContDamageElement = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setContinuousDamage'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setContinuousDamage'",NULL);
 #endif
   {
    self->setContinuousDamage(newMinContDamagePerSec,newMaxContDamagePerSec,newContDamageTime,newContDamageElement);
@@ -3003,7 +3036,7 @@ static int tolua_CLuaInterface_GeneralRayDamageSpell_setNumAnimations00(lua_Stat
   GeneralRayDamageSpell* self = (GeneralRayDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int count = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'",NULL);
 #endif
   {
    self->setNumAnimations(count);
@@ -3038,7 +3071,7 @@ static int tolua_CLuaInterface_GeneralRayDamageSpell_setAnimationTexture00(lua_S
   int num = ((int)  tolua_tonumber(tolua_S,2,0));
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAnimationTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAnimationTexture'",NULL);
 #endif
   {
    self->setAnimationTexture(num,filename);
@@ -3071,7 +3104,7 @@ static int tolua_CLuaInterface_GeneralBoltDamageSpell_setMoveSpeed00(lua_State* 
   GeneralBoltDamageSpell* self = (GeneralBoltDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int newMoveSpeed = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveSpeed'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveSpeed'",NULL);
 #endif
   {
    self->setMoveSpeed(newMoveSpeed);
@@ -3104,7 +3137,7 @@ static int tolua_CLuaInterface_GeneralBoltDamageSpell_setExpireTime00(lua_State*
   GeneralBoltDamageSpell* self = (GeneralBoltDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int newExpireTime = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExpireTime'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExpireTime'",NULL);
 #endif
   {
    self->setExpireTime(newExpireTime);
@@ -3137,7 +3170,7 @@ static int tolua_CLuaInterface_GeneralBoltDamageSpell_setNumAnimations00(lua_Sta
   GeneralBoltDamageSpell* self = (GeneralBoltDamageSpell*)  tolua_tousertype(tolua_S,1,0);
   int count = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'",NULL);
 #endif
   {
    self->setNumAnimations(count);
@@ -3172,7 +3205,7 @@ static int tolua_CLuaInterface_GeneralBoltDamageSpell_setAnimationTexture00(lua_
   int num = ((int)  tolua_tonumber(tolua_S,2,0));
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAnimationTexture'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAnimationTexture'",NULL);
 #endif
   {
    self->setAnimationTexture(num,filename);
@@ -3205,7 +3238,7 @@ static int tolua_CLuaInterface_GeneralHealingSpell_setEffectType00(lua_State* to
   GeneralHealingSpell* self = (GeneralHealingSpell*)  tolua_tousertype(tolua_S,1,0);
   EffectType::EffectType newEffectType = ((EffectType::EffectType) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffectType'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffectType'",NULL);
 #endif
   {
    self->setEffectType(newEffectType);
@@ -3242,7 +3275,7 @@ static int tolua_CLuaInterface_GeneralHealingSpell_setDirectHealing00(lua_State*
   int healEffectMax = ((int)  tolua_tonumber(tolua_S,3,0));
   ElementType::ElementType healEffectElement = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDirectHealing'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDirectHealing'",NULL);
 #endif
   {
    self->setDirectHealing(healEffectMin,healEffectMax,healEffectElement);
@@ -3281,7 +3314,7 @@ static int tolua_CLuaInterface_GeneralHealingSpell_setContinuousHealing00(lua_St
   int continuousHealingTime = ((int)  tolua_tonumber(tolua_S,4,0));
   ElementType::ElementType elementContinuous = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setContinuousHealing'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setContinuousHealing'",NULL);
 #endif
   {
    self->setContinuousHealing(minContinuousHealingPerSecond,maxContinuousHealingPerSecond,continuousHealingTime,elementContinuous);
@@ -3314,7 +3347,7 @@ static int tolua_CLuaInterface_GeneralBuffSpell_setEffectType00(lua_State* tolua
   GeneralBuffSpell* self = (GeneralBuffSpell*)  tolua_tousertype(tolua_S,1,0);
   EffectType::EffectType newEffectType = ((EffectType::EffectType) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffectType'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffectType'",NULL);
 #endif
   {
    self->setEffectType(newEffectType);
@@ -3347,7 +3380,7 @@ static int tolua_CLuaInterface_GeneralBuffSpell_setDuration00(lua_State* tolua_S
   GeneralBuffSpell* self = (GeneralBuffSpell*)  tolua_tousertype(tolua_S,1,0);
   int newDuration = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDuration'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDuration'",NULL);
 #endif
   {
    self->setDuration(newDuration);
@@ -3382,7 +3415,7 @@ static int tolua_CLuaInterface_GeneralBuffSpell_setStats00(lua_State* tolua_S)
   StatsType::StatsType statsType = ((StatsType::StatsType) (int)  tolua_tonumber(tolua_S,2,0));
   int amount = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStats'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setStats'",NULL);
 #endif
   {
    self->setStats(statsType,amount);
@@ -3417,7 +3450,7 @@ static int tolua_CLuaInterface_GeneralBuffSpell_setResistElementModifierPoints00
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int resistModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setResistElementModifierPoints'",NULL);
 #endif
   {
    self->setResistElementModifierPoints(elementType,resistModifierPoints);
@@ -3452,7 +3485,7 @@ static int tolua_CLuaInterface_GeneralBuffSpell_setSpellEffectElementModifierPoi
   ElementType::ElementType elementType = ((ElementType::ElementType) (int)  tolua_tonumber(tolua_S,2,0));
   int spellEffectElementModifierPoints = ((int)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellEffectElementModifierPoints'",NULL);
 #endif
   {
    self->setSpellEffectElementModifierPoints(elementType,spellEffectElementModifierPoints);
@@ -3484,7 +3517,7 @@ static int tolua_CLuaInterface_DawnInterface_createNewMobType00(lua_State* tolua
   std::string typeID = ((std::string)  tolua_tocppstring(tolua_S,1,0));
   {
    CCharacter* tolua_ret = (CCharacter*)  DawnInterface::createNewMobType(typeID);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCharacter");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCharacter");
   }
  }
  return 1;
@@ -3529,7 +3562,7 @@ static int tolua_CLuaInterface_DawnInterface_createNewItem00(lua_State* tolua_S)
   WeaponType::WeaponType weaponType = ((WeaponType::WeaponType) (int)  tolua_tonumber(tolua_S,9,0));
   {
    Item* tolua_ret = (Item*)  DawnInterface::createNewItem(name,sizeX,sizeY,symbolFile,itemQuality,equipPosition,itemType,armorType,weaponType);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Item");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Item");
   }
  }
  return 1;
@@ -3594,7 +3627,7 @@ static int tolua_CLuaInterface_DawnInterface_addMobSpawnPoint00(lua_State* tolua
   int do_respawn = ((int)  tolua_tonumber(tolua_S,5,0));
   {
    CNPC* tolua_ret = (CNPC*)  DawnInterface::addMobSpawnPoint(mobID,x_pos,y_pos,respawn_rate,do_respawn);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CNPC");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CNPC");
   }
  }
  return 1;
@@ -3649,7 +3682,7 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralRayDamageSpell00(lua_S
  {
   {
    GeneralRayDamageSpell* tolua_ret = (GeneralRayDamageSpell*)  DawnInterface::createGeneralRayDamageSpell();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralRayDamageSpell");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralRayDamageSpell");
   }
  }
  return 1;
@@ -3676,7 +3709,7 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralBoltDamageSpell00(lua_
  {
   {
    GeneralBoltDamageSpell* tolua_ret = (GeneralBoltDamageSpell*)  DawnInterface::createGeneralBoltDamageSpell();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBoltDamageSpell");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBoltDamageSpell");
   }
  }
  return 1;
@@ -3703,7 +3736,7 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00(lua_Sta
  {
   {
    GeneralHealingSpell* tolua_ret = (GeneralHealingSpell*)  DawnInterface::createGeneralHealingSpell();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralHealingSpell");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralHealingSpell");
   }
  }
  return 1;
@@ -3730,7 +3763,7 @@ static int tolua_CLuaInterface_DawnInterface_createGeneralBuffSpell00(lua_State*
  {
   {
    GeneralBuffSpell* tolua_ret = (GeneralBuffSpell*)  DawnInterface::createGeneralBuffSpell();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBuffSpell");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBuffSpell");
   }
  }
  return 1;
@@ -3785,7 +3818,7 @@ static int tolua_CLuaInterface_DawnInterface_addInteractionPoint00(lua_State* to
  {
   {
    InteractionPoint* tolua_ret = (InteractionPoint*)  DawnInterface::addInteractionPoint();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
   }
  }
  return 1;
@@ -3814,7 +3847,7 @@ static int tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00(lua_
   CCharacter* character = ((CCharacter*)  tolua_tousertype(tolua_S,1,0));
   {
    InteractionPoint* tolua_ret = (InteractionPoint*)  DawnInterface::addCharacterInteractionPoint(character);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
   }
  }
  return 1;
@@ -3841,7 +3874,7 @@ static int tolua_CLuaInterface_DawnInterface_addInteractionRegion00(lua_State* t
  {
   {
    InteractionRegion* tolua_ret = (InteractionRegion*)  DawnInterface::addInteractionRegion();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
   }
  }
  return 1;
@@ -3870,7 +3903,7 @@ static int tolua_CLuaInterface_DawnInterface_createTextWindow00(lua_State* tolua
   bool destroyAfterClose = ((bool)  tolua_toboolean(tolua_S,1,0));
   {
    TextWindow* tolua_ret = (TextWindow*)  DawnInterface::createTextWindow(destroyAfterClose);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"TextWindow");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"TextWindow");
   }
  }
  return 1;
@@ -3953,7 +3986,7 @@ static int tolua_CLuaInterface_DawnInterface_createEventHandler00(lua_State* tol
  {
   {
    LuaCallIndirection* tolua_ret = (LuaCallIndirection*)  DawnInterface::createEventHandler();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"LuaCallIndirection");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"LuaCallIndirection");
   }
  }
  return 1;
@@ -4068,7 +4101,7 @@ static int tolua_CLuaInterface_DawnInterface_addShop00(lua_State* tolua_S)
  {
   {
    Shop* tolua_ret = (Shop*)  DawnInterface::addShop();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Shop");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Shop");
   }
  }
  return 1;
@@ -4182,7 +4215,7 @@ static int tolua_CLuaInterface_DawnInterface_getPlayer00(lua_State* tolua_S)
  {
   {
    Player* tolua_ret = (Player*)  DawnInterface::getPlayer();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Player");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Player");
   }
  }
  return 1;
@@ -4651,7 +4684,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreCharacterReference00(lua_Sta
   int posInArray = ((int)  tolua_tonumber(tolua_S,2,0));
   {
    CCharacter* tolua_ret = (CCharacter*)  DawnInterface::restoreCharacterReference(zoneName,posInArray);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCharacter");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCharacter");
   }
  }
  return 1;
@@ -4682,7 +4715,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreInteractionPointReference00(
   int posInArray = ((int)  tolua_tonumber(tolua_S,2,0));
   {
    InteractionPoint* tolua_ret = (InteractionPoint*)  DawnInterface::restoreInteractionPointReference(zoneName,posInArray);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionPoint");
   }
  }
  return 1;
@@ -4713,7 +4746,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreInteractionRegionReference00
   int posInArray = ((int)  tolua_tonumber(tolua_S,2,0));
   {
    InteractionRegion* tolua_ret = (InteractionRegion*)  DawnInterface::restoreInteractionRegionReference(zoneName,posInArray);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"InteractionRegion");
   }
  }
  return 1;
@@ -4744,7 +4777,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreEventHandlerReference00(lua_
   int posInArray = ((int)  tolua_tonumber(tolua_S,2,0));
   {
    CallIndirection* tolua_ret = (CallIndirection*)  DawnInterface::restoreEventHandlerReference(zoneName,posInArray);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CallIndirection");
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"CallIndirection");
   }
  }
  return 1;
@@ -4883,6 +4916,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setDamageModifierPoints",tolua_CLuaInterface_CCharacter_setDamageModifierPoints00);
    tolua_function(tolua_S,"setHitModifierPoints",tolua_CLuaInterface_CCharacter_setHitModifierPoints00);
    tolua_function(tolua_S,"setEvadeModifierPoints",tolua_CLuaInterface_CCharacter_setEvadeModifierPoints00);
+   tolua_function(tolua_S,"setParryModifierPoints",tolua_CLuaInterface_CCharacter_setParryModifierPoints00);
    tolua_function(tolua_S,"setBlockModifierPoints",tolua_CLuaInterface_CCharacter_setBlockModifierPoints00);
    tolua_function(tolua_S,"setMeleeCriticalModifierPoints",tolua_CLuaInterface_CCharacter_setMeleeCriticalModifierPoints00);
    tolua_function(tolua_S,"setResistElementModifierPoints",tolua_CLuaInterface_CCharacter_setResistElementModifierPoints00);
@@ -4911,6 +4945,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"DamageModifier",StatsType::DamageModifier);
    tolua_constant(tolua_S,"HitModifier",StatsType::HitModifier);
    tolua_constant(tolua_S,"EvadeModifier",StatsType::EvadeModifier);
+   tolua_constant(tolua_S,"ParryModifier",StatsType::ParryModifier);
    tolua_constant(tolua_S,"BlockModifier",StatsType::BlockModifier);
    tolua_constant(tolua_S,"MeleeCritical",StatsType::MeleeCritical);
    tolua_constant(tolua_S,"SpellCritical",StatsType::SpellCritical);

@@ -82,6 +82,7 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 	maxDamageModifier = std::numeric_limits<double>::max();
 	maxHitChance = 1.0;
 	maxEvadeChance = 0.5;
+	maxParryChance = 0.5;
 	maxDamageReductionModifier = 0.75;
 	maxBlockChance = 0.6;
 	maxMeleeCriticalChance = 0.5;
@@ -135,6 +136,16 @@ double StatsSystem::complexGetEvadeChance( int myLevel, int myEvadeModifierPoint
 	                          maxStatsPointsForLevel[ myLevel ],
 	                          maxStatsPointsForLevel[ opponentLevel ],
 	                          maxEvadeChance );
+}
+
+double StatsSystem::complexGetParryChance( int myLevel, int myParryModifierPoints, int opponentLevel ) const
+{
+	assert( myLevel <= maxLevel && opponentLevel <= maxLevel );
+
+	return getModifierCommon( myParryModifierPoints,
+	                          maxStatsPointsForLevel[ myLevel ],
+	                          maxStatsPointsForLevel[ opponentLevel ],
+	                          maxParryChance );
 }
 
 double StatsSystem::complexGetDamageReductionModifier( int myLevel, int myDamageReductionPoints, int opponentLevel ) const
@@ -205,6 +216,11 @@ int StatsSystem::calculateHitModifierPoints( const CCharacter *character ) const
 }
 
 int StatsSystem::calculateEvadeModifierPoints( const CCharacter *character ) const
+{
+	return ( character->getModifiedDexterity() / 4 );
+}
+
+int StatsSystem::calculateParryModifierPoints( const CCharacter *character ) const
 {
 	return ( character->getModifiedDexterity() / 4 );
 }

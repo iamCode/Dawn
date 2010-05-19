@@ -88,6 +88,7 @@ class CCharacter {
     void setDamageModifierPoints( int newDamageModifierPoints );
     void setHitModifierPoints( int newHitModifierPoints );
     void setEvadeModifierPoints( int newEvadeModifierPoints );
+    void setParryModifierPoints( int newParryModifierPoitns );
     void setBlockModifierPoints( int newBlockModifierPoints );
 	void setMeleeCriticalModifierPoints( int newMeleeCriticalModifierPoints );
 	void setResistElementModifierPoints( ElementType::ElementType elementType, int newResistElementModifierPoints );
@@ -122,6 +123,7 @@ namespace StatsType
         DamageModifier,
         HitModifier,
         EvadeModifier,
+		ParryModifier,
         BlockModifier,
         MeleeCritical,
         SpellCritical,

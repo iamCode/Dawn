@@ -86,6 +86,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setDamageModifierPoints( other->getDamageModifierPoints() );
 	setHitModifierPoints( other->getHitModifierPoints() );
 	setEvadeModifierPoints( other->getEvadeModifierPoints() );
+	setParryModifierPoints( other->getParryModifierPoints() );
 	setBlockModifierPoints( other->getBlockModifierPoints() );
 	setMeleeCriticalModifierPoints( other->getMeleeCriticalModifierPoints() );
 	setResistAllModifierPoints( other->getResistAllModifierPoints() );
@@ -217,6 +218,26 @@ uint16_t CCharacter::getEvadeModifierPoints() const
 void CCharacter::modifyEvadeModifierPoints( int16_t evadeModifierPointsModifier )
 {
 	setEvadeModifierPoints( getModifiedAttributeValue( evadeModifierPoints, evadeModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setParryModifierPoints( uint16_t newParryModifierPoints )
+{
+	parryModifierPoints = newParryModifierPoints;
+}
+
+uint16_t CCharacter::getModifiedParryModifierPoints() const
+{
+	return getParryModifierPoints() + StatsSystem::getStatsSystem()->calculateParryModifierPoints( this );
+}
+
+uint16_t CCharacter::getParryModifierPoints() const
+{
+	return parryModifierPoints;
+}
+
+void CCharacter::modifyParryModifierPoints( int16_t parryModifierPointsModifier )
+{
+	setParryModifierPoints( getModifiedAttributeValue( parryModifierPoints, parryModifierPointsModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 void CCharacter::setBlockModifierPoints( uint16_t newBlockModifierPoints )
