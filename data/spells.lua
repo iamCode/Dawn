@@ -201,7 +201,7 @@ spellDatabase["melee"] = curSpell;
 curSpell:setName("Melee");
 curSpell:setDamageBonus( 1.0 );
 curSpell:setCooldown( 2 );
-curSpell:setSpellSymbol( "data/spells/vortex/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
