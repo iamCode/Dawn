@@ -442,7 +442,6 @@ void GeneralRayDamageSpell::startEffect()
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
-	unbindFromCreator();
 }
 
 void GeneralRayDamageSpell::inEffect()
@@ -588,7 +587,6 @@ void GeneralBoltDamageSpell::startEffect()
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
-	unbindFromCreator();
 }
 
 void GeneralBoltDamageSpell::inEffect()
@@ -771,7 +769,6 @@ void GeneralHealingSpell::startEffect()
 
     creator->addActiveSpell( cast( NULL, NULL ) );
     creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
-	unbindFromCreator();
 }
 
 void GeneralHealingSpell::inEffect()
@@ -900,7 +897,6 @@ void GeneralBuffSpell::startEffect()
 {
 	creator->addActiveSpell( cast( NULL, NULL ) );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
-	unbindFromCreator();
 	markSpellActionAsFinished();
 }
 
@@ -939,44 +935,7 @@ void MeleeDamageAction::setDamageBonus( double damageBonus )
     this->damageBonus = damageBonus;
 }
 
-double MeleeDamageAction::getProgress() const
-{
-    uint32_t curTime = SDL_GetTicks();
-    return ((curTime - effectStart) / 5.0)/90.0;
-}
-
-EffectType::EffectType MeleeDamageAction::getEffectType() const
-{
-	return EffectType::SingleTargetSpell;
-}
-
-void MeleeDamageAction::startEffect()
-{
-	effectStart = SDL_GetTicks();
-	curArc = -45.0;
-    damageCaused = false;
-
-	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
-	unbindFromCreator();
-}
-
-void MeleeDamageAction::inEffect()
-{
-    uint32_t curTime = SDL_GetTicks();
-    curArc = -45.0 + (curTime - effectStart) / 5;
-
-
-    if ( curArc > 45.0 ) {
-        curArc = 45.0;
-        finishEffect();
-    }
-}
-
-void MeleeDamageAction::drawEffect()
-{
-}
-
-void MeleeDamageAction::finishEffect()
+void MeleeDamageAction::dealDamage()
 {
     double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
     if ( distance <= 120 ) {
@@ -1012,6 +971,41 @@ void MeleeDamageAction::finishEffect()
             }
         }
     }
+}
+
+double MeleeDamageAction::getProgress() const
+{
+    uint32_t curTime = SDL_GetTicks();
+    return ( ( curTime - effectStart ) / 650.0 );
+}
+
+EffectType::EffectType MeleeDamageAction::getEffectType() const
+{
+	return EffectType::SingleTargetSpell;
+}
+
+void MeleeDamageAction::startEffect()
+{
+	effectStart = SDL_GetTicks();
+
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+}
+
+void MeleeDamageAction::inEffect()
+{
+    if ( getProgress() >= 1.0 )
+    {
+        finishEffect();
+    }
+}
+
+void MeleeDamageAction::drawEffect()
+{
+}
+
+void MeleeDamageAction::finishEffect()
+{
+    dealDamage();
     markSpellActionAsFinished();
 }
 

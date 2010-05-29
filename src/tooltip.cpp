@@ -583,6 +583,7 @@ void spellTooltip::getParentText()
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
     GLfloat blue[] = { 0.3f, 0.3f, 1.0f };
     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
+    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
 
     // name of the spell
     addTooltipText( white, 14, parent->getName() );
@@ -592,8 +593,15 @@ void spellTooltip::getParentText()
     //damage, damagetype (direct damage, damage over time) and damageschool (physical, fire, etc..)
     // not added yet.
 
-    // display mana-cost
-    addTooltipText( blue, 12, "Mana: %d", parent->getSpellCost() );
+    // display mana or fatigue-cost, if any.
+    if ( parent->getSpellCost() > 0 )
+    {
+        if ( dynamic_cast<CSpell*>( parent ) != NULL ) {
+            addTooltipText( blue, 12, "Mana: %d", parent->getSpellCost() );
+        } else if ( dynamic_cast<CAction*>( parent ) != NULL ) {
+            addTooltipText( yellow, 12, "Fatigue: %d", parent->getSpellCost() );
+        }
+    }
 
     // display duration if we have any
     if ( parent->getDuration() > 0 ) {

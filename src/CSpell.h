@@ -397,8 +397,6 @@ class MeleeDamageAction : public ConfigurableAction
         friend CSpellActionBase* SpellCreation::getMeleeDamageAction();
 		CCharacter *target;
 		uint32_t effectStart;
-		bool damageCaused;
-        double curArc;
 		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
 };
 

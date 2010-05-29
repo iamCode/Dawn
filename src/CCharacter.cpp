@@ -22,7 +22,6 @@
 #include "CSpell.h"
 #include "CInterface.h"
 #include "GroundLoot.h"
-#include "CAction.h"
 #include "StatsSystem.h"
 #include "CZone.h"
 
