@@ -103,6 +103,20 @@ void CCharacter::baseOnType( std::string otherName )
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
+
+	///
+	///
+	///
+	///
+	///
+	///
+	spellbookX = other->spellbookX;
+	///
+	///
+	///
+	///
+	///
+	///
 }
 
 std::string CCharacter::getClassID() const
@@ -127,6 +141,16 @@ AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierT
 		return maxValue;
 	else
 		return (attributeValue + modifier);
+}
+
+CCharacter* CCharacter::getTarget() const
+{
+	return target;
+}
+
+void CCharacter::setTarget( CCharacter *target )
+{
+    this->target = target;
 }
 
 std::string CCharacter::getName() const
@@ -1396,6 +1420,12 @@ bool CCharacter::CheckMouseOver(int _x_pos, int _y_pos)
 bool CCharacter::isPlayer() const
 {
 	return false;
+}
+
+void CCharacter::inscribeSpellInSpellbook( CSpellActionBase *spell )
+{
+    assert( spell != NULL );
+    spellbookX.push_back( spell );
 }
 
 void CCharacter::addActiveSpell( CSpellActionBase *spell )

@@ -18,7 +18,6 @@
 
 #include "CNPC.h"
 #include "Player.h"
-#include "CAction.h"
 #include "CLuaInterface.h"
 #include "callindirection.h"
 
@@ -40,6 +39,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	direction_texture = S;
 	attitudeTowardsPlayer = Attitude::NEUTRAL;
 	chasingPlayer = false;
+	setTarget( NULL );
 	markedAsDeleted = false;
 }
 
@@ -75,6 +75,7 @@ Direction CNPC::GetDirection()
 void CNPC::Damage(int amount, bool criticalHit)
 {
 	chasingPlayer = true;
+	setTarget( &character );
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -94,8 +95,8 @@ void CNPC::Draw()
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {
-		int drawX = x_pos;
-		int drawY = y_pos;
+		int drawX = getXPos();
+		int drawY = getYPos();
 		if ( getUseBoundingBox() ) {
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
@@ -109,6 +110,7 @@ void CNPC::Respawn()
 	if (alive == false && do_respawn == true) {
 		respawn_thisframe = SDL_GetTicks();
 		if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
+			setTarget( NULL );
 			alive = true;
 			chasingPlayer = false;
 			x_pos = x_spawn_pos;
@@ -159,12 +161,28 @@ void CNPC::Move()
     if ( distance < 200 && getAttitude() == Attitude::HOSTILE )
     {
         chasingPlayer = true;
+        setTarget( &character );
     }
 
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
-//			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
+            for ( size_t spellIndex = 0; spellIndex < spellbookX.size(); spellIndex++ ) {
+                CSpellActionBase *curAction = NULL;
+
+                EffectType::EffectType effectType = spellbookX[spellIndex]->getEffectType();
+
+                if ( effectType == EffectType::SingleTargetSpell
+                         && getTarget() != NULL ) {
+                    curAction = spellbookX[spellIndex]->cast( this, getTarget() );
+                } else if ( effectType == EffectType::SelfAffectingSpell ) {
+                    curAction = spellbookX[spellIndex]->cast( this, this );
+                }
+
+                if ( curAction != NULL ) {
+                    castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+                }
+            }
 		}
 	}
 

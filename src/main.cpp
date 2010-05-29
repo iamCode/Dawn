@@ -62,7 +62,6 @@
 #include "GroundLoot.h"
 #include "CLuaFunctions.h"
 #include "CSpell.h"
-#include "CAction.h"
 #include "debug.h"
 #include "CharacterInfoScreen.h"
 #include "item.h"
@@ -115,7 +114,8 @@ extern std::vector<TextWindow*> allTextWindows;
 
 std::vector<FramesBase*> activeFrames;
 
-bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
+bool KP_interrupt = false;
+bool KP_select_next = false;
 bool KP_screenshot = false;
 bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
@@ -717,8 +717,6 @@ bool dawn_init(int argc, char** argv)
         actionBar->initFonts();
         GUI.initFonts();
 
-//		ActionCreation::initActions();
-
 		return true;
 }
 
@@ -1083,18 +1081,6 @@ void game_loop()
 
             if (!keys[SDLK_5]) {
                 KP_interrupt = false;
-            }
-
-            if (keys[SDLK_SPACE] && !KP_attack) {
-                KP_attack = true;
-                if ( character.getTarget() != NULL ) {
-//                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-  //                  character.executeAction(action);
-                }
-            }
-
-            if (!keys[SDLK_SPACE]) {
-                KP_attack = false;
             }
         }
         DrawScene();

@@ -35,8 +35,6 @@ class Player : public CCharacter
 		void Move();
 		void Draw();
 		void Die();
-		CCharacter* getTarget() const;
-		void setTarget(CCharacter *newTarget);
 		void regenerateLifeMana(uint32_t regenPoints);
 		Direction GetDirection();
 

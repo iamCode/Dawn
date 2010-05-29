@@ -51,11 +51,6 @@ Player::Player()
     setName("Enylyn");
 }
 
-CCharacter* Player::getTarget() const
-{
-	return Target;
-}
-
 void Player::Draw()
 {
 	CalculateStats();
@@ -117,11 +112,6 @@ Inventory* Player::getInventory()
 void Player::clearInventory()
 {
 	inventory.clear();
-}
-
-void Player::setTarget(CCharacter *newTarget)
-{
-	Target = newTarget;
 }
 
 void Player::regenerateLifeMana(uint32_t regenPoints)

@@ -106,6 +106,7 @@ class CCharacter {
     void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
 
 	void setPosition( int xpos, int ypos );
+	void inscribeSpellInSpellbook( CSpellActionBase *spell );
 };
 
 namespace StatsType
@@ -423,7 +424,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 class MeleeDamageAction : public ConfigurableAction
 {
 	void setDamageBonus( double damageBonus );
-}
+};
 
 namespace DawnInterface
 {

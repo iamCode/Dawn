@@ -442,6 +442,7 @@ void GeneralRayDamageSpell::startEffect()
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
 }
 
 void GeneralRayDamageSpell::inEffect()
@@ -488,13 +489,13 @@ void GeneralRayDamageSpell::finishEffect()
 void GeneralRayDamageSpell::drawEffect()
 {
 	float degrees;
-	degrees = asin((creator->y_pos - target->y_pos)/sqrt((pow(creator->x_pos - target->x_pos,2)+pow(creator->y_pos - target->y_pos,2)))) * 57.296;
+	degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getXPos() - target->getYPos(),2)))) * 57.296;
 	degrees += 90;
 
 	animationTimerStop = SDL_GetTicks();
 	frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numTextures;
 
-	if (creator->x_pos < target->x_pos) {
+	if (creator->getXPos() < target->getXPos()) {
 		degrees = -degrees;
 	}
 
@@ -502,23 +503,23 @@ void GeneralRayDamageSpell::drawEffect()
 	glPushMatrix();
 	glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
 
-	glTranslatef(creator->x_pos+32, creator->y_pos+32, 0.0f);
+	glTranslatef(creator->getXPos()+32, creator->getYPos()+32, 0.0f);
 	glRotatef(degrees,0.0f,0.0f,1.0f);
-	glTranslatef(-160-creator->x_pos,-creator->y_pos-32,0.0);
+	glTranslatef(-160-creator->getXPos(),-creator->getYPos()-32,0.0);
 
 	glBegin( GL_QUADS );
 	// Bottom-left vertex (corner)
 	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f( creator->x_pos+32, creator->y_pos+64, 0.0f );
+	glVertex3f( creator->getXPos()+32, creator->getYPos()+64, 0.0f );
 	// Bottom-right vertex (corner)
 	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f( creator->x_pos+256+32, creator->y_pos+64, 0.0f );
+	glVertex3f( creator->getXPos()+256+32, creator->getYPos()+64, 0.0f );
 	// Top-right vertex (corner)
 	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f( creator->x_pos+256+32, creator->y_pos+400+64, 0.0f );
+	glVertex3f( creator->getXPos()+256+32, creator->getYPos()+400+64, 0.0f );
 	// Top-left vertex (corner)
 	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f( creator->x_pos+32, creator->y_pos+400+64, 0.0f );
+	glVertex3f( creator->getXPos()+32, creator->getYPos()+400+64, 0.0f );
 	glEnd();
 	glPopMatrix();
 }
@@ -587,6 +588,7 @@ void GeneralBoltDamageSpell::startEffect()
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
 }
 
 void GeneralBoltDamageSpell::inEffect()
@@ -769,6 +771,7 @@ void GeneralHealingSpell::startEffect()
 
     creator->addActiveSpell( cast( NULL, NULL ) );
     creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
 }
 
 void GeneralHealingSpell::inEffect()
@@ -897,6 +900,7 @@ void GeneralBuffSpell::startEffect()
 {
 	creator->addActiveSpell( cast( NULL, NULL ) );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
 	markSpellActionAsFinished();
 }
 
@@ -937,6 +941,7 @@ void MeleeDamageAction::setDamageBonus( double damageBonus )
 
 void MeleeDamageAction::dealDamage()
 {
+    assert ( target != NULL );
     double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
     if ( distance <= 120 ) {
         const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
@@ -975,7 +980,7 @@ void MeleeDamageAction::dealDamage()
 
 double MeleeDamageAction::getProgress() const
 {
-    uint32_t curTime = SDL_GetTicks();
+    int32_t curTime = SDL_GetTicks();
     return ( ( curTime - effectStart ) / 650.0 );
 }
 
@@ -987,7 +992,6 @@ EffectType::EffectType MeleeDamageAction::getEffectType() const
 void MeleeDamageAction::startEffect()
 {
 	effectStart = SDL_GetTicks();
-
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 }
 

@@ -21,7 +21,6 @@
 #include "Player.h"
 #include "CDrawingHelpers.h"
 #include "TimeConverterHelper.h"
-#include "CAction.h"
 #include "CSpell.h"
 #include <memory>
 #include <cassert>

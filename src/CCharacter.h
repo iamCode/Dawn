@@ -109,6 +109,9 @@ class CCharacter
 		float getPreparationPercentage() const;
 		bool getIsPreparing() const;
 
+		CCharacter* getTarget() const;
+		void setTarget( CCharacter *target );
+
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
 		void cleanupActiveSpells();
@@ -122,6 +125,8 @@ class CCharacter
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getCooldownSpells() const;
 		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;
+
+		void inscribeSpellInSpellbook( CSpellActionBase *spell );
 
 		// position access functions
 		int getXPos() const;
@@ -143,7 +148,7 @@ class CCharacter
 		int CheckForCollision(int x, int y);
 		uint32_t remainingMovePoints;
 
-		CCharacter *Target;
+		CCharacter *target;
 
 		void baseOnType( std::string otherType );
 		std::string getClassID() const;
@@ -350,6 +355,7 @@ class CCharacter
 		int seconds_to_respawn;
 
 	protected:
+	std::vector<CSpellActionBase*> spellbookX;
 		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
