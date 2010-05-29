@@ -103,20 +103,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
-
-	///
-	///
-	///
-	///
-	///
-	///
-	spellbookX = other->spellbookX;
-	///
-	///
-	///
-	///
-	///
-	///
+	setSpellbook( other->getSpellbook() );
 }
 
 std::string CCharacter::getClassID() const
@@ -1168,7 +1155,7 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	    {
 	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
             {
-                /// can't cast, spell has a cooldown on it. Display message about it.
+	            /// can't cast, spell has a cooldown on it. Display message about it.
                 return;
             }
 	    }
@@ -1425,7 +1412,17 @@ bool CCharacter::isPlayer() const
 void CCharacter::inscribeSpellInSpellbook( CSpellActionBase *spell )
 {
     assert( spell != NULL );
-    spellbookX.push_back( spell );
+    spellbook.push_back( spell );
+}
+
+std::vector<CSpellActionBase*> CCharacter::getSpellbook() const
+{
+    return spellbook;
+}
+
+void CCharacter::setSpellbook( std::vector<CSpellActionBase*> spellbook )
+{
+    this->spellbook = spellbook;
 }
 
 void CCharacter::addActiveSpell( CSpellActionBase *spell )

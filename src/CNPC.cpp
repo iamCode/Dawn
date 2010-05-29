@@ -167,16 +167,17 @@ void CNPC::Move()
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
-            for ( size_t spellIndex = 0; spellIndex < spellbookX.size(); spellIndex++ ) {
+            std::vector<CSpellActionBase*> curSpellbook = getSpellbook();
+            for ( size_t spellIndex = 0; spellIndex < curSpellbook.size(); spellIndex++ ) {
                 CSpellActionBase *curAction = NULL;
 
-                EffectType::EffectType effectType = spellbookX[spellIndex]->getEffectType();
+                EffectType::EffectType effectType = curSpellbook[spellIndex]->getEffectType();
 
                 if ( effectType == EffectType::SingleTargetSpell
                          && getTarget() != NULL ) {
-                    curAction = spellbookX[spellIndex]->cast( this, getTarget() );
+                    curAction = curSpellbook[spellIndex]->cast( this, getTarget() );
                 } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                    curAction = spellbookX[spellIndex]->cast( this, this );
+                    curAction = curSpellbook[spellIndex]->cast( this, this );
                 }
 
                 if ( curAction != NULL ) {

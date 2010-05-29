@@ -127,6 +127,8 @@ class CCharacter
 		bool isSpellOnCooldown( std::string spellName ) const;
 
 		void inscribeSpellInSpellbook( CSpellActionBase *spell );
+		std::vector<CSpellActionBase*> getSpellbook() const;
+		void setSpellbook( std::vector<CSpellActionBase*> spellbook );
 
 		// position access functions
 		int getXPos() const;
@@ -355,8 +357,7 @@ class CCharacter
 		int seconds_to_respawn;
 
 	protected:
-	std::vector<CSpellActionBase*> spellbookX;
-		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
+        bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
@@ -405,6 +406,8 @@ class CCharacter
         std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 
         std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+
+		std::vector<CSpellActionBase*> spellbook;
 
 		int boundingBoxX;
 		int boundingBoxY;
