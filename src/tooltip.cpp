@@ -593,7 +593,7 @@ void spellTooltip::getParentText()
     // not added yet.
 
     // display mana-cost
-    addTooltipText( blue, 12, "Mana: %d", parent->getManaCost() );
+    addTooltipText( blue, 12, "Mana: %d", parent->getSpellCost() );
 
     // display duration if we have any
     if ( parent->getDuration() > 0 ) {

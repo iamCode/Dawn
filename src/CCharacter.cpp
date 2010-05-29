@@ -1131,14 +1131,9 @@ int CCharacter::GetDirectionTexture()
 // in the future we could probably benefit from putting this into the combat class,
 // since we probably would use the same functions for NPCs when they are casting spells etc...
 
-void CCharacter::executeAction( CAction *action )
+void CCharacter::castSpell( CSpellActionBase *spell )
 {
-	giveToPreparation( action );
-}
-
-void CCharacter::castSpell( CSpell *spell )
-{
-    if ( spell->getManaCost() > getCurrentMana() )
+    if ( spell->getSpellCost() > getCurrentMana() )
 	{
 	    /// can't cast, not enough mana. Display message here about it.
 	    return;
@@ -1448,12 +1443,12 @@ std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getActiveSpells
 }
 
 
-void CCharacter::addCooldownSpell( CSpell *spell )
+void CCharacter::addCooldownSpell( CSpellActionBase *spell )
 {
     assert( spell != NULL );
     if ( spell->getCooldown() > 0 )
     {
-        cooldownSpells.push_back( std::pair<CSpell*,uint32_t>( spell, SDL_GetTicks() ) );
+        cooldownSpells.push_back( std::pair<CSpellActionBase*,uint32_t>( spell, SDL_GetTicks() ) );
     }
 }
 
@@ -1476,7 +1471,7 @@ void CCharacter::clearCooldownSpells()
     cooldownSpells.clear();
 }
 
-std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const
+std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getCooldownSpells() const
 {
     return cooldownSpells;
 }

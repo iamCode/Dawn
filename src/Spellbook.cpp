@@ -316,7 +316,7 @@ extern std::auto_ptr<Spellbook> spellbook;
 
 namespace DawnInterface
 {
-	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell )
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell )
 	{
 		spellbook->inscribeSpell( inscribedSpell );
 	}

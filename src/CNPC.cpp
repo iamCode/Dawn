@@ -164,7 +164,7 @@ void CNPC::Move()
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
-			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
+//			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
 		}
 	}
 
@@ -221,7 +221,7 @@ std::string CNPC::getLuaSaveText() const
 {
 	std::ostringstream oss;
 	std::string objectName = "curNPC";
-	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", " 
+	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", "
 	                                        << x_spawn_pos << ", "
 	                                        << y_spawn_pos << ", "
 	                                        << seconds_to_respawn << ", "
@@ -240,7 +240,7 @@ std::string CNPC::getLuaSaveText() const
 	}
 
 	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
-	
+
 	return oss.str();
 }
 

@@ -98,8 +98,7 @@ class CCharacter
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
-		void executeAction( CAction *action );
-		void castSpell(CSpell *spell );
+		void castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();
 		void startSpellAction();
@@ -117,10 +116,10 @@ class CCharacter
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
 
 		//active cooldowns on spells
-		void addCooldownSpell( CSpell *spell );
+		void addCooldownSpell( CSpellActionBase *spell );
 		void cleanupCooldownSpells();
 		void clearCooldownSpells();
-		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > getCooldownSpells() const;
 		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;
 
@@ -399,7 +398,7 @@ class CCharacter
 
         std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 
-        std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 
 		int boundingBoxX;
 		int boundingBoxY;

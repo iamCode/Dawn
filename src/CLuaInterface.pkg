@@ -279,6 +279,10 @@ class CSpellActionBase
 {
 };
 
+class CAction : public CSpellActionBase
+{
+};
+
 class CSpell : public CSpellActionBase
 {
 };
@@ -360,7 +364,18 @@ class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
 	void setCooldown( int newCooldown );
-	void setManaCost( int newManaCost );
+	void setSpellCost( int spellCost );
+	void setName( std::string newName );
+	void setInfo( std::string newInfo );
+
+	void setSpellSymbol( std::string symbolFile );
+};
+
+class ConfigurableAction : public CAction
+{
+	void setCastTime( int newCastTime );
+	void setCooldown( int newCooldown );
+	void setSpellCost( int spellCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );
 
@@ -383,6 +398,7 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
 	void setMoveSpeed( int newMoveSpeed );
 	void setExpireTime( int newExpireTime );
+
 	void setNumAnimations( int count );
 	void setAnimationTexture( int num, std::string filename );
 };
@@ -404,6 +420,11 @@ class GeneralBuffSpell : public ConfigurableSpell
 
 };
 
+class MeleeDamageAction : public ConfigurableAction
+{
+	void setDamageBonus( double damageBonus );
+}
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
@@ -423,7 +444,8 @@ namespace DawnInterface
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
-	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+	MeleeDamageAction* createMeleeDamageAction();		
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
 	InteractionRegion* addInteractionRegion();

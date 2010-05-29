@@ -717,7 +717,7 @@ bool dawn_init(int argc, char** argv)
         actionBar->initFonts();
         GUI.initFonts();
 
-		ActionCreation::initActions();
+//		ActionCreation::initActions();
 
 		return true;
 }
@@ -1088,8 +1088,8 @@ void game_loop()
             if (keys[SDLK_SPACE] && !KP_attack) {
                 KP_attack = true;
                 if ( character.getTarget() != NULL ) {
-                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-                    character.executeAction(action);
+//                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
+  //                  character.executeAction(action);
                 }
             }
 

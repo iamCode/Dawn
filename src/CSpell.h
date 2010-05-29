@@ -79,7 +79,7 @@ class CSpellActionBase
 		/// \todo Should the spell meta information be put in a separate info object?
 		virtual uint16_t getCastTime() const = 0;
 		virtual uint16_t getCooldown() const = 0;
-		virtual uint16_t getManaCost() const = 0;
+		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
@@ -120,12 +120,20 @@ class CSpell : public CSpellActionBase
 		CSpell() {}
 };
 
+class CAction : public CSpellActionBase
+{
+	public:
+		CAction() {}
+		virtual double getProgress() const = 0;
+};
+
 namespace SpellCreation
 {
 	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell();
 	CSpellActionBase* getGeneralHealingSpell();
 	CSpellActionBase* getGeneralBuffSpell();
+	CSpellActionBase* getMeleeDamageAction();
 }
 
 class ConfigurableSpell : public CSpell
@@ -135,8 +143,8 @@ class ConfigurableSpell : public CSpell
 		virtual uint16_t getCastTime() const;
 		void setCooldown( uint16_t newCooldown );
 		virtual uint16_t getCooldown() const;
-		void setManaCost( uint16_t newManaCost );
-		virtual uint16_t getManaCost() const;
+		void setSpellCost( uint16_t spellCost );
+		virtual uint16_t getSpellCost() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -152,7 +160,41 @@ class ConfigurableSpell : public CSpell
 		ConfigurableSpell( ConfigurableSpell *other );
 
 		uint16_t castTime;
-		uint16_t manaCost;
+		uint16_t spellCost;
+		uint16_t cooldown;
+		uint16_t duration;
+
+		std::string name;
+		std::string info;
+
+		CTexture *spellSymbol;
+};
+
+class ConfigurableAction : public CAction
+{
+	public:
+		void setCastTime( uint16_t newCastTime );
+		virtual uint16_t getCastTime() const;
+		void setCooldown( uint16_t newCooldown );
+		virtual uint16_t getCooldown() const;
+		void setSpellCost( uint16_t spellCost );
+		virtual uint16_t getSpellCost() const;
+		void setName( std::string newName );
+		virtual std::string getName() const;
+		void setInfo( std::string newInfo );
+		virtual std::string getInfo() const;
+		void setDuration( uint16_t newDuration );
+		virtual uint16_t getDuration() const;
+
+		void setSpellSymbol( std::string symbolFile );
+		CTexture* getSymbol() const;
+
+	protected:
+		ConfigurableAction();
+		ConfigurableAction( ConfigurableAction *other );
+
+		uint16_t castTime;
+		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
 
@@ -329,5 +371,36 @@ class GeneralBuffSpell : public ConfigurableSpell
 		int16_t *resistElementModifier;
 		int16_t *spellEffectElementModifier;
 };
+
+class MeleeDamageAction : public ConfigurableAction
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+
+		virtual EffectType::EffectType getEffectType() const;
+
+        virtual void drawEffect();
+		virtual void startEffect();
+		virtual void inEffect();
+		virtual void finishEffect();
+
+        virtual double getProgress() const;
+
+		void setDamageBonus( double damageBonus );
+		void dealDamage();
+
+	protected:
+    	MeleeDamageAction();
+		MeleeDamageAction( MeleeDamageAction *other );
+
+    private:
+        friend CSpellActionBase* SpellCreation::getMeleeDamageAction();
+		CCharacter *target;
+		uint32_t effectStart;
+		bool damageCaused;
+        double curArc;
+		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
+};
+
 
 #endif // __C_SPELL_H_

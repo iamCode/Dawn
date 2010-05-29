@@ -179,12 +179,7 @@ void ActionBar::handleKeys()
                 }
 
                 if ( curAction != NULL ) {
-                    // TODO: This is a hack. just create a single type of action
-                    if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-                        player->castSpell( dynamic_cast<CSpell*>( curAction ) );
-                    } else {
-                        player->executeAction( dynamic_cast<CAction*>( curAction ) );
-                    }
+                    player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
                 }
             }
         }
@@ -271,12 +266,7 @@ void ActionBar::executeSpellQueue()
             }
 
             if ( curAction != NULL ) {
-                // TODO: This is a hack. just create a single type of action
-                if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-                    player->castSpell( dynamic_cast<CSpell*>( curAction ) );
-                } else {
-                    player->executeAction( dynamic_cast<CAction*>( curAction ) );
-                }
+                player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
             }
             spellQueue = NULL;
         }

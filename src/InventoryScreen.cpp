@@ -41,7 +41,7 @@ namespace dawn_configuration
 
 namespace DawnInterface
 {
-	extern void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+	extern void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 }
 
 extern std::auto_ptr<Spellbook> spellbook;
@@ -252,7 +252,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                 if ( useItem->getItem()->getItemType() == ItemType::NEWSPELL )
                 {
                     // item is a spellbook, learn new spell.
-                    DawnInterface::inscribeSpellInPlayerSpellbook( useItem->getItem()->getSpell() );
+                    DawnInterface::inscribeSpellInPlayerSpellbook( dynamic_cast<CSpellActionBase*>( useItem->getItem()->getSpell() ) );
                     inventory->removeItem( useItem );
                 } else {
                     // item is potion or scroll, use it.

@@ -28,8 +28,15 @@
 
 #include <cassert>
 
-size_t randomSizeT( size_t min, size_t max );
-double randomDouble( double min, double max );
+size_t randomSizeT( size_t min, size_t max )
+{
+	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
+}
+
+double randomDouble( double min, double max )
+{
+	return min + ( (max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX) );
+}
 
 /// Implementation of class CSpellActionBase
 
@@ -53,7 +60,7 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
-		creator->modifyCurrentMana(-getManaCost());
+		creator->modifyCurrentMana(-getSpellCost());
 	}
 }
 
@@ -109,7 +116,7 @@ ConfigurableSpell::ConfigurableSpell()
 
 	castTime = 0;
 	cooldown = 0;
-	manaCost = 0;
+	spellCost = 0;
 	duration = 0;
 
 	name = "";
@@ -122,7 +129,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 
 	castTime = other->castTime;
 	cooldown = other->cooldown;
-	manaCost = other->manaCost;
+	spellCost = other->spellCost;
 	duration = other->duration;
 
 	name = other->name;
@@ -149,14 +156,14 @@ uint16_t ConfigurableSpell::getCooldown() const
     return cooldown;
 }
 
-void ConfigurableSpell::setManaCost( uint16_t newManaCost )
+void ConfigurableSpell::setSpellCost( uint16_t spellCost )
 {
-	manaCost = newManaCost;
+	this->spellCost = spellCost;
 }
 
-uint16_t ConfigurableSpell::getManaCost() const
+uint16_t ConfigurableSpell::getSpellCost() const
 {
-	return manaCost;
+	return spellCost;
 }
 
 void ConfigurableSpell::setName( std::string newName )
@@ -198,6 +205,107 @@ void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 }
 
 CTexture* ConfigurableSpell::getSymbol() const {
+	return spellSymbol;
+}
+
+
+/// ConfigurableAction
+
+ConfigurableAction::ConfigurableAction()
+{
+	spellSymbol = NULL;
+
+	castTime = 0;
+	cooldown = 0;
+	spellCost = 0;
+	duration = 0;
+
+	name = "";
+	info = "";
+}
+
+ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
+{
+	spellSymbol = other->spellSymbol;
+
+	castTime = other->castTime;
+	cooldown = other->cooldown;
+	spellCost = other->spellCost;
+	duration = other->duration;
+
+	name = other->name;
+	info = other->info;
+}
+
+void ConfigurableAction::setCastTime( uint16_t newCastTime )
+{
+	castTime = newCastTime;
+}
+
+uint16_t ConfigurableAction::getCastTime() const
+{
+	return castTime;
+}
+
+void ConfigurableAction::setCooldown( uint16_t newCooldown )
+{
+    cooldown = newCooldown;
+}
+
+uint16_t ConfigurableAction::getCooldown() const
+{
+    return cooldown;
+}
+
+void ConfigurableAction::setSpellCost( uint16_t spellCost )
+{
+	this->spellCost = spellCost;
+}
+
+uint16_t ConfigurableAction::getSpellCost() const
+{
+	return spellCost;
+}
+
+void ConfigurableAction::setName( std::string newName )
+{
+	name = newName;
+}
+
+std::string ConfigurableAction::getName() const
+{
+	return name;
+}
+
+void ConfigurableAction::setInfo( std::string newInfo )
+{
+	info = newInfo;
+}
+
+std::string ConfigurableAction::getInfo() const
+{
+	return info;
+}
+
+void ConfigurableAction::setDuration( uint16_t newDuration )
+{
+    duration = newDuration;
+}
+
+uint16_t ConfigurableAction::getDuration() const
+{
+    return duration;
+}
+
+void ConfigurableAction::setSpellSymbol( std::string symbolFile )
+{
+	assert( spellSymbol == NULL );
+	spellSymbol = new CTexture();
+	spellSymbol->texture.resize(1);
+	spellSymbol->LoadIMG( symbolFile, 0 );
+}
+
+CTexture* ConfigurableAction::getSymbol() const {
 	return spellSymbol;
 }
 
@@ -333,7 +441,7 @@ void GeneralRayDamageSpell::startEffect()
 	effectStart = SDL_GetTicks();
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
-	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
 
@@ -479,7 +587,7 @@ void GeneralBoltDamageSpell::startEffect()
 	lastEffect = effectStart;
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
-	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
 
@@ -662,7 +770,7 @@ void GeneralHealingSpell::startEffect()
 	}
 
     creator->addActiveSpell( cast( NULL, NULL ) );
-    creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
+    creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
 
@@ -791,7 +899,7 @@ void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::Element
 void GeneralBuffSpell::startEffect()
 {
 	creator->addActiveSpell( cast( NULL, NULL ) );
-	creator->addCooldownSpell( dynamic_cast<CSpell*> ( cast( NULL, NULL ) ) );
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 	markSpellActionAsFinished();
 }
@@ -802,6 +910,109 @@ void GeneralBuffSpell::inEffect()
 
 void GeneralBuffSpell::drawEffect()
 {
+}
+
+/// MeleeDamageAction
+
+MeleeDamageAction::MeleeDamageAction()
+{
+	damageBonus = 1.0;
+}
+
+MeleeDamageAction::MeleeDamageAction( MeleeDamageAction *other )
+	: ConfigurableAction( other )
+{
+    damageBonus = other->damageBonus;
+}
+
+CSpellActionBase* MeleeDamageAction::cast( CCharacter *creator, CCharacter *target )
+{
+	std::auto_ptr<MeleeDamageAction> newAction( new MeleeDamageAction( this ) );
+	newAction->creator = creator;
+	newAction->target = target;
+
+	return newAction.release();
+}
+
+void MeleeDamageAction::setDamageBonus( double damageBonus )
+{
+    this->damageBonus = damageBonus;
+}
+
+double MeleeDamageAction::getProgress() const
+{
+    uint32_t curTime = SDL_GetTicks();
+    return ((curTime - effectStart) / 5.0)/90.0;
+}
+
+EffectType::EffectType MeleeDamageAction::getEffectType() const
+{
+	return EffectType::SingleTargetSpell;
+}
+
+void MeleeDamageAction::startEffect()
+{
+	effectStart = SDL_GetTicks();
+	curArc = -45.0;
+    damageCaused = false;
+
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
+}
+
+void MeleeDamageAction::inEffect()
+{
+    uint32_t curTime = SDL_GetTicks();
+    curArc = -45.0 + (curTime - effectStart) / 5;
+
+
+    if ( curArc > 45.0 ) {
+        curArc = 45.0;
+        finishEffect();
+    }
+}
+
+void MeleeDamageAction::drawEffect()
+{
+}
+
+void MeleeDamageAction::finishEffect()
+{
+    double distance = sqrt( pow(creator->getXPos() - target->getXPos(),2) + pow(creator->getYPos() - target->getYPos(),2) );
+    if ( distance <= 120 ) {
+        const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
+
+        double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
+        double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
+        int damage = randomSizeT( minDamage, maxDamage ) * damageBonus;
+
+        double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
+        double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
+        double targetEvadeChance = statsSystem->complexGetEvadeChance( target->getLevel(), target->getModifiedEvadeModifierPoints(), creator->getLevel() );
+        double targetParryChance = statsSystem->complexGetParryChance( target->getLevel(), target->getModifiedParryModifierPoints(), creator->getLevel() );
+        double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
+        double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
+
+        bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
+        bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
+        int criticalHitFactor = 2;
+        bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
+        bool targetParried = randomSizeT( 0, 10000 ) <= targetParryChance * 10000;
+        bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
+        double blockFactor = 0.5;
+
+        if ( hasHit && !targetEvaded && !targetParried ) {
+            int damageDone = damage * (1.0-damageReduction) * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
+            if ( damageDone < 1 ) {
+                damageDone = 1;
+            }
+            target->Damage( damageDone, criticalHit );
+            if ( ! target->isAlive() ) {
+                creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+            }
+        }
+    }
+    markSpellActionAsFinished();
 }
 
 /// SpellCreation factory methods
@@ -826,6 +1037,11 @@ namespace SpellCreation
 	CSpellActionBase* getGeneralBuffSpell()
 	{
 		return new GeneralBuffSpell();
+	}
+
+	CSpellActionBase* getMeleeDamageAction()
+	{
+	    return new MeleeDamageAction();
 	}
 
 } // namespace SpellCreation
@@ -854,6 +1070,12 @@ namespace DawnInterface
 	{
 		std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell() ) );
 		return newSpell.release();
+	}
+
+	MeleeDamageAction* createMeleeDamageAction()
+	{
+	    std::auto_ptr<MeleeDamageAction> newAction( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction() ) );
+	    return newAction.release();
 	}
 }
 
