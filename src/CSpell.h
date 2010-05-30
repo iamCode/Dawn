@@ -81,6 +81,7 @@ class CSpellActionBase
 		virtual uint16_t getCooldown() const = 0;
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
+		virtual bool isInRange( uint16_t distance ) const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -110,6 +111,7 @@ class CSpellActionBase
 		void drawSymbol( int left, int width, int bottom, int height ) const;
 protected:
 	CCharacter *creator;
+	CCharacter *target;
 	bool boundToCreator;
 	bool finished;
 };
@@ -145,6 +147,8 @@ class ConfigurableSpell : public CSpell
 		virtual uint16_t getCooldown() const;
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
+		void setRange( uint16_t minRange, uint16_t maxRange );
+		virtual bool isInRange( uint16_t distance ) const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -163,6 +167,8 @@ class ConfigurableSpell : public CSpell
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
+        uint16_t minRange;
+        uint16_t maxRange;
 
 		std::string name;
 		std::string info;
@@ -179,6 +185,8 @@ class ConfigurableAction : public CAction
 		virtual uint16_t getCooldown() const;
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
+		void setRange( uint16_t minRange, uint16_t maxRange );
+		virtual bool isInRange( uint16_t distance ) const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -197,6 +205,8 @@ class ConfigurableAction : public CAction
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
+        uint16_t minRange;
+        uint16_t maxRange;
 
 		std::string name;
 		std::string info;
@@ -218,8 +228,6 @@ class GeneralDamageSpell : public ConfigurableSpell
 	protected:
 		GeneralDamageSpell();
 		GeneralDamageSpell( GeneralDamageSpell *other );
-
-		CCharacter *target;
 
 		uint16_t minDirectDamage; // This should be a list of effects
 		uint16_t maxDirectDamage;
@@ -323,8 +331,6 @@ class GeneralHealingSpell : public ConfigurableSpell
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell();
 
-		CCharacter *target;
-
 		EffectType::EffectType effectType;
 		uint32_t effectStart;
 		uint32_t lastEffect;
@@ -364,8 +370,6 @@ class GeneralBuffSpell : public ConfigurableSpell
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralBuffSpell();
 
-		CCharacter *target;
-
 		EffectType::EffectType effectType;
 		int16_t *statsModifier;
 		int16_t *resistElementModifier;
@@ -395,7 +399,6 @@ class MeleeDamageAction : public ConfigurableAction
 
     private:
         friend CSpellActionBase* SpellCreation::getMeleeDamageAction();
-		CCharacter *target;
 		uint32_t effectStart;
 		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
 };

@@ -30,6 +30,7 @@ namespace StatsType
         Wisdom,
         Health,
         Mana,
+        Fatigue,
         Armor,
         DamageModifier,
         HitModifier,
@@ -42,6 +43,7 @@ namespace StatsType
         SpellEffectAll,
         HealthRegen,
         ManaRegen,
+        FatigueRegen,
         Count
     };
 }

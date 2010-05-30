@@ -255,9 +255,18 @@ class CCharacter
 		void setMaxMana( uint16_t newMaxMana );
 		void modifyMaxMana( int16_t maxManaModifier );
 
+		uint16_t getMaxFatigue() const;
+		virtual uint16_t getModifiedMaxFatigue() const;
+		void setMaxFatigue( uint16_t newMaxFatigue );
+		void modifyMaxFatigue( int16_t maxFatigueModifier );
+
 		uint16_t getCurrentMana() const;
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
+
+        uint16_t getCurrentFatigue() const;
+		void setCurrentFatigue( uint16_t newCurrentFatigue );
+		void modifyCurrentFatigue( int16_t currentFatigueModifier);
 
 		void setManaRegen( uint16_t newManaRegen );
 		virtual uint16_t getModifiedManaRegen() const;
@@ -268,6 +277,11 @@ class CCharacter
 		virtual uint16_t getModifiedHealthRegen() const;
 		uint16_t getHealthRegen() const;
 		void modifyHealthRegen( int16_t healthRegenModifier );
+
+        void setFatigueRegen( uint16_t newFatigueRegen );
+		virtual uint16_t getModifiedFatigueRegen() const;
+		uint16_t getFatigueRegen() const;
+		void modifyFatigueRegen( int16_t fatigueRegenModifier );
 
 		void addItemToLootTable( Item *item, double dropChance );
 
@@ -347,7 +361,7 @@ class CCharacter
 		float respawn_thisframe, respawn_lastframe;
 
 		// stats
-		float life_percentage, mana_percentage;
+		float life_percentage, mana_percentage, fatigue_percentage;
 		void CalculateStats();
 
 		int wander_every_seconds, wander_points_left;
@@ -373,8 +387,11 @@ class CCharacter
 		uint16_t current_health;
 		uint16_t max_mana;
 		uint16_t current_mana;
+		uint16_t max_fatigue;
+		uint16_t current_fatigue;
 		uint16_t healthRegen;
 		uint16_t manaRegen;
+        uint16_t fatigueRegen;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;

@@ -108,15 +108,35 @@ void ActionBar::draw()
 
         if ( button[buttonId].action != NULL )
 	    {
+	        /** make the spellicon darker if:
+                    * not enough mana
+                    * out of range
+                    * it's on cooldown       **/
+            bool isSpellUseable = true;
+
+            if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
+                isSpellUseable = false;
+            }
+
+            if ( player->getTarget() != NULL ) {
+                uint16_t distance = sqrt( pow( player->getXPos() - player->getTarget()->getXPos(),2) + pow( player->getYPos() - player->getTarget()->getYPos(),2) );
+                if ( button[buttonId].action->isInRange( distance ) == false ) {
+                    isSpellUseable = false;
+                }
+            }
+
 	        for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
 	        {
 	            if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
 	            {
-                    // make the spellicon darker if it's on cooldown.
-                    glColor3f( 0.4f, 0.4f, 0.4f );
+                    isSpellUseable = false;
                     drawCooldownText = true;
                     cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
 	            }
+            }
+
+            if ( isSpellUseable == false ) {
+                glColor3f( 0.4f, 0.4f, 0.4f );
             }
 
 	        button[buttonId].action->drawSymbol( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
@@ -127,8 +147,8 @@ void ActionBar::draw()
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
 	            cooldownFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 + 6 + (static_cast<float>(50)-xModifier) / 2,
                                         static_cast<float>( world_y ) + 28, cooldownText.c_str() );
-                glColor3f( 1.0f, 1.0f, 1.0f );
             }
+            glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
 	}
 }

@@ -118,6 +118,8 @@ ConfigurableSpell::ConfigurableSpell()
 	cooldown = 0;
 	spellCost = 0;
 	duration = 0;
+	minRange = 0;
+	maxRange = 460; // default maxrange for spells. Can be overridden with setRange().
 
 	name = "";
 	info = "";
@@ -131,6 +133,8 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	cooldown = other->cooldown;
 	spellCost = other->spellCost;
 	duration = other->duration;
+    minRange = other->minRange;
+    maxRange = other->maxRange;
 
 	name = other->name;
 	info = other->info;
@@ -164,6 +168,21 @@ void ConfigurableSpell::setSpellCost( uint16_t spellCost )
 uint16_t ConfigurableSpell::getSpellCost() const
 {
 	return spellCost;
+}
+
+void ConfigurableSpell::setRange( uint16_t minRange, uint16_t maxRange )
+{
+	this->minRange = minRange;
+	this->maxRange = maxRange;
+}
+
+bool ConfigurableSpell::isInRange( uint16_t distance ) const
+{
+    if ( distance >= minRange && distance <= maxRange )
+    {
+        return true;
+    }
+    return false;
 }
 
 void ConfigurableSpell::setName( std::string newName )
@@ -219,6 +238,8 @@ ConfigurableAction::ConfigurableAction()
 	cooldown = 0;
 	spellCost = 0;
 	duration = 0;
+    minRange = 0;
+    maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
 
 	name = "";
 	info = "";
@@ -232,6 +253,8 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 	cooldown = other->cooldown;
 	spellCost = other->spellCost;
 	duration = other->duration;
+    minRange = other->minRange;
+    maxRange = other->maxRange;
 
 	name = other->name;
 	info = other->info;
@@ -265,6 +288,21 @@ void ConfigurableAction::setSpellCost( uint16_t spellCost )
 uint16_t ConfigurableAction::getSpellCost() const
 {
 	return spellCost;
+}
+
+void ConfigurableAction::setRange( uint16_t minRange, uint16_t maxRange )
+{
+	this->minRange = minRange;
+	this->maxRange = maxRange;
+}
+
+bool ConfigurableAction::isInRange( uint16_t distance ) const
+{
+    if ( distance >= minRange && distance <= maxRange )
+    {
+        return true;
+    }
+    return false;
 }
 
 void ConfigurableAction::setName( std::string newName )

@@ -65,6 +65,11 @@ class CCharacter {
     int getMaxMana() const;
     void modifyMaxMana( int maxManaModifier );
 
+    void setMaxFatigue( int newMaxFatigue );
+    int getMaxFatigue() const;
+    void modifyMaxFatigue( int maxFatigueModifier );
+
+
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
     void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
     void setLifeTexture( std::string filename );
@@ -98,6 +103,7 @@ class CCharacter {
 	void setSpellCriticalModifierPoints( int newSpellCriticalModifierPoints );
 	void setHealthRegen( int newHealthRegen );
 	void setManaRegen( int newManaRegen );
+	void setFatigueRegen( int newFatigueRegen );
 
     void setBoundingBox( int bbx, int bby, int bbw, int bbh );
     void setUseBoundingBox( bool use );
@@ -120,6 +126,7 @@ namespace StatsType
         Wisdom,
         Health,
         Mana,
+		Fatigue,
         Armor,
         DamageModifier,
         HitModifier,
@@ -132,6 +139,7 @@ namespace StatsType
         SpellEffectAll,
         HealthRegen,
         ManaRegen,
+		FatigueRegen,
         Count
     };
 }
@@ -368,7 +376,7 @@ class ConfigurableSpell : public CSpell
 	void setSpellCost( int spellCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );
-
+	void setRange( int minRange, int maxRange );
 	void setSpellSymbol( std::string symbolFile );
 };
 
@@ -379,7 +387,7 @@ class ConfigurableAction : public CAction
 	void setSpellCost( int spellCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );
-
+	void setRange( int minRange, int maxRange );
 	void setSpellSymbol( std::string symbolFile );
 };
 

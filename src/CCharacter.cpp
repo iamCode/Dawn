@@ -70,6 +70,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setWisdom( other->getWisdom() );
 	setMaxHealth( other->getMaxHealth() );
 	setMaxMana( other->getMaxMana() );
+	setMaxFatigue( other->getMaxFatigue() );
 	setMinDamage( other->getMinDamage() );
 	setMaxDamage( other->getMaxDamage() );
 	size_t numActivities=static_cast<size_t>(ActivityType::Count);
@@ -82,6 +83,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setArmor( other->getArmor() );
 	setHealthRegen( other->getHealthRegen() );
 	setManaRegen( other->getManaRegen() );
+	setFatigueRegen( other->getFatigueRegen() );
 	setDamageModifierPoints( other->getDamageModifierPoints() );
 	setHitModifierPoints( other->getHitModifierPoints() );
 	setEvadeModifierPoints( other->getEvadeModifierPoints() );
@@ -572,6 +574,50 @@ void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
+
+uint16_t CCharacter::getMaxFatigue() const
+{
+	return max_fatigue;
+}
+
+uint16_t CCharacter::getModifiedMaxFatigue() const
+{
+	return getMaxFatigue();
+}
+
+void CCharacter::setMaxFatigue( uint16_t newMaxFatigue )
+{
+	max_fatigue = newMaxFatigue;
+	// if ( current_fatigue > getModifiedMaxFatigue() )
+	// {
+		current_fatigue = getModifiedMaxFatigue();
+	// }
+}
+
+void CCharacter::modifyMaxFatigue( int16_t maxFatigueModifier )
+{
+	setMaxFatigue( getModifiedAttributeValue( max_fatigue, maxFatigueModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+uint16_t CCharacter::getCurrentFatigue() const
+{
+	if ( current_fatigue > getModifiedMaxFatigue() )
+		return getModifiedMaxFatigue();
+
+	return current_fatigue;
+}
+
+void CCharacter::setCurrentFatigue( uint16_t newCurrentFatigue )
+{
+	assert( newCurrentFatigue <= getModifiedMaxFatigue() );
+	current_fatigue = newCurrentFatigue;
+}
+
+void CCharacter::modifyCurrentFatigue( int16_t currentFatigueModifier )
+{
+	setCurrentFatigue( getModifiedAttributeValue( getCurrentFatigue(), currentFatigueModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxFatigue() ) );
+}
+
 void CCharacter::setManaRegen( uint16_t newManaRegen )
 {
     assert( newManaRegen >= NULLABLE_ATTRIBUTE_MIN );
@@ -591,6 +637,27 @@ uint16_t CCharacter::getManaRegen() const
 void CCharacter::modifyManaRegen( int16_t manaRegenModifier )
 {
     setManaRegen( getModifiedAttributeValue( manaRegen, manaRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setFatigueRegen( uint16_t newFatigueRegen )
+{
+    assert( newFatigueRegen >= NULLABLE_ATTRIBUTE_MIN );
+	fatigueRegen = newFatigueRegen;
+}
+
+uint16_t CCharacter::getModifiedFatigueRegen() const
+{
+    return getFatigueRegen();
+}
+
+uint16_t CCharacter::getFatigueRegen() const
+{
+    return fatigueRegen;
+}
+
+void CCharacter::modifyFatigueRegen( int16_t fatigueRegenModifier )
+{
+    setFatigueRegen( getModifiedAttributeValue( fatigueRegen, fatigueRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 void CCharacter::setHealthRegen( uint16_t newHealthRegen )
@@ -1147,6 +1214,15 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	{
 	    /// can't cast, not enough mana. Display message here about it.
 	    return;
+	}
+
+	if ( spell->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
+	    uint16_t distance = sqrt( pow( getXPos() - getTarget()->getXPos(),2) + pow( getYPos() - getTarget()->getYPos(),2) );
+        if ( spell->isInRange( distance ) == false )
+        {
+            /// can't cast, not in range. Display message here about it...
+            return;
+        }
 	}
 
 	for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
