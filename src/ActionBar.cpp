@@ -119,7 +119,7 @@ void ActionBar::draw()
             }
 
             if ( player->getTarget() != NULL ) {
-                uint16_t distance = sqrt( pow( player->getXPos() - player->getTarget()->getXPos(),2) + pow( player->getYPos() - player->getTarget()->getYPos(),2) );
+                uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
                 if ( button[buttonId].action->isInRange( distance ) == false ) {
                     isSpellUseable = false;
                 }

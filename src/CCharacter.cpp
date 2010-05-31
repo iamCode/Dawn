@@ -1210,16 +1210,14 @@ int CCharacter::GetDirectionTexture()
 
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
-    if ( spell->getSpellCost() > getCurrentMana() )
-	{
+    if ( spell->getSpellCost() > getCurrentMana() )	{
 	    /// can't cast, not enough mana. Display message here about it.
 	    return;
 	}
 
 	if ( spell->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
-	    uint16_t distance = sqrt( pow( getXPos() - getTarget()->getXPos(),2) + pow( getYPos() - getTarget()->getYPos(),2) );
-        if ( spell->isInRange( distance ) == false )
-        {
+	    uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
+        if ( spell->isInRange( distance ) == false ) {
             /// can't cast, not in range. Display message here about it...
             return;
         }
