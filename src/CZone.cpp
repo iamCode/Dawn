@@ -233,7 +233,8 @@ void CZone::ChangeTile(int iId, int texture)
 void CZone::DeleteTile(int iId)
 {
 	if (iId >= 0) {
-		TileMap[iId].id = 0;
+		// 1 is the empty tile... just to avoid having no tile if a tile is deleted
+		TileMap[iId].id = 1;
 	}
 }
 

@@ -165,9 +165,6 @@ void CEditor::HandleKeys()
 		}
 
 		if (event.type == SDL_KEYDOWN) {
-			if (event.key.keysym.sym == SDLK_ESCAPE) {
-				done = 1;
-			}
 			if (event.key.keysym.sym == SDLK_SPACE) { }
 		}
 
