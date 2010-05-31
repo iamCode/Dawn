@@ -1,0 +1,22 @@
+if ( arinoxDungeonLevel1 == nil )
+then
+    arinoxDungeonLevel1 = {};
+
+    arinoxDungeonLevel1.leavePoint = DawnInterface.addInteractionPoint();
+    arinoxDungeonLevel1.leavePoint:setPosition( 2007, 1913, 76, 70 );
+    arinoxDungeonLevel1.leavePoint:setBackgroundTexture( "data/transparent2x2pixel.tga" );
+    arinoxDungeonLevel1.leavePoint:setInteractionType( InteractionType.Zone );
+    arinoxDungeonLevel1.leavePoint:setInteractionCode( 'DawnInterface.enterZone( "data/zone1", 870, 2520 );\nDawnInterface.setSavingAllowed( true );' );
+
+    arinoxDungeonLevel1.closedDoorSpot = DawnInterface.addInteractionRegion();
+    arinoxDungeonLevel1.closedDoorSpot:setPosition( 990, 480, 130, 150 );
+    arinoxDungeonLevel1.closedDoorSpot:setOnEnterText( 'arinoxDungeonLevel1.closedDoorInteraction()' );
+end
+
+function arinoxDungeonLevel1.closedDoorInteraction()
+    local textWindow = DawnInterface.createTextWindow( true );
+    textWindow:setPosition( PositionType.CENTER, 512, 382 );
+    textWindow:setText( "At the end of the corridor you see a closed door. When you go close to it you notice it is locked and won't open. Maybe the strange glowing runes drawn around the frame have something to do with it." );
+    textWindow:setAutocloseTime( 0 );
+end
+
