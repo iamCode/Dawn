@@ -60,8 +60,10 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
-		creator->modifyCurrentMana(-getSpellCost());
-	}
+		// since a player wont have both mana and fatigue, we do it like this
+	    creator->modifyCurrentFatigue( -getSpellCost() );
+	    creator->modifyCurrentMana( -getSpellCost() );
+    }
 }
 
 bool CSpellActionBase::isBoundToCreator() const

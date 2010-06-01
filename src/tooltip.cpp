@@ -363,8 +363,8 @@ void itemTooltip::getParentText()
     GLfloat red[] = { 1.0f, 0.0f, 0.0f };
     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
     GLfloat brownish[] = { 0.7f, 0.7f, 0.0f };
-    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana", "health regen / s", "mana regen / s" };
-    int8_t attribute_values[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::string attribute_string[] = { "armor", "dexterity", "intellect", "strength", "vitality", "wisdom", "health", "mana", "fatigue", "health regen / s", "mana regen / s", "fatigue regen / s" };
+    int8_t attribute_values[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     // setting the title of the tooltip based on item quality
     switch ( parent->getItemQuality() )
@@ -449,10 +449,12 @@ void itemTooltip::getParentText()
     attribute_values[5] = parent->getStats( StatsType::Wisdom );
     attribute_values[6] = parent->getStats( StatsType::Health );
     attribute_values[7] = parent->getStats( StatsType::Mana );
-    attribute_values[8] = parent->getStats( StatsType::HealthRegen );
-    attribute_values[9] = parent->getStats( StatsType::ManaRegen );
+    attribute_values[8] = parent->getStats( StatsType::Fatigue );
+    attribute_values[9] = parent->getStats( StatsType::HealthRegen );
+    attribute_values[10] = parent->getStats( StatsType::ManaRegen );
+    attribute_values[11] = parent->getStats( StatsType::FatigueRegen );
 
-    for (unsigned int i = 0; i < 10; i++ )
+    for (unsigned int i = 0; i < 12; i++ )
     {
         if ( attribute_values[i] != 0 )
         {

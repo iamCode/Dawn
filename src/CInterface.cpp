@@ -34,7 +34,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(8);
+	interfacetextures.texture.resize(9);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -43,6 +43,10 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_background.tga",5);
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_left.tga",6);
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_right.tga",7);
+    /////
+    interfacetextures.LoadIMG("data/white2x2pixel.tga",8);
+    /////
+
 
     damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -79,16 +83,50 @@ void CInterface::DrawInterface()
     /** drawing the procentual display of characters life and mana.
     starts of at an Y-offset of 31, this is where the transparent part of the lifebar starts.
     The "bar" is 91 pixels wide, that means 100% life/mana = 91 pixels of bar. **/
-    int lifeBarWidth = static_cast<float>(player->getCurrentHealth()) / player->getModifiedMaxHealth() * 91;
-    int manaBarWidth = static_cast<float>(player->getCurrentMana()) / player->getModifiedMaxMana() * 91;
+    float lifeBarPercentage = static_cast<float>(player->getCurrentHealth() ) / player->getModifiedMaxHealth();
+    float manaBarPercentage = static_cast<float>(player->getCurrentMana()) / player->getModifiedMaxMana();
+    float fatigueBarPercentage = static_cast<float>( 1 - ( static_cast<float>(player->getCurrentFatigue()) / player->getModifiedMaxFatigue() ) );
 
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[3].texture,
-	                                  world_x+31, lifeBarWidth,
-	                                  world_y+RES_Y-interfacetextures.texture[3].height, interfacetextures.texture[3].height );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[4].texture,
-	                                  world_x+31, manaBarWidth,
-	                                  world_y+RES_Y-32-interfacetextures.texture[4].height, interfacetextures.texture[4].height );
 
+    // draw the backdrop with transparency.
+    /// health bar
+    glColor4f( 0.815f, 0.16f, 0.16f, 0.4f );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+	                                  world_x+31, 91,
+	                                  world_y+RES_Y-32, 32 );
+    /// mana bar
+    /**glColor4f( 0.16f, 0.576f, 0.815f, 0.4f );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+	                                  world_x+31, 91,
+	                                  world_y+RES_Y-64, 32 );
+    **/
+    // draw the barwidth with no transparency.
+    /// health bar
+    glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+	                                  world_x+31, lifeBarPercentage * 91,
+	                                  world_y+RES_Y-32, 32 );
+    /// mana bar
+    /**glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+	                                  world_x+31, manaBarPercentage * 91,
+	                                  world_y+RES_Y-64, 32 );
+    **/
+
+    /// fatigue bar
+    if ( fatigueBarPercentage <= 0.33 ) {
+        glColor4f( 0.109f, 0.917f, 0.047f, 1.0f );
+    } else if ( fatigueBarPercentage >= 0.34 && fatigueBarPercentage <= 0.66 ) {
+        glColor4f( 0.917f, 0.847f, 0.047f, 1.0f );
+    } else {
+        glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
+    }
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+	                                  world_x+31, fatigueBarPercentage * 91,
+	                                  world_y+RES_Y-64, 32 );
+
+
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     // drawing the top part of the life and mana bar
     DrawingHelpers::mapTextureToRect( interfacetextures.texture[2].texture,
 	                                  world_x, interfacetextures.texture[2].width,
@@ -184,7 +222,7 @@ void CInterface::drawCombatText()
 
 void CInterface::drawTargetedNPCText()
 {
-    CNPC *npc = dynamic_cast<CNPC*>( dynamic_cast<Player*>( player)->getTarget() );
+    CNPC *npc = dynamic_cast<CNPC*>( player->getTarget() );
 
     glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
 

@@ -1210,9 +1210,17 @@ int CCharacter::GetDirectionTexture()
 
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
-    if ( spell->getSpellCost() > getCurrentMana() )	{
-	    /// can't cast, not enough mana. Display message here about it.
-	    return;
+
+    if ( dynamic_cast<CAction*>( spell ) != NULL ) {
+        if ( spell->getSpellCost() > getCurrentFatigue() ) {
+            /// can't cast. cost more fatigue than we can afford. Display message here about it.
+            return;
+        }
+	} else if ( dynamic_cast<CSpell*>( spell) != NULL ) {
+	    if ( spell->getSpellCost() > getCurrentMana() )	{
+            /// can't cast. not enough mana. Display message here about it.
+            return;
+	    }
 	}
 
 	if ( spell->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {

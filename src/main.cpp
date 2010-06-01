@@ -575,12 +575,14 @@ public:
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);
 		character.setMaxMana(250);
+		character.setMaxFatigue(100);
 		character.setStrength(15);
 		character.setVitality(15);
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
 		character.setManaRegen(2);
+		character.setFatigueRegen( 5 );
 		character.giveCoins( 576 );
 
 		dawn_debug_info("Character completed");
@@ -911,7 +913,7 @@ void game_loop()
 
             character.giveMovePoints( ticksDiff );
             character.Move();
-            character.regenerateLifeMana( ticksDiff );
+            character.regenerateLifeManaFatigue( ticksDiff );
 
 
             std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();

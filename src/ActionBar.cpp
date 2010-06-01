@@ -114,8 +114,14 @@ void ActionBar::draw()
                     * it's on cooldown       **/
             bool isSpellUseable = true;
 
-            if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
-                isSpellUseable = false;
+            if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
+                if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
+                        isSpellUseable = false;
+                }
+            } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL ) {
+                if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
+                    isSpellUseable = false;
+                }
             }
 
             if ( player->getTarget() != NULL ) {
