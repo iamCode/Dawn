@@ -584,6 +584,7 @@ public:
 		character.setManaRegen(2);
 		character.setFatigueRegen( 5 );
 		character.giveCoins( 576 );
+		character.setClass( CharacterClass::Warrior );
 
 		dawn_debug_info("Character completed");
 

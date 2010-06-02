@@ -98,6 +98,7 @@ void CCharacter::baseOnType( std::string otherName )
 		setSpellEffectElementModifierPoints( curElementType, other->getSpellEffectElementModifierPoints( curElementType ) );
 	}
 	setSpellCriticalModifierPoints( other->getSpellCriticalModifierPoints() );
+	setClass( other->getClass() );
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
@@ -754,6 +755,45 @@ void CCharacter::raiseLevel()
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
 	}
+}
+
+void CCharacter::setClass( CharacterClass::CharacterClass characterClass )
+{
+    this->characterClass = characterClass;
+    switch ( characterClass )
+    {
+        case CharacterClass::Liche:
+        /// and all other caster classes here...
+            characterArchType = CharacterArchType::Caster;
+        break;
+        case CharacterClass::Warrior:
+        /// and all other fighter classes here...
+            characterArchType = CharacterArchType::Fighter;
+        break;
+    }
+}
+
+CharacterClass::CharacterClass CCharacter::getClass() const
+{
+    return characterClass;
+}
+
+CharacterArchType::CharacterArchType CCharacter::getArchType() const
+{
+    return characterArchType;
+}
+
+std::string CCharacter::getClassName() const
+{
+    switch ( characterClass )
+    {
+        case CharacterClass::Liche:
+            return "Liche";
+        break;
+        case CharacterClass::Warrior:
+            return "Warrior";
+        break;
+    }
 }
 
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )

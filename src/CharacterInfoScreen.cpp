@@ -94,7 +94,7 @@ void CharacterInfoScreen::draw( int mouseX, int mouseY )
 	curLine++;
 	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
 	                    static_cast<float>(world_y) + posY + frameHeight - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-	                    "Level %d %s", player->getLevel(), /** should be player->getClass()/getClassText()**/ "Wizard");
+	                    "Level %d %s", player->getLevel(), player->getClassName() );
 	curLine += 2;
 
 	infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,

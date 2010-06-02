@@ -34,6 +34,15 @@ namespace Attitude
 	};
 }
 
+namespace CharacterClass
+{
+	enum CharacterClass
+	{
+		Liche,
+		Warrior
+	};
+}
+
 class CCharacter {
     void baseOnType( std::string otherType );
 
@@ -73,6 +82,8 @@ class CCharacter {
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
     void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
     void setLifeTexture( std::string filename );
+
+    void setClass( CharacterClass::CharacterClass characterClass );    
 
     void setWanderRadius( int newWanderRadius );
     int getWanderRadius() const;

@@ -38,6 +38,24 @@ class CInterface;
 class CTexture;
 class Item;
 
+namespace CharacterClass
+{
+    enum CharacterClass
+    {
+        Liche,
+        Warrior
+    };
+}
+
+namespace CharacterArchType
+{
+    enum CharacterArchType
+    {
+        Fighter,
+        Caster
+    };
+}
+
 namespace ActivityType
 {
 	enum ActivityType
@@ -283,6 +301,11 @@ class CCharacter
 		uint16_t getFatigueRegen() const;
 		void modifyFatigueRegen( int16_t fatigueRegenModifier );
 
+		void setClass( CharacterClass::CharacterClass );
+		CharacterClass::CharacterClass getClass() const;
+		CharacterArchType::CharacterArchType getArchType() const;
+		std::string getClassName() const;
+
 		void addItemToLootTable( Item *item, double dropChance );
 
 		uint64_t getExperience() const;
@@ -405,6 +428,9 @@ class CCharacter
 		uint16_t *spellEffectElementModifierPoints;
 		uint16_t spellEffectAllModifierPoints;
 		uint16_t spellCriticalModifierPoints;
+
+        CharacterClass::CharacterClass characterClass;
+        CharacterArchType::CharacterArchType characterArchType;
 
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;

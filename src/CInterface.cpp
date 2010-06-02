@@ -95,11 +95,13 @@ void CInterface::DrawInterface()
 	                                  world_x+31, 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
-    /**glColor4f( 0.16f, 0.576f, 0.815f, 0.4f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
-	                                  world_x+31, 91,
-	                                  world_y+RES_Y-64, 32 );
-    **/
+    if ( player->getArchType() == CharacterArchType::Caster ) {
+        glColor4f( 0.16f, 0.576f, 0.815f, 0.4f );
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+                                        world_x+31, 91,
+                                        world_y+RES_Y-64, 32 );
+    }
+
     // draw the barwidth with no transparency.
     /// health bar
     glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
@@ -107,24 +109,26 @@ void CInterface::DrawInterface()
 	                                  world_x+31, lifeBarPercentage * 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
-    /**glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
-	                                  world_x+31, manaBarPercentage * 91,
-	                                  world_y+RES_Y-64, 32 );
-    **/
+    if ( player->getArchType() == CharacterArchType::Caster ) {
+        glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+                                        world_x+31, manaBarPercentage * 91,
+                                        world_y+RES_Y-64, 32 );
+    }
 
     /// fatigue bar
-    if ( fatigueBarPercentage <= 0.33 ) {
-        glColor4f( 0.109f, 0.917f, 0.047f, 1.0f );
-    } else if ( fatigueBarPercentage >= 0.34 && fatigueBarPercentage <= 0.66 ) {
-        glColor4f( 0.917f, 0.847f, 0.047f, 1.0f );
-    } else {
-        glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
+    if ( player->getArchType() == CharacterArchType::Fighter ) {
+        if ( fatigueBarPercentage <= 0.33 ) {
+            glColor4f( 0.109f, 0.917f, 0.047f, 1.0f );
+        } else if ( fatigueBarPercentage >= 0.34 && fatigueBarPercentage <= 0.66 ) {
+            glColor4f( 0.917f, 0.847f, 0.047f, 1.0f );
+        } else {
+            glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
+        }
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+                                          world_x+31, fatigueBarPercentage * 91,
+                                          world_y+RES_Y-64, 32 );
     }
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
-	                                  world_x+31, fatigueBarPercentage * 91,
-	                                  world_y+RES_Y-64, 32 );
-
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     // drawing the top part of the life and mana bar
