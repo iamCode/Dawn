@@ -60,9 +60,11 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
-		// since a player wont have both mana and fatigue, we do it like this
-	    creator->modifyCurrentFatigue( -getSpellCost() );
-	    creator->modifyCurrentMana( -getSpellCost() );
+		if ( creator->getClass() == CharacterArchType::Fighter ) {
+	        creator->modifyCurrentFatigue( -getSpellCost() );
+	    } else {
+	        creator->modifyCurrentMana( -getSpellCost() );
+	    }
     }
 }
 
