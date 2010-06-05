@@ -1,9 +1,22 @@
+-- Note about dynamic values for the speltooltip.
+-- Dynamic values can be set here. In the setInfo function, you can use these values that will be displayed in the game:
+--"%minMeleeDamage%"
+--"%maxMeleeDamage%"
+--"%minSpellDirectDamage%"
+--"%maxSpellDirectDamage%"
+--"%minSpellContinuousDamage%"
+--"%maxSpellContinuousDamage%"
+--"%minDirectHealing%"
+--"%maxDirectHealing%"
+--"%minContinuousHealing%"
+--"%maxContinuousHealing%"
+
 spellDatabase = {};
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["magicmissile"] = curSpell;
 curSpell:setName("Magic Missile");
-curSpell:setInfo("A magical missile causing 6-10 points of light damage to the target");
+curSpell:setInfo("A magical missile causing %minSpellDirectDamage%-%maxSpellDirectDamage% points of light damage to the target");
 curSpell:setCastTime( 1000 );
 curSpell:setSpellCost( 10 );
 curSpell:setDirectDamage(  6, 10, ElementType.Light );
@@ -15,7 +28,7 @@ curSpell:setMoveSpeed( 500 );
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
 curSpell:setName("Electrocute");
-curSpell:setInfo("Electrocutes the target with 50-100 point of air damage + 10-20 points per second for 2 seconds.");
+curSpell:setInfo("Electrocutes the target with %minSpellDirectDamage%-%maxSpellDirectDamage% point of air damage +  %minSpellContinuousDamage%-%maxSpellContinuousDamage% air damage over 2 seconds.");
 curSpell:setCastTime( 5000 );
 curSpell:setCooldown( 5 );
 curSpell:setSpellCost( 50 );
@@ -54,7 +67,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["healing"] = curSpell;
 curSpell:setName("Healing");
-curSpell:setInfo("Heals 50 points of damage by heavenly light on self.");
+curSpell:setInfo("Heals %minDirectHealing% points of damage by heavenly light on self.");
 curSpell:setCastTime( 2000 );
 curSpell:setSpellCost( 30 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
@@ -67,7 +80,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["forcedhealing"] = curSpell;
 curSpell:setName("Forced Healing");
-curSpell:setInfo("Heals 50-70 points of damage by dark magic on target.");
+curSpell:setInfo("Heals %minDirectHealing%-%maxDirectHealing% points of damage by dark magic on target.");
 curSpell:setCastTime( 2000 );
 curSpell:setSpellCost( 40 );
 curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
@@ -80,7 +93,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["hymnofrestoration"] = curSpell;
 curSpell:setName("Hymn of restoration");
-curSpell:setInfo("Heals you for 120-180 points of damage over 12 seconds.");
+curSpell:setInfo("Heals you for %minContinuousHealing%-%maxContinuousHealing% points of damage over 12 seconds.");
 curSpell:setCastTime( 500 );
 curSpell:setSpellCost( 25 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
@@ -119,7 +132,7 @@ curSpell:setDuration( 600 );
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["layingofhands"] = curSpell;
 curSpell:setName("Laying of hands");
-curSpell:setInfo("Instantly heals you for 500 points of damage.");
+curSpell:setInfo("Instantly heals you for %minDirectHealing% points of damage.");
 curSpell:setCastTime( 0 );
 curSpell:setCooldown( 600 );
 curSpell:setSpellCost( 10 );
@@ -134,7 +147,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["smallhealingpotion"] = curSpell;
 curSpell:setName("Small healing potion");
-curSpell:setInfo("Heals 10-25 points of damage on self.");
+curSpell:setInfo("Heals %minDirectHealing%-%maxDirectHealing% points of damage on self.");
 curSpell:setCastTime( 0 );
 curSpell:setSpellCost( 0 );
 curSpell:setCooldown( 120 );
@@ -203,6 +216,7 @@ curSpell:setDamageBonus( 1.0 );
 curSpell:setCooldown( 2 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
+curSpell:setInfo("Attack with your weapon, causing %minMeleeDamage%-%maxMeleeDamage% damage.");
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -223,6 +237,7 @@ curSpell:setDamageBonus( 2.0 );
 curSpell:setCooldown( 4 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
+curSpell:setInfo("Striking your enemy with a blade coated with deadly venom, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 

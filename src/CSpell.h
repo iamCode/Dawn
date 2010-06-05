@@ -220,6 +220,15 @@ class GeneralDamageSpell : public ConfigurableSpell
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 
+        uint16_t getDirectDamageMin() const;
+        uint16_t getDirectDamageMax() const;
+        ElementType::ElementType getDirectDamageElement() const;
+
+        uint16_t getContinuousDamageMin() const;
+        uint16_t getContinuousDamageMax() const;
+        ElementType::ElementType getContinuousDamageElement() const;
+
+
 		virtual EffectType::EffectType getEffectType() const;
 
 		void dealDirectDamage();
@@ -316,7 +325,13 @@ class GeneralHealingSpell : public ConfigurableSpell
 		EffectType::EffectType getEffectType() const;
 		void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
 		void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, uint16_t continuousHealingTime, ElementType::ElementType elementContinuous );
-		ElementType::ElementType getElementType() const;
+		ElementType::ElementType getDirectElementType() const;
+        uint16_t getDirectHealingMin() const;
+        uint16_t getDirectHealingMax() const;
+
+        ElementType::ElementType getContinuousElementType() const;
+        uint16_t getContinuousHealingMin() const;
+        uint16_t getContinuousHealingMax() const;
 
 		virtual void drawEffect();
 		virtual void startEffect();
@@ -391,6 +406,7 @@ class MeleeDamageAction : public ConfigurableAction
         virtual double getProgress() const;
 
 		void setDamageBonus( double damageBonus );
+		double getDamageBonus() const;
 		void dealDamage();
 
 	protected:

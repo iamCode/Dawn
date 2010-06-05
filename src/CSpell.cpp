@@ -391,6 +391,9 @@ void GeneralDamageSpell::setContinuousDamage( double newMinContDamagePerSec, dou
 	maxContinuousDamagePerSecond = newMaxContDamagePerSec;
 	elementContinuous = newContDamageElement;
 	continuousDamageTime = newContDamageTime;
+
+	// setting a continous damage also sets a duration of the spell (so we can see it in the buffwindow)
+	setDuration( static_cast<uint16_t> ( floor( continuousDamageTime / 1000 ) ) );
 }
 
 EffectType::EffectType GeneralDamageSpell::getEffectType() const
@@ -398,12 +401,42 @@ EffectType::EffectType GeneralDamageSpell::getEffectType() const
 	return EffectType::SingleTargetSpell;
 }
 
+uint16_t GeneralDamageSpell::getDirectDamageMin() const
+{
+    return minDirectDamage;
+}
+
+uint16_t GeneralDamageSpell::getDirectDamageMax() const
+{
+    return maxDirectDamage;
+}
+
+ElementType::ElementType GeneralDamageSpell::getDirectDamageElement() const
+{
+    return elementDirect;
+}
+
+uint16_t GeneralDamageSpell::getContinuousDamageMin() const
+{
+    return minContinuousDamagePerSecond;
+}
+
+uint16_t GeneralDamageSpell::getContinuousDamageMax() const
+{
+    return maxContinuousDamagePerSecond;
+}
+
+ElementType::ElementType GeneralDamageSpell::getContinuousDamageElement() const
+{
+    return elementContinuous;
+}
+
 void GeneralDamageSpell::dealDirectDamage()
 {
-	int damage = minDirectDamage + rand() % (maxDirectDamage - minDirectDamage);
+	int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
 
-	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementDirect ), target->getLevel() );
-	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementDirect ), creator->getLevel() );
+	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( getDirectDamageElement() ), target->getLevel() );
+	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( getDirectDamageElement() ), creator->getLevel() );
 	double realDamage = damage * damageFactor * (1-resist);
 	double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
 	bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
@@ -754,6 +787,36 @@ EffectType::EffectType GeneralHealingSpell::getEffectType() const
 	return effectType;
 }
 
+ElementType::ElementType GeneralHealingSpell::getDirectElementType() const
+{
+    return healEffectElement;
+}
+
+uint16_t GeneralHealingSpell::getDirectHealingMin() const
+{
+    return healEffectMin;
+}
+
+uint16_t GeneralHealingSpell::getDirectHealingMax() const
+{
+    return healEffectMax;
+}
+
+ElementType::ElementType GeneralHealingSpell::getContinuousElementType() const
+{
+    return elementContinuous;
+}
+
+uint16_t GeneralHealingSpell::getContinuousHealingMin() const
+{
+    return minContinuousHealingPerSecond;
+}
+
+uint16_t GeneralHealingSpell::getContinuousHealingMax() const
+{
+    return maxContinuousHealingPerSecond;
+}
+
 void GeneralHealingSpell::setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement )
 {
 	this->healEffectMin = healEffectMin;
@@ -781,11 +844,6 @@ double GeneralHealingSpell::calculateContinuousHealing( uint64_t timePassed )
 	double healingFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
 	double realHealing = curRandHealing * healingFactor;
 	return realHealing;
-}
-
-ElementType::ElementType GeneralHealingSpell::getElementType() const
-{
-	return healEffectElement;
 }
 
 void GeneralHealingSpell::startEffect()
@@ -979,6 +1037,11 @@ CSpellActionBase* MeleeDamageAction::cast( CCharacter *creator, CCharacter *targ
 void MeleeDamageAction::setDamageBonus( double damageBonus )
 {
     this->damageBonus = damageBonus;
+}
+
+double MeleeDamageAction::getDamageBonus() const
+{
+    return damageBonus;
 }
 
 void MeleeDamageAction::dealDamage()

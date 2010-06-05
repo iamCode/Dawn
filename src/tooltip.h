@@ -94,6 +94,8 @@ class spellTooltip : public Tooltip
     private:
         CSpellActionBase *parent;
         void getParentText();
+        std::string parseInfoText( const std::string infoText ) const;
+        std::string spellTooltip::getDynamicValues( size_t val ) const;
 };
 
 class itemTooltip : public Tooltip
