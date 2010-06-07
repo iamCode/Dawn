@@ -230,6 +230,11 @@ curSpell:setSpellCost( 50 );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralRayDamageSpell();
+spellDatabase["shardsofvenomeffect1"] = curSpell;
+curSpell:setName("Shards of Venom");
+curSpell:setContinuousDamage( 4, 6, 12000, ElementType.Earth );
+
 curSpell = DawnInterface.createMeleeDamageAction();
 spellDatabase["shardsofvenom"] = curSpell;
 curSpell:setName("Shards of Venom");
@@ -237,7 +242,7 @@ curSpell:setDamageBonus( 2.0 );
 curSpell:setCooldown( 4 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
-curSpell:setInfo("Striking your enemy with a blade coated with deadly venom, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
+curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
+curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
-

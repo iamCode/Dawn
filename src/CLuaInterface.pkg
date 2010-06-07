@@ -297,6 +297,7 @@ namespace WeaponType
 
 class CSpellActionBase
 {
+	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
 };
 
 class CAction : public CSpellActionBase

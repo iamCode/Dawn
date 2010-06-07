@@ -84,7 +84,7 @@ void Tooltip::loadTextures()
 
 void Tooltip::reloadTooltip()
 {
-    loadedAtLevel = player->getLevel();
+    getTicketFromPlayer();
     shoppingState = player->isShopping();
     tooltipText.clear();
     getParentText();
@@ -109,6 +109,16 @@ int Tooltip::getTooltipHeight() const
     return blockHeight * blockNumberHeight + blockHeight;
 }
 
+void itemTooltip::getTicketFromPlayer()
+{
+    ticketFromPlayer = player->getTicketForItemTooltip();
+}
+
+void spellTooltip::getTicketFromPlayer()
+{
+    ticketFromPlayer = player->getTicketForSpellTooltip();
+}
+
 void itemTooltip::draw( int x, int y )
 {
     if ( tooltipText.empty() )
@@ -116,18 +126,11 @@ void itemTooltip::draw( int x, int y )
         return;
     }
 
-    // check to see if the player's level is the same since he loaded the parentText to the tooltip.
-    // if not, we clear the tooltip and get the parent text again.
-    if ( loadedAtLevel != player->getLevel() )
+    // check to see if the ticket we got from the player is the same ticket as the player is offering.
+    // if not, we reload our tooltip.
+    if ( ticketFromPlayer != player->getTicketForItemTooltip() )
     {
         reloadTooltip();
-    }
-
-    // check the players shopping state and see if it's the same as when we loaded the tooltip.
-    // if not, reload the tooltip. ;)
-    if ( shoppingState != player->isShopping() )
-    {
-       reloadTooltip();
     }
 
     // we also check to see if the bound spell has changed the displayed cooldown.
@@ -205,16 +208,9 @@ void spellTooltip::draw( int x, int y )
         return;
     }
 
-    /** we need to reload the tooltip if:
-    player has new equipment on him ( or took some equipment off)
-    player has new active spell on him ( or lost some spell )
-    for now, i just do this:
-    **/
-    reloadTooltip();
-
-    // check to see if the player's level is the same since he loaded the parentText to the tooltip.
-    // if not, we clear the tooltip and get the parent text again.
-    if ( loadedAtLevel != player->getLevel() )
+    // check to see if the ticket we got from the player is the same ticket as the player is offering.
+    // if not, we reload our tooltip.
+    if ( ticketFromPlayer != player->getTicketForSpellTooltip() )
     {
         reloadTooltip();
     }
@@ -360,7 +356,7 @@ void itemTooltip::addTooltipTextForPercentageAttribute( std::string attributeNam
 void itemTooltip::getParentText()
 {
     // remember what level we generated this tooltip
-    loadedAtLevel = player->getLevel();
+    ticketFromPlayer = player->getTicketForItemTooltip();
     shoppingState = player->isShopping();
 
     GLfloat grey[] = { 0.5f, 0.5f, 0.5f };
@@ -586,7 +582,7 @@ void itemTooltip::getParentText()
 void spellTooltip::getParentText()
 {
     // remember what level we generated this tooltip
-    loadedAtLevel = player->getLevel();
+    ticketFromPlayer = player->getTicketForSpellTooltip();
 
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
     GLfloat blue[] = { 0.3f, 0.3f, 1.0f };

@@ -1244,13 +1244,26 @@ int CCharacter::GetDirectionTexture()
 	}
 }
 
-// since we dont have any combat class, im putting this spellcasting here.
-// in the future we could probably benefit from putting this into the combat class,
-// since we probably would use the same functions for NPCs when they are casting spells etc...
+void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
+{
+    assert ( spell != NULL );
+    CSpellActionBase *newSpell = NULL;
 
+    if ( spell->getEffectType() == EffectType::SingleTargetSpell && getTarget() != NULL ) {
+        newSpell = spell->cast( this, getTarget() );
+    } else if ( spell->getEffectType() == EffectType::SelfAffectingSpell ) {
+        newSpell = spell->cast( this, this );
+    }
+
+    if ( newSpell != NULL ) {
+        enqueueActiveSpellAction( newSpell );
+        newSpell->startEffect();
+    }
+}
+
+// use this function to cast spells with rules (mana requirement, range etc...
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
-
     if ( dynamic_cast<CAction*>( spell ) != NULL ) {
         if ( spell->getSpellCost() > getCurrentFatigue() ) {
             /// can't cast. cost more fatigue than we can afford. Display message here about it.
@@ -1258,7 +1271,7 @@ void CCharacter::castSpell( CSpellActionBase *spell )
         }
 	} else if ( dynamic_cast<CSpell*>( spell) != NULL ) {
 	    if ( spell->getSpellCost() > getCurrentMana() )	{
-            /// can't cast. not enough mana. Display message here about it.
+	        /// can't cast. not enough mana. Display message here about it.
             return;
 	    }
 	}
@@ -1277,13 +1290,13 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	    {
 	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
             {
-	            /// can't cast, spell has a cooldown on it. Display message about it.
+                /// can't cast, spell has a cooldown on it. Display message about it.
                 return;
             }
 	    }
 	}
 
-	giveToPreparation( spell );
+    giveToPreparation( spell );
 }
 
 void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
@@ -1325,10 +1338,6 @@ void CCharacter::startSpellAction()
 	isPreparing = false;
 	preparationCurrentTime = 0;
 	preparationStartTime = 0;
-
-	// when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
-	// So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
-	// fow now we'll just damage / heal the NPC in target
 
 	enqueueActiveSpellAction( curSpellAction );
 	curSpellAction->startEffect();
@@ -1608,6 +1617,11 @@ void CCharacter::cleanupCooldownSpells()
         if ( thisDuration - cooldownSpells[curSpell].second > cooldownSpells[curSpell].first->getCooldown() * 1000u ) {
             delete cooldownSpells[curSpell].first;
             cooldownSpells.erase( cooldownSpells.begin() + curSpell );
+            if ( isPlayer() == true ) {
+                // this will seed a new ticket for the itemtooltip and spelltooltips, causing them to reload.
+                dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+                dynamic_cast<Player*>(this)->setTicketForSpellTooltip();
+            }
         } else {
             curSpell ++;
         }

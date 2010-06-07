@@ -380,6 +380,26 @@ uint16_t Player::getModifiedFatigueRegen() const
     return getModifiedAttribute( inventory, this, getFatigueRegen(), &getItemFatigueRegenHelper, &getSpellFatigueRegenHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
+void Player::setTicketForItemTooltip ()
+{
+    ticketForItemTooltip = SDL_GetTicks();
+}
+
+void Player::setTicketForSpellTooltip ()
+{
+    ticketForSpellTooltip = SDL_GetTicks();
+}
+
+uint32_t Player::getTicketForItemTooltip() const
+{
+    return ticketForItemTooltip;
+}
+
+uint32_t Player::getTicketForSpellTooltip() const
+{
+    return ticketForSpellTooltip;
+}
+
 std::string Player::getSaveText() const
 {
 	std::ostringstream oss;

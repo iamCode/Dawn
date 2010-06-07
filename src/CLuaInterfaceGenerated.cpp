@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on 06/02/10 06:41:28.
+** Generated automatically by tolua++-1.0.92 on 06/07/10 19:26:26.
 */
 
 #ifndef __cplusplus
@@ -2029,6 +2029,41 @@ static int tolua_CLuaInterface_CCharacter_inscribeSpellInSpellbook00(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'inscribeSpellInSpellbook'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addAdditionalSpell of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00
+static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  CSpellActionBase* spell = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  double chanceToExecute = ((double)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpell'",NULL);
+#endif
+  {
+   self->addAdditionalSpell(spell,chanceToExecute);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addAdditionalSpell'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5603,6 +5638,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CSpellActionBase","CSpellActionBase","",NULL);
   tolua_beginmodule(tolua_S,"CSpellActionBase");
+   tolua_function(tolua_S,"addAdditionalSpell",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CAction","CAction","CSpellActionBase",NULL);
   tolua_beginmodule(tolua_S,"CAction");

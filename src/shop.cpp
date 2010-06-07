@@ -85,9 +85,8 @@ void Shop::toggle()
 {
     if ( isVisible() == false )
     {
-        player->startShopping();
-    } else {
-        player->stopShopping();
+        // this seeds a new ticket so that item tooltips will be reloaded.
+        player->setTicketForItemTooltip();
     }
     FramesBase::toggle();
 }

@@ -27,6 +27,8 @@ class Player : public CCharacter
 	private:
 
 		uint32_t remainingRegenPoints;
+		uint32_t ticketForItemTooltip;
+		uint32_t ticketForSpellTooltip;
 		Inventory inventory;
 
 	public:
@@ -65,6 +67,11 @@ class Player : public CCharacter
 
 		uint16_t getModifiedMinDamage() const;
 		uint16_t getModifiedMaxDamage() const;
+
+		void setTicketForItemTooltip ();
+        void setTicketForSpellTooltip ();
+        uint32_t getTicketForItemTooltip() const;
+        uint32_t getTicketForSpellTooltip() const;
 
 		Inventory* getInventory();
 		void clearInventory();

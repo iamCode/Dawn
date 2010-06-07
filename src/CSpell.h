@@ -21,6 +21,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <vector>
 
 #include "elements.h"
 #include "stats.h"
@@ -108,12 +109,16 @@ class CSpellActionBase
 		void beginPreparationOfSpellAction();
 		void markSpellActionAsFinished();
 
+		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
+        void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
 protected:
 	CCharacter *creator;
 	CCharacter *target;
 	bool boundToCreator;
 	bool finished;
+	std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
 };
 
 class CSpell : public CSpellActionBase
@@ -377,6 +382,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 		virtual void drawEffect();
 		virtual void startEffect();
 		virtual void inEffect();
+        void finishEffect();
 
 	protected:
 		GeneralBuffSpell();

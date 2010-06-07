@@ -116,6 +116,7 @@ class CCharacter
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
+		void executeSpellWithoutCasting( CSpellActionBase *spell );
 		void castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();

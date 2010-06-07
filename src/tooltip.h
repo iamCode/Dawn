@@ -62,6 +62,7 @@ class Tooltip
         bool isTooltipSmall();
         virtual void getParentText() = 0;
         virtual void draw( int x, int y ) = 0;
+        virtual void getTicketFromPlayer() = 0;
         int getTooltipWidth() const;
         int getTooltipHeight() const;
         void reloadTooltip();
@@ -75,11 +76,13 @@ class Tooltip
         int blockHeight;
         int blockNumberWidth;
         int blockNumberHeight;
-        int loadedAtLevel;
         bool shoppingState;
         CTexture textures;
         Player *player;
         std::vector<sTooltipText> tooltipText;
+
+        uint32_t ticketFromPlayer;
+
         void loadTextures();
         void addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...);
         void drawSmallTooltip( int x, int y );
@@ -94,6 +97,7 @@ class spellTooltip : public Tooltip
     private:
         CSpellActionBase *parent;
         void getParentText();
+        void getTicketFromPlayer();
         std::string parseInfoText( const std::string infoText ) const;
         std::string spellTooltip::getDynamicValues( size_t val ) const;
 };
@@ -114,6 +118,7 @@ class itemTooltip : public Tooltip
         std::string itemValue[3];
 
         void getParentText();
+        void getTicketFromPlayer();
 		void addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage );
 		void drawCoinsLine( int x, int y, int frameWidth, sTooltipText *tooltipText );
 };

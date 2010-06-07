@@ -112,6 +112,11 @@ std::string CSpellActionBase::getID() const
 	return idstream.str();
 }
 
+void CSpellActionBase::addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute )
+{
+    additionalSpells.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+}
+
 /// ConfigurableSpell
 
 ConfigurableSpell::ConfigurableSpell()
@@ -139,6 +144,8 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	duration = other->duration;
     minRange = other->minRange;
     maxRange = other->maxRange;
+
+    additionalSpells = other->additionalSpells;
 
 	name = other->name;
 	info = other->info;
@@ -259,6 +266,8 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 	duration = other->duration;
     minRange = other->minRange;
     maxRange = other->maxRange;
+
+    additionalSpells = other->additionalSpells;
 
 	name = other->name;
 	info = other->info;
@@ -433,21 +442,23 @@ ElementType::ElementType GeneralDamageSpell::getContinuousDamageElement() const
 
 void GeneralDamageSpell::dealDirectDamage()
 {
-	int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
+	if ( getDirectDamageMax() > 0 ) {
+	    int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
 
-	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( getDirectDamageElement() ), target->getLevel() );
-	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( getDirectDamageElement() ), creator->getLevel() );
-	double realDamage = damage * damageFactor * (1-resist);
-	double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-	bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
-	if ( criticalHit == true ) {
-		int criticalDamageMultiplier = 2;
-		realDamage *= criticalDamageMultiplier;
-	}
+        double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( getDirectDamageElement() ), target->getLevel() );
+        double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( getDirectDamageElement() ), creator->getLevel() );
+        double realDamage = damage * damageFactor * (1-resist);
+        double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
+        bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
+        if ( criticalHit == true ) {
+            int criticalDamageMultiplier = 2;
+            realDamage *= criticalDamageMultiplier;
+        }
 
-	target->Damage( round(realDamage), criticalHit );
-	if ( ! target->isAlive() ) {
-		creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        target->Damage( round(realDamage), criticalHit );
+        if ( ! target->isAlive() ) {
+            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        }
 	}
 }
 
@@ -559,44 +570,53 @@ void GeneralRayDamageSpell::inEffect()
 void GeneralRayDamageSpell::finishEffect()
 {
 	markSpellActionAsFinished();
+
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
 }
 
 void GeneralRayDamageSpell::drawEffect()
 {
-	float degrees;
-	degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getXPos() - target->getYPos(),2)))) * 57.296;
-	degrees += 90;
+	if ( numTextures > 0 ) {
+	    float degrees;
+        degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getXPos() - target->getYPos(),2)))) * 57.296;
+        degrees += 90;
 
-	animationTimerStop = SDL_GetTicks();
-	frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numTextures;
+        animationTimerStop = SDL_GetTicks();
+        frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numTextures;
 
-	if (creator->getXPos() < target->getXPos()) {
-		degrees = -degrees;
+        if (creator->getXPos() < target->getXPos()) {
+            degrees = -degrees;
+        }
+
+
+        glPushMatrix();
+        glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
+
+        glTranslatef(creator->getXPos()+32, creator->getYPos()+32, 0.0f);
+        glRotatef(degrees,0.0f,0.0f,1.0f);
+        glTranslatef(-160-creator->getXPos(),-creator->getYPos()-32,0.0);
+
+        glBegin( GL_QUADS );
+        // Bottom-left vertex (corner)
+        glTexCoord2f( 0.0f, 0.0f );
+        glVertex3f( creator->getXPos()+32, creator->getYPos()+64, 0.0f );
+        // Bottom-right vertex (corner)
+        glTexCoord2f( 1.0f, 0.0f );
+        glVertex3f( creator->getXPos()+256+32, creator->getYPos()+64, 0.0f );
+        // Top-right vertex (corner)
+        glTexCoord2f( 1.0f, 1.0f );
+        glVertex3f( creator->getXPos()+256+32, creator->getYPos()+400+64, 0.0f );
+        // Top-left vertex (corner)
+        glTexCoord2f( 0.0f, 1.0f );
+        glVertex3f( creator->getXPos()+32, creator->getYPos()+400+64, 0.0f );
+        glEnd();
+        glPopMatrix();
 	}
-
-
-	glPushMatrix();
-	glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
-
-	glTranslatef(creator->getXPos()+32, creator->getYPos()+32, 0.0f);
-	glRotatef(degrees,0.0f,0.0f,1.0f);
-	glTranslatef(-160-creator->getXPos(),-creator->getYPos()-32,0.0);
-
-	glBegin( GL_QUADS );
-	// Bottom-left vertex (corner)
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3f( creator->getXPos()+32, creator->getYPos()+64, 0.0f );
-	// Bottom-right vertex (corner)
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3f( creator->getXPos()+256+32, creator->getYPos()+64, 0.0f );
-	// Top-right vertex (corner)
-	glTexCoord2f( 1.0f, 1.0f );
-	glVertex3f( creator->getXPos()+256+32, creator->getYPos()+400+64, 0.0f );
-	// Top-left vertex (corner)
-	glTexCoord2f( 0.0f, 1.0f );
-	glVertex3f( creator->getXPos()+32, creator->getYPos()+400+64, 0.0f );
-	glEnd();
-	glPopMatrix();
 }
 
 /// class GeneralBoltDamageSpell
@@ -662,6 +682,7 @@ void GeneralBoltDamageSpell::startEffect()
 	lastEffect = effectStart;
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
+
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
@@ -705,35 +726,44 @@ void GeneralBoltDamageSpell::finishEffect()
 {
 	dealDirectDamage();
 	markSpellActionAsFinished();
+
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
 }
 
 void GeneralBoltDamageSpell::drawEffect()
 {
-	int targetx = target->getXPos() + (target->getWidth() / 2);
-	int targety = target->getYPos() + (target->getHeight() / 2);
-	float degrees;
-	degrees = asin((posy - targety)/sqrt((pow(posx - targetx,2)+pow(posy - targety,2)))) * 57.296;
-	degrees += 90;
+	if ( numBoltTextures > 0 ) {
+	    int targetx = target->getXPos() + (target->getWidth() / 2);
+        int targety = target->getYPos() + (target->getHeight() / 2);
+        float degrees;
+        degrees = asin((posy - targety)/sqrt((pow(posx - targetx,2)+pow(posy - targety,2)))) * 57.296;
+        degrees += 90;
 
-	animationTimerStop = SDL_GetTicks();
-	frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numBoltTextures;
+        animationTimerStop = SDL_GetTicks();
+        frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numBoltTextures;
 
-	if (posx < targetx) {
-		degrees = -degrees;
+        if (posx < targetx) {
+            degrees = -degrees;
+        }
+
+        int textureWidth = target->getWidth()/2;
+        int textureHeight = target->getWidth()/2;
+        glPushMatrix();
+        glTranslatef(posx, posy, 0.0f);
+        glRotatef(degrees,0.0f,0.0f,1.0f);
+        glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
+
+        DrawingHelpers::mapTextureToRect(
+                    boltTexture->texture[frameCount].texture,
+                    0, textureWidth,
+                    0, textureHeight );
+        glPopMatrix();
 	}
-
-	int textureWidth = target->getWidth()/2;
-	int textureHeight = target->getWidth()/2;
-	glPushMatrix();
-	glTranslatef(posx, posy, 0.0f);
-	glRotatef(degrees,0.0f,0.0f,1.0f);
-	glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
-
-	DrawingHelpers::mapTextureToRect(
-			    boltTexture->texture[frameCount].texture,
-			    0, textureWidth,
-			    0, textureHeight );
-	glPopMatrix();
 }
 
 /// GeneralHealingSpell
@@ -909,6 +939,13 @@ void GeneralHealingSpell::inEffect()
 void GeneralHealingSpell::finishEffect()
 {
 	markSpellActionAsFinished();
+
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
 }
 
 void GeneralHealingSpell::drawEffect()
@@ -1012,6 +1049,16 @@ void GeneralBuffSpell::drawEffect()
 {
 }
 
+void GeneralBuffSpell::finishEffect()
+{
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
+}
+
 /// MeleeDamageAction
 
 MeleeDamageAction::MeleeDamageAction()
@@ -1113,6 +1160,13 @@ void MeleeDamageAction::finishEffect()
 {
     dealDamage();
     markSpellActionAsFinished();
+
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
 }
 
 /// SpellCreation factory methods
