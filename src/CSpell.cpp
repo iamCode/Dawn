@@ -60,7 +60,7 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
-		if ( creator->getClass() == CharacterArchType::Fighter ) {
+		if ( creator->getArchType() == CharacterArchType::Fighter ) {
 	        creator->modifyCurrentFatigue( -getSpellCost() );
 	    } else {
 	        creator->modifyCurrentMana( -getSpellCost() );
@@ -536,8 +536,8 @@ void GeneralRayDamageSpell::inEffect()
 	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
 	uint32_t elapsedSinceStart = curTime - effectStart;
-	if ( curTime - lastEffect < 500 ) {
-		// do damage at most every 0.5 seconds unless effect is done
+	if ( curTime - lastEffect < 1000 ) {
+		// do damage at most every 1 seconds unless effect is done
 		if ( elapsedSinceStart >= continuousDamageTime )
 		{
 			elapsedSinceLast = continuousDamageTime - (lastEffect - effectStart);

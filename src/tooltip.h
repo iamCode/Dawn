@@ -99,7 +99,7 @@ class spellTooltip : public Tooltip
         void getParentText();
         void getTicketFromPlayer();
         std::string parseInfoText( const std::string infoText ) const;
-        std::string spellTooltip::getDynamicValues( size_t val ) const;
+        std::string getDynamicValues( size_t val ) const;
 };
 
 class itemTooltip : public Tooltip
