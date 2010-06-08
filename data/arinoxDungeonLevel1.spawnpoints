@@ -14,9 +14,9 @@ then
 end
 
 function arinoxDungeonLevel1.closedDoorInteraction()
-    local textWindow = DawnInterface.createTextWindow( true );
-    textWindow:setPosition( PositionType.CENTER, 512, 382 );
-    textWindow:setText( "At the end of the corridor you see a closed door. When you go close to it you notice it is locked and won't open. Maybe the strange glowing runes drawn around the frame have something to do with it." );
-    textWindow:setAutocloseTime( 0 );
+	if ( quest_hexmaster )
+	then
+		quest_hexmaster.onDiscoveredHiddenDoor()
+	end
 end
 

@@ -441,7 +441,7 @@ void CZone::cleanupInteractionRegionList()
 	while ( curInteractionNr < interactionRegions.size() ) {
 		InteractionRegion *curInteraction = interactionRegions[ curInteractionNr ];
 		if ( curInteraction->isMarkedDeletable() ) {
-			// return from list
+			// remove from list
 			interactionRegions[ curInteractionNr ] = interactionRegions[ interactionRegions.size() - 1 ];
 			interactionRegions.resize( interactionRegions.size() - 1 );
 			delete curInteraction;

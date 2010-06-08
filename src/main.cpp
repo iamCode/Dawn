@@ -509,8 +509,6 @@ public:
 
 		progressString = "Loading Character Data";
 		progress = 0.7;
-		CZone *newZone = new CZone();
-		newZone->LoadZone("data/zone1");
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
@@ -590,6 +588,10 @@ public:
 		LuaFunctions::executeLuaFile("data/loadsave.lua");
 		progressString = "Loading Game Init Data";
 		progress = 0.95;
+
+		CZone *newZone = new CZone();
+		newZone->LoadZone("data/zone1");
+
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
 
 		// initialize random number generator
