@@ -11,12 +11,25 @@ then
     arinoxDungeonLevel1.closedDoorSpot = DawnInterface.addInteractionRegion();
     arinoxDungeonLevel1.closedDoorSpot:setPosition( 990, 480, 130, 150 );
     arinoxDungeonLevel1.closedDoorSpot:setOnEnterText( 'arinoxDungeonLevel1.closedDoorInteraction()' );
+
+    arinoxDungeonLevel1.leaveRegionSpot = DawnInterface.addInteractionPoint();
+    arinoxDungeonLevel1.leaveRegionSpot:setPosition( 990, 350, 130, 100 );
+    arinoxDungeonLevel1.leaveRegionSpot:setBackgroundTexture( "data/transparent2x2pixel.tga" );
+    arinoxDungeonLevel1.leaveRegionSpot:setInteractionType( InteractionType.Zone );
+    arinoxDungeonLevel1.leaveRegionSpot:setInteractionCode( 'arinoxDungeonLevel1.nextRegionInteraction()' );
 end
 
 function arinoxDungeonLevel1.closedDoorInteraction()
 	if ( quest_hexmaster )
 	then
-		quest_hexmaster.onDiscoveredHiddenDoor()
+		quest_hexmaster.magicDoorInteraction()
+	end
+end
+
+function arinoxDungeonLevel1.nextRegionInteraction()
+	if ( quest_hexmaster )
+	then
+		quest_hexmaster.nextRegionInteraction()
 	end
 end
 
