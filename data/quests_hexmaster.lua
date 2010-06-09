@@ -9,6 +9,10 @@ function quest_hexmaster.init()
 	quest_hexmaster.questStartRegion = DawnInterface.addInteractionRegion();
 	quest_hexmaster.questStartRegion:setPosition( 730, 2340, 400, 270 );
 	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.questGiverInteraction()" );
+
+	quest_hexmaster.noviceRegion = DawnInterface.addInteractionRegion();
+	quest_hexmaster.noviceRegion:setPosition( -100, 2200, 300, 350 );
+	quest_hexmaster.noviceRegion:setOnEnterText( "quest_hexmaster.noviceInteraction()" );
 end
 
 function quest_hexmaster.questGiverInteraction()
@@ -78,8 +82,47 @@ function quest_hexmaster.showStartText( part )
 	end
 end
 
-function quest_hexmaster.onDiscoveredHiddenDoor()
+function quest_hexmaster.noviceInteraction()
+	if ( quest_hexmaster.toldWholeStory and not quest_hexmaster.novicesOfferedHelp )
+	then
+		quest_hexmaster.showNoviceText( 1 )
+	end
+end
+
+function quest_hexmaster.showNoviceText( part )
+	if ( part == 1 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		-- TODO: center on player
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("I have been commisioned to find the novice Jorni who seems to have hidden in the catacombs behind a magically locked door. Will you help me break the lock so I can further investigate his actions?");
+		textWindow:setOnCloseText( "quest_hexmaster.showNoviceText( 2 )" );
+	end
+	if ( part == 2 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("Whatever you might have heard, I can't believe he is a hexmaster. The daughter and Jorni were in love with each other. That's why he had personal items of her. I understand that the guild leaders were pressed to name someone given the hatred of the townspeople, but it was wrong. Jorni was distant the last weeks and even told us - his only friends - just that he had a very bad suspicion and was looking for proof. I can't believe he is a hexmaster, but that he is a victim. We will help you to open the lock, but can't do more since we have orders from the guild leaders to stay away from the catacombs so even that little help might have dire consequences for us. Show us the door and we will break it.")
+		quest_hexmaster.novicesOfferedHelp = true
+		DawnInterface.changeQuestDescription("The Hexmaster", "Lead the novice mages to the locked dungeon door so they can try to spell it open")
+	end
+end
+
+function quest_hexmaster.magicDoorInteraction()
 	if ( quest_hexmaster.questGiven and not quest_hexmaster.doorTextRead )
+	then
+		quest_hexmaster.showMagicDoorText( 1 )
+	end
+	if ( quest_hexmaster.novicesOfferedHelp and not quest_hexmaster.magicDoorOpened )
+	then
+		quest_hexmaster.showMagicDoorText( 2 )	
+	end
+end
+
+function quest_hexmaster.showMagicDoorText( part )
+	if ( part == 1 )
 	then
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
@@ -87,6 +130,52 @@ function quest_hexmaster.onDiscoveredHiddenDoor()
 		textWindow:setText("At the end of the corridor you see a closed door. When you go close to it you notice a torn piece of novice robe is caught in the door. You try to open the door, but it is locked and won't open. Maybe the strange glowing runes drawn around the frame have something to do with it.");
 		DawnInterface.changeQuestDescription("The Hexmaster", "Tell Ornad Saidor in Arinox that you have found a locked door and within the piece of a robe.");
 		quest_hexmaster.doorTextRead = true;
+	end
+	if ( part == 2 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("Please take a step back and don't disturb our concentration or this might easily become dangerous")
+		textWindow:setOnCloseText( "quest_hexmaster.showMagicDoorText( 3 )" );
+	end
+	if ( part == 3 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("The three mages step in front of the door. They form a pointed triangle which looks as if it is aimed at the door. Then they start gesticulating and murmuring words in a foreign and probably very old language. A few moments later sweat starts running from their heads and they look rather exhausted. You believe something is wrong, but dare not interfere with their magics. Some moments later you almost expect the three of them to drop to the ground dead")
+		textWindow:setOnCloseText( "quest_hexmaster.showMagicDoorText( 4 )" );
+	end
+	if ( part == 4 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("Then you hear a sound like a sigh out of a grave that sends a shiver through your body. Then the runes around the door fade and a feeling of immense evil passes you on its way out of the dungeon. You know instantly this was no normal magic lock. The mages look dead tired, but gather the strength to leave. On their way out their leader turns and says.")
+		textWindow:setOnCloseText( "quest_hexmaster.showMagicDoorText( 5 )" );
+	end
+	if ( part == 5 )
+	then
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("This door is open now. But be careful when you enter this room. We underestimated that lock. The magic that was worked there was unknown to us, but very powerful. It felt dead and evil and nearly killed us. Now I really believe some hexmaster has come to terrorize our town. Good luck to you")
+		quest_hexmaster.magicDoorOpened = true
+
+		DawnInterface.changeQuestDescription("The Hexmaster", "Explore the depth of the Arinox dungeon and find Jorni.");
+	end
+end
+
+function quest_hexmaster.nextRegionInteraction()
+	if ( quest_hexmaster.magicDoorOpened )
+	then
+		DawnInterface.enterZone( "data/zone2", -670, 1529 );
+	else
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("This door is surrounded by several magic runes. You can not get it open.")
 	end
 end
 
