@@ -57,10 +57,16 @@ void BuffWindow::draw()
 
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
     {
+        // only draw spells that has a duration.
+        if ( activeSpells[ curSpell ].first->getDuration() > 0 ) {
             // here we draw the border and background for the spells we have affecting us.
-            // buffs will be drawn with a green border and debuffs with a red border.. for now we draw everyone green.
-            // spell border
-            glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
+            // healing and buffs will be drawn with a green border and debuffs or hostile spells with a red border..
+            if ( activeSpells[ curSpell ].first->isSpellHostile() == true ) {
+                glColor4f( 0.7f, 0.0f, 0.0f, 1.0f );
+            } else {
+                glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
+            }
+
             DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
                                             world_x+posX, 36,
                                             world_y+posY-40*curSpell, 36 );
@@ -75,6 +81,7 @@ void BuffWindow::draw()
             activeSpells[curSpell].first->drawSymbol( world_x + posX + 2, 32, world_y + posY - 40 * curSpell + 2, 32 );
             spellFont->drawText(world_x+posX+40,world_y+posY+18-40*curSpell,activeSpells[curSpell].first->getName());
             spellFont->drawText(world_x+posX+40,world_y+posY+8-40*curSpell,TimeConverter::convertTime( activeSpells[curSpell].second, activeSpells[curSpell].first->getDuration()  ) );
+        }
     }
 
 }

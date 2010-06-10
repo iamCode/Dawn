@@ -395,6 +395,8 @@ class CCharacter
 		int seconds_to_respawn;
 
 	protected:
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+
         bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
@@ -448,8 +450,6 @@ class CCharacter
         CInterface *activeGUI;
 
         std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
-
-        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 
 		std::vector<CSpellActionBase*> spellbook;
 

@@ -136,29 +136,9 @@ std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
 
-std::vector<CSpellActionBase*> activeSpellActions;
-
 namespace Globals
 {
 	std::map< std::string, CZone* > allZones;
-}
-
-void enqueueActiveSpellAction( CSpellActionBase *spellaction )
-{
-	activeSpellActions.push_back( spellaction );
-}
-
-void cleanupActiveSpellActions()
-{
-	size_t curActiveNr = 0;
-	while ( curActiveNr < activeSpellActions.size() ) {
-		if ( activeSpellActions[ curActiveNr ]->isEffectComplete() ) {
-			delete activeSpellActions[ curActiveNr ];
-			activeSpellActions.erase( activeSpellActions.begin() + curActiveNr );
-		} else {
-			++curActiveNr;
-		}
-	}
 }
 
 static bool HandleCommandLineAurguments(int argc, char** argv)
@@ -280,6 +260,14 @@ void DrawScene()
 		{
             GUI.drawTargetedNPCText();
 		}
+
+		// draw the spell effects for our NPCs
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
+		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+            if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
+                activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+            }
+        }
 	}
 
 	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
@@ -289,11 +277,13 @@ void DrawScene()
 		}
 	}
 
-	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
-			activeSpellActions[ curActiveSpellNr ]->drawEffect();
-		}
-	}
+    // draw the spell effects for our player.
+    std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = character.getActiveSpells();
+    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+        if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
+            activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+        }
+    }
 
 	// check our FPS and output it
 	thisframe=SDL_GetTicks();     // Count the FPS
@@ -581,6 +571,7 @@ public:
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.setHealthRegen(1);
 		character.setManaRegen(2);
 		character.setFatigueRegen( 5 );
 		character.giveCoins( 576 );
@@ -926,6 +917,14 @@ void game_loop()
                 }
                 curNPC->Respawn();
                 curNPC->Wander();
+
+                // check all active spells for inEffects on our NPCs.
+                std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
+                for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+                    activeSpellActions[ curActiveSpellNr ].first->inEffect();
+                }
+                curNPC->cleanupActiveSpells();
+
             }
 
             // making sure our target is still alive, if not well set our target to NULL.
@@ -934,16 +933,19 @@ void game_loop()
                     character.setTarget(NULL);
             }
 
+            // check all active spells for inEffects on our player.
+            std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = character.getActiveSpells();
             for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-                activeSpellActions[ curActiveSpellNr ]->inEffect();
+                activeSpellActions[ curActiveSpellNr ].first->inEffect();
             }
+            character.cleanupActiveSpells();
 
 			std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
 			for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
 				InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionRegionNr ];
 				curInteractionRegion->interactWithPlayer( &character );
 			}
-			cleanupActiveSpellActions();
+
 			Globals::getCurrentZone()->cleanupNPCList();
 			Globals::getCurrentZone()->cleanupInteractionList();
 			Globals::getCurrentZone()->cleanupInteractionRegionList();

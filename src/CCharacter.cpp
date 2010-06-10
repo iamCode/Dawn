@@ -35,8 +35,6 @@
 #include <iostream>
 #include <memory>
 
-void enqueueActiveSpellAction( CSpellActionBase *spellaction );
-
 std::map< std::string, CCharacter* > allMobTypes;
 
 // Dawn LUA Interface
@@ -1256,7 +1254,6 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
     }
 
     if ( newSpell != NULL ) {
-        enqueueActiveSpellAction( newSpell );
         newSpell->startEffect();
     }
 }
@@ -1286,7 +1283,7 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 
 	for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
 	{
-	    if ( cooldownSpells[curSpell].first->getName() == spell->getName() )
+	    if ( cooldownSpells[curSpell].first->getID() == spell->getID() )
 	    {
 	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
             {
@@ -1339,7 +1336,6 @@ void CCharacter::startSpellAction()
 	preparationCurrentTime = 0;
 	preparationStartTime = 0;
 
-	enqueueActiveSpellAction( curSpellAction );
 	curSpellAction->startEffect();
 }
 
@@ -1562,7 +1558,7 @@ void CCharacter::addActiveSpell( CSpellActionBase *spell )
     // here we check to see if the current spell cast is already on the character. if it is, then we refresh it.
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
     {
-        if ( activeSpells[curSpell].first->getName() == spell->getName() )
+        if ( activeSpells[curSpell].first->getID() == spell->getID() )
         {
             // we replace the old spell with a new, in case a more powerful spell is cast (a higher rank)
             activeSpells[curSpell].first = spell;
@@ -1579,8 +1575,7 @@ void CCharacter::cleanupActiveSpells()
 {
     size_t curSpell = 0;
     while ( curSpell < activeSpells.size() ) {
-        uint32_t thisDuration = SDL_GetTicks();
-        if ( thisDuration - activeSpells[curSpell].second > activeSpells[curSpell].first->getDuration() * 1000u ) {
+        if ( activeSpells[curSpell].first->isEffectComplete() == true ) {
             delete activeSpells[curSpell].first;
             activeSpells.erase( activeSpells.begin() + curSpell );
         } else {

@@ -92,8 +92,10 @@ bool CSpellActionBase::isEffectComplete() const
 void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height ) const
 {
 	CTexture *texture = getSymbol();
-	DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
-	                                  left, width, bottom, height );
+	if ( texture != NULL ) {
+	    DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
+                                        left, width, bottom, height );
+	}
 }
 
 std::string CSpellActionBase::getID() const
@@ -129,6 +131,7 @@ ConfigurableSpell::ConfigurableSpell()
 	duration = 0;
 	minRange = 0;
 	maxRange = 460; // default maxrange for spells. Can be overridden with setRange().
+    hostileSpell = true;
 
 	name = "";
 	info = "";
@@ -144,6 +147,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	duration = other->duration;
     minRange = other->minRange;
     maxRange = other->maxRange;
+    hostileSpell = other->hostileSpell;
 
     additionalSpells = other->additionalSpells;
 
@@ -194,6 +198,11 @@ bool ConfigurableSpell::isInRange( uint16_t distance ) const
         return true;
     }
     return false;
+}
+
+bool ConfigurableSpell::isSpellHostile() const
+{
+    return hostileSpell;
 }
 
 void ConfigurableSpell::setName( std::string newName )
@@ -251,6 +260,7 @@ ConfigurableAction::ConfigurableAction()
 	duration = 0;
     minRange = 0;
     maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
+    hostileSpell = true;
 
 	name = "";
 	info = "";
@@ -266,6 +276,7 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 	duration = other->duration;
     minRange = other->minRange;
     maxRange = other->maxRange;
+    hostileSpell = other->hostileSpell;
 
     additionalSpells = other->additionalSpells;
 
@@ -316,6 +327,11 @@ bool ConfigurableAction::isInRange( uint16_t distance ) const
         return true;
     }
     return false;
+}
+
+bool ConfigurableAction::isSpellHostile() const
+{
+    return hostileSpell;
 }
 
 void ConfigurableAction::setName( std::string newName )
@@ -527,6 +543,8 @@ void GeneralRayDamageSpell::startEffect()
 	effectStart = SDL_GetTicks();
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
+
+	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
@@ -683,6 +701,7 @@ void GeneralBoltDamageSpell::startEffect()
 	posx = creator->getXPos() + (creator->getWidth() / 2);
 	posy = creator->getYPos() + (creator->getHeight() / 2);
 
+	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
@@ -780,6 +799,7 @@ GeneralHealingSpell::GeneralHealingSpell()
 	remainingEffect = 0.0;
     lastEffect = effectStart;
     continuousHealingTime = 0;
+    hostileSpell = false;
 }
 
 GeneralHealingSpell::GeneralHealingSpell( GeneralHealingSpell *other )
@@ -899,7 +919,7 @@ void GeneralHealingSpell::startEffect()
         target->Heal( healingCaused );
 	}
 
-    creator->addActiveSpell( cast( NULL, NULL ) );
+    target->addActiveSpell( this );
     creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
 }
@@ -1020,29 +1040,45 @@ int16_t GeneralBuffSpell::getSpellEffectElementModifierPoints( ElementType::Elem
 
 void GeneralBuffSpell::setStats( StatsType::StatsType statsType, int16_t amount )
 {
+    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
+    if ( amount > 0 ) {
+        hostileSpell = false;
+    }
     statsModifier[ static_cast<size_t>( statsType ) ] = amount;
 }
 
 void GeneralBuffSpell::setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints )
 {
+    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
+    if ( resistModifierPoints > 0 ) {
+        hostileSpell = false;
+    }
 	resistElementModifier[ static_cast<size_t>( elementType ) ] = resistModifierPoints;
 }
 
 void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints )
 {
-	spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
+    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
+    if ( spellEffectElementModifierPoints > 0 ) {
+        hostileSpell = false;
+    }
+    spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
 }
 
 void GeneralBuffSpell::startEffect()
 {
-	creator->addActiveSpell( cast( NULL, NULL ) );
+    effectStart = SDL_GetTicks();
+	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
-	markSpellActionAsFinished();
 }
 
 void GeneralBuffSpell::inEffect()
 {
+    uint32_t curTime = SDL_GetTicks();
+    if ( curTime - effectStart > getDuration() * 1000u ) {
+        finishEffect();
+    }
 }
 
 void GeneralBuffSpell::drawEffect()
@@ -1051,6 +1087,7 @@ void GeneralBuffSpell::drawEffect()
 
 void GeneralBuffSpell::finishEffect()
 {
+    markSpellActionAsFinished();
     // do we have an additional spell that perhaps should be cast?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
         if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
@@ -1058,6 +1095,7 @@ void GeneralBuffSpell::finishEffect()
         }
     }
 }
+
 
 /// MeleeDamageAction
 
@@ -1141,6 +1179,7 @@ EffectType::EffectType MeleeDamageAction::getEffectType() const
 void MeleeDamageAction::startEffect()
 {
 	effectStart = SDL_GetTicks();
+	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 }
 

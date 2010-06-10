@@ -169,19 +169,60 @@ void CNPC::Move()
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
             std::vector<CSpellActionBase*> curSpellbook = getSpellbook();
             for ( size_t spellIndex = 0; spellIndex < curSpellbook.size(); spellIndex++ ) {
-                CSpellActionBase *curAction = NULL;
 
-                EffectType::EffectType effectType = curSpellbook[spellIndex]->getEffectType();
+                /// \todo better AI to determine what spells to be cast.
+                ///
+                /// As of now, we just check if the spell is within range,
+                /// has enough mana and isn't on cooldown...
+                bool castableSpell = true;
 
-                if ( effectType == EffectType::SingleTargetSpell
-                         && getTarget() != NULL ) {
-                    curAction = curSpellbook[spellIndex]->cast( this, getTarget() );
-                } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                    curAction = curSpellbook[spellIndex]->cast( this, this );
+                if ( dynamic_cast<CAction*>( curSpellbook[ spellIndex ] ) != NULL ) {
+                    if ( curSpellbook[ spellIndex ]->getSpellCost() > getCurrentFatigue() ) {
+                        /// can't cast. cost more fatigue than we can afford.
+                        castableSpell = false;
+                    }
+                } else if ( dynamic_cast<CSpell*>( curSpellbook[ spellIndex ] ) != NULL ) {
+                    if ( curSpellbook[ spellIndex ]->getSpellCost() > getCurrentMana() )	{
+                        /// can't cast. not enough mana.
+                        castableSpell = false;
+                    }
                 }
 
-                if ( curAction != NULL ) {
-                    castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+                if ( curSpellbook[ spellIndex ]->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
+                    uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
+                    if ( curSpellbook[ spellIndex ]->isInRange( distance ) == false ) {
+                        /// can't cast, not in range.
+                        castableSpell = false;
+                    }
+                }
+
+                for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+                {
+                    if ( cooldownSpells[ curSpell ].first->getID() == curSpellbook[ spellIndex ]->getID() )
+                    {
+                        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + curSpellbook[ spellIndex ]->getCooldown() * 1000 )
+                        {
+                            /// can't cast, spell has a cooldown on it.
+                            castableSpell = false;
+                        }
+                    }
+                }
+
+                if ( castableSpell == true ) {
+                    CSpellActionBase *curAction = NULL;
+
+                    EffectType::EffectType effectType = curSpellbook[spellIndex]->getEffectType();
+
+                    if ( effectType == EffectType::SingleTargetSpell
+                             && getTarget() != NULL ) {
+                        curAction = curSpellbook[spellIndex]->cast( this, getTarget() );
+                    } else if ( effectType == EffectType::SelfAffectingSpell ) {
+                        curAction = curSpellbook[spellIndex]->cast( this, this );
+                    }
+
+                    if ( curAction != NULL ) {
+                        castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+                    }
                 }
             }
 		}

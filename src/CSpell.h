@@ -83,6 +83,7 @@ class CSpellActionBase
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
+		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -154,6 +155,7 @@ class ConfigurableSpell : public CSpell
 		virtual uint16_t getSpellCost() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
+		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -174,6 +176,7 @@ class ConfigurableSpell : public CSpell
 		uint16_t duration;
         uint16_t minRange;
         uint16_t maxRange;
+        bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -192,6 +195,7 @@ class ConfigurableAction : public CAction
 		virtual uint16_t getSpellCost() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
+		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -212,6 +216,7 @@ class ConfigurableAction : public CAction
 		uint16_t duration;
         uint16_t minRange;
         uint16_t maxRange;
+        bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -395,6 +400,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 		int16_t *statsModifier;
 		int16_t *resistElementModifier;
 		int16_t *spellEffectElementModifier;
+        uint32_t effectStart;
 };
 
 class MeleeDamageAction : public ConfigurableAction

@@ -246,3 +246,25 @@ curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %m
 curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["rabies"] = curSpell;
+curSpell:setName("Rabies");
+curSpell:setStats( StatsType.HealthRegen, -25 );
+curSpell:setStats( StatsType.Vitality, -5 );
+curSpell:setDuration( 60 );
+curSpell:setInfo("Rabies reducing your health regen and vitality.");
+curSpell:setSpellCost( 0 );
+curSpell:setCastTime( 0 );
+curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
+curSpell:setEffectType( EffectType.SingleTargetSpell );
+
+curSpell = DawnInterface.createMeleeDamageAction();
+spellDatabase["rabidbite"] = curSpell;
+curSpell:setName("Rabid bite");
+curSpell:setDamageBonus( 1.5 );
+curSpell:setCooldown( 1 );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellCost( 0 );
+curSpell:addAdditionalSpell( spellDatabase["rabies"], 0.05 );
+
