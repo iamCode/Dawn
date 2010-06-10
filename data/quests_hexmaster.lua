@@ -7,22 +7,47 @@ end
 function quest_hexmaster.init()
 	-- this quest is initialized from zone zone1
 	quest_hexmaster.questStartRegion = DawnInterface.addInteractionRegion();
-	quest_hexmaster.questStartRegion:setPosition( 730, 2340, 400, 270 );
-	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.questGiverInteraction()" );
+	quest_hexmaster.questStartRegion:setPosition( 730, 2300, 400, 310 );
+	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.onQuestGiverRegionInteraction()" );
 
-	quest_hexmaster.noviceRegion = DawnInterface.addInteractionRegion();
-	quest_hexmaster.noviceRegion:setPosition( -100, 2200, 300, 350 );
-	quest_hexmaster.noviceRegion:setOnEnterText( "quest_hexmaster.noviceInteraction()" );
+	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2450, 1, 0 );
+        quest_hexmaster.ornadSaidor:setAttitude( Attitude.FRIENDLY );
+        quest_hexmaster.ornadSaidor:setName( "Rake Fleetwood" );
+        quest_hexmaster.ornadSaidorInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.ornadSaidor );
+        quest_hexmaster.ornadSaidorInteraction:setInteractionType( InteractionType.Quest );
+        quest_hexmaster.ornadSaidorInteraction:setInteractionCode( "quest_hexmaster.onOrnadSaidorInteraction()" );
+
+	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", 0, 2100, 1, 0 );
+	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
+	quest_hexmaster.noviceLeader:setName( "Novice Leader" );
+        quest_hexmaster.noviceLeaderInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.noviceLeader );
+        quest_hexmaster.noviceLeaderInteraction:setInteractionType( InteractionType.Quest );
+        quest_hexmaster.noviceLeaderInteraction:setInteractionCode( "quest_hexmaster.onNoviceLeaderInteraction()" );
+	
+	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", -75, 2200, 1, 0 );
+	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
+	quest_hexmaster.noviceLeader:setName( "Novice" );
+	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", 55, 2200, 1, 0 );
+	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
+	quest_hexmaster.noviceLeader:setName( "Novice" );
 end
 
-function quest_hexmaster.questGiverInteraction()
+function quest_hexmaster.onQuestGiverRegionInteraction()
 	if ( not quest_hexmaster.questGiven )
 	then
 		quest_hexmaster.showStartText( 1 )
 	end
+end
+
+function quest_hexmaster.onOrnadSaidorInteraction()
 	if ( quest_hexmaster.doorTextRead and not quest_hexmaster.toldWholeStory )
 	then
 		quest_hexmaster.showStartText( 3 )
+	else
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("What are you waiting for. There is work to do. Go on.")
 	end
 end
 
@@ -82,10 +107,15 @@ function quest_hexmaster.showStartText( part )
 	end
 end
 
-function quest_hexmaster.noviceInteraction()
+function quest_hexmaster.onNoviceLeaderInteraction()
 	if ( quest_hexmaster.toldWholeStory and not quest_hexmaster.novicesOfferedHelp )
 	then
 		quest_hexmaster.showNoviceText( 1 )
+	else
+		local textWindow = DawnInterface.createTextWindow( true );
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setAutocloseTime( 0 );
+		textWindow:setText("We are novices of the mages guild, always seeking for knowledge. Don't disturb our learning, please.")
 	end
 end
 
