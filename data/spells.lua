@@ -240,6 +240,7 @@ spellDatabase["phantomstrike"] = curSpell;
 curSpell:setName("Phantom strike");
 curSpell:setDamageBonus( 4.0 );
 curSpell:setCooldown( 12 );
+curSpell:setInfo("Devastating strike, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
 curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
 curSpell:setSpellCost( 50 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
@@ -301,3 +302,23 @@ curSpell:setRequiredClass( CharacterClass.Warrior );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["lungeeffect1"] = curSpell;
+curSpell:setName("Lunge");
+curSpell:setStats( StatsType.ParryModifier, 15 );
+curSpell:setDuration( 6 );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+
+curSpell = DawnInterface.createMeleeDamageAction();
+spellDatabase["lunge"] = curSpell;
+curSpell:setName("Lunge");
+curSpell:setDamageBonus( 1.5 );
+curSpell:setCooldown( 12 );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellCost( 30 );
+curSpell:setInfo("Tactical strike, causing %minMeleeDamage% to %maxMeleeDamage% and increasing your parry chance the next 6 seconds.");
+curSpell:addAdditionalSpell( spellDatabase["lungeeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
