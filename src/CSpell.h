@@ -64,6 +64,8 @@ namespace EffectType
 // custom spells. Need to think on this.
 
 // NOTE: Not used yet, deactivate this comment once that changes ;)
+#include "CCharacter.h"
+
 class CSpellActionBase
 {
 	protected:
@@ -113,13 +115,18 @@ class CSpellActionBase
 		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
         void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
 
+        /// set which class can use the spell
+        void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+        CharacterClass::CharacterClass getRequiredClass() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
-protected:
-	CCharacter *creator;
-	CCharacter *target;
-	bool boundToCreator;
-	bool finished;
-	std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
+    protected:
+        CCharacter *creator;
+        CCharacter *target;
+        bool boundToCreator;
+        bool finished;
+        CharacterClass::CharacterClass requiredClass;
+        std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
 };
 
 class CSpell : public CSpellActionBase

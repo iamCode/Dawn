@@ -24,6 +24,7 @@ curSpell:setSpellSymbol( "data/spells/magicmissile/symbol.tga" );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/magicmissile/magicmissile.tga" );
 curSpell:setMoveSpeed( 500 );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
@@ -41,6 +42,7 @@ curSpell:setAnimationTexture( 1, "data/spells/lightning/2.tga" );
 curSpell:setAnimationTexture( 2, "data/spells/lightning/3.tga" );
 curSpell:setAnimationTexture( 3, "data/spells/lightning/4.tga" );
 curSpell:setAnimationTexture( 4, "data/spells/lightning/5.tga" );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -60,6 +62,7 @@ curSpell:setAnimationTexture( 2, "data/spells/lightning/3.tga" );
 curSpell:setAnimationTexture( 3, "data/spells/lightning/4.tga" );
 curSpell:setAnimationTexture( 4, "data/spells/lightning/5.tga" );
 curSpell:setMoveSpeed( 1000 );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -73,6 +76,7 @@ curSpell:setSpellCost( 30 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDirectHealing( 50, 50, ElementType.Light );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -86,6 +90,7 @@ curSpell:setSpellCost( 40 );
 curSpell:setSpellSymbol( "data/spells/healother/symbol.tga" );
 curSpell:setEffectType( EffectType.SingleTargetSpell );
 curSpell:setDirectHealing( 50, 70, ElementType.Dark );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -100,6 +105,7 @@ curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setCooldown( 30 );
 curSpell:setContinuousHealing( 10, 15, 12000, ElementType.Light );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -114,6 +120,7 @@ curSpell:setSpellCost( 75 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 300 );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -128,6 +135,7 @@ curSpell:setSpellCost( 0 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 600 );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
 spellDatabase["layingofhands"] = curSpell;
@@ -139,6 +147,7 @@ curSpell:setSpellCost( 10 );
 curSpell:setSpellSymbol( "data/spells/layingofhands/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDirectHealing( 500, 500, ElementType.Light );
+curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -154,6 +163,7 @@ curSpell:setCooldown( 120 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDirectHealing( 10, 25, ElementType.Light );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["callingofthegrave"] = curSpell;
@@ -165,6 +175,7 @@ curSpell:setCastTime( 4000 );
 curSpell:setSpellCost( 100 );
 curSpell:setSpellSymbol( "data/spells/callingofthegrave/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -179,6 +190,7 @@ curSpell:setCastTime( 1000 );
 curSpell:setSpellCost( 25 );
 curSpell:setSpellSymbol( "data/spells/mightofthetitan/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -193,6 +205,7 @@ curSpell:setCastTime( 500 );
 curSpell:setCooldown( 120 );
 curSpell:setSpellSymbol( "data/spells/vortex/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -206,6 +219,7 @@ curSpell:setSpellCost( 75 );
 curSpell:setCastTime( 2000 );
 curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Liche );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -217,6 +231,7 @@ curSpell:setCooldown( 2 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
 curSpell:setInfo("Attack with your weapon, causing %minMeleeDamage%-%maxMeleeDamage% damage.");
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -227,6 +242,7 @@ curSpell:setDamageBonus( 4.0 );
 curSpell:setCooldown( 12 );
 curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
 curSpell:setSpellCost( 50 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -244,6 +260,7 @@ curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
 curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
 curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
@@ -267,4 +284,20 @@ curSpell:setCooldown( 1 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
 curSpell:addAdditionalSpell( spellDatabase["rabies"], 0.05 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+curSpell = DawnInterface.createGeneralHealingSpell();
+spellDatabase["bandages"] = curSpell;
+curSpell:setName("Bandages");
+curSpell:setInfo("Bandaging yourself, healing %minContinuousHealing%-%maxContinuousHealing% points of damage over 10 seconds.");
+curSpell:setCastTime( 1000 );
+curSpell:setSpellCost( 0 );
+curSpell:setContinuousHealing( 15, 20, 10000, ElementType.Light );
+curSpell:setCooldown( 60 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 

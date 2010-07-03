@@ -38,6 +38,8 @@ namespace CharacterClass
 {
 	enum CharacterClass
 	{
+		NOCLASS,		
+		ANYCLASS,
 		Liche,
 		Warrior
 	};
@@ -298,6 +300,7 @@ namespace WeaponType
 class CSpellActionBase
 {
 	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 };
 
 class CAction : public CSpellActionBase
@@ -394,6 +397,7 @@ class ConfigurableSpell : public CSpell
 
 class ConfigurableAction : public CAction
 {
+
 	void setCastTime( int newCastTime );
 	void setCooldown( int newCooldown );
 	void setSpellCost( int spellCost );

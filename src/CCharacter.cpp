@@ -1539,7 +1539,9 @@ bool CCharacter::isPlayer() const
 void CCharacter::inscribeSpellInSpellbook( CSpellActionBase *spell )
 {
     assert( spell != NULL );
-    spellbook.push_back( spell );
+    if ( spell->getRequiredClass() == getClass() || spell->getRequiredClass() == CharacterClass::ANYCLASS ) {
+        spellbook.push_back( spell );
+    }
 }
 
 std::vector<CSpellActionBase*> CCharacter::getSpellbook() const

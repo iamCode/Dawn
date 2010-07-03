@@ -42,7 +42,8 @@ double randomDouble( double min, double max )
 
 CSpellActionBase::CSpellActionBase()
 		: boundToCreator( false ),
-		  finished( false )
+		  finished( false ),
+		  requiredClass( CharacterClass::NOCLASS )
 {
 }
 
@@ -117,6 +118,16 @@ std::string CSpellActionBase::getID() const
 void CSpellActionBase::addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute )
 {
     additionalSpells.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+}
+
+void CSpellActionBase::setRequiredClass( CharacterClass::CharacterClass requiredClass )
+{
+    this->requiredClass = requiredClass;
+}
+
+CharacterClass::CharacterClass CSpellActionBase::getRequiredClass() const
+{
+    return requiredClass;
 }
 
 /// ConfigurableSpell

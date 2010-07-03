@@ -42,6 +42,8 @@ namespace CharacterClass
 {
     enum CharacterClass
     {
+        NOCLASS,
+        ANYCLASS,
         Liche,
         Warrior
     };
