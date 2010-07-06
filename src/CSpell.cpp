@@ -471,10 +471,21 @@ void GeneralDamageSpell::dealDirectDamage()
 {
 	if ( getDirectDamageMax() > 0 ) {
 	    int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
+	    double fatigueDamageFactor = 1.0;
+
+        // here we recalculate the damage if we're a fighter class with high fatigue
+	    if ( creator->getArchType() == CharacterArchType::Fighter ) {
+            fatigueDamageFactor = 1.0 - (floor(((static_cast<double>( creator->getMaxFatigue() ) - creator->getCurrentFatigue() - getSpellCost() - 1  ) / creator->getMaxFatigue() ) / 0.25 ) / 10 );
+            if ( fatigueDamageFactor > 1.0 ) {
+                fatigueDamageFactor = 1.0;
+            } else if ( fatigueDamageFactor < 0.7 ) {
+                fatigueDamageFactor = 0.7;
+            }
+        }
 
         double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( getDirectDamageElement() ), target->getLevel() );
         double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( getDirectDamageElement() ), creator->getLevel() );
-        double realDamage = damage * damageFactor * (1-resist);
+        double realDamage = damage * damageFactor * fatigueDamageFactor * (1-resist);
         double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
         bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
         if ( criticalHit == true ) {
@@ -1145,6 +1156,18 @@ void MeleeDamageAction::dealDamage()
     assert ( target != NULL );
     const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
 
+    double fatigueDamageFactor = 1.0;
+
+    // here we recalculate the damage if we're a fighter class with high fatigue
+    if ( creator->getArchType() == CharacterArchType::Fighter ) {
+        fatigueDamageFactor = 1.0 - (floor(((static_cast<double>( creator->getMaxFatigue() ) - creator->getCurrentFatigue() - getSpellCost() - 1  ) / creator->getMaxFatigue() ) / 0.25 ) / 10 );
+        if ( fatigueDamageFactor > 1.0 ) {
+            fatigueDamageFactor = 1.0;
+        } else if ( fatigueDamageFactor < 0.7 ) {
+            fatigueDamageFactor = 0.7;
+        }
+    }
+
     double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
     double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
     int damage = randomSizeT( minDamage, maxDamage ) * damageBonus;
@@ -1165,7 +1188,7 @@ void MeleeDamageAction::dealDamage()
     double blockFactor = 0.5;
 
     if ( hasHit && !targetEvaded && !targetParried ) {
-        int damageDone = damage * (1.0-damageReduction) * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
+        int damageDone = damage * (1.0-damageReduction) * fatigueDamageFactor * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
         if ( damageDone < 1 ) {
             damageDone = 1;
         }

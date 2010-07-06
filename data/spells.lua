@@ -143,7 +143,7 @@ curSpell:setName("Laying of hands");
 curSpell:setInfo("Instantly heals you for %minDirectHealing% points of damage.");
 curSpell:setCastTime( 0 );
 curSpell:setCooldown( 600 );
-curSpell:setSpellCost( 10 );
+curSpell:setSpellCost( 0 );
 curSpell:setSpellSymbol( "data/spells/layingofhands/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDirectHealing( 500, 500, ElementType.Light );
