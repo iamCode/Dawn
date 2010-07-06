@@ -34,6 +34,17 @@ namespace Attitude
 	};
 }
 
+namespace CharacterClass
+{
+	enum CharacterClass
+	{
+		NOCLASS,		
+		ANYCLASS,
+		Liche,
+		Warrior
+	};
+}
+
 class CCharacter {
     void baseOnType( std::string otherType );
 
@@ -65,9 +76,16 @@ class CCharacter {
     int getMaxMana() const;
     void modifyMaxMana( int maxManaModifier );
 
+    void setMaxFatigue( int newMaxFatigue );
+    int getMaxFatigue() const;
+    void modifyMaxFatigue( int maxFatigueModifier );
+
+
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
     void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
     void setLifeTexture( std::string filename );
+
+    void setClass( CharacterClass::CharacterClass characterClass );    
 
     void setWanderRadius( int newWanderRadius );
     int getWanderRadius() const;
@@ -98,6 +116,7 @@ class CCharacter {
 	void setSpellCriticalModifierPoints( int newSpellCriticalModifierPoints );
 	void setHealthRegen( int newHealthRegen );
 	void setManaRegen( int newManaRegen );
+	void setFatigueRegen( int newFatigueRegen );
 
     void setBoundingBox( int bbx, int bby, int bbw, int bbh );
     void setUseBoundingBox( bool use );
@@ -106,6 +125,7 @@ class CCharacter {
     void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
 
 	void setPosition( int xpos, int ypos );
+	void inscribeSpellInSpellbook( CSpellActionBase *spell );
 };
 
 namespace StatsType
@@ -119,6 +139,7 @@ namespace StatsType
         Wisdom,
         Health,
         Mana,
+		Fatigue,
         Armor,
         DamageModifier,
         HitModifier,
@@ -131,6 +152,7 @@ namespace StatsType
         SpellEffectAll,
         HealthRegen,
         ManaRegen,
+		FatigueRegen,
         Count
     };
 }
@@ -277,6 +299,12 @@ namespace WeaponType
 
 class CSpellActionBase
 {
+	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+};
+
+class CAction : public CSpellActionBase
+{
 };
 
 class CSpell : public CSpellActionBase
@@ -360,10 +388,22 @@ class ConfigurableSpell : public CSpell
 {
 	void setCastTime( int newCastTime );
 	void setCooldown( int newCooldown );
-	void setManaCost( int newManaCost );
+	void setSpellCost( int spellCost );
 	void setName( std::string newName );
 	void setInfo( std::string newInfo );
+	void setRange( int minRange, int maxRange );
+	void setSpellSymbol( std::string symbolFile );
+};
 
+class ConfigurableAction : public CAction
+{
+
+	void setCastTime( int newCastTime );
+	void setCooldown( int newCooldown );
+	void setSpellCost( int spellCost );
+	void setName( std::string newName );
+	void setInfo( std::string newInfo );
+	void setRange( int minRange, int maxRange );
 	void setSpellSymbol( std::string symbolFile );
 };
 
@@ -383,6 +423,7 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
 	void setMoveSpeed( int newMoveSpeed );
 	void setExpireTime( int newExpireTime );
+
 	void setNumAnimations( int count );
 	void setAnimationTexture( int num, std::string filename );
 };
@@ -404,6 +445,11 @@ class GeneralBuffSpell : public ConfigurableSpell
 
 };
 
+class MeleeDamageAction : public ConfigurableAction
+{
+	void setDamageBonus( double damageBonus );
+};
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
@@ -423,7 +469,8 @@ namespace DawnInterface
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
-	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+	MeleeDamageAction* createMeleeDamageAction();		
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
 	InteractionRegion* addInteractionRegion();

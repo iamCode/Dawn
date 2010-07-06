@@ -21,7 +21,6 @@
 #include "Player.h"
 #include "CDrawingHelpers.h"
 #include "TimeConverterHelper.h"
-#include "CAction.h"
 #include "CSpell.h"
 #include <memory>
 #include <cassert>
@@ -109,15 +108,41 @@ void ActionBar::draw()
 
         if ( button[buttonId].action != NULL )
 	    {
+	        /** make the spellicon darker if:
+                    * not enough mana
+                    * out of range
+                    * it's on cooldown       **/
+            bool isSpellUseable = true;
+
+            if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
+                if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
+                        isSpellUseable = false;
+                }
+            } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL ) {
+                if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
+                    isSpellUseable = false;
+                }
+            }
+
+            if ( player->getTarget() != NULL ) {
+                uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
+                if ( button[buttonId].action->isInRange( distance ) == false ) {
+                    isSpellUseable = false;
+                }
+            }
+
 	        for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
 	        {
 	            if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
 	            {
-                    // make the spellicon darker if it's on cooldown.
-                    glColor3f( 0.4f, 0.4f, 0.4f );
+                    isSpellUseable = false;
                     drawCooldownText = true;
                     cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
 	            }
+            }
+
+            if ( isSpellUseable == false ) {
+                glColor3f( 0.4f, 0.4f, 0.4f );
             }
 
 	        button[buttonId].action->drawSymbol( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
@@ -128,8 +153,8 @@ void ActionBar::draw()
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
 	            cooldownFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 + 6 + (static_cast<float>(50)-xModifier) / 2,
                                         static_cast<float>( world_y ) + 28, cooldownText.c_str() );
-                glColor3f( 1.0f, 1.0f, 1.0f );
             }
+            glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
 	}
 }
@@ -179,12 +204,7 @@ void ActionBar::handleKeys()
                 }
 
                 if ( curAction != NULL ) {
-                    // TODO: This is a hack. just create a single type of action
-                    if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-                        player->castSpell( dynamic_cast<CSpell*>( curAction ) );
-                    } else {
-                        player->executeAction( dynamic_cast<CAction*>( curAction ) );
-                    }
+                    player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
                 }
             }
         }
@@ -271,12 +291,7 @@ void ActionBar::executeSpellQueue()
             }
 
             if ( curAction != NULL ) {
-                // TODO: This is a hack. just create a single type of action
-                if ( dynamic_cast<CSpell*>( curAction ) != NULL ) {
-                    player->castSpell( dynamic_cast<CSpell*>( curAction ) );
-                } else {
-                    player->executeAction( dynamic_cast<CAction*>( curAction ) );
-                }
+                player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
             }
             spellQueue = NULL;
         }

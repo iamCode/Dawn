@@ -84,7 +84,7 @@ class ActionBar
         GLFT_Font *shortcutFont;
         GLFT_Font *cooldownFont;
         sButton *spellQueue;
-        std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 };
 
 #endif

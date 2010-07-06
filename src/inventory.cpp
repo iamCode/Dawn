@@ -219,6 +219,10 @@ void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *it
 {
     assert( (item == NULL) || (item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse )) );
     equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
+
+    // this will seed a new ticket to the item and spell tooltips, telling them to reload their data.
+    player->setTicketForItemTooltip();
+    player->setTicketForSpellTooltip();
 }
 
 InventoryItem* Inventory::getItemAtSlot( ItemSlot::ItemSlot slotToUse )

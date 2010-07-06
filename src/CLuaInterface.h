@@ -45,16 +45,17 @@ namespace DawnInterface
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
-	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell );
+	MeleeDamageAction* createMeleeDamageAction();
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
-	
+
 	Player *getPlayer();
-	
+
 	// functions used for loading only
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();

@@ -27,6 +27,8 @@ class Player : public CCharacter
 	private:
 
 		uint32_t remainingRegenPoints;
+		uint32_t ticketForItemTooltip;
+		uint32_t ticketForSpellTooltip;
 		Inventory inventory;
 
 	public:
@@ -35,9 +37,7 @@ class Player : public CCharacter
 		void Move();
 		void Draw();
 		void Die();
-		CCharacter* getTarget() const;
-		void setTarget(CCharacter *newTarget);
-		void regenerateLifeMana(uint32_t regenPoints);
+		void regenerateLifeManaFatigue(uint32_t regenPoints);
 		Direction GetDirection();
 
 		uint16_t getModifiedArmor() const;
@@ -59,12 +59,19 @@ class Player : public CCharacter
 
 		uint16_t getModifiedMaxHealth() const;
 		uint16_t getModifiedMaxMana() const;
+		uint16_t getModifiedMaxFatigue() const;
 
 		uint16_t getModifiedHealthRegen() const;
 		uint16_t getModifiedManaRegen() const;
+		uint16_t getModifiedFatigueRegen() const;
 
 		uint16_t getModifiedMinDamage() const;
 		uint16_t getModifiedMaxDamage() const;
+
+		void setTicketForItemTooltip ();
+        void setTicketForSpellTooltip ();
+        uint32_t getTicketForItemTooltip() const;
+        uint32_t getTicketForSpellTooltip() const;
 
 		Inventory* getInventory();
 		void clearInventory();

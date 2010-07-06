@@ -18,7 +18,6 @@
 
 #include "CNPC.h"
 #include "Player.h"
-#include "CAction.h"
 #include "CLuaInterface.h"
 #include "callindirection.h"
 
@@ -40,6 +39,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	direction_texture = S;
 	attitudeTowardsPlayer = Attitude::NEUTRAL;
 	chasingPlayer = false;
+	setTarget( NULL );
 	markedAsDeleted = false;
 }
 
@@ -75,6 +75,7 @@ Direction CNPC::GetDirection()
 void CNPC::Damage(int amount, bool criticalHit)
 {
 	chasingPlayer = true;
+	setTarget( &character );
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -94,8 +95,8 @@ void CNPC::Draw()
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
 	if (alive == true) {
-		int drawX = x_pos;
-		int drawY = y_pos;
+		int drawX = getXPos();
+		int drawY = getYPos();
 		if ( getUseBoundingBox() ) {
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
@@ -109,6 +110,7 @@ void CNPC::Respawn()
 	if (alive == false && do_respawn == true) {
 		respawn_thisframe = SDL_GetTicks();
 		if ((respawn_thisframe-respawn_lastframe) > (seconds_to_respawn * 1000)) {
+			setTarget( NULL );
 			alive = true;
 			chasingPlayer = false;
 			x_pos = x_spawn_pos;
@@ -159,12 +161,70 @@ void CNPC::Move()
     if ( distance < 200 && getAttitude() == Attitude::HOSTILE )
     {
         chasingPlayer = true;
+        setTarget( &character );
     }
 
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {
 		// check distance to player (not exact, but acceptable, need a better function soon...)
 		if ( (distance - (((getWidth()+getHeight())/4) + ((character.getWidth()+character.getHeight())/4))) < 20 ) {
-			executeAction( ActionCreation::createAttackAction( const_cast<CCharacter*>( dynamic_cast<CCharacter*>(this)), &character ) );
+            std::vector<CSpellActionBase*> curSpellbook = getSpellbook();
+            for ( size_t spellIndex = 0; spellIndex < curSpellbook.size(); spellIndex++ ) {
+
+                /// \todo better AI to determine what spells to be cast.
+                ///
+                /// As of now, we just check if the spell is within range,
+                /// has enough mana and isn't on cooldown...
+                bool castableSpell = true;
+
+                if ( dynamic_cast<CAction*>( curSpellbook[ spellIndex ] ) != NULL ) {
+                    if ( curSpellbook[ spellIndex ]->getSpellCost() > getCurrentFatigue() ) {
+                        /// can't cast. cost more fatigue than we can afford.
+                        castableSpell = false;
+                    }
+                } else if ( dynamic_cast<CSpell*>( curSpellbook[ spellIndex ] ) != NULL ) {
+                    if ( curSpellbook[ spellIndex ]->getSpellCost() > getCurrentMana() )	{
+                        /// can't cast. not enough mana.
+                        castableSpell = false;
+                    }
+                }
+
+                if ( curSpellbook[ spellIndex ]->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
+                    uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
+                    if ( curSpellbook[ spellIndex ]->isInRange( distance ) == false ) {
+                        /// can't cast, not in range.
+                        castableSpell = false;
+                    }
+                }
+
+                for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+                {
+                    if ( cooldownSpells[ curSpell ].first->getID() == curSpellbook[ spellIndex ]->getID() )
+                    {
+                        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + curSpellbook[ spellIndex ]->getCooldown() * 1000 )
+                        {
+                            /// can't cast, spell has a cooldown on it.
+                            castableSpell = false;
+                        }
+                    }
+                }
+
+                if ( castableSpell == true ) {
+                    CSpellActionBase *curAction = NULL;
+
+                    EffectType::EffectType effectType = curSpellbook[spellIndex]->getEffectType();
+
+                    if ( effectType == EffectType::SingleTargetSpell
+                             && getTarget() != NULL ) {
+                        curAction = curSpellbook[spellIndex]->cast( this, getTarget() );
+                    } else if ( effectType == EffectType::SelfAffectingSpell ) {
+                        curAction = curSpellbook[spellIndex]->cast( this, this );
+                    }
+
+                    if ( curAction != NULL ) {
+                        castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+                    }
+                }
+            }
 		}
 	}
 
@@ -221,7 +281,7 @@ std::string CNPC::getLuaSaveText() const
 {
 	std::ostringstream oss;
 	std::string objectName = "curNPC";
-	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", " 
+	oss << "local " << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", "
 	                                        << x_spawn_pos << ", "
 	                                        << y_spawn_pos << ", "
 	                                        << seconds_to_respawn << ", "
@@ -240,7 +300,7 @@ std::string CNPC::getLuaSaveText() const
 	}
 
 	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
-	
+
 	return oss.str();
 }
 

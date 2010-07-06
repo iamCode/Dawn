@@ -22,7 +22,6 @@
 #include "CSpell.h"
 #include "CInterface.h"
 #include "GroundLoot.h"
-#include "CAction.h"
 #include "StatsSystem.h"
 #include "CZone.h"
 
@@ -35,8 +34,6 @@
 #include <limits>
 #include <iostream>
 #include <memory>
-
-void enqueueActiveSpellAction( CSpellActionBase *spellaction );
 
 std::map< std::string, CCharacter* > allMobTypes;
 
@@ -71,6 +68,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setWisdom( other->getWisdom() );
 	setMaxHealth( other->getMaxHealth() );
 	setMaxMana( other->getMaxMana() );
+	setMaxFatigue( other->getMaxFatigue() );
 	setMinDamage( other->getMinDamage() );
 	setMaxDamage( other->getMaxDamage() );
 	size_t numActivities=static_cast<size_t>(ActivityType::Count);
@@ -83,6 +81,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setArmor( other->getArmor() );
 	setHealthRegen( other->getHealthRegen() );
 	setManaRegen( other->getManaRegen() );
+	setFatigueRegen( other->getFatigueRegen() );
 	setDamageModifierPoints( other->getDamageModifierPoints() );
 	setHitModifierPoints( other->getHitModifierPoints() );
 	setEvadeModifierPoints( other->getEvadeModifierPoints() );
@@ -97,6 +96,7 @@ void CCharacter::baseOnType( std::string otherName )
 		setSpellEffectElementModifierPoints( curElementType, other->getSpellEffectElementModifierPoints( curElementType ) );
 	}
 	setSpellCriticalModifierPoints( other->getSpellCriticalModifierPoints() );
+	setClass( other->getClass() );
 	setWanderRadius ( other->getWanderRadius() );
 	setName( other->getName() );
 	setLevel( other->getLevel() );
@@ -104,6 +104,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
+	setSpellbook( other->getSpellbook() );
 }
 
 std::string CCharacter::getClassID() const
@@ -128,6 +129,16 @@ AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierT
 		return maxValue;
 	else
 		return (attributeValue + modifier);
+}
+
+CCharacter* CCharacter::getTarget() const
+{
+	return target;
+}
+
+void CCharacter::setTarget( CCharacter *target )
+{
+    this->target = target;
 }
 
 std::string CCharacter::getName() const
@@ -562,6 +573,50 @@ void CCharacter::modifyCurrentMana( int16_t currentManaModifier )
 	setCurrentMana( getModifiedAttributeValue( getCurrentMana(), currentManaModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxMana() ) );
 }
 
+
+uint16_t CCharacter::getMaxFatigue() const
+{
+	return max_fatigue;
+}
+
+uint16_t CCharacter::getModifiedMaxFatigue() const
+{
+	return getMaxFatigue();
+}
+
+void CCharacter::setMaxFatigue( uint16_t newMaxFatigue )
+{
+	max_fatigue = newMaxFatigue;
+	// if ( current_fatigue > getModifiedMaxFatigue() )
+	// {
+		current_fatigue = getModifiedMaxFatigue();
+	// }
+}
+
+void CCharacter::modifyMaxFatigue( int16_t maxFatigueModifier )
+{
+	setMaxFatigue( getModifiedAttributeValue( max_fatigue, maxFatigueModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+uint16_t CCharacter::getCurrentFatigue() const
+{
+	if ( current_fatigue > getModifiedMaxFatigue() )
+		return getModifiedMaxFatigue();
+
+	return current_fatigue;
+}
+
+void CCharacter::setCurrentFatigue( uint16_t newCurrentFatigue )
+{
+	assert( newCurrentFatigue <= getModifiedMaxFatigue() );
+	current_fatigue = newCurrentFatigue;
+}
+
+void CCharacter::modifyCurrentFatigue( int16_t currentFatigueModifier )
+{
+	setCurrentFatigue( getModifiedAttributeValue( getCurrentFatigue(), currentFatigueModifier, NULLABLE_ATTRIBUTE_MIN, getModifiedMaxFatigue() ) );
+}
+
 void CCharacter::setManaRegen( uint16_t newManaRegen )
 {
     assert( newManaRegen >= NULLABLE_ATTRIBUTE_MIN );
@@ -581,6 +636,27 @@ uint16_t CCharacter::getManaRegen() const
 void CCharacter::modifyManaRegen( int16_t manaRegenModifier )
 {
     setManaRegen( getModifiedAttributeValue( manaRegen, manaRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
+}
+
+void CCharacter::setFatigueRegen( uint16_t newFatigueRegen )
+{
+    assert( newFatigueRegen >= NULLABLE_ATTRIBUTE_MIN );
+	fatigueRegen = newFatigueRegen;
+}
+
+uint16_t CCharacter::getModifiedFatigueRegen() const
+{
+    return getFatigueRegen();
+}
+
+uint16_t CCharacter::getFatigueRegen() const
+{
+    return fatigueRegen;
+}
+
+void CCharacter::modifyFatigueRegen( int16_t fatigueRegenModifier )
+{
+    setFatigueRegen( getModifiedAttributeValue( fatigueRegen, fatigueRegenModifier, NULLABLE_ATTRIBUTE_MIN ) );
 }
 
 void CCharacter::setHealthRegen( uint16_t newHealthRegen )
@@ -677,6 +753,45 @@ void CCharacter::raiseLevel()
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
 	}
+}
+
+void CCharacter::setClass( CharacterClass::CharacterClass characterClass )
+{
+    this->characterClass = characterClass;
+    switch ( characterClass )
+    {
+        case CharacterClass::Liche:
+        /// and all other caster classes here...
+            characterArchType = CharacterArchType::Caster;
+        break;
+        case CharacterClass::Warrior:
+        /// and all other fighter classes here...
+            characterArchType = CharacterArchType::Fighter;
+        break;
+    }
+}
+
+CharacterClass::CharacterClass CCharacter::getClass() const
+{
+    return characterClass;
+}
+
+CharacterArchType::CharacterArchType CCharacter::getArchType() const
+{
+    return characterArchType;
+}
+
+std::string CCharacter::getClassName() const
+{
+    switch ( characterClass )
+    {
+        case CharacterClass::Liche:
+            return "Liche";
+        break;
+        case CharacterClass::Warrior:
+            return "Warrior";
+        break;
+    }
 }
 
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )
@@ -1127,26 +1242,48 @@ int CCharacter::GetDirectionTexture()
 	}
 }
 
-// since we dont have any combat class, im putting this spellcasting here.
-// in the future we could probably benefit from putting this into the combat class,
-// since we probably would use the same functions for NPCs when they are casting spells etc...
-
-void CCharacter::executeAction( CAction *action )
+void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
 {
-	giveToPreparation( action );
+    assert ( spell != NULL );
+    CSpellActionBase *newSpell = NULL;
+
+    if ( spell->getEffectType() == EffectType::SingleTargetSpell && getTarget() != NULL ) {
+        newSpell = spell->cast( this, getTarget() );
+    } else if ( spell->getEffectType() == EffectType::SelfAffectingSpell ) {
+        newSpell = spell->cast( this, this );
+    }
+
+    if ( newSpell != NULL ) {
+        newSpell->startEffect();
+    }
 }
 
-void CCharacter::castSpell( CSpell *spell )
+// use this function to cast spells with rules (mana requirement, range etc...
+void CCharacter::castSpell( CSpellActionBase *spell )
 {
-    if ( spell->getManaCost() > getCurrentMana() )
-	{
-	    /// can't cast, not enough mana. Display message here about it.
-	    return;
+    if ( dynamic_cast<CAction*>( spell ) != NULL ) {
+        if ( spell->getSpellCost() > getCurrentFatigue() ) {
+            /// can't cast. cost more fatigue than we can afford. Display message here about it.
+            return;
+        }
+	} else if ( dynamic_cast<CSpell*>( spell) != NULL ) {
+	    if ( spell->getSpellCost() > getCurrentMana() )	{
+	        /// can't cast. not enough mana. Display message here about it.
+            return;
+	    }
+	}
+
+	if ( spell->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
+	    uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
+        if ( spell->isInRange( distance ) == false ) {
+            /// can't cast, not in range. Display message here about it...
+            return;
+        }
 	}
 
 	for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
 	{
-	    if ( cooldownSpells[curSpell].first->getName() == spell->getName() )
+	    if ( cooldownSpells[curSpell].first->getID() == spell->getID() )
 	    {
 	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
             {
@@ -1156,7 +1293,7 @@ void CCharacter::castSpell( CSpell *spell )
 	    }
 	}
 
-	giveToPreparation( spell );
+    giveToPreparation( spell );
 }
 
 void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
@@ -1199,11 +1336,6 @@ void CCharacter::startSpellAction()
 	preparationCurrentTime = 0;
 	preparationStartTime = 0;
 
-	// when the spellcasting is complete, we will have a pointer to a spell and the NPC id that will be affected by it.
-	// So when this spellcasting is complete, we target the NPC, using the CCombat class not yet developed to to affect the mob.
-	// fow now we'll just damage / heal the NPC in target
-
-	enqueueActiveSpellAction( curSpellAction );
 	curSpellAction->startEffect();
 }
 
@@ -1404,13 +1536,31 @@ bool CCharacter::isPlayer() const
 	return false;
 }
 
+void CCharacter::inscribeSpellInSpellbook( CSpellActionBase *spell )
+{
+    assert( spell != NULL );
+    if ( spell->getRequiredClass() == getClass() || spell->getRequiredClass() == CharacterClass::ANYCLASS ) {
+        spellbook.push_back( spell );
+    }
+}
+
+std::vector<CSpellActionBase*> CCharacter::getSpellbook() const
+{
+    return spellbook;
+}
+
+void CCharacter::setSpellbook( std::vector<CSpellActionBase*> spellbook )
+{
+    this->spellbook = spellbook;
+}
+
 void CCharacter::addActiveSpell( CSpellActionBase *spell )
 {
     assert( spell != NULL );
     // here we check to see if the current spell cast is already on the character. if it is, then we refresh it.
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
     {
-        if ( activeSpells[curSpell].first->getName() == spell->getName() )
+        if ( activeSpells[curSpell].first->getID() == spell->getID() )
         {
             // we replace the old spell with a new, in case a more powerful spell is cast (a higher rank)
             activeSpells[curSpell].first = spell;
@@ -1427,8 +1577,7 @@ void CCharacter::cleanupActiveSpells()
 {
     size_t curSpell = 0;
     while ( curSpell < activeSpells.size() ) {
-        uint32_t thisDuration = SDL_GetTicks();
-        if ( thisDuration - activeSpells[curSpell].second > activeSpells[curSpell].first->getDuration() * 1000u ) {
+        if ( activeSpells[curSpell].first->isEffectComplete() == true ) {
             delete activeSpells[curSpell].first;
             activeSpells.erase( activeSpells.begin() + curSpell );
         } else {
@@ -1448,12 +1597,12 @@ std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getActiveSpells
 }
 
 
-void CCharacter::addCooldownSpell( CSpell *spell )
+void CCharacter::addCooldownSpell( CSpellActionBase *spell )
 {
     assert( spell != NULL );
     if ( spell->getCooldown() > 0 )
     {
-        cooldownSpells.push_back( std::pair<CSpell*,uint32_t>( spell, SDL_GetTicks() ) );
+        cooldownSpells.push_back( std::pair<CSpellActionBase*,uint32_t>( spell, SDL_GetTicks() ) );
     }
 }
 
@@ -1465,6 +1614,11 @@ void CCharacter::cleanupCooldownSpells()
         if ( thisDuration - cooldownSpells[curSpell].second > cooldownSpells[curSpell].first->getCooldown() * 1000u ) {
             delete cooldownSpells[curSpell].first;
             cooldownSpells.erase( cooldownSpells.begin() + curSpell );
+            if ( isPlayer() == true ) {
+                // this will seed a new ticket for the itemtooltip and spelltooltips, causing them to reload.
+                dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+                dynamic_cast<Player*>(this)->setTicketForSpellTooltip();
+            }
         } else {
             curSpell ++;
         }
@@ -1476,7 +1630,7 @@ void CCharacter::clearCooldownSpells()
     cooldownSpells.clear();
 }
 
-std::vector<std::pair<CSpell*, uint32_t> > CCharacter::getCooldownSpells() const
+std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getCooldownSpells() const
 {
     return cooldownSpells;
 }

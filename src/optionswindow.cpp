@@ -207,3 +207,92 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		toggle(); // close the window
 	}
 }
+
+
+
+
+ChooseClassScreen::ChooseClassScreen() : OptionsWindow()
+{
+    visible = true;
+	done = false;
+}
+
+ChooseClassScreen::~ChooseClassScreen()
+{
+}
+
+bool ChooseClassScreen::isDone() const
+{
+    return done;
+}
+
+void ChooseClassScreen::draw( int mouseX, int mouseY )
+{
+	// show screen
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
+	                                  posX + world_x, frameWidth,
+	                                  posY + world_y, frameHeight );
+
+
+    // show class choices
+	int textX = world_x + posX + 64;
+	int textY = world_y + posY + frameHeight - 96 - font->getHeight();
+
+    glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+	font->drawText( textX, textY + 32, "Choose class" );
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+
+	std::string curText = "Choose class";
+	int selectedEntry = -1;
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 128 < mouseY) {
+		selectedEntry = -1;
+	} else {
+		selectedEntry = (posY + frameHeight - 128 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 128 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+			selectedEntry = -1;
+		}
+	}
+
+	textY -= font->getHeight() * 1.5;
+	if ( selectedEntry == 0 ) {
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+	}
+	font->drawText( textX, textY, "Liche" );
+	if ( selectedEntry == 0 ) {
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+	textY -= font->getHeight() * 1.5;
+	if ( selectedEntry == 1 ) {
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+	}
+	font->drawText( textX, textY, "Warrior" );
+	if ( selectedEntry == 1 ) {
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+}
+
+void ChooseClassScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
+{
+    // check for quit and the other options
+	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {
+        return;
+    }
+
+	int selectedEntry = -1;
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 128 < mouseY) {
+		selectedEntry = -1;
+	} else {
+		selectedEntry = (posY + frameHeight - 128 - mouseY) / static_cast<int>(font->getHeight()*1.5);
+		if ( (posY + frameHeight - 128 - mouseY) % static_cast<int>(font->getHeight()*1.5) > static_cast<int>(font->getHeight()) ) {
+			selectedEntry = -1;
+        }
+	}
+
+	if ( selectedEntry == 0 ) { // we choose liche
+		character.setClass( CharacterClass::Liche );
+		done = true;
+	} else if ( selectedEntry == 1 ) { // we choose warrior
+        character.setClass( CharacterClass::Warrior );
+		done = true;
+	}
+}

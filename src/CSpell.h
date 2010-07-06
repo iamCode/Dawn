@@ -21,6 +21,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <vector>
 
 #include "elements.h"
 #include "stats.h"
@@ -63,6 +64,8 @@ namespace EffectType
 // custom spells. Need to think on this.
 
 // NOTE: Not used yet, deactivate this comment once that changes ;)
+#include "CCharacter.h"
+
 class CSpellActionBase
 {
 	protected:
@@ -79,8 +82,10 @@ class CSpellActionBase
 		/// \todo Should the spell meta information be put in a separate info object?
 		virtual uint16_t getCastTime() const = 0;
 		virtual uint16_t getCooldown() const = 0;
-		virtual uint16_t getManaCost() const = 0;
+		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
+		virtual bool isInRange( uint16_t distance ) const = 0;
+		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -107,11 +112,21 @@ class CSpellActionBase
 		void beginPreparationOfSpellAction();
 		void markSpellActionAsFinished();
 
+		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
+        void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+
+        /// set which class can use the spell
+        void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+        CharacterClass::CharacterClass getRequiredClass() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
-protected:
-	CCharacter *creator;
-	bool boundToCreator;
-	bool finished;
+    protected:
+        CCharacter *creator;
+        CCharacter *target;
+        bool boundToCreator;
+        bool finished;
+        CharacterClass::CharacterClass requiredClass;
+        std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
 };
 
 class CSpell : public CSpellActionBase
@@ -120,12 +135,20 @@ class CSpell : public CSpellActionBase
 		CSpell() {}
 };
 
+class CAction : public CSpellActionBase
+{
+	public:
+		CAction() {}
+		virtual double getProgress() const = 0;
+};
+
 namespace SpellCreation
 {
 	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell();
 	CSpellActionBase* getGeneralHealingSpell();
 	CSpellActionBase* getGeneralBuffSpell();
+	CSpellActionBase* getMeleeDamageAction();
 }
 
 class ConfigurableSpell : public CSpell
@@ -135,8 +158,11 @@ class ConfigurableSpell : public CSpell
 		virtual uint16_t getCastTime() const;
 		void setCooldown( uint16_t newCooldown );
 		virtual uint16_t getCooldown() const;
-		void setManaCost( uint16_t newManaCost );
-		virtual uint16_t getManaCost() const;
+		void setSpellCost( uint16_t spellCost );
+		virtual uint16_t getSpellCost() const;
+		void setRange( uint16_t minRange, uint16_t maxRange );
+		virtual bool isInRange( uint16_t distance ) const;
+		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -152,9 +178,52 @@ class ConfigurableSpell : public CSpell
 		ConfigurableSpell( ConfigurableSpell *other );
 
 		uint16_t castTime;
-		uint16_t manaCost;
+		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
+        uint16_t minRange;
+        uint16_t maxRange;
+        bool hostileSpell;
+
+		std::string name;
+		std::string info;
+
+		CTexture *spellSymbol;
+};
+
+class ConfigurableAction : public CAction
+{
+	public:
+		void setCastTime( uint16_t newCastTime );
+		virtual uint16_t getCastTime() const;
+		void setCooldown( uint16_t newCooldown );
+		virtual uint16_t getCooldown() const;
+		void setSpellCost( uint16_t spellCost );
+		virtual uint16_t getSpellCost() const;
+		void setRange( uint16_t minRange, uint16_t maxRange );
+		virtual bool isInRange( uint16_t distance ) const;
+		virtual bool isSpellHostile() const;
+		void setName( std::string newName );
+		virtual std::string getName() const;
+		void setInfo( std::string newInfo );
+		virtual std::string getInfo() const;
+		void setDuration( uint16_t newDuration );
+		virtual uint16_t getDuration() const;
+
+		void setSpellSymbol( std::string symbolFile );
+		CTexture* getSymbol() const;
+
+	protected:
+		ConfigurableAction();
+		ConfigurableAction( ConfigurableAction *other );
+
+		uint16_t castTime;
+		uint16_t spellCost;
+		uint16_t cooldown;
+		uint16_t duration;
+        uint16_t minRange;
+        uint16_t maxRange;
+        bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -168,6 +237,15 @@ class GeneralDamageSpell : public ConfigurableSpell
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 
+        uint16_t getDirectDamageMin() const;
+        uint16_t getDirectDamageMax() const;
+        ElementType::ElementType getDirectDamageElement() const;
+
+        uint16_t getContinuousDamageMin() const;
+        uint16_t getContinuousDamageMax() const;
+        ElementType::ElementType getContinuousDamageElement() const;
+
+
 		virtual EffectType::EffectType getEffectType() const;
 
 		void dealDirectDamage();
@@ -176,8 +254,6 @@ class GeneralDamageSpell : public ConfigurableSpell
 	protected:
 		GeneralDamageSpell();
 		GeneralDamageSpell( GeneralDamageSpell *other );
-
-		CCharacter *target;
 
 		uint16_t minDirectDamage; // This should be a list of effects
 		uint16_t maxDirectDamage;
@@ -266,7 +342,13 @@ class GeneralHealingSpell : public ConfigurableSpell
 		EffectType::EffectType getEffectType() const;
 		void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
 		void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, uint16_t continuousHealingTime, ElementType::ElementType elementContinuous );
-		ElementType::ElementType getElementType() const;
+		ElementType::ElementType getDirectElementType() const;
+        uint16_t getDirectHealingMin() const;
+        uint16_t getDirectHealingMax() const;
+
+        ElementType::ElementType getContinuousElementType() const;
+        uint16_t getContinuousHealingMin() const;
+        uint16_t getContinuousHealingMax() const;
 
 		virtual void drawEffect();
 		virtual void startEffect();
@@ -280,8 +362,6 @@ class GeneralHealingSpell : public ConfigurableSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell();
-
-		CCharacter *target;
 
 		EffectType::EffectType effectType;
 		uint32_t effectStart;
@@ -314,6 +394,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 		virtual void drawEffect();
 		virtual void startEffect();
 		virtual void inEffect();
+        void finishEffect();
 
 	protected:
 		GeneralBuffSpell();
@@ -322,12 +403,40 @@ class GeneralBuffSpell : public ConfigurableSpell
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralBuffSpell();
 
-		CCharacter *target;
-
 		EffectType::EffectType effectType;
 		int16_t *statsModifier;
 		int16_t *resistElementModifier;
 		int16_t *spellEffectElementModifier;
+        uint32_t effectStart;
 };
+
+class MeleeDamageAction : public ConfigurableAction
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+
+		virtual EffectType::EffectType getEffectType() const;
+
+        virtual void drawEffect();
+		virtual void startEffect();
+		virtual void inEffect();
+		virtual void finishEffect();
+
+        virtual double getProgress() const;
+
+		void setDamageBonus( double damageBonus );
+		double getDamageBonus() const;
+		void dealDamage();
+
+	protected:
+    	MeleeDamageAction();
+		MeleeDamageAction( MeleeDamageAction *other );
+
+    private:
+        friend CSpellActionBase* SpellCreation::getMeleeDamageAction();
+		uint32_t effectStart;
+		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
+};
+
 
 #endif // __C_SPELL_H_

@@ -26,6 +26,7 @@ class GLFT_Font;
 
 class OptionsWindow : public FramesBase
 {
+    friend class ChooseClassScreen;
 	public:
 		OptionsWindow();
 		~OptionsWindow();
@@ -36,6 +37,19 @@ class OptionsWindow : public FramesBase
 	private:
 		CTexture *backgroundTexture;
 		GLFT_Font *font;
+};
+
+class ChooseClassScreen : public OptionsWindow
+{
+    public:
+        ChooseClassScreen();
+        ~ChooseClassScreen();
+        bool isDone() const;
+		void draw( int mouseX, int mouseY );
+		void clicked( int mouseX, int mouseY, uint8_t mouseState );
+
+    private:
+        bool done;
 };
 
 #endif // OPTIONSWINDOW_H

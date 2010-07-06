@@ -246,10 +246,9 @@ bool Spellbook::hasFloatingSpell() const
     }
 }
 
-void Spellbook::inscribeSpell( CSpellActionBase *spell )
+void Spellbook::reloadSpellsFromPlayer()
 {
-	assert( spell != NULL );
-	inscribedSpells.push_back(spell);
+	inscribedSpells = player->getSpellbook();
 	refreshPage();
 }
 
@@ -313,12 +312,14 @@ std::string Spellbook::getLuaSaveText() const
 }
 
 extern std::auto_ptr<Spellbook> spellbook;
+extern Player character;
 
 namespace DawnInterface
 {
-	void inscribeSpellInPlayerSpellbook( CSpell *inscribedSpell )
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell )
 	{
-		spellbook->inscribeSpell( inscribedSpell );
+		character.inscribeSpellInSpellbook( inscribedSpell );
+		spellbook->reloadSpellsFromPlayer();
 	}
 
 	std::string getSpellbookSaveText()

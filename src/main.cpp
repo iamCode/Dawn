@@ -62,7 +62,6 @@
 #include "GroundLoot.h"
 #include "CLuaFunctions.h"
 #include "CSpell.h"
-#include "CAction.h"
 #include "debug.h"
 #include "CharacterInfoScreen.h"
 #include "item.h"
@@ -115,7 +114,8 @@ extern std::vector<TextWindow*> allTextWindows;
 
 std::vector<FramesBase*> activeFrames;
 
-bool KP_damage, KP_heal, KP_magicMissile, KP_healOther, KP_interrupt, KP_select_next = false, KP_attack = false;
+bool KP_interrupt = false;
+bool KP_select_next = false;
 bool KP_screenshot = false;
 bool KP_toggle_showCharacterInfo = false;
 bool KP_toggle_showInventory = false;
@@ -136,29 +136,9 @@ std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
 
-std::vector<CSpellActionBase*> activeSpellActions;
-
 namespace Globals
 {
 	std::map< std::string, CZone* > allZones;
-}
-
-void enqueueActiveSpellAction( CSpellActionBase *spellaction )
-{
-	activeSpellActions.push_back( spellaction );
-}
-
-void cleanupActiveSpellActions()
-{
-	size_t curActiveNr = 0;
-	while ( curActiveNr < activeSpellActions.size() ) {
-		if ( activeSpellActions[ curActiveNr ]->isEffectComplete() ) {
-			delete activeSpellActions[ curActiveNr ];
-			activeSpellActions.erase( activeSpellActions.begin() + curActiveNr );
-		} else {
-			++curActiveNr;
-		}
-	}
 }
 
 static bool HandleCommandLineAurguments(int argc, char** argv)
@@ -280,6 +260,14 @@ void DrawScene()
 		{
             GUI.drawTargetedNPCText();
 		}
+
+		// draw the spell effects for our NPCs
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
+		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+            if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
+                activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+            }
+        }
 	}
 
 	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
@@ -289,11 +277,13 @@ void DrawScene()
 		}
 	}
 
-	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-		if ( ! activeSpellActions[ curActiveSpellNr ]->isEffectComplete() ) {
-			activeSpellActions[ curActiveSpellNr ]->drawEffect();
-		}
-	}
+    // draw the spell effects for our player.
+    std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = character.getActiveSpells();
+    for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+        if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
+            activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+        }
+    }
 
 	// check our FPS and output it
 	thisframe=SDL_GetTicks();     // Count the FPS
@@ -509,20 +499,29 @@ public:
 
 		progressString = "Loading Character Data";
 		progress = 0.7;
+
+		std::string characterDataString = "data/character/";
+
+		if ( character.getClass() == CharacterClass::Liche ) {
+		    characterDataString.append( "wizard/" );
+		} else if ( character.getClass() == CharacterClass::Warrior ) {
+		    characterDataString.append( "swordsman/" );
+		}
+
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		character.setNumMoveTexturesPerDirection( activity, 8 );
 		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
 			std::ostringstream ostr;
 			ostr << "000" << curIndex;
 			std::string numberString = ostr.str();
-			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/walking n").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/walking ne").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/walking e").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/walking se").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/walking s").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/walking sw").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/walking w").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/walking nw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("walking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("").append( characterDataString ).append("walking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("").append( characterDataString ).append("walking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("").append( characterDataString ).append("walking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("").append( characterDataString ).append("walking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("walking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("walking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("walking nw").append(numberString).append(".tga" ) );
 		}
 		activity = ActivityType::Attacking;
 		character.setNumMoveTexturesPerDirection( activity, 13 );
@@ -534,14 +533,14 @@ public:
 				ostr << "00" << curIndex;
 
 			std::string numberString = ostr.str();
-			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/attacking n").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/attacking ne").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/attacking e").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/attacking se").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/attacking s").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/attacking sw").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/attacking w").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("").append( characterDataString ).append("attacking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("").append( characterDataString ).append("attacking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("").append( characterDataString ).append("attacking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("").append( characterDataString ).append("attacking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("attacking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("attacking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
 		}
 		activity = ActivityType::Casting;
 		character.setNumMoveTexturesPerDirection( activity, 13 );
@@ -553,32 +552,32 @@ public:
 				ostr << "00" << curIndex;
 
 			std::string numberString = ostr.str();
-			character.setMoveTexture( activity, N, curIndex, std::string("data/character/swordsman/attacking n").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NE, curIndex, std::string("data/character/swordsman/attacking ne").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, E, curIndex, std::string("data/character/swordsman/attacking e").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SE, curIndex, std::string("data/character/swordsman/attacking se").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, S, curIndex, std::string("data/character/swordsman/attacking s").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, SW, curIndex, std::string("data/character/swordsman/attacking sw").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, W, curIndex, std::string("data/character/swordsman/attacking w").append(numberString).append(".tga" ) );
-			character.setMoveTexture( activity, NW, curIndex, std::string("data/character/swordsman/attacking nw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("").append( characterDataString ).append("attacking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("").append( characterDataString ).append("attacking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("").append( characterDataString ).append("attacking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("").append( characterDataString ).append("attacking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("attacking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("attacking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
 		}
 
-
-
-
-		character.setMoveTexture( ActivityType::Walking, STOP, 0, "data/character/swordsman/walking s0000.tga" );
+		character.setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
 		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);
 		character.setMaxMana(250);
+		character.setMaxFatigue(100);
 		character.setStrength(15);
 		character.setVitality(15);
 		character.setDexterity(20);
 		character.setWisdom(10);
 		character.setIntellect(10);
+		character.setHealthRegen(1);
 		character.setManaRegen(2);
+		character.setFatigueRegen( 5 );
 		character.giveCoins( 576 );
 
 		dawn_debug_info("Character completed");
@@ -688,6 +687,22 @@ bool dawn_init(int argc, char** argv)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
+		/// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
+		std::auto_ptr<ChooseClassScreen> chooseClassScreen( new ChooseClassScreen() );
+
+		while ( chooseClassScreen->isDone() == false )
+		{
+            SDL_Event event;
+            SDL_PollEvent(&event);
+            glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
+			if (event.type == SDL_MOUSEBUTTONDOWN) {
+                chooseClassScreen->clicked( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1, event.button.button );
+			}
+			SDL_GL_SwapBuffers();
+		}
+
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		DawnInitObject obj;
 		processFilesDirectly = false;
@@ -718,8 +733,6 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
         GUI.initFonts();
-
-		ActionCreation::initActions();
 
 		return true;
 }
@@ -915,7 +928,7 @@ void game_loop()
 
             character.giveMovePoints( ticksDiff );
             character.Move();
-            character.regenerateLifeMana( ticksDiff );
+            character.regenerateLifeManaFatigue( ticksDiff );
 
 
             std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
@@ -927,6 +940,14 @@ void game_loop()
                 }
                 curNPC->Respawn();
                 curNPC->Wander();
+
+                // check all active spells for inEffects on our NPCs.
+                std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
+                for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+                    activeSpellActions[ curActiveSpellNr ].first->inEffect();
+                }
+                curNPC->cleanupActiveSpells();
+
             }
 
             // making sure our target is still alive, if not well set our target to NULL.
@@ -935,16 +956,19 @@ void game_loop()
                     character.setTarget(NULL);
             }
 
+            // check all active spells for inEffects on our player.
+            std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = character.getActiveSpells();
             for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-                activeSpellActions[ curActiveSpellNr ]->inEffect();
+                activeSpellActions[ curActiveSpellNr ].first->inEffect();
             }
+            character.cleanupActiveSpells();
 
 			std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
 			for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
 				InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionRegionNr ];
 				curInteractionRegion->interactWithPlayer( &character );
 			}
-			cleanupActiveSpellActions();
+
 			Globals::getCurrentZone()->cleanupNPCList();
 			Globals::getCurrentZone()->cleanupInteractionList();
 			Globals::getCurrentZone()->cleanupInteractionRegionList();
@@ -1085,18 +1109,6 @@ void game_loop()
 
             if (!keys[SDLK_5]) {
                 KP_interrupt = false;
-            }
-
-            if (keys[SDLK_SPACE] && !KP_attack) {
-                KP_attack = true;
-                if ( character.getTarget() != NULL ) {
-                    CAction *action = ActionCreation::createAttackAction( &character, character.getTarget() );
-                    character.executeAction(action);
-                }
-            }
-
-            if (!keys[SDLK_SPACE]) {
-                KP_attack = false;
             }
         }
         DrawScene();

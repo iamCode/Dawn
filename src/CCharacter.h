@@ -38,6 +38,26 @@ class CInterface;
 class CTexture;
 class Item;
 
+namespace CharacterClass
+{
+    enum CharacterClass
+    {
+        NOCLASS,
+        ANYCLASS,
+        Liche,
+        Warrior
+    };
+}
+
+namespace CharacterArchType
+{
+    enum CharacterArchType
+    {
+        Fighter,
+        Caster
+    };
+}
+
 namespace ActivityType
 {
 	enum ActivityType
@@ -98,8 +118,8 @@ class CCharacter
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
-		void executeAction( CAction *action );
-		void castSpell(CSpell *spell );
+		void executeSpellWithoutCasting( CSpellActionBase *spell );
+		void castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();
 		void startSpellAction();
@@ -110,6 +130,9 @@ class CCharacter
 		float getPreparationPercentage() const;
 		bool getIsPreparing() const;
 
+		CCharacter* getTarget() const;
+		void setTarget( CCharacter *target );
+
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
 		void cleanupActiveSpells();
@@ -117,12 +140,16 @@ class CCharacter
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
 
 		//active cooldowns on spells
-		void addCooldownSpell( CSpell *spell );
+		void addCooldownSpell( CSpellActionBase *spell );
 		void cleanupCooldownSpells();
 		void clearCooldownSpells();
-		std::vector<std::pair<CSpell*, uint32_t> > getCooldownSpells() const;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > getCooldownSpells() const;
 		uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 		bool isSpellOnCooldown( std::string spellName ) const;
+
+		void inscribeSpellInSpellbook( CSpellActionBase *spell );
+		std::vector<CSpellActionBase*> getSpellbook() const;
+		void setSpellbook( std::vector<CSpellActionBase*> spellbook );
 
 		// position access functions
 		int getXPos() const;
@@ -144,7 +171,7 @@ class CCharacter
 		int CheckForCollision(int x, int y);
 		uint32_t remainingMovePoints;
 
-		CCharacter *Target;
+		CCharacter *target;
 
 		void baseOnType( std::string otherType );
 		std::string getClassID() const;
@@ -249,9 +276,18 @@ class CCharacter
 		void setMaxMana( uint16_t newMaxMana );
 		void modifyMaxMana( int16_t maxManaModifier );
 
+		uint16_t getMaxFatigue() const;
+		virtual uint16_t getModifiedMaxFatigue() const;
+		void setMaxFatigue( uint16_t newMaxFatigue );
+		void modifyMaxFatigue( int16_t maxFatigueModifier );
+
 		uint16_t getCurrentMana() const;
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
+
+        uint16_t getCurrentFatigue() const;
+		void setCurrentFatigue( uint16_t newCurrentFatigue );
+		void modifyCurrentFatigue( int16_t currentFatigueModifier);
 
 		void setManaRegen( uint16_t newManaRegen );
 		virtual uint16_t getModifiedManaRegen() const;
@@ -262,6 +298,16 @@ class CCharacter
 		virtual uint16_t getModifiedHealthRegen() const;
 		uint16_t getHealthRegen() const;
 		void modifyHealthRegen( int16_t healthRegenModifier );
+
+        void setFatigueRegen( uint16_t newFatigueRegen );
+		virtual uint16_t getModifiedFatigueRegen() const;
+		uint16_t getFatigueRegen() const;
+		void modifyFatigueRegen( int16_t fatigueRegenModifier );
+
+		void setClass( CharacterClass::CharacterClass );
+		CharacterClass::CharacterClass getClass() const;
+		CharacterArchType::CharacterArchType getArchType() const;
+		std::string getClassName() const;
 
 		void addItemToLootTable( Item *item, double dropChance );
 
@@ -341,7 +387,7 @@ class CCharacter
 		float respawn_thisframe, respawn_lastframe;
 
 		// stats
-		float life_percentage, mana_percentage;
+		float life_percentage, mana_percentage, fatigue_percentage;
 		void CalculateStats();
 
 		int wander_every_seconds, wander_points_left;
@@ -351,7 +397,9 @@ class CCharacter
 		int seconds_to_respawn;
 
 	protected:
-		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
+        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+
+        bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
@@ -367,8 +415,11 @@ class CCharacter
 		uint16_t current_health;
 		uint16_t max_mana;
 		uint16_t current_mana;
+		uint16_t max_fatigue;
+		uint16_t current_fatigue;
 		uint16_t healthRegen;
 		uint16_t manaRegen;
+        uint16_t fatigueRegen;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;
@@ -382,6 +433,9 @@ class CCharacter
 		uint16_t *spellEffectElementModifierPoints;
 		uint16_t spellEffectAllModifierPoints;
 		uint16_t spellCriticalModifierPoints;
+
+        CharacterClass::CharacterClass characterClass;
+        CharacterArchType::CharacterArchType characterArchType;
 
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;
@@ -399,7 +453,7 @@ class CCharacter
 
         std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 
-        std::vector<std::pair<CSpell*, uint32_t> > cooldownSpells;
+		std::vector<CSpellActionBase*> spellbook;
 
 		int boundingBoxX;
 		int boundingBoxY;

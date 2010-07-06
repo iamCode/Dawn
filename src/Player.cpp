@@ -51,11 +51,6 @@ Player::Player()
     setName("Enylyn");
 }
 
-CCharacter* Player::getTarget() const
-{
-	return Target;
-}
-
 void Player::Draw()
 {
 	CalculateStats();
@@ -119,20 +114,16 @@ void Player::clearInventory()
 	inventory.clear();
 }
 
-void Player::setTarget(CCharacter *newTarget)
+void Player::regenerateLifeManaFatigue(uint32_t regenPoints)
 {
-	Target = newTarget;
-}
-
-void Player::regenerateLifeMana(uint32_t regenPoints)
-{
-    /** Regenerate life and mana every 1000 ms. **/
+    /** Regenerate life, mana and fatigue every 1000 ms. **/
 
 	remainingRegenPoints += regenPoints;
 
 	if ( remainingRegenPoints > 1000 ) {
 		modifyCurrentMana( getModifiedManaRegen() );
 		modifyCurrentHealth( getModifiedHealthRegen() );
+		modifyCurrentFatigue( getModifiedFatigueRegen() );
 		remainingRegenPoints -= 1000;
 	}
 }
@@ -160,6 +151,7 @@ static int16_t getItemIntellectHelper( Item * item ) { return item->getStats( St
 static int16_t getItemWisdomHelper( Item * item ) { return item->getStats( StatsType::Wisdom ); }
 static int16_t getItemHealthHelper( Item * item ) { return item->getStats( StatsType::Health ); }
 static int16_t getItemManaHelper( Item * item ) { return item->getStats( StatsType::Mana ); }
+static int16_t getItemFatigueHelper( Item * item ) { return item->getStats( StatsType::Fatigue ); }
 static int16_t getItemArmorHelper( Item * item ) { return item->getStats( StatsType::Armor ); }
 static int16_t getItemDamageModifierPointsHelper( Item * item ) { return item->getStats( StatsType::DamageModifier ); }
 static int16_t getItemHitModifierPointsHelper( Item * item ) { return item->getStats( StatsType::HitModifier ); }
@@ -172,6 +164,7 @@ static int16_t getItemSpellEffectElementModifierPointsHelper( ElementType::Eleme
 static int16_t getItemSpellCriticalModifierPointsHelper( Item * item ) { return item->getStats( StatsType::SpellCritical ); }
 static int16_t getItemHealthRegenHelper( Item * item ) { return item->getStats( StatsType::HealthRegen ); }
 static int16_t getItemManaRegenHelper( Item * item ) { return item->getStats( StatsType::ManaRegen ); }
+static int16_t getItemFatigueRegenHelper( Item * item ) { return item->getStats( StatsType::FatigueRegen ); }
 
 static int16_t getItemMinDamageHelper( Item * item ) { return item->getMinDamage(); }
 static int16_t getItemMaxDamageHelper( Item * item ) { return item->getMaxDamage(); }
@@ -184,6 +177,7 @@ static int16_t getSpellIntellectHelper( GeneralBuffSpell *spell ) { return spell
 static int16_t getSpellWisdomHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Wisdom ); }
 static int16_t getSpellHealthHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Health ); }
 static int16_t getSpellManaHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Mana ); }
+static int16_t getSpellFatigueHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Fatigue ); }
 static int16_t getSpellArmorHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::Armor ); }
 static int16_t getSpellDamageModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::DamageModifier ); }
 static int16_t getSpellHitModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::HitModifier ); }
@@ -196,6 +190,7 @@ static int16_t getSpellSpellEffectElementModifierPointsHelper( ElementType::Elem
 static int16_t getSpellSpellCriticalModifierPointsHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::SpellCritical ); }
 static int16_t getSpellHealthRegenHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::HealthRegen ); }
 static int16_t getSpellManaRegenHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::ManaRegen); }
+static int16_t getSpellFatigueRegenHelper( GeneralBuffSpell *spell ) { return spell->getStats( StatsType::FatigueRegen); }
 
 static int16_t getSpellMinDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
 static int16_t getSpellMaxDamageHelper( GeneralBuffSpell *spell ) { return 0; } // not used yet
@@ -353,6 +348,11 @@ uint16_t Player::getModifiedMaxMana() const
 	return getModifiedAttribute( inventory, this, getMaxMana(), &getItemManaHelper, &getSpellManaHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
+uint16_t Player::getModifiedMaxFatigue() const
+{
+	return getModifiedAttribute( inventory, this, getMaxFatigue(), &getItemFatigueHelper, &getSpellFatigueHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
 uint16_t Player::getModifiedMinDamage() const
 {
 	uint16_t inventoryMinDamage = getModifiedAttribute( inventory, this, 0, &getItemMinDamageHelper, &getSpellMinDamageHelper, NON_NULLABLE_ATTRIBUTE_MIN );
@@ -375,6 +375,31 @@ uint16_t Player::getModifiedManaRegen() const
     return getModifiedAttribute( inventory, this, getManaRegen(), &getItemManaRegenHelper, &getSpellManaRegenHelper, NULLABLE_ATTRIBUTE_MIN );
 }
 
+uint16_t Player::getModifiedFatigueRegen() const
+{
+    return getModifiedAttribute( inventory, this, getFatigueRegen(), &getItemFatigueRegenHelper, &getSpellFatigueRegenHelper, NULLABLE_ATTRIBUTE_MIN );
+}
+
+void Player::setTicketForItemTooltip ()
+{
+    ticketForItemTooltip = SDL_GetTicks();
+}
+
+void Player::setTicketForSpellTooltip ()
+{
+    ticketForSpellTooltip = SDL_GetTicks();
+}
+
+uint32_t Player::getTicketForItemTooltip() const
+{
+    return ticketForItemTooltip;
+}
+
+uint32_t Player::getTicketForSpellTooltip() const
+{
+    return ticketForSpellTooltip;
+}
+
 std::string Player::getSaveText() const
 {
 	std::ostringstream oss;
@@ -388,6 +413,7 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setWisdom( " << getWisdom() << " );" << std::endl;
 	oss << objectName << ":setMaxHealth( " << getMaxHealth() << " );" << std::endl;
 	oss << objectName << ":setMaxMana( " << getMaxMana() << " );" << std::endl;
+	oss << objectName << ":setMaxFatigue( " << getMaxFatigue() << " );" << std::endl;
 	oss << objectName << ":setMinDamage( " << getMinDamage() << " );" << std::endl;
 	oss << objectName << ":setMaxDamage( " << getMaxDamage() << " );" << std::endl;
 
@@ -414,6 +440,7 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setName( \"" << getName() << "\" );" << std::endl;
 	// string stream doesn't seem to have a proper overload for uint8_t and makes it the 0-character, so cast to size_t
 	oss << objectName << ":setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
+	oss << objectName << ":setClass( CharacterClass." << getClass() << " );" << std::endl;
 
 	oss << "-- position" << std::endl;
 	oss << objectName << ":setPosition( " << getXPos() << ", " << getYPos() << " );" << std::endl;

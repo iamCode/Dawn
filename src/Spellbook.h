@@ -70,7 +70,7 @@ class Spellbook : public FramesBase
         sSpellSlot *getSpellSlotBySpell( CSpellActionBase *spell ) const;
         void setFloatingSpell( sSpellSlot *newFloatingSpell );
         void unsetFloatingSpell();
-        void inscribeSpell( CSpellActionBase *spell );
+        void reloadSpellsFromPlayer();
         void clear();
         std::string getLuaSaveText() const;
 
