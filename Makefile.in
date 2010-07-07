@@ -50,15 +50,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(dawndatadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
-	CAction.$(OBJEXT) callindirection.$(OBJEXT) \
-	cameraFocusHandler.$(OBJEXT) CCharacter.$(OBJEXT) \
-	CEditor.$(OBJEXT) CharacterInfoScreen.$(OBJEXT) \
-	CInterface.$(OBJEXT) CLuaFunctions.$(OBJEXT) \
-	CLuaInterfaceGenerated.$(OBJEXT) CMessage.$(OBJEXT) \
-	CNPC.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
-	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) \
-	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
+	callindirection.$(OBJEXT) cameraFocusHandler.$(OBJEXT) \
+	CCharacter.$(OBJEXT) CEditor.$(OBJEXT) \
+	CharacterInfoScreen.$(OBJEXT) CInterface.$(OBJEXT) \
+	CLuaFunctions.$(OBJEXT) CLuaInterfaceGenerated.$(OBJEXT) \
+	CMessage.$(OBJEXT) CNPC.$(OBJEXT) CSpell.$(OBJEXT) \
+	CTexture.$(OBJEXT) CZone.$(OBJEXT) debug.$(OBJEXT) \
+	elements.$(OBJEXT) FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
+	GLFT_Font.$(OBJEXT) globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) main.$(OBJEXT) optionswindow.$(OBJEXT) \
@@ -219,8 +218,6 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/ActionBar.h \
 	src/BuffWindow.cpp \
 	src/BuffWindow.h \
-	src/CAction.cpp \
-	src/CAction.h \
 	src/callindirection.cpp \
 	src/callindirection.h \
 	src/cameraFocusHandler.cpp \
@@ -397,7 +394,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActionBar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuffWindow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CAction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CCharacter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CEditor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CInterface.Po@am__quote@
@@ -509,20 +505,6 @@ BuffWindow.obj: src/BuffWindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/BuffWindow.cpp' object='BuffWindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BuffWindow.obj `if test -f 'src/BuffWindow.cpp'; then $(CYGPATH_W) 'src/BuffWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/BuffWindow.cpp'; fi`
-
-CAction.o: src/CAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CAction.o -MD -MP -MF $(DEPDIR)/CAction.Tpo -c -o CAction.o `test -f 'src/CAction.cpp' || echo '$(srcdir)/'`src/CAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CAction.Tpo $(DEPDIR)/CAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CAction.cpp' object='CAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CAction.o `test -f 'src/CAction.cpp' || echo '$(srcdir)/'`src/CAction.cpp
-
-CAction.obj: src/CAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CAction.obj -MD -MP -MF $(DEPDIR)/CAction.Tpo -c -o CAction.obj `if test -f 'src/CAction.cpp'; then $(CYGPATH_W) 'src/CAction.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CAction.Tpo $(DEPDIR)/CAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CAction.cpp' object='CAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CAction.obj `if test -f 'src/CAction.cpp'; then $(CYGPATH_W) 'src/CAction.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CAction.cpp'; fi`
 
 callindirection.o: src/callindirection.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT callindirection.o -MD -MP -MF $(DEPDIR)/callindirection.Tpo -c -o callindirection.o `test -f 'src/callindirection.cpp' || echo '$(srcdir)/'`src/callindirection.cpp

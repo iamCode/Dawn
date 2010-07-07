@@ -4400,7 +4400,7 @@ _ACEOF
 
 else
 
-        echo "Cannot locate SD_image library. You need this for Dawn to work."
+        echo "Cannot locate SDL_image library. You need this for Dawn to work."
         exit -1
 
 fi

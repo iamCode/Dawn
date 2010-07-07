@@ -23,7 +23,7 @@ AC_CHECK_LIB([SDL], [SDL_Init], [], [
         exit -1
         ])
 AC_CHECK_LIB([SDL_image], [IMG_Load], [], [
-        echo "Cannot locate SD_image library. You need this for Dawn to work."
+        echo "Cannot locate SDL_image library. You need this for Dawn to work."
         exit -1
         ])
 AC_CHECK_LIB([freetype], [FT_New_Memory_Face], [], [

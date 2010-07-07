@@ -12,8 +12,6 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/ActionBar.h \
 	src/BuffWindow.cpp \
 	src/BuffWindow.h \
-	src/CAction.cpp \
-	src/CAction.h \
 	src/callindirection.cpp \
 	src/callindirection.h \
 	src/cameraFocusHandler.cpp \
