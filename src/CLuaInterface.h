@@ -79,5 +79,6 @@ namespace DawnInterface
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 

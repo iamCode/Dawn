@@ -47,6 +47,7 @@ namespace DawnInterface
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
 	}
+	void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
 void CCharacter::baseOnType( std::string otherName )
@@ -722,15 +723,20 @@ uint64_t CCharacter::getExperience() const
 
 void CCharacter::gainExperience( uint64_t addExp )
 {
-	if ( std::numeric_limits<uint64_t>::max() - addExp < experience ) {
-		experience = std::numeric_limits<uint64_t>::max();
-		dawn_debug_warn( "max experience reached" );
-	} else {
-		experience += addExp;
-	}
+	if ( isPlayer() ) {
 
-	while ( canRaiseLevel() ) {
-		raiseLevel();
+        if ( std::numeric_limits<uint64_t>::max() - addExp < experience ) {
+            experience = std::numeric_limits<uint64_t>::max();
+            dawn_debug_warn( "max experience reached" );
+        } else {
+            experience += addExp;
+            GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+            DawnInterface::addTextToLogWindow( yellow, "You gain %d experience.", addExp );
+        }
+
+        while ( canRaiseLevel() ) {
+            raiseLevel();
+        }
 	}
 }
 
@@ -748,8 +754,9 @@ bool CCharacter::canRaiseLevel() const
 void CCharacter::raiseLevel()
 {
 	if ( canRaiseLevel() ) {
+		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+		DawnInterface::addTextToLogWindow( yellow, "You are now a level %d %s.", getLevel(), getClassName().c_str() );
 		setMaxHealth( getMaxHealth() * 1.1 );
-		setMaxMana( getMaxMana() * 1.1 );
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
 	}
