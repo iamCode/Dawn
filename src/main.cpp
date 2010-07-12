@@ -701,13 +701,15 @@ bool dawn_init(int argc, char** argv)
 		{
             SDL_Event event;
             SDL_PollEvent(&event);
-            glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
+
 			if (event.type == SDL_MOUSEBUTTONDOWN) {
                 chooseClassScreen->clicked( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1, event.button.button );
 			}
+			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
+
 		}
 
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );

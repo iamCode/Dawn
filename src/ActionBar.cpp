@@ -30,7 +30,7 @@ extern std::auto_ptr<Spellbook> spellbook;
 
 ActionBar::ActionBar( Player *player_ )
 	:	player( player_ ),
-        posX ( 300 ),
+        posX ( 420 ),
         posY ( 9 ),
         width ( 680 ),
         height ( 49 ),
@@ -39,15 +39,15 @@ ActionBar::ActionBar( Player *player_ )
     shortcutFont = NULL;
     cooldownFont = NULL;
     button.push_back( sButton(0, 0, 50, 50, "1", SDLK_1) );
-    button.push_back( sButton(70, 0, 50, 50, "2", SDLK_2) );
-    button.push_back( sButton(140, 0, 50, 50, "3", SDLK_3) );
-    button.push_back( sButton(210, 0, 50, 50, "4", SDLK_4) );
-    button.push_back( sButton(280, 0, 50, 50, "5", SDLK_5) );
-    button.push_back( sButton(350, 0, 50, 50, "6", SDLK_6) );
-    button.push_back( sButton(420, 0, 50, 50, "7", SDLK_7) );
-    button.push_back( sButton(490, 0, 50, 50, "8", SDLK_8) );
-    button.push_back( sButton(560, 0, 50, 50, "9", SDLK_9) );
-    button.push_back( sButton(630, 0, 50, 50, "0", SDLK_0) );
+    button.push_back( sButton(60, 0, 50, 50, "2", SDLK_2) );
+    button.push_back( sButton(120, 0, 50, 50, "3", SDLK_3) );
+    button.push_back( sButton(180, 0, 50, 50, "4", SDLK_4) );
+    button.push_back( sButton(240, 0, 50, 50, "5", SDLK_5) );
+    button.push_back( sButton(300, 0, 50, 50, "6", SDLK_6) );
+    button.push_back( sButton(360, 0, 50, 50, "7", SDLK_7) );
+    button.push_back( sButton(420, 0, 50, 50, "8", SDLK_8) );
+    button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
+    button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
 }
 
 ActionBar::~ActionBar()
@@ -80,12 +80,12 @@ void ActionBar::draw()
 
     // background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
-	                                  world_x, RES_X,
+	                                  world_x + posX - 20, RES_X - posX + 20,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
 	{
-	    shortcutFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 - 10,
+	    shortcutFont->drawText( static_cast<float>( world_x ) + 420 + buttonId * 60 - 8,
                                 static_cast<float>( world_y ) + 50, button[buttonId].number.c_str() );
 
 	    glColor3f( 0.4f, 0.4f, 0.4f );
@@ -99,7 +99,7 @@ void ActionBar::draw()
 	    }
 
 	    DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
-		                                  world_x+ 300 + buttonId * 70, 50,
+		                                  world_x+ 420 + buttonId * 60, 50,
 		                                  world_y+ 8, 50 );
 
         glColor3f( 1.0f, 1.0f, 1.0f );
@@ -145,13 +145,13 @@ void ActionBar::draw()
                 glColor3f( 0.4f, 0.4f, 0.4f );
             }
 
-	        button[buttonId].action->drawSymbol( world_x + 300 + buttonId * 70 + 2, 46, world_y + 10, 46 );
+	        button[buttonId].action->drawSymbol( world_x + 420 + buttonId * 60 + 2, 46, world_y + 10, 46 );
 
             if ( drawCooldownText == true )
             {
                 glColor3f( 1.0f, 0.0f, 0.0f );
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
-	            cooldownFont->drawText( static_cast<float>( world_x ) + 300 + buttonId * 70 + 6 + (static_cast<float>(50)-xModifier) / 2,
+	            cooldownFont->drawText( static_cast<float>( world_x ) + 420 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
                                         static_cast<float>( world_y ) + 28, cooldownText.c_str() );
             }
             glColor3f( 1.0f, 1.0f, 1.0f );

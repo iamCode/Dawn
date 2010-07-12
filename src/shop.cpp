@@ -26,6 +26,16 @@
 #include "InventoryScreen.h"
 
 extern std::auto_ptr<InventoryScreen> inventoryScreen;
+extern std::auto_ptr<Shop> shopWindow;
+
+namespace DawnInterface
+{
+	void addTextToLogWindow( GLfloat color[], const char *text, ... );
+	Shop *addShop()
+	{
+		return shopWindow.get();
+	}
+}
 
 Shop::Shop( Player *player_, CNPC *shopkeeper_) : FramesBase( 30, 80, 454, 404, 13, 15 )
 {
@@ -350,6 +360,9 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 
 	if ( givePlayerMoney ) {
 	    player->giveCoins( sellItem->getItem()->getValue() * 0.75 );
+	    /// also log this in the LogWindow that we sold an item.
+	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", sellItem->getItem()->getName().c_str() );
 	    // player only gets 75% of the itemvalue when he sells an item
 	}
 }
@@ -357,6 +370,9 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 void Shop::buyFromShop()
 {
     player->reduceCoins( floatingSelection->getItem()->getValue() );
+
+    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+    DawnInterface::addTextToLogWindow( yellow, "Purchased %s.", floatingSelection->getItem()->getName().c_str() );
 
     delete floatingSelection;
     floatingSelection = NULL;
@@ -496,6 +512,34 @@ void Shop::removeItem( InventoryItem *inventoryItem )
 	}
 }
 
+std::string currency::getLongTextString( uint32_t coins )
+{
+    std::string returnString = "";
+
+    uint32_t copper = 0, silver = 0, gold = 0;
+    bool addComma = false;
+
+    exchangeCoins( copper, silver, gold, coins );
+    if ( gold > 0 ) {
+        returnString.append( convertCoinsToString( currency::GOLD, coins ) ).append( " gold" );
+        addComma = true;
+    }
+    if ( silver > 0 ) {
+        if ( addComma == true ) {
+            returnString.append(", ");
+        }
+        returnString.append( convertCoinsToString( currency::SILVER, coins ) ).append( " silver" );
+        addComma = true;
+    }
+    if ( copper > 0 ) {
+        if ( addComma == true ) {
+            returnString.append(", ");
+        }
+        returnString.append( convertCoinsToString( currency::COPPER, coins ) ).append( " copper" );
+    }
+    return returnString;
+}
+
 void currency::exchangeCoins( uint32_t &copper, uint32_t &silver, uint32_t &gold, uint32_t &coins )
 {
     // exchanging coins to copper coins.
@@ -535,19 +579,5 @@ std::string currency::convertCoinsToString( currency::currency currency, uint32_
         break;
     };
 
-    output = ss.str();
-
-    return output;
+    return ss.str();
 }
-
-extern std::auto_ptr<Shop> shopWindow;
-
-namespace DawnInterface
-{
-	Shop *addShop()
-	{
-		return shopWindow.get();
-	}
-}
-
-
