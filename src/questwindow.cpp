@@ -125,7 +125,6 @@ void QuestWindow::addQuest( std::string name, std::string description )
     GLfloat green[] = { 0.15f, 1.0f, 0.15f };
     DawnInterface::addTextToLogWindow( green, "Quest accepted: %s.", name.c_str() );
 
-
 	if ( selectedQuestNr == -1 && questNames.size() > 0) {
 		selectedQuestNr = 0;
 	}
@@ -149,6 +148,9 @@ void QuestWindow::removeQuest( std::string name )
 		} else if ( selectedQuestNr > static_cast<int>(foundQuestNr) ) {
 			--selectedQuestNr;
 		}
+
+		GLfloat green[] = { 0.15f, 1.0f, 0.15f };
+        DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", name.c_str() );
 	}
 
 	if ( selectedQuestNr == -1 && questNames.size() > 0 ) {
@@ -176,6 +178,9 @@ void QuestWindow::changeQuestDescription( std::string name, std::string newDescr
 		// found the quest
 		questDescriptions[ foundQuestNr ].clear();
 		formatMultilineText( newDescription, questDescriptions[ foundQuestNr ], frameWidth - 88, font );
+
+		GLfloat green[] = { 0.15f, 1.0f, 0.15f };
+        DawnInterface::addTextToLogWindow( green, "Quest updated: %s.", name.c_str() );
 	}
 }
 

@@ -34,6 +34,8 @@ extern Player character;
 
 namespace DawnInterface
 {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+
 	void giveItemToPlayer( Item *item )
 	{
 		Inventory *playerInventory = character.getInventory();
@@ -41,6 +43,9 @@ namespace DawnInterface
 		if ( ! wasInserted )
 		{
 			Globals::getCurrentZone()->getGroundLoot()->addItem( character.getXPos(), character.getYPos(), item );
+		} else {
+		    GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
+            DawnInterface::addTextToLogWindow( blue, "You receive %s.",item->getName().c_str() );
 		}
 	}
 }
