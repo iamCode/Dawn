@@ -356,13 +356,12 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 	if ( foundPosition ) {
 		InventoryItem *newItem = new InventoryItem( item, foundX, foundY, player );
         insertItemAt( newItem, foundX, foundY, itemTab );
+	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
 	}
 
 	if ( givePlayerMoney ) {
 	    player->giveCoins( sellItem->getItem()->getValue() * 0.75 );
-	    /// also log this in the LogWindow that we sold an item.
-	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", sellItem->getItem()->getName().c_str() );
 	    // player only gets 75% of the itemvalue when he sells an item
 	}
 }
@@ -514,30 +513,31 @@ void Shop::removeItem( InventoryItem *inventoryItem )
 
 std::string currency::getLongTextString( uint32_t coins )
 {
-    std::string returnString = "";
+    std::stringstream ss;
+    ss.clear();
 
     uint32_t copper = 0, silver = 0, gold = 0;
     bool addComma = false;
 
     exchangeCoins( copper, silver, gold, coins );
     if ( gold > 0 ) {
-        returnString.append( convertCoinsToString( currency::GOLD, coins ) ).append( " gold" );
+        ss << gold << " gold";
         addComma = true;
     }
     if ( silver > 0 ) {
         if ( addComma == true ) {
-            returnString.append(", ");
+            ss << ", ";
         }
-        returnString.append( convertCoinsToString( currency::SILVER, coins ) ).append( " silver" );
+        ss << silver << " silver";
         addComma = true;
     }
     if ( copper > 0 ) {
         if ( addComma == true ) {
-            returnString.append(", ");
+            ss << ", ";
         }
-        returnString.append( convertCoinsToString( currency::COPPER, coins ) ).append( " copper" );
+        ss << copper << " copper";
     }
-    return returnString;
+    return ss.str();;
 }
 
 void currency::exchangeCoins( uint32_t &copper, uint32_t &silver, uint32_t &gold, uint32_t &coins )

@@ -26,6 +26,33 @@
 
 void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
+extern std::auto_ptr<QuestWindow> questWindow;
+
+namespace DawnInterface
+{
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+
+	void addQuest( std::string questName, std::string questDescription )
+	{
+		questWindow->addQuest( questName, questDescription );
+	}
+
+	void removeQuest( std::string questName )
+	{
+		questWindow->removeQuest( questName );
+	}
+
+	void changeQuestDescription( std::string questName, std::string newDescription )
+	{
+		questWindow->changeQuestDescription( questName, newDescription );
+	}
+
+	std::string getQuestSaveText()
+	{
+		return questWindow->getReloadScriptText();
+	}
+}
+
 QuestWindow::QuestWindow() : FramesBase( 20, 100, 375, 376, 20, 20 )
 {
 	addMoveableFrame( 375, 22, 20, 374 );
@@ -94,6 +121,10 @@ void QuestWindow::addQuest( std::string name, std::string description )
 	size_t newQuestNr = questDescriptions.size();
 	questDescriptions.push_back( std::vector<std::string>() );
 	formatMultilineText( description, questDescriptions[ newQuestNr ], frameWidth - 88, font );
+
+    GLfloat green[] = { 0.15f, 1.0f, 0.15f };
+    DawnInterface::addTextToLogWindow( green, "Quest accepted: %s.", name.c_str() );
+
 
 	if ( selectedQuestNr == -1 && questNames.size() > 0) {
 		selectedQuestNr = 0;
@@ -175,29 +206,3 @@ std::string QuestWindow::getReloadScriptText() const
 	}
 	return oss.str();
 }
-
-extern std::auto_ptr<QuestWindow> questWindow;
-
-namespace DawnInterface
-{
-	void addQuest( std::string questName, std::string questDescription )
-	{
-		questWindow->addQuest( questName, questDescription );
-	}
-
-	void removeQuest( std::string questName )
-	{
-		questWindow->removeQuest( questName );
-	}
-
-	void changeQuestDescription( std::string questName, std::string newDescription )
-	{
-		questWindow->changeQuestDescription( questName, newDescription );
-	}
-
-	std::string getQuestSaveText()
-	{
-		return questWindow->getReloadScriptText();
-	}
-}
-

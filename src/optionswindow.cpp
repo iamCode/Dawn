@@ -36,6 +36,11 @@
 
 extern std::auto_ptr<QuestWindow> questWindow;
 
+namespace DawnInterface
+{
+    void clearLogWindow();
+}
+
 namespace dawn_configuration
 {
 	extern int screenWidth;
@@ -198,6 +203,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		//CZone *newZone = Globals::allZones["data/zone1"];
 		//newZone->LoadZone("data/zone1");
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
+		DawnInterface::clearLogWindow();
 	} else if ( selectedEntry == 2 ) {
 		if ( Globals::isSavingAllowed() ) {
 			// Save Game

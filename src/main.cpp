@@ -742,6 +742,7 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
         GUI.initFonts();
+        logWindow->clear();
 
 		return true;
 }

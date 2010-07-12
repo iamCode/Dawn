@@ -440,7 +440,7 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setName( \"" << getName() << "\" );" << std::endl;
 	// string stream doesn't seem to have a proper overload for uint8_t and makes it the 0-character, so cast to size_t
 	oss << objectName << ":setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
-	oss << objectName << ":setClass( CharacterClass." << getClass() << " );" << std::endl;
+	oss << objectName << ":setClass( CharacterClass." << getClassName() << " );" << std::endl;
 
 	oss << "-- position" << std::endl;
 	oss << objectName << ":setPosition( " << getXPos() << ", " << getYPos() << " );" << std::endl;
