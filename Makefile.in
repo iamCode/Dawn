@@ -60,12 +60,12 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	GLFT_Font.$(OBJEXT) globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
-	loadingscreen.$(OBJEXT) main.$(OBJEXT) optionswindow.$(OBJEXT) \
-	Player.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
-	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
-	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
-	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
-	Thread.$(OBJEXT)
+	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
+	optionswindow.$(OBJEXT) Player.$(OBJEXT) questwindow.$(OBJEXT) \
+	shop.$(OBJEXT) Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) \
+	textwindow.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
+	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
+	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -273,6 +273,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/item.h \
 	src/loadingscreen.cpp \
 	src/loadingscreen.h \
+	src/LogWindow.cpp \
+	src/LogWindow.h \
 	src/main.cpp \
 	src/main.h \
 	src/optionswindow.cpp \
@@ -411,6 +413,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLee.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GroundLoot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryScreen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
@@ -869,6 +872,20 @@ loadingscreen.obj: src/loadingscreen.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/loadingscreen.cpp' object='loadingscreen.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o loadingscreen.obj `if test -f 'src/loadingscreen.cpp'; then $(CYGPATH_W) 'src/loadingscreen.cpp'; else $(CYGPATH_W) '$(srcdir)/src/loadingscreen.cpp'; fi`
+
+LogWindow.o: src/LogWindow.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT LogWindow.o -MD -MP -MF $(DEPDIR)/LogWindow.Tpo -c -o LogWindow.o `test -f 'src/LogWindow.cpp' || echo '$(srcdir)/'`src/LogWindow.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/LogWindow.Tpo $(DEPDIR)/LogWindow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/LogWindow.cpp' object='LogWindow.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LogWindow.o `test -f 'src/LogWindow.cpp' || echo '$(srcdir)/'`src/LogWindow.cpp
+
+LogWindow.obj: src/LogWindow.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT LogWindow.obj -MD -MP -MF $(DEPDIR)/LogWindow.Tpo -c -o LogWindow.obj `if test -f 'src/LogWindow.cpp'; then $(CYGPATH_W) 'src/LogWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/LogWindow.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/LogWindow.Tpo $(DEPDIR)/LogWindow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/LogWindow.cpp' object='LogWindow.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LogWindow.obj `if test -f 'src/LogWindow.cpp'; then $(CYGPATH_W) 'src/LogWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/LogWindow.cpp'; fi`
 
 main.o: src/main.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT main.o -MD -MP -MF $(DEPDIR)/main.Tpo -c -o main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp

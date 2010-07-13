@@ -67,6 +67,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/item.h \
 	src/loadingscreen.cpp \
 	src/loadingscreen.h \
+	src/LogWindow.cpp \
+	src/LogWindow.h \
 	src/main.cpp \
 	src/main.h \
 	src/optionswindow.cpp \
