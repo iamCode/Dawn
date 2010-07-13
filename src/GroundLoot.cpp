@@ -26,6 +26,10 @@
 
 class Player;
 
+namespace DawnInterface {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+}
+
 extern size_t randomSizeT( size_t min, size_t max );
 extern int mouseX, mouseY, world_x, world_y;
 
@@ -122,16 +126,20 @@ void GroundLoot::searchForItems( int x, int y )
 
 void GroundLoot::lootItem( Item *item, size_t itemIndex )
 {
+    GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
     if ( dynamic_cast<GoldHeap*>( item ) != NULL ) {
         // some gold heap
         GoldHeap *goldHeap = dynamic_cast<GoldHeap*>( item );
         player->giveCoins( goldHeap->numCoins() );
+        DawnInterface::addTextToLogWindow( blue, "You looted %s.",currency::getLongTextString( goldHeap->numCoins() ).c_str() );
         delete goldHeap;
         removeItem( itemIndex );
     } else {
         bool inserted = player->getInventory()->insertItem( item );
         if ( inserted ) {
             removeItem( itemIndex );
+            DawnInterface::addTextToLogWindow( blue, "You looted %s.",item->getName().c_str() );
+
         }
     }
 }

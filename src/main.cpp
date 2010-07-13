@@ -73,6 +73,7 @@
 #include "loadingscreen.h"
 #include "globals.h"
 #include "FramesBase.h"
+#include "LogWindow.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -135,6 +136,7 @@ std::auto_ptr<BuffWindow> buffWindow;
 std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
+std::auto_ptr<LogWindow> logWindow;
 
 namespace Globals
 {
@@ -298,6 +300,7 @@ void DrawScene()
 		Editor.DrawEditor();
 	} else {
 		actionBar->draw();
+		logWindow->draw();
 		GUI.DrawInterface();
 	}
 
@@ -472,6 +475,10 @@ public:
 		progress = 0.125;
 		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
 		spellbook->loadTextures();
+		progressString = "Initializing Log Window";
+		progress = 0.15;
+		logWindow = std::auto_ptr<LogWindow>( new LogWindow );
+		logWindow->loadTextures();
 		progressString = "Initializing Buff Display";
 		progress = 0.15;
 		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
@@ -694,13 +701,15 @@ bool dawn_init(int argc, char** argv)
 		{
             SDL_Event event;
             SDL_PollEvent(&event);
-            glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
+
 			if (event.type == SDL_MOUSEBUTTONDOWN) {
                 chooseClassScreen->clicked( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1, event.button.button );
 			}
+			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
+
 		}
 
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
@@ -733,6 +742,7 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
         GUI.initFonts();
+        logWindow->clear();
 
 		return true;
 }
@@ -755,6 +765,10 @@ void game_loop()
     done = 0;
 
     focus.setFocus(&character);
+
+    GLfloat white[] = { 1.0f, 1.0f, 1.0f };
+
+    DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", character.getName().c_str() );
 
 	while (!done) {
 

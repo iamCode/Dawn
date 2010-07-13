@@ -34,6 +34,8 @@ extern Player character;
 
 namespace DawnInterface
 {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+
 	void giveItemToPlayer( Item *item )
 	{
 		Inventory *playerInventory = character.getInventory();
@@ -41,6 +43,9 @@ namespace DawnInterface
 		if ( ! wasInserted )
 		{
 			Globals::getCurrentZone()->getGroundLoot()->addItem( character.getXPos(), character.getYPos(), item );
+		} else {
+		    GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
+            DawnInterface::addTextToLogWindow( blue, "You receive %s.",item->getName().c_str() );
 		}
 	}
 }
@@ -440,7 +445,7 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setName( \"" << getName() << "\" );" << std::endl;
 	// string stream doesn't seem to have a proper overload for uint8_t and makes it the 0-character, so cast to size_t
 	oss << objectName << ":setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
-	oss << objectName << ":setClass( CharacterClass." << getClass() << " );" << std::endl;
+	oss << objectName << ":setClass( CharacterClass." << getClassName() << " );" << std::endl;
 
 	oss << "-- position" << std::endl;
 	oss << objectName << ":setPosition( " << getXPos() << ", " << getYPos() << " );" << std::endl;

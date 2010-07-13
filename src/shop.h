@@ -35,6 +35,7 @@ namespace currency
         SILVER, // 100 SILVER == 1 GOLD
         GOLD
     };
+    std::string getLongTextString( uint32_t coins );
     void exchangeCoins( uint32_t &copper, uint32_t &silver, uint32_t &gold, uint32_t &coins );
     std::string convertCoinsToString( currency::currency currency, uint32_t coins );
 }
