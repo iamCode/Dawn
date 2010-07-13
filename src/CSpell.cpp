@@ -28,41 +28,6 @@
 
 #include <cassert>
 
-namespace DawnInterface
-{
-	GeneralRayDamageSpell* createGeneralRayDamageSpell()
-	{
-		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell() ) );
-		 return newSpell.release();
-	}
-
-	GeneralBoltDamageSpell* createGeneralBoltDamageSpell()
-	{
-		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell() ) );
-		 return newSpell.release();
-	}
-
-	GeneralHealingSpell* createGeneralHealingSpell()
-	{
-		std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell() ) );
-		return newSpell.release();
-	}
-
-	GeneralBuffSpell* createGeneralBuffSpell()
-	{
-		std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell() ) );
-		return newSpell.release();
-	}
-
-	MeleeDamageAction* createMeleeDamageAction()
-	{
-	    std::auto_ptr<MeleeDamageAction> newAction( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction() ) );
-	    return newAction.release();
-	}
-
-    void addTextToLogWindow( GLfloat color[], const char *text, ... );
-}
-
 size_t randomSizeT( size_t min, size_t max )
 {
 	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
@@ -528,14 +493,6 @@ void GeneralDamageSpell::dealDirectDamage()
             realDamage *= criticalDamageMultiplier;
         }
 
-        // adds text to the logwindow
-        GLfloat white[] = { 1.0f, 1.0f, 1.0f };
-        if ( creator->isPlayer() ) {
-            DawnInterface::addTextToLogWindow( white, "Your %s does %d damage to %s (%d resisted).",getName().c_str(),static_cast<int>( round(realDamage) ), target->getName().c_str(), static_cast<int>( round(damage * damageFactor * fatigueDamageFactor * resist) ) );
-        } else {
-            DawnInterface::addTextToLogWindow( white, "%s's %s does %d damage to you (%d resisted).",creator->getName().c_str(), getName().c_str(), static_cast<int>( round( realDamage ) ), static_cast<int>( round(damage * damageFactor * fatigueDamageFactor * resist) ) );
-        }
-
         target->Damage( round(realDamage), criticalHit );
         if ( ! target->isAlive() ) {
             creator->gainExperience( target->getModifiedMaxHealth() / 10 );
@@ -982,18 +939,6 @@ void GeneralHealingSpell::startEffect()
         int healingCaused = round( realHealing );
 
         target->Heal( healingCaused );
-
-        GLfloat white[] = { 1.0f, 1.0f, 1.0f };
-
-        if ( creator->isPlayer() ) {
-            std::string targetNameString = "";
-            if ( target == creator ) {
-                targetNameString = "you";
-            } else {
-                targetNameString = target->getName();
-            }
-            DawnInterface::addTextToLogWindow( white, "Your %s heals %s for %d damage.",getName().c_str(), targetNameString.c_str(), healingCaused );
-        }
 	}
 
     target->addActiveSpell( this );
@@ -1247,29 +1192,6 @@ void MeleeDamageAction::dealDamage()
         if ( damageDone < 1 ) {
             damageDone = 1;
         }
-
-        // adds text to the logwindow
-        GLfloat white[] = { 1.0f, 1.0f, 1.0f };
-        std::string hitString = "";
-        std::string blockString = "";
-        if ( targetBlocked  == true ) {
-            std::stringstream ss;
-            ss.str() = "";
-            ss << 1;
-            blockString = std::string(" (").append(ss.str() ).append(" blocked)");
-        }
-
-        if ( criticalHit == true ) {
-            hitString = "CRITICALLY hit";
-        } else {
-            hitString = "hit";
-        }
-        if ( creator->isPlayer() ) {
-            DawnInterface::addTextToLogWindow( white, "Your %s %s %s, dealing %d damage %s.",getName().c_str(), hitString.c_str(), target->getName().c_str(), damageDone, blockString.c_str() );
-        } else {
-            DawnInterface::addTextToLogWindow( white, "%s's %s %s you, dealing %d damage %s.",creator->getName().c_str(), getName().c_str(), hitString.c_str(), damageDone, blockString.c_str() );
-        }
-
         target->Damage( damageDone, criticalHit );
         if ( ! target->isAlive() ) {
             creator->gainExperience( target->getModifiedMaxHealth() / 10 );
@@ -1350,3 +1272,39 @@ namespace SpellCreation
 	}
 
 } // namespace SpellCreation
+
+namespace DawnInterface
+{
+	GeneralRayDamageSpell* createGeneralRayDamageSpell()
+	{
+		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell() ) );
+		 return newSpell.release();
+	}
+
+	GeneralBoltDamageSpell* createGeneralBoltDamageSpell()
+	{
+		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell() ) );
+		 return newSpell.release();
+	}
+
+	GeneralHealingSpell* createGeneralHealingSpell()
+	{
+		std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell() ) );
+		return newSpell.release();
+	}
+
+	GeneralBuffSpell* createGeneralBuffSpell()
+	{
+		std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell() ) );
+		return newSpell.release();
+	}
+
+	MeleeDamageAction* createMeleeDamageAction()
+	{
+	    std::auto_ptr<MeleeDamageAction> newAction( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction() ) );
+	    return newAction.release();
+	}
+}
+
+
+
