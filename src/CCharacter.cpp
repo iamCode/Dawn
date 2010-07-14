@@ -752,11 +752,11 @@ bool CCharacter::canRaiseLevel() const
 void CCharacter::raiseLevel()
 {
 	if ( canRaiseLevel() ) {
-		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-		DawnInterface::addTextToLogWindow( yellow, "You are now a level %d %s.", getLevel(), getClassName().c_str() );
 		setMaxHealth( getMaxHealth() * 1.1 );
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
+		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+		DawnInterface::addTextToLogWindow( yellow, "You are now a level %d %s.", getLevel(), getClassName().c_str() );
 	}
 }
 
