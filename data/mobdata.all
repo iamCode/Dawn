@@ -21,17 +21,17 @@ for index=0,8,1 do
 	wolfbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/wolf/attacking e000"..index..".tga" );
 	wolfbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/wolf/attacking ne000"..index..".tga" );
 end
-wolfbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
-wolfbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/wolf/running n0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/wolf/running nw0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/wolf/running w0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/wolf/running sw0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/wolf/running s0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/wolf/running se0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/wolf/running e0000.tga" );
-wolfbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/wolf/running ne0000.tga" );
-
-wolfbase:setLifeTexture( "data/lifebar.tga" );
+wolfbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 9 );
+for index=0,8,1 do
+	wolfbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/wolf/attacking n000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/wolf/attacking nw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/wolf/attacking w000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/wolf/attacking sw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/wolf/attacking s000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/wolf/attacking se000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/wolf/attacking e000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/wolf/attacking ne000"..index..".tga" );
+end
 
 wolfbase:setStrength( 15 )
 wolfbase:setDexterity( 25 )
@@ -103,8 +103,6 @@ for index=0,7,1 do
 	humanbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/swordsman/walking ne000"..index..".tga" );
 end
 
-humanbase:setLifeTexture( "data/lifebar.tga" );
-
 humanbase:setStrength( 15 )
 humanbase:setDexterity( 25 )
 humanbase:setVitality( 15 )
@@ -140,8 +138,6 @@ for index=0,7,1 do
 	wizardbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/wizard/walking e000"..index..".tga" );
 	wizardbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/wizard/walking ne000"..index..".tga" );
 end
-
-wizardbase:setLifeTexture( "data/lifebar.tga" );
 
 wizardbase:setStrength( 10 )
 wizardbase:setDexterity( 10 )
@@ -187,17 +183,17 @@ for index=0,8,1 do
 	spiderbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/spider/attacking ne000"..index..".tga" );
 end
 
-spiderbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
-spiderbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/spider/walking n0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/spider/walking nw0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/spider/walking w0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/spider/walking sw0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/spider/walking s0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/spider/walking se0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/spider/walking e0000.tga" );
-spiderbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/spider/walking ne0000.tga" );
-
-spiderbase:setLifeTexture( "data/lifebar.tga" );
+spiderbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 9 );
+for index=0,8,1 do
+	spiderbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/spider/attacking n000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/spider/attacking nw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/spider/attacking w000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/spider/attacking sw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/spider/attacking s000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/spider/attacking se000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/spider/attacking e000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/spider/attacking ne000"..index..".tga" );
+end
 
 spiderbase:setStrength( 20 )
 spiderbase:setDexterity( 30 )
@@ -220,9 +216,10 @@ spiderbase:setName("Spider")
 spiderbase:setWanderRadius( 250 )
 spiderbase:setLevel( 4 )
 spiderbase:setCoinDrop( 0, 0, 0.00 );
+spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["melee"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
-spiderbase:setClass( CharacterClass.Warrior );
+spiderbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 
 skeletonbase = DawnInterface.createNewMobType("Skeleton")
 skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 9 );
@@ -249,17 +246,17 @@ for index=0,9,1 do
 	skeletonbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/skeleton/attacking ne000"..index..".tga" );
 end
 
-skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 1 );
-skeletonbase:setMoveTexture( ActivityType.Casting, N, 0, "data/character/skeleton/walking n0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, NW, 0, "data/character/skeleton/walking nw0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, W, 0, "data/character/skeleton/walking w0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, SW, 0, "data/character/skeleton/walking sw0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, S, 0, "data/character/skeleton/walking s0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, SE, 0, "data/character/skeleton/walking se0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, E, 0, "data/character/skeleton/walking e0000.tga" );
-skeletonbase:setMoveTexture( ActivityType.Casting, NE, 0, "data/character/skeleton/walking ne0000.tga" );
-
-skeletonbase:setLifeTexture( "data/lifebar.tga" );
+skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 10 );
+for index=0,9,1 do
+	skeletonbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/skeleton/attacking n000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/skeleton/attacking nw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/skeleton/attacking w000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/skeleton/attacking sw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/skeleton/attacking s000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/skeleton/attacking se000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/skeleton/attacking e000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/skeleton/attacking ne000"..index..".tga" );
+end
 
 skeletonbase:setStrength( 25 )
 skeletonbase:setDexterity( 40 )

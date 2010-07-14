@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sat Jul  3 21:11:29 2010.
+** Generated automatically by tolua++-1.0.93 on Tue Jul 13 23:48:51 2010.
 */
 
 #ifndef __cplusplus
@@ -927,39 +927,6 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setMoveTexture'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: setLifeTexture of class  CCharacter */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setLifeTexture00
-static int tolua_CLuaInterface_CCharacter_setLifeTexture00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
-     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
-  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setLifeTexture'", NULL);
-#endif
-  {
-   self->setLifeTexture(filename);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setLifeTexture'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5507,7 +5474,6 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"modifyMaxFatigue",tolua_CLuaInterface_CCharacter_modifyMaxFatigue00);
    tolua_function(tolua_S,"setNumMoveTexturesPerDirection",tolua_CLuaInterface_CCharacter_setNumMoveTexturesPerDirection00);
    tolua_function(tolua_S,"setMoveTexture",tolua_CLuaInterface_CCharacter_setMoveTexture00);
-   tolua_function(tolua_S,"setLifeTexture",tolua_CLuaInterface_CCharacter_setLifeTexture00);
    tolua_function(tolua_S,"setClass",tolua_CLuaInterface_CCharacter_setClass00);
    tolua_function(tolua_S,"setWanderRadius",tolua_CLuaInterface_CCharacter_setWanderRadius00);
    tolua_function(tolua_S,"getWanderRadius",tolua_CLuaInterface_CCharacter_getWanderRadius00);

@@ -33,7 +33,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = dawn_rpg$(EXEEXT)
+bin_PROGRAMS = dawn-rpg$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure depcomp \
@@ -384,8 +384,8 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-dawn_rpg$(EXEEXT): $(dawn_rpg_OBJECTS) $(dawn_rpg_DEPENDENCIES) 
-	@rm -f dawn_rpg$(EXEEXT)
+dawn-rpg$(EXEEXT): $(dawn_rpg_OBJECTS) $(dawn_rpg_DEPENDENCIES) 
+	@rm -f dawn-rpg$(EXEEXT)
 	$(CXXLINK) $(dawn_rpg_OBJECTS) $(dawn_rpg_LDADD) $(LIBS)
 
 mostlyclean-compile:

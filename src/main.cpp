@@ -189,7 +189,6 @@ namespace DawnInterface
 	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn )
 	{
 		CNPC *newMob = new CNPC(0, 0, 0, 0, 0);
-		newMob->lifebar = NULL;
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );

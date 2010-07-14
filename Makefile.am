@@ -5,7 +5,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/
 # LDADD = -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut -lGLU
 
 
-bin_PROGRAMS = dawn_rpg
+bin_PROGRAMS = dawn-rpg
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
 dawn_rpg_SOURCES = src/ActionBar.cpp \

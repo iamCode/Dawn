@@ -138,8 +138,12 @@ void CInterface::DrawInterface()
 
 
 	if (player->continuePreparing()) {
-		glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0].texture,world_x+150,100*player->getPreparationPercentage(),world_y+20,20);
+		// draw backdrop first.
+        glColor4f(0.5f,0.5f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0].texture,world_x+512,100,world_y+100,20);
+		// then the actual castbar
+        glColor4f(0.8f,0.8f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0].texture,world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
 
@@ -251,7 +255,13 @@ void CInterface::drawTargetedNPCText()
                                       tooltipStart+32+width, 32,
                                       npc->y_pos+npc->getHeight()-3, 32 );
 
-    npc->DrawLifebar();
+    float life_percentage = static_cast<float>(npc->getCurrentHealth()) / static_cast<float>(npc->getModifiedMaxHealth());
+    glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
+	DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+	                                  npc->getXPos(), npc->getWidth()*life_percentage,
+	                                  npc->getYPos()+npc->getHeight(), 8 );
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
 
     switch ( npc->getAttitude() )
     {
@@ -267,5 +277,20 @@ void CInterface::drawTargetedNPCText()
     }
 
     NPCTextFont->drawText( fontStart, npc->y_pos+npc->getHeight() + 12, "%s",npc->getName().c_str() );
+
+    if (npc->continuePreparing()) {
+        // draw backdrop first.
+        glColor4f(0.5f,0.5f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+	                                  npc->getXPos(), npc->getWidth(),
+	                                  npc->getYPos()+npc->getHeight()-12, 8 );
+        // then the actual castbar
+		glColor4f(0.8f,0.8f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+	                                  npc->getXPos(), npc->getWidth()*npc->getPreparationPercentage(),
+	                                  npc->getYPos()+npc->getHeight()-12, 8 );
+        glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+        NPCTextFont->drawText( npc->getXPos(), npc->getYPos()+npc->getHeight()-24, "%s",npc->getCurrentSpellActionName().c_str() );
+	}
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }

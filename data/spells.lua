@@ -27,6 +27,25 @@ curSpell:setMoveSpeed( 500 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
+spellDatabase["venomspiteffect1"] = curSpell;
+curSpell:setName("Venomspit");
+curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
+curSpell:setContinuousDamage( 5, 7, 10000, ElementType.Earth );
+
+curSpell = DawnInterface.createGeneralBoltDamageSpell();
+spellDatabase["venomspit"] = curSpell;
+curSpell:setName("Venomspit");
+curSpell:setCastTime( 2500 );
+curSpell:setCooldown( 10 );
+curSpell:setSpellCost( 50 );
+curSpell:setDirectDamage(  10, 20, ElementType.Earth );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/venomspit/symbol.tga" );
+curSpell:setMoveSpeed( 600 );
+curSpell:addAdditionalSpell( spellDatabase["venomspiteffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
 curSpell:setName("Electrocute");
 curSpell:setInfo("Electrocutes the target with %minSpellDirectDamage%-%maxSpellDirectDamage% point of air damage +  %minSpellContinuousDamage%-%maxSpellContinuousDamage% air damage over 2 seconds.");

@@ -1,5 +1,5 @@
-To compile Dawn:
+To compile Dawn: ./configure && make
+To run Dawn: ./dawn-rpg
 
-At the prompt: ./configure && make
-
-To run Dawn: ./dawn
+Visit us on the web for more information.
+http://dawn-rpg.sourceforge.net
