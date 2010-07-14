@@ -43,7 +43,6 @@ namespace DawnInterface
 	CCharacter* createNewMobType( std::string typeID )
 	{
 		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0);
-		newMobType->lifebar = NULL;
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
 	}
@@ -78,7 +77,6 @@ void CCharacter::baseOnType( std::string otherName )
 		setNumMoveTexturesPerDirection( curActivityType, other->numMoveTexturesPerDirection[ curActivity ] );
 		setTexture( curActivityType, other->getTexture(curActivityType) );
 	}
-	setLifebar( other->getLifebar() );
 	setArmor( other->getArmor() );
 	setHealthRegen( other->getHealthRegen() );
 	setManaRegen( other->getManaRegen() );
@@ -843,16 +841,6 @@ CTexture* CCharacter::getTexture( ActivityType::ActivityType activity ) const
 	return this->texture[ activityNr ];
 }
 
-void CCharacter::setLifebar( CTexture *newLifebar )
-{
-	this->lifebar = newLifebar;
-}
-
-CTexture* CCharacter::getLifebar() const
-{
-	return this->lifebar;
-}
-
 void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures )
 {
 	size_t activityNr = static_cast<size_t>(activity);
@@ -870,15 +858,6 @@ void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direct
 	assert( index < numMoveTexturesPerDirection[activityNr] );
 
 	texture[ activityNr ]->LoadIMG( filename, direction + 8*index );
-}
-
-void CCharacter::setLifeTexture( std::string filename )
-{
-	if ( lifebar == NULL ) {
-		lifebar = new CTexture();
-		lifebar->texture.resize( 2 );
-	}
-	lifebar->LoadIMG( filename, 1 );
 }
 
 // end of Dawn LUA Interface
@@ -1363,7 +1342,9 @@ bool CCharacter::getIsPreparing() const
 
 std::string CCharacter::getCurrentSpellActionName() const
 {
-    return curSpellAction->getName();
+    if ( curSpellAction != NULL ) {
+        return curSpellAction->getName();
+    }
 }
 
 void CCharacter::CastingAborted()
@@ -1400,16 +1381,11 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithoutAborting() const
 
 bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 {
-	return ( curSpellAction == NULL || isPreparing );
-}
-
-void CCharacter::DrawLifebar()
-{
-	glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
-	DrawingHelpers::mapTextureToRect( lifebar->texture[1].texture,
-	                                  getXPos(), getWidth()*life_percentage,
-	                                  getYPos()+getHeight(), 8 );
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	if ( isPlayer() == true ) {
+	    return ( curSpellAction == NULL || isPreparing );
+	} else {
+	    return ( curSpellAction == NULL );
+	}
 }
 
 void CCharacter::Damage(int amount, bool criticalHit)

@@ -338,8 +338,6 @@ class CCharacter
 		uint16_t getMaxDamage() const;
 		virtual uint16_t getModifiedMaxDamage() const;
 
-		void DrawLifebar();
-
 		bool CheckMouseOver(int _x_pos, int _y_pos);
 		virtual void Damage(int amount, bool criticalHit);
 		void Heal(int amount);
@@ -357,13 +355,9 @@ class CCharacter
 
 		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
 		CTexture *getTexture( ActivityType::ActivityType activity ) const;
-		void setLifebar( CTexture *newLifebar );
-		CTexture *getLifebar() const;
 		void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
 		void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
-		void setLifeTexture( std::string filename );
 		CTexture **texture;
-		CTexture *lifebar;
 
 		void setActiveGUI( CInterface *GUI_ );
 		void addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType );
