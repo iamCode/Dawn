@@ -573,7 +573,13 @@ void GeneralRayDamageSpell::startEffect()
 
 void GeneralRayDamageSpell::inEffect()
 {
-	uint32_t curTime = SDL_GetTicks();
+	if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
+    uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
 	uint32_t elapsedSinceStart = curTime - effectStart;
 	if ( curTime - lastEffect < 1000 ) {
@@ -730,6 +736,12 @@ void GeneralBoltDamageSpell::startEffect()
 
 void GeneralBoltDamageSpell::inEffect()
 {
+	if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
 	uint32_t curTicks = SDL_GetTicks();
 	moveRemaining += moveSpeed * (curTicks - lastEffect) / 1000.0;
 	int targetx = target->getXPos() + (target->getWidth() / 2);
@@ -948,7 +960,13 @@ void GeneralHealingSpell::startEffect()
 
 void GeneralHealingSpell::inEffect()
 {
-    uint32_t curTime = SDL_GetTicks();
+    if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
+	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
 	uint32_t elapsedSinceStart = curTime - effectStart;
 	if ( curTime - lastEffect < 1000 ) {
@@ -1097,6 +1115,12 @@ void GeneralBuffSpell::startEffect()
 
 void GeneralBuffSpell::inEffect()
 {
+    if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
     uint32_t curTime = SDL_GetTicks();
     if ( curTime - effectStart > getDuration() * 1000u ) {
         finishEffect();
@@ -1219,7 +1243,13 @@ void MeleeDamageAction::startEffect()
 
 void MeleeDamageAction::inEffect()
 {
-    if ( getProgress() >= 1.0 )
+    if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
+	if ( getProgress() >= 1.0 )
     {
         finishEffect();
     }

@@ -21,6 +21,7 @@
 #include "CNPC.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
+#include <vector>
 
 CInterface::CInterface()
 {
@@ -34,7 +35,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(9);
+	interfacetextures.texture.resize(11);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -43,9 +44,9 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_background.tga",5);
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_left.tga",6);
     interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_right.tga",7);
-    /////
     interfacetextures.LoadIMG("data/white2x2pixel.tga",8);
-    /////
+    interfacetextures.LoadIMG("data/interface/BuffWindow/frame.tga",9);
+	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",10);
 
 
     damageDisplayTexturesSmall.texture.resize(10);
@@ -277,6 +278,35 @@ void CInterface::drawTargetedNPCText()
     }
 
     NPCTextFont->drawText( fontStart, npc->y_pos+npc->getHeight() + 12, "%s",npc->getName().c_str() );
+
+    // load the active spells from the NPC
+    std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells = npc->getActiveSpells();
+
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
+    {
+        // only draw spells that has a duration.
+        if ( activeSpells[ curSpell ].first->getDuration() > 0 ) {
+            // here we draw the border and background for the spells we have affecting us.
+            // healing and buffs will be drawn with a green border and debuffs or hostile spells with a red border..
+
+            if ( activeSpells[ curSpell ].first->isSpellHostile() == true ) {
+                glColor4f( 0.7f, 0.0f, 0.0f, 1.0f );
+            } else {
+                glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
+            }
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[9].texture,
+                                            npc->getXPos()+(19*curSpell)+2, 18,
+                                            npc->getYPos()+npc->getHeight() + 30, 18 );
+
+            // background
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[10].texture,
+                                            npc->getXPos()+(19*curSpell)+2, 18,
+                                            npc->getYPos()+npc->getHeight() + 30, 18 );
+
+            glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+            activeSpells[curSpell].first->drawSymbol( npc->getXPos() + (19*curSpell) + 3, 16, npc->getYPos()+npc->getHeight() + 31, 16 );
+        }
+    }
 
     if (npc->continuePreparing()) {
         // draw backdrop first.

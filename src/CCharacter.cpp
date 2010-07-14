@@ -1454,7 +1454,7 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 	{
         activeGUI->addCombatText(amount, critical, damageType, world_x+140,dawn_configuration::screenHeight-40+world_y);
 	} else {
-	    activeGUI->addCombatText(amount, critical, damageType, getXPos(), getYPos()+getHeight()+20);
+	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
 	}
 }
 

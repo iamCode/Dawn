@@ -269,6 +269,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["shardsofvenomeffect1"] = curSpell;
 curSpell:setName("Shards of Venom");
+curSpell:setAnimationTexture( 0, "data/spells/venomspit/symbol.tga" );
 curSpell:setContinuousDamage( 4, 6, 12000, ElementType.Earth );
 
 curSpell = DawnInterface.createMeleeDamageAction();
