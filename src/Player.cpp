@@ -206,10 +206,18 @@ static uint16_t getModifiedAttribute( const Inventory &inventory, const CCharact
 	int32_t attributeModifier = 0;
 	std::vector<InventoryItem*> equippedItems = inventory.getEquippedItems();
 	size_t numItems = equippedItems.size();
+	bool readTwoHandedWeapon = false;
 	for ( size_t curItemNr=0; curItemNr<numItems; ++curItemNr ) {
 		Item *curItem = equippedItems[ curItemNr ]->getItem();
 		assert( curItem != NULL );
-		attributeModifier += getItemAttribute( curItem );
+        if ( curItem->isTwoHandedWeapon() == false || readTwoHandedWeapon == false ) {
+            attributeModifier += getItemAttribute( curItem );
+        }
+
+        // we do this because we only want to read the stats from two-handed weapons once and not two times as it would be since we equip two-handed weapons in both main-hand and off-hand slot.
+        if ( curItem->isTwoHandedWeapon() ) {
+            readTwoHandedWeapon = true;
+        }
 	}
 
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;

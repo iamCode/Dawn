@@ -70,6 +70,8 @@ class Inventory
 		bool isPositionFree( size_t invPosX, size_t invPosY ) const;
 		InventoryItem* getItemAt( size_t invPosX, size_t invPosY );
 
+		bool isWieldingTwoHandedWeapon() const;
+
 		InventoryItem* insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		bool containsItem( InventoryItem *inventoryItem ) const;
 		void removeItem( InventoryItem *inventoryItem );

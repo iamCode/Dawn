@@ -152,6 +152,8 @@ class Item
         bool isUseable() const;
         std::string getUseableDescription() const;
 
+        bool isTwoHandedWeapon() const;
+
 		int16_t getStats( StatsType::StatsType statsType ) const;
 		int16_t getResistElementModifierPoints( ElementType::ElementType elementType ) const;
 		int16_t getSpellEffectElementModifierPoints( ElementType::ElementType elementType ) const;
@@ -226,7 +228,7 @@ class GoldHeap : public Item
 	public:
 		GoldHeap( size_t coins_ );
 		size_t numCoins() const;
-		
+
 	private:
 		size_t coins;
 };

@@ -257,6 +257,35 @@ void Item::setDescription ( std::string description_ )
     description = "\"" + description_ + "\"";
 }
 
+bool Item::isTwoHandedWeapon() const
+{
+    switch ( getWeaponType() ) {
+        case WeaponType::TWOHAND_AXE:
+            return true;
+        break;
+        case WeaponType::TWOHAND_CLUB:
+        break;
+            return true;
+        case WeaponType::TWOHAND_MACE:
+        break;
+            return true;
+        case WeaponType::TWOHAND_SWORD:
+            return true;
+        break;
+        case WeaponType::BOW:
+            return true;
+        break;
+        case WeaponType::CROSSBOW:
+            return true;
+        break;
+        case WeaponType::STAFF:
+            return true;
+        break;
+    }
+
+    return false;
+}
+
 std::string Item::getArmorTypeText() const
 {
     switch ( armorType )

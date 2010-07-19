@@ -218,6 +218,28 @@ std::vector<InventoryItem*> Inventory::getBackpackItems() const
 void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *item )
 {
     assert( (item == NULL) || (item->getItem()->getEquipPosition() == Inventory::getEquipType( slotToUse )) );
+
+    if ( item != NULL ) {
+        // if we have equipped a two-handed weapon and replacing it with an item in mainhand or offhand, we need to set the off-hand slot to NULL
+        if ( slotToUse == ItemSlot::MAIN_HAND || slotToUse == ItemSlot::OFF_HAND ) {
+            if ( isWieldingTwoHandedWeapon() == true ) {
+                equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ] = NULL;
+                equippedItems[ static_cast<size_t>( ItemSlot::OFF_HAND ) ] = NULL;
+            }
+        }
+
+        // if the item we're about to equip is a two-handed weapon, we also put that item in the off-hand slot.
+        if ( item->getItem()->isTwoHandedWeapon() == true ) {
+            equippedItems[ static_cast<size_t>( ItemSlot::OFF_HAND ) ] = item;
+        }
+    } else {
+        // if we're removing a two-handed weapon, we also need to set the off-hand slot to NULL.
+        if ( isWieldingTwoHandedWeapon() == true ) {
+            equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ] = NULL;
+            equippedItems[ static_cast<size_t>( ItemSlot::OFF_HAND ) ] = NULL;
+        }
+    }
+
     equippedItems[ static_cast<size_t>( slotToUse ) ] = item;
 
     // this will seed a new ticket to the item and spell tooltips, telling them to reload their data.
@@ -259,6 +281,15 @@ InventoryItem* Inventory::getItemAt( size_t invPosX, size_t invPosY )
 
 	// should have found an item so should never reach here
 	abort();
+}
+
+bool Inventory::isWieldingTwoHandedWeapon() const
+{
+    if ( equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ] != NULL ) {
+        return equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ]->getItem()->isTwoHandedWeapon();
+    }
+
+    return false;
 }
 
 bool Inventory::containsItem( InventoryItem *inventoryItem ) const
@@ -331,7 +362,7 @@ std::string Inventory::getReloadText()
 	std::ostringstream oss;
 	oss << "-- Player's inventory" << std::endl;
 	oss << "-- Items in Backpack" << std::endl;
-	
+
 	for ( size_t curBackpackNr=0; curBackpackNr<backpackItems.size(); ++curBackpackNr ) {
 		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
 		Item *curItem = curBackpackItem->getItem();
@@ -339,7 +370,7 @@ std::string Inventory::getReloadText()
 		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
 		    << std::endl;
 	}
-	
+
 	oss << "-- equipped Items" << std::endl;
 	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
 	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
@@ -350,7 +381,7 @@ std::string Inventory::getReloadText()
 			    << std::endl;
 		}
 	}
-	
+
 	return oss.str();
 }
 
@@ -388,13 +419,13 @@ namespace DawnInterface
 	{
 		return character.getInventory()->getReloadText();
 	}
-	
+
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
 	{
 		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
 		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
 	}
-	
+
 	void restoreWieldItem( int slot, Item *item )
 	{
 		ItemSlot::ItemSlot slotToUse = static_cast<ItemSlot::ItemSlot>( slot );

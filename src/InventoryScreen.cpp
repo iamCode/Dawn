@@ -211,7 +211,20 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 			if ( floatingSelection != NULL && floatingSelection->isLevelReqMet() ) {
 				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
-					if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
+                    // special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
+                    if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                        if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
+                            // successfully put the offhand in the inventory. now we just swap the floatingselection with the equipped item.
+                            InventoryItem *tmp = floatingSelection;
+                            floatingSelection = inventory->getItemAtSlot( curSlotEnum );
+                            inventory->wieldItemAtSlot( curSlotEnum, tmp);
+                        }
+                    } else if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                        // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
+                        InventoryItem *tmp = floatingSelection;
+						floatingSelection = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
+						inventory->wieldItemAtSlot( curSlotEnum, tmp);
+                    } else if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
 						inventory->wieldItemAtSlot( curSlotEnum, floatingSelection );
 						floatingSelection = NULL;
 					} else {
@@ -284,15 +297,40 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                 }
 
                 if ( usedSlot != static_cast<size_t>( ItemSlot::COUNT ) ) {
-                    // found a position. Insert item
+                    // found a position. Insert item'
                     ItemSlot::ItemSlot curSlotEnum = static_cast< ItemSlot::ItemSlot>(usedSlot);
-                    InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
-                    inventory->removeItem( useItem );
-                    inventory->wieldItemAtSlot( curSlotEnum, useItem );
-                    if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
-                        delete tmp;
+
+                    // special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
+                    if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                        if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
+                            InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
+                            inventory->removeItem( useItem );
+                            inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                            if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
+                                delete tmp;
+                            } else {
+                                floatingSelection = tmp;
+                            }
+                        }
+                    } else if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                        // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
+                        InventoryItem *tmp = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
+						inventory->removeItem( useItem );
+                        inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                        if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
+                            delete tmp;
+                        } else {
+                            floatingSelection = tmp;
+                        }
                     } else {
-                        floatingSelection = tmp;
+                        InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
+                        inventory->removeItem( useItem );
+                        inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                        if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
+                            delete tmp;
+                        } else {
+                            floatingSelection = tmp;
+                        }
                     }
                 }
             }
@@ -512,12 +550,23 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
                                           world_y + posY + curScreenSlot->getOffsetY(),
                                           curScreenSlot->getTexture()->texture[0].height );
 
-        // draw the actual item image
-		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
-										  world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
-										  drawSizeX,
-										  world_y + posY + curScreenSlot->getOffsetY() + centerOffsetY,
-										  drawSizeY );
+        // we draw the two-handed weapons on our off-handslot with 50% transparency
+        if ( item->isTwoHandedWeapon() == true && curSlot == ItemSlot::OFF_HAND ) {
+            glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
+            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+                                              world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
+                                              drawSizeX,
+                                              world_y + posY + curScreenSlot->getOffsetY() + centerOffsetY,
+                                              drawSizeY );
+        } else {
+            // draw the actual item image
+            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+                                              world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
+                                              drawSizeX,
+                                              world_y + posY + curScreenSlot->getOffsetY() + centerOffsetY,
+                                              drawSizeY );
+        }
+        glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 }
 
