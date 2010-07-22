@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Tue Jul 13 23:48:51 2010.
+** Generated automatically by tolua++-1.0.93 on Thu Jul 22 17:51:49 2010.
 */
 
 #ifndef __cplusplus
@@ -25,6 +25,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"InteractionRegion");
  tolua_usertype(tolua_S,"Item");
  tolua_usertype(tolua_S,"LuaCallIndirection");
+ tolua_usertype(tolua_S,"RangedDamageAction");
  tolua_usertype(tolua_S,"MeleeDamageAction");
  tolua_usertype(tolua_S,"InteractionPoint");
  tolua_usertype(tolua_S,"CAction");
@@ -4036,6 +4037,173 @@ static int tolua_CLuaInterface_MeleeDamageAction_setDamageBonus00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setDamageBonus of class  RangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_RangedDamageAction_setDamageBonus00
+static int tolua_CLuaInterface_RangedDamageAction_setDamageBonus00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RangedDamageAction* self = (RangedDamageAction*)  tolua_tousertype(tolua_S,1,0);
+  double damageBonus = ((double)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDamageBonus'", NULL);
+#endif
+  {
+   self->setDamageBonus(damageBonus);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDamageBonus'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMoveSpeed of class  RangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_RangedDamageAction_setMoveSpeed00
+static int tolua_CLuaInterface_RangedDamageAction_setMoveSpeed00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RangedDamageAction* self = (RangedDamageAction*)  tolua_tousertype(tolua_S,1,0);
+  int newMoveSpeed = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveSpeed'", NULL);
+#endif
+  {
+   self->setMoveSpeed(newMoveSpeed);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMoveSpeed'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setExpireTime of class  RangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_RangedDamageAction_setExpireTime00
+static int tolua_CLuaInterface_RangedDamageAction_setExpireTime00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RangedDamageAction* self = (RangedDamageAction*)  tolua_tousertype(tolua_S,1,0);
+  int newExpireTime = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExpireTime'", NULL);
+#endif
+  {
+   self->setExpireTime(newExpireTime);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setExpireTime'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setNumAnimations of class  RangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_RangedDamageAction_setNumAnimations00
+static int tolua_CLuaInterface_RangedDamageAction_setNumAnimations00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RangedDamageAction* self = (RangedDamageAction*)  tolua_tousertype(tolua_S,1,0);
+  int count = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setNumAnimations'", NULL);
+#endif
+  {
+   self->setNumAnimations(count);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setNumAnimations'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setAnimationTexture of class  RangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_RangedDamageAction_setAnimationTexture00
+static int tolua_CLuaInterface_RangedDamageAction_setAnimationTexture00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RangedDamageAction* self = (RangedDamageAction*)  tolua_tousertype(tolua_S,1,0);
+  int num = ((int)  tolua_tonumber(tolua_S,2,0));
+  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setAnimationTexture'", NULL);
+#endif
+  {
+   self->setAnimationTexture(num,filename);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setAnimationTexture'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::createNewMobType */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createNewMobType00
 static int tolua_CLuaInterface_DawnInterface_createNewMobType00(lua_State* tolua_S)
@@ -4333,6 +4501,33 @@ static int tolua_CLuaInterface_DawnInterface_createMeleeDamageAction00(lua_State
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'createMeleeDamageAction'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::createRangedDamageAction */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createRangedDamageAction00
+static int tolua_CLuaInterface_DawnInterface_createRangedDamageAction00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   RangedDamageAction* tolua_ret = (RangedDamageAction*)  DawnInterface::createRangedDamageAction();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"RangedDamageAction");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createRangedDamageAction'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5430,6 +5625,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Walking",ActivityType::Walking);
    tolua_constant(tolua_S,"Casting",ActivityType::Casting);
    tolua_constant(tolua_S,"Attacking",ActivityType::Attacking);
+   tolua_constant(tolua_S,"Shooting",ActivityType::Shooting);
    tolua_constant(tolua_S,"Count",ActivityType::Count);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Attitude",0);
@@ -5443,6 +5639,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"NOCLASS",CharacterClass::NOCLASS);
    tolua_constant(tolua_S,"ANYCLASS",CharacterClass::ANYCLASS);
    tolua_constant(tolua_S,"Liche",CharacterClass::Liche);
+   tolua_constant(tolua_S,"Ranger",CharacterClass::Ranger);
    tolua_constant(tolua_S,"Warrior",CharacterClass::Warrior);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CCharacter","CCharacter","",NULL);
@@ -5763,6 +5960,14 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"MeleeDamageAction");
    tolua_function(tolua_S,"setDamageBonus",tolua_CLuaInterface_MeleeDamageAction_setDamageBonus00);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"RangedDamageAction","RangedDamageAction","ConfigurableAction",NULL);
+  tolua_beginmodule(tolua_S,"RangedDamageAction");
+   tolua_function(tolua_S,"setDamageBonus",tolua_CLuaInterface_RangedDamageAction_setDamageBonus00);
+   tolua_function(tolua_S,"setMoveSpeed",tolua_CLuaInterface_RangedDamageAction_setMoveSpeed00);
+   tolua_function(tolua_S,"setExpireTime",tolua_CLuaInterface_RangedDamageAction_setExpireTime00);
+   tolua_function(tolua_S,"setNumAnimations",tolua_CLuaInterface_RangedDamageAction_setNumAnimations00);
+   tolua_function(tolua_S,"setAnimationTexture",tolua_CLuaInterface_RangedDamageAction_setAnimationTexture00);
+  tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"DawnInterface",0);
   tolua_beginmodule(tolua_S,"DawnInterface");
    tolua_function(tolua_S,"createNewMobType",tolua_CLuaInterface_DawnInterface_createNewMobType00);
@@ -5775,6 +5980,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"createGeneralHealingSpell",tolua_CLuaInterface_DawnInterface_createGeneralHealingSpell00);
    tolua_function(tolua_S,"createGeneralBuffSpell",tolua_CLuaInterface_DawnInterface_createGeneralBuffSpell00);
    tolua_function(tolua_S,"createMeleeDamageAction",tolua_CLuaInterface_DawnInterface_createMeleeDamageAction00);
+   tolua_function(tolua_S,"createRangedDamageAction",tolua_CLuaInterface_DawnInterface_createRangedDamageAction00);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
    tolua_function(tolua_S,"addInteractionPoint",tolua_CLuaInterface_DawnInterface_addInteractionPoint00);
    tolua_function(tolua_S,"addCharacterInteractionPoint",tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00);

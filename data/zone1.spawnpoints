@@ -17,6 +17,8 @@ then
 	npc:setAttitude( Attitude.HOSTILE )
 	npc = DawnInterface.addMobSpawnPoint( "Spider", 0, 275, 180, 1 )
     npc:setAttitude( Attitude.HOSTILE )
+	npc = DawnInterface.addMobSpawnPoint( "Skeleton Archer", -200, -125, 180, 1 )
+    npc:setAttitude( Attitude.HOSTILE )
 
     zone1.leavePoint = DawnInterface.addInteractionPoint();
     zone1.leavePoint:setPosition( 822, 2570, 128, 128 );

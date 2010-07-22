@@ -804,8 +804,8 @@ void GeneralBoltDamageSpell::drawEffect()
             degrees = -degrees;
         }
 
-        int textureWidth = target->getWidth()/2;
-        int textureHeight = target->getWidth()/2;
+        int textureWidth = boltTexture->texture[frameCount].width;
+        int textureHeight = boltTexture->texture[frameCount].height;
         glPushMatrix();
         glTranslatef(posx, posy, 0.0f);
         glRotatef(degrees,0.0f,0.0f,1.0f);
@@ -1272,6 +1272,234 @@ void MeleeDamageAction::finishEffect()
     }
 }
 
+/// RangedDamageAction
+
+RangedDamageAction::RangedDamageAction()
+{
+    minRange = 0;
+	maxRange = 460; // default maxrange for ranged attacks. Can be overridden with setRange().
+	numProjectileTextures = 0;
+	damageBonus = 1.0;
+	projectileTexture = NULL;
+	moveSpeed = 1;
+	expireTime = 10000;
+}
+
+RangedDamageAction::RangedDamageAction( RangedDamageAction *other )
+	: ConfigurableAction( other )
+{
+    minRange = other->minRange;
+    maxRange = other->maxRange;
+    damageBonus = other->damageBonus;
+	numProjectileTextures = other->numProjectileTextures;
+	projectileTexture = other->projectileTexture;
+	moveSpeed = other->moveSpeed;
+	expireTime = other->expireTime;
+}
+
+CSpellActionBase* RangedDamageAction::cast( CCharacter *creator, CCharacter *target )
+{
+	RangedDamageAction* newSpell = new RangedDamageAction( this );
+	newSpell->creator = creator;
+	newSpell->target = target;
+
+	return newSpell;
+}
+
+void RangedDamageAction::setMoveSpeed( int newMoveSpeed )
+{
+	moveSpeed = newMoveSpeed;
+}
+
+void RangedDamageAction::setExpireTime( int newExpireTime )
+{
+	expireTime = newExpireTime;
+}
+
+void RangedDamageAction::setNumAnimations( int count )
+{
+	assert( projectileTexture == NULL );
+	projectileTexture = new CTexture();
+	numProjectileTextures = count;
+	projectileTexture->texture.resize( count );
+}
+
+void RangedDamageAction::setAnimationTexture( int num, std::string filename )
+{
+	assert( projectileTexture != NULL );
+	assert( numProjectileTextures > num && num >= 0 );
+	projectileTexture->LoadIMG( filename, num );
+}
+
+void RangedDamageAction::startEffect()
+{
+	frameCount = 0;
+	moveRemaining = 0.0;
+	effectStart = SDL_GetTicks();
+	animationTimerStart = effectStart;
+	lastEffect = effectStart;
+	posx = creator->getXPos() + (creator->getWidth() / 2);
+	posy = creator->getYPos() + (creator->getHeight() / 2);
+
+	target->addActiveSpell( this );
+	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	unbindFromCreator();
+}
+
+void RangedDamageAction::inEffect()
+{
+	if ( target->isAlive() == false ) {
+	    // target died while having this effect active. mark it as finished.
+	    finishEffect();
+	    return;
+	}
+
+	uint32_t curTicks = SDL_GetTicks();
+	moveRemaining += moveSpeed * (curTicks - lastEffect) / 1000.0;
+	int targetx = target->getXPos() + (target->getWidth() / 2);
+	int targety = target->getYPos() + (target->getHeight() / 2);
+	int dx = targetx - posx;
+	int dy = targety - posy;
+	double dist = sqrt( (dx * dx) + (dy * dy) );
+	double percdist = (moveRemaining / dist);
+	int movex;
+	int movey;
+
+	if ( percdist >= 1.0 ) {
+		movex = dx;
+		movey = dy;
+	} else {
+		movex = dx * percdist;
+		movey = dy * percdist;
+	}
+
+	double movedDist = sqrt(movex * movex + movey * movey);
+	moveRemaining -= movedDist;
+	lastEffect = curTicks;
+
+	posx += movex;
+	posy += movey;
+
+	if ( (posx == targetx && posy == targety) ) {
+		finishEffect();
+	} else if ( (curTicks - effectStart) > expireTime ) {
+		markSpellActionAsFinished();
+	}
+}
+
+void RangedDamageAction::finishEffect()
+{
+	dealDamage();
+	markSpellActionAsFinished();
+
+    // do we have an additional spell that perhaps should be cast?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+        }
+    }
+}
+
+double RangedDamageAction::getProgress() const
+{
+    int32_t curTime = SDL_GetTicks();
+    return ( ( curTime - effectStart ) / 650.0 );
+}
+
+
+void RangedDamageAction::drawEffect()
+{
+	if ( numProjectileTextures > 0 ) {
+	    int targetx = target->getXPos() + (target->getWidth() / 2);
+        int targety = target->getYPos() + (target->getHeight() / 2);
+        float degrees;
+        degrees = asin((posy - targety)/sqrt((pow(posx - targetx,2)+pow(posy - targety,2)))) * 57.296;
+        degrees += 90;
+
+        animationTimerStop = SDL_GetTicks();
+        frameCount = static_cast<size_t>((animationTimerStop - animationTimerStart) / 50) % numProjectileTextures;
+
+        if (posx < targetx) {
+            degrees = -degrees;
+        }
+
+        int textureWidth = projectileTexture->texture[frameCount].width;
+        int textureHeight = projectileTexture->texture[frameCount].height;
+        glPushMatrix();
+        glTranslatef(posx, posy, 0.0f);
+        glRotatef(degrees,0.0f,0.0f,1.0f);
+        glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
+
+        DrawingHelpers::mapTextureToRect(
+                    projectileTexture->texture[frameCount].texture,
+                    0, textureWidth,
+                    0, textureHeight );
+        glPopMatrix();
+	}
+}
+
+void RangedDamageAction::setDamageBonus( double damageBonus )
+{
+    this->damageBonus = damageBonus;
+}
+
+double RangedDamageAction::getDamageBonus() const
+{
+    return damageBonus;
+}
+
+void RangedDamageAction::dealDamage()
+{
+    assert ( target != NULL );
+    const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
+
+    double fatigueDamageFactor = 1.0;
+
+    // here we recalculate the damage if we're a fighter class with high fatigue
+    if ( creator->getArchType() == CharacterArchType::Fighter ) {
+        fatigueDamageFactor = 1.0 - (floor(((static_cast<double>( creator->getMaxFatigue() ) - creator->getCurrentFatigue() - getSpellCost() - 1  ) / creator->getMaxFatigue() ) / 0.25 ) / 10 );
+        if ( fatigueDamageFactor > 1.0 ) {
+            fatigueDamageFactor = 1.0;
+        } else if ( fatigueDamageFactor < 0.7 ) {
+            fatigueDamageFactor = 0.7;
+        }
+    }
+
+    double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
+    double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
+    int damage = randomSizeT( minDamage, maxDamage ) * damageBonus;
+
+    double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
+    double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
+    double targetEvadeChance = statsSystem->complexGetEvadeChance( target->getLevel(), target->getModifiedEvadeModifierPoints(), creator->getLevel() );
+    double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
+    double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
+
+    bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
+    bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
+    int criticalHitFactor = 2;
+    bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
+    bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
+    double blockFactor = 0.5;
+
+    if ( hasHit && !targetEvaded ) {
+        int damageDone = damage * (1.0-damageReduction) * fatigueDamageFactor * (targetBlocked ? blockFactor : 1.0) * (criticalHit ? criticalHitFactor : 1);
+        if ( damageDone < 1 ) {
+            damageDone = 1;
+        }
+        target->Damage( damageDone, criticalHit );
+        if ( ! target->isAlive() ) {
+            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        }
+    }
+}
+
+EffectType::EffectType RangedDamageAction::getEffectType() const
+{
+	return EffectType::SingleTargetSpell;
+}
+
+
 /// SpellCreation factory methods
 
 namespace SpellCreation
@@ -1301,6 +1529,10 @@ namespace SpellCreation
 	    return new MeleeDamageAction();
 	}
 
+	CSpellActionBase* getRangedDamageAction()
+	{
+	    return new RangedDamageAction();
+	}
 } // namespace SpellCreation
 
 namespace DawnInterface
@@ -1333,6 +1565,12 @@ namespace DawnInterface
 	{
 	    std::auto_ptr<MeleeDamageAction> newAction( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction() ) );
 	    return newAction.release();
+	}
+
+	RangedDamageAction* createRangedDamageAction()
+	{
+	    std::auto_ptr<RangedDamageAction> newAction( dynamic_cast<RangedDamageAction*>( SpellCreation::getRangedDamageAction() ) );
+        return newAction.release();
 	}
 }
 

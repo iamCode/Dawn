@@ -20,6 +20,7 @@ namespace ActivityType
 		Walking,
 		Casting,
 		Attacking,
+		Shooting,
 		Count
 	};
 }
@@ -41,6 +42,7 @@ namespace CharacterClass
 		NOCLASS,		
 		ANYCLASS,
 		Liche,
+		Ranger,
 		Warrior
 	};
 }
@@ -449,6 +451,15 @@ class MeleeDamageAction : public ConfigurableAction
 	void setDamageBonus( double damageBonus );
 };
 
+class RangedDamageAction : public ConfigurableAction
+{
+	void setDamageBonus( double damageBonus );
+	void setMoveSpeed( int newMoveSpeed );
+	void setExpireTime( int newExpireTime );
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
+
 namespace DawnInterface
 {
     CCharacter* createNewMobType( std::string typeID );
@@ -468,7 +479,8 @@ namespace DawnInterface
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
-	MeleeDamageAction* createMeleeDamageAction();		
+	MeleeDamageAction* createMeleeDamageAction();
+	RangedDamageAction* createRangedDamageAction();		
 	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );

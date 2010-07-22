@@ -280,3 +280,76 @@ skeletonbase:setWanderRadius( 250 )
 skeletonbase:setLevel( 3 )
 skeletonbase:setCoinDrop( 25, 75, 0.75 );
 skeletonbase:setClass( CharacterClass.Warrior );
+
+skeletonarcherbase = DawnInterface.createNewMobType("Skeleton Archer")
+skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
+for index=0,7,1 do
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/skeletonarcher/walking n000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/skeletonarcher/walking nw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/skeletonarcher/walking w000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/skeletonarcher/walking sw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/skeletonarcher/walking s000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/skeletonarcher/walking se000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/skeletonarcher/walking e000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/skeletonarcher/walking ne000"..index..".tga" );
+end
+
+skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 13 );
+for index=0,12,1 do
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/skeletonarcher/attacking n000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/skeletonarcher/attacking nw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/skeletonarcher/attacking w000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/skeletonarcher/attacking sw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/skeletonarcher/attacking s000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/skeletonarcher/attacking se000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/skeletonarcher/attacking e000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/skeletonarcher/attacking ne000"..index..".tga" );
+end
+
+skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 13 );
+for index=0,12,1 do
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/skeletonarcher/attacking n000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/skeletonarcher/attacking nw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/skeletonarcher/attacking w000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/skeletonarcher/attacking sw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/skeletonarcher/attacking s000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/skeletonarcher/attacking se000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/skeletonarcher/attacking e000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/skeletonarcher/attacking ne000"..index..".tga" );
+end
+
+skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Shooting, 13 );
+for index=0,12,1 do
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, N, index, "data/character/skeletonarcher/attacking n000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, NW, index, "data/character/skeletonarcher/attacking nw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, W, index, "data/character/skeletonarcher/attacking w000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, SW, index, "data/character/skeletonarcher/attacking sw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, S, index, "data/character/skeletonarcher/attacking s000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, SE, index, "data/character/skeletonarcher/attacking se000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, E, index, "data/character/skeletonarcher/attacking e000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, NE, index, "data/character/skeletonarcher/attacking ne000"..index..".tga" );
+end
+
+skeletonarcherbase:setStrength( 25 )
+skeletonarcherbase:setDexterity( 40 )
+skeletonarcherbase:setVitality( 45 )
+skeletonarcherbase:setIntellect( 10 )
+skeletonarcherbase:setWisdom( 10 )
+skeletonarcherbase:setMaxHealth( 250 )
+skeletonarcherbase:setMaxMana( 500 )
+skeletonarcherbase:setMaxFatigue( 100 )
+skeletonarcherbase:setHealthRegen( 0 )
+skeletonarcherbase:setManaRegen( 50 )
+skeletonarcherbase:setFatigueRegen( 25 )
+skeletonarcherbase:setMinDamage( 15 )
+skeletonarcherbase:setMaxDamage( 25 )
+skeletonarcherbase:setArmor( 200 )
+skeletonarcherbase:setDamageModifierPoints( 15 )
+skeletonarcherbase:setHitModifierPoints( 15 )
+skeletonarcherbase:setEvadeModifierPoints( 15 )
+skeletonarcherbase:setName("Skeleton Archer")
+skeletonarcherbase:setWanderRadius( 250 )
+skeletonarcherbase:setLevel( 3 )
+skeletonarcherbase:setCoinDrop( 25, 75, 0.75 );
+skeletonarcherbase:setClass( CharacterClass.Warrior );
+skeletonarcherbase:inscribeSpellInSpellbook( spellDatabase["shoot"] );

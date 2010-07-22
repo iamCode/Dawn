@@ -765,12 +765,14 @@ void CCharacter::setClass( CharacterClass::CharacterClass characterClass )
     this->characterClass = characterClass;
     switch ( characterClass )
     {
+        /// all caster classes here...
         case CharacterClass::Liche:
-        /// and all other caster classes here...
             characterArchType = CharacterArchType::Caster;
         break;
-        case CharacterClass::Warrior:
+
         /// and all other fighter classes here...
+        case CharacterClass::Ranger:
+        case CharacterClass::Warrior:
             characterArchType = CharacterArchType::Fighter;
         break;
     }
@@ -1179,8 +1181,9 @@ ActivityType::ActivityType CCharacter::getCurActivity() const
 	if ( curSpellAction != NULL ) {
 		if ( dynamic_cast<CSpell*>( curSpellAction ) != NULL ) {
 			curActivity = ActivityType::Casting;
-		}
-		else if ( dynamic_cast<CAction*>( curSpellAction ) != NULL ) {
+		} else if ( dynamic_cast<RangedDamageAction*>( curSpellAction ) != NULL ) {
+		    curActivity = ActivityType::Shooting;
+        } else if ( dynamic_cast<MeleeDamageAction*>( curSpellAction ) != NULL ) {
 			curActivity = ActivityType::Attacking;
 		}
 	}
@@ -1208,10 +1211,13 @@ int CCharacter::GetDirectionTexture()
 		break;
 		case ActivityType::Casting:
 		case ActivityType::Attacking:
+		case ActivityType::Shooting:
 		{
 			double progress;
 			if ( curActivity == ActivityType::Casting ) {
 				progress = getPreparationPercentage();
+			} else if ( curActivity == ActivityType::Shooting ) {
+			    progress = getPreparationPercentage(); // we handle shooting just like spells, since aiming and the like would be a preperation stage.
 			} else {
 				progress = dynamic_cast<CAction*>(curSpellAction)->getProgress();
 			}
@@ -1398,6 +1404,20 @@ void CCharacter::Damage(int amount, bool criticalHit)
 		} else {
 			modifyCurrentHealth( -amount );
 		}
+	}
+}
+
+void CCharacter::regenerateLifeManaFatigue(uint32_t regenPoints)
+{
+    /** Regenerate life, mana and fatigue every 1000 ms. **/
+
+	remainingRegenPoints += regenPoints;
+
+	if ( remainingRegenPoints > 1000 ) {
+		modifyCurrentMana( getModifiedManaRegen() );
+		modifyCurrentHealth( getModifiedHealthRegen() );
+		modifyCurrentFatigue( getModifiedFatigueRegen() );
+		remainingRegenPoints -= 1000;
 	}
 }
 

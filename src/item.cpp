@@ -281,6 +281,9 @@ bool Item::isTwoHandedWeapon() const
         case WeaponType::STAFF:
             return true;
         break;
+        default:
+            return false;
+        break;
     }
 
     return false;

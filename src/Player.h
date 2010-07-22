@@ -25,8 +25,6 @@
 class Player : public CCharacter
 {
 	private:
-
-		uint32_t remainingRegenPoints;
 		uint32_t ticketForItemTooltip;
 		uint32_t ticketForSpellTooltip;
 		Inventory inventory;
@@ -37,7 +35,6 @@ class Player : public CCharacter
 		void Move();
 		void Draw();
 		void Die();
-		void regenerateLifeManaFatigue(uint32_t regenPoints);
 		Direction GetDirection();
 
 		uint16_t getModifiedArmor() const;
