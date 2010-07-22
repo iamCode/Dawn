@@ -351,5 +351,5 @@ skeletonarcherbase:setName("Skeleton Archer")
 skeletonarcherbase:setWanderRadius( 250 )
 skeletonarcherbase:setLevel( 3 )
 skeletonarcherbase:setCoinDrop( 25, 75, 0.75 );
-skeletonarcherbase:setClass( CharacterClass.Warrior );
+skeletonarcherbase:setClass( CharacterClass.Ranger );
 skeletonarcherbase:inscribeSpellInSpellbook( spellDatabase["shoot"] );
