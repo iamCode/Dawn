@@ -119,20 +119,6 @@ void Player::clearInventory()
 	inventory.clear();
 }
 
-void Player::regenerateLifeManaFatigue(uint32_t regenPoints)
-{
-    /** Regenerate life, mana and fatigue every 1000 ms. **/
-
-	remainingRegenPoints += regenPoints;
-
-	if ( remainingRegenPoints > 1000 ) {
-		modifyCurrentMana( getModifiedManaRegen() );
-		modifyCurrentHealth( getModifiedHealthRegen() );
-		modifyCurrentFatigue( getModifiedFatigueRegen() );
-		remainingRegenPoints -= 1000;
-	}
-}
-
 void Player::Move()
 {
 	CCharacter::Move();

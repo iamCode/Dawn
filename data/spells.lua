@@ -1,7 +1,7 @@
 -- Note about dynamic values for the speltooltip.
 -- Dynamic values can be set here. In the setInfo function, you can use these values that will be displayed in the game:
---"%minMeleeDamage%"
---"%maxMeleeDamage%"
+--"%minWeaponDamage%"
+--"%maxWeaponDamage%"
 --"%minSpellDirectDamage%"
 --"%maxSpellDirectDamage%"
 --"%minSpellContinuousDamage%"
@@ -40,7 +40,7 @@ curSpell:setCooldown( 10 );
 curSpell:setSpellCost( 50 );
 curSpell:setDirectDamage(  10, 20, ElementType.Earth );
 curSpell:setNumAnimations( 1 );
-curSpell:setAnimationTexture( 0, "data/spells/venomspit/symbol.tga" );
+curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
 curSpell:setMoveSpeed( 600 );
 curSpell:addAdditionalSpell( spellDatabase["venomspiteffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
@@ -75,11 +75,11 @@ curSpell:setSpellCost( 25 );
 curSpell:setDirectDamage(  20, 40, ElementType.Air );
 curSpell:setSpellSymbol( "data/spells/lightning/symbol.tga" );
 curSpell:setNumAnimations( 5 );
-curSpell:setAnimationTexture( 0, "data/spells/lightning/1.tga" );
-curSpell:setAnimationTexture( 1, "data/spells/lightning/2.tga" );
-curSpell:setAnimationTexture( 2, "data/spells/lightning/3.tga" );
-curSpell:setAnimationTexture( 3, "data/spells/lightning/4.tga" );
-curSpell:setAnimationTexture( 4, "data/spells/lightning/5.tga" );
+curSpell:setAnimationTexture( 0, "data/spells/lightning/1_small.tga" );
+curSpell:setAnimationTexture( 1, "data/spells/lightning/2_small.tga" );
+curSpell:setAnimationTexture( 2, "data/spells/lightning/3_small.tga" );
+curSpell:setAnimationTexture( 3, "data/spells/lightning/4_small.tga" );
+curSpell:setAnimationTexture( 4, "data/spells/lightning/5_small.tga" );
 curSpell:setMoveSpeed( 1000 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
@@ -249,7 +249,7 @@ curSpell:setDamageBonus( 1.0 );
 curSpell:setCooldown( 2 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
-curSpell:setInfo("Attack with your weapon, causing %minMeleeDamage%-%maxMeleeDamage% damage.");
+curSpell:setInfo("Attack with your weapon, causing %minWeaponDamage%-%maxWeaponDamage% damage.");
 curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -259,7 +259,7 @@ spellDatabase["phantomstrike"] = curSpell;
 curSpell:setName("Phantom strike");
 curSpell:setDamageBonus( 4.0 );
 curSpell:setCooldown( 12 );
-curSpell:setInfo("Devastating strike, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
+curSpell:setInfo("Devastating strike, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
 curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
 curSpell:setSpellCost( 50 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
@@ -279,7 +279,7 @@ curSpell:setDamageBonus( 2.0 );
 curSpell:setCooldown( 4 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
-curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minMeleeDamage% to %maxMeleeDamage% damage.");
+curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
 curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
@@ -336,9 +336,22 @@ curSpell:setDamageBonus( 1.5 );
 curSpell:setCooldown( 12 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 30 );
-curSpell:setInfo("Tactical strike, causing %minMeleeDamage% to %maxMeleeDamage% and increasing your parry chance the next 6 seconds.");
+curSpell:setInfo("Tactical strike, causing %minWeaponDamage% to %maxWeaponDamage% and increasing your parry chance the next 6 seconds.");
 curSpell:addAdditionalSpell( spellDatabase["lungeeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["shoot"] = curSpell;
+curSpell:setName("Shoot");
+curSpell:setInfo("Shoot with your ranged weapon, causing %minWeaponDamage%-%maxWeaponDamage% damage.");
+curSpell:setDamageBonus( 1.0 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 0 );
+curSpell:setSpellSymbol( "data/spells/magicmissile/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
+curSpell:setMoveSpeed( 1000 );
+curSpell:setRequiredClass( CharacterClass.Ranger );

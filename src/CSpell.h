@@ -149,6 +149,7 @@ namespace SpellCreation
 	CSpellActionBase* getGeneralHealingSpell();
 	CSpellActionBase* getGeneralBuffSpell();
 	CSpellActionBase* getMeleeDamageAction();
+	CSpellActionBase* getRangedDamageAction();
 }
 
 class ConfigurableSpell : public CSpell
@@ -422,7 +423,7 @@ class MeleeDamageAction : public ConfigurableAction
 		virtual void inEffect();
 		virtual void finishEffect();
 
-        virtual double getProgress() const;
+        double getProgress() const;
 
 		void setDamageBonus( double damageBonus );
 		double getDamageBonus() const;
@@ -438,5 +439,52 @@ class MeleeDamageAction : public ConfigurableAction
 		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
 };
 
+class RangedDamageAction : public ConfigurableAction
+{
+	public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+
+		virtual EffectType::EffectType getEffectType() const;
+
+        virtual void drawEffect();
+		virtual void startEffect();
+		virtual void inEffect();
+		virtual void finishEffect();
+
+		double getProgress() const;
+
+        void setMoveSpeed( int newMoveSpeed );
+		void setExpireTime( int newExpireTime );
+		void setNumAnimations( int count );
+		void setAnimationTexture( int num, std::string filename );
+
+		void setDamageBonus( double damageBonus );
+		double getDamageBonus() const;
+		void dealDamage();
+
+	protected:
+    	RangedDamageAction();
+		RangedDamageAction( RangedDamageAction *other );
+
+    private:
+		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell();
+
+		uint32_t moveSpeed;
+		uint32_t expireTime;
+		int posx, posy;
+		double moveRemaining;
+
+		uint8_t frameCount;
+		uint32_t effectStart;
+		uint32_t lastEffect;
+		uint32_t animationTimerStart;
+		uint32_t animationTimerStop;
+
+		int numProjectileTextures;
+		CTexture *projectileTexture;
+
+        friend CSpellActionBase* SpellCreation::getRangedDamageAction();
+		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
+};
 
 #endif // __C_SPELL_H_

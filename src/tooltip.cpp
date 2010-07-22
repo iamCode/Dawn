@@ -715,8 +715,8 @@ std::string spellTooltip::parseInfoText( const std::string infoText ) const
 {
     std::string toReturn = infoText;
     std::vector<std::string> stats;
-    stats.push_back( "%minMeleeDamage%" );
-    stats.push_back( "%maxMeleeDamage%" );
+    stats.push_back( "%minWeaponDamage%" );
+    stats.push_back( "%maxWeaponDamage%" );
     stats.push_back( "%minSpellDirectDamage%" );
     stats.push_back( "%maxSpellDirectDamage%" );
     stats.push_back( "%minSpellContinuousDamage%" );

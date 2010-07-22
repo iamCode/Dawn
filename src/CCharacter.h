@@ -45,6 +45,7 @@ namespace CharacterClass
         NOCLASS,
         ANYCLASS,
         Liche,
+        Ranger,
         Warrior
     };
 }
@@ -65,6 +66,7 @@ namespace ActivityType
 		Walking,
 		Casting,
 		Attacking,
+		Shooting,
 		Count
 	};
 }
@@ -129,6 +131,8 @@ class CCharacter
 		std::string getCurrentSpellActionName() const;
 		float getPreparationPercentage() const;
 		bool getIsPreparing() const;
+
+		void regenerateLifeManaFatigue( uint32_t regenPoints );
 
 		CCharacter* getTarget() const;
 		void setTarget( CCharacter *target );
@@ -399,6 +403,8 @@ class CCharacter
 	private:
 		// NPC attributes
 		std::string name;
+
+		uint32_t remainingRegenPoints;
 
 		uint16_t strength;
 		uint16_t dexterity;

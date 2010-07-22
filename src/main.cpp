@@ -568,6 +568,26 @@ public:
 			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
 		}
 
+        activity = ActivityType::Shooting;
+		character.setNumMoveTexturesPerDirection( activity, 13 );
+		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
+			std::ostringstream ostr;
+			if ( curIndex < 10 )
+				ostr << "000" << curIndex;
+			else
+				ostr << "00" << curIndex;
+
+			std::string numberString = ostr.str();
+			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("").append( characterDataString ).append("attacking ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("").append( characterDataString ).append("attacking e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("").append( characterDataString ).append("attacking se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("").append( characterDataString ).append("attacking s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("attacking sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("attacking w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
+		}
+
 		character.setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
@@ -950,6 +970,7 @@ void game_loop()
                 if ( curNPC->isAlive() ) {
                     curNPC->giveMovePoints( ticksDiff );
                     curNPC->Move();
+                    curNPC->regenerateLifeManaFatigue( ticksDiff );
                 }
                 curNPC->Respawn();
                 curNPC->Wander();
