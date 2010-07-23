@@ -103,6 +103,9 @@ for index=0,7,1 do
 	humanbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/swordsman/walking ne000"..index..".tga" );
 end
 
+humanbase:setBoundingBox( 18, 20, 64, 64 );
+humanbase:setUseBoundingBox( true );
+
 humanbase:setStrength( 15 )
 humanbase:setDexterity( 25 )
 humanbase:setVitality( 15 )
@@ -138,6 +141,9 @@ for index=0,7,1 do
 	wizardbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/wizard/walking e000"..index..".tga" );
 	wizardbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/wizard/walking ne000"..index..".tga" );
 end
+
+wizardbase:setBoundingBox( 18, 20, 64, 64 );
+wizardbase:setUseBoundingBox( true );
 
 wizardbase:setStrength( 10 )
 wizardbase:setDexterity( 10 )
