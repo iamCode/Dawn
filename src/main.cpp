@@ -29,7 +29,14 @@
 #include <csignal>
 
 #ifdef _WIN32
-#include <windows.h> // Nothing uses this, perhaps it could be removed?
+	#include <windows.h> // Nothing uses this, perhaps it could be removed?
+#endif
+
+#ifdef _WIN32
+	#define TOOLTIP_KEY SDLK_LALT
+#else
+	// there ALT + mouseclick seems to be moving windows under X or at least KDE
+	#define TOOLTIP_KEY SDLK_LCTRL
 #endif
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
@@ -326,7 +333,7 @@ void DrawScene()
 	//       causing overflow and not drawing the font if it gets negative
 
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
-	// fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	//fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 	// Only FPS
 	fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
 
@@ -1075,12 +1082,12 @@ void game_loop()
                 }
             }
 
-            if (keys[SDLK_LALT])
+            if (keys[TOOLTIP_KEY])
             {
                 Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
             }
 
-            if (!keys[SDLK_LALT])
+            if (!keys[TOOLTIP_KEY])
             {
                 Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
             }

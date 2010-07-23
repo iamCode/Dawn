@@ -740,7 +740,8 @@ void CCharacter::gainExperience( uint64_t addExp )
 
 uint64_t CCharacter::getExpNeededForLevel( uint8_t level ) const
 {
-	uint64_t result = ((level+1)*level* 50);
+	assert( level > 0 );
+	uint64_t result = (level*(level-1)* 50);
 	return result;
 }
 
@@ -813,11 +814,13 @@ uint16_t CCharacter::getWanderRadius() const
 
 void CCharacter::setLevel ( uint8_t newLevel )
 {
+	assert( newLevel > 0 );
 	level = newLevel;
 }
 
 uint8_t CCharacter::getLevel() const
 {
+	assert( level > 0 );
 	return level;
 }
 
@@ -887,6 +890,7 @@ CCharacter::CCharacter()
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
 	  spellCriticalModifierPoints( 0 ),
+	  level( 1 ),
 	  boundingBoxX( 0 ),
 	  boundingBoxY( 0 ),
 	  boundingBoxW( 0 ),

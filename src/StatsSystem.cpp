@@ -62,7 +62,7 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 		return;
 	}
 
-	assert( maxLevel > 0 );
+	assert( maxLevel > 1 );
 
 	this->maxLevel = maxLevel;
 
@@ -74,8 +74,8 @@ void StatsSystem::calculateTables( size_t maxLevel, double relativeIncreasePerLe
 	maxArmorPointsForLevel[0] = 300;
 
 	for ( size_t curLevel=1; curLevel<=maxLevel; ++curLevel ) {
-		maxStatsPointsForLevel[ curLevel ] = maxStatsPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
-		maxArmorPointsForLevel[ curLevel ] = maxArmorPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel );
+		maxStatsPointsForLevel[ curLevel ] = maxStatsPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel-1 );
+		maxArmorPointsForLevel[ curLevel ] = maxArmorPointsForLevel[0] * pow( relativeIncreasePerLevel, curLevel-1 );
 	}
 
 	// set the allowed maximal percentages for different attributes
