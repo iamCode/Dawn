@@ -74,19 +74,17 @@ void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadI
 
 		// invert the image
 		uint32_t inversionStartTime = SDL_GetTicks();
+		char *tmpBytes = new char[surface->pitch];
 		char *surfaceBytes = static_cast<char*>(surface->pixels);
-		for ( size_t curX=0; curX < static_cast<size_t>(surface->w); ++curX ) {
-			for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
-				size_t inverseY = (surface->h - curY - 1);
-				size_t curData = (curY * surface->pitch) + curX * nOfColors;
-				size_t yInverseData = (inverseY * surface->pitch) + curX * nOfColors;
-				uint64_t cur;
-				void *tmp = reinterpret_cast<void*>(&cur);
-				memcpy( tmp, surfaceBytes+yInverseData, nOfColors );
-				memcpy( surfaceBytes+yInverseData, surfaceBytes+curData, nOfColors );
-				memcpy( surfaceBytes+curData, tmp, nOfColors );
-			}
+		for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
+			size_t inverseY = (surface->h - curY - 1);
+			size_t curData = (curY * surface->pitch);
+			size_t yInverseData = (inverseY * surface->pitch);
+			memcpy( tmpBytes, surfaceBytes + yInverseData, surface->pitch );
+			memcpy( surfaceBytes + yInverseData, surfaceBytes + curData, surface->pitch );
+			memcpy( surfaceBytes + curData, tmpBytes, surface->pitch );
 		}
+		delete[] tmpBytes;
 		imgInversionTime += SDL_GetTicks() - inversionStartTime;
 
 		// give us the size of the image's width and height and store it.
