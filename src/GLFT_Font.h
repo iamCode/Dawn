@@ -72,7 +72,7 @@ class GLFT_Font
 
 		~GLFT_Font();
 
-		void open(const std::string& filename, unsigned int size);
+		void open(const std::string& filename, unsigned int size, bool isOpenGLThreadInThreadedMode = false);
 		void release();
 
 		bool isValid() const;

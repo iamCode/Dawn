@@ -22,17 +22,24 @@
 
 #include "CDrawingHelpers.h"
 
-extern bool processFilesDirectly;
+extern bool threadedMode;
+uint32_t imgLoadTime = 0;
+uint32_t sdlLoadTime = 0;
+uint32_t imgInversionTime = 0;
+uint32_t mipmapBuildTime = 0;
 void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
 
-void CTexture::LoadIMG(std::string file, int texture_index)
+void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode )
 {
-	if ( ! processFilesDirectly ) {
+	if ( threadedMode && ! isOpenGLThreadInThreadedMode ) {
 		processTextureInOpenGLThread( this, file, texture_index );
 		return;
 	}
+	uint32_t startTime = SDL_GetTicks();
+	uint32_t debugTime = 0;
 	if ((surface = IMG_Load(file.c_str()))) {
-
+		sdlLoadTime += SDL_GetTicks() - startTime;
+		uint32_t debugStartTime = SDL_GetTicks();
 		dawn_debug_info("%s: width = %d and height = %d", file.c_str(), surface->w, surface->h);
 
 		// Check that the image's width is a power of 2
@@ -45,6 +52,7 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 			dawn_debug_warn("The height of image %s is not a"
 			          " power of 2", file.c_str());
 		}
+		debugTime = SDL_GetTicks() - debugStartTime;
 
 		// get the number of channels in the SDL surface
 		nOfColors = this->surface->format->BytesPerPixel;
@@ -65,19 +73,21 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 		}
 
 		// invert the image
+		uint32_t inversionStartTime = SDL_GetTicks();
 		char *surfaceBytes = static_cast<char*>(surface->pixels);
 		for ( size_t curX=0; curX < static_cast<size_t>(surface->w); ++curX ) {
 			for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
 				size_t inverseY = (surface->h - curY - 1);
 				size_t curData = (curY * surface->pitch) + curX * nOfColors;
 				size_t yInverseData = (inverseY * surface->pitch) + curX * nOfColors;
-				for ( size_t curByte=0; curByte < static_cast<size_t>(nOfColors); ++curByte ) {
-					char tmp = surfaceBytes[yInverseData+curByte];
-					surfaceBytes[yInverseData+curByte] = surfaceBytes[curData+curByte];
-					surfaceBytes[curData+curByte] = tmp;
-				}
+				uint64_t cur;
+				void *tmp = reinterpret_cast<void*>(&cur);
+				memcpy( tmp, surfaceBytes+yInverseData, nOfColors );
+				memcpy( surfaceBytes+yInverseData, surfaceBytes+curData, nOfColors );
+				memcpy( surfaceBytes+curData, tmp, nOfColors );
 			}
 		}
+		imgInversionTime += SDL_GetTicks() - inversionStartTime;
 
 		// give us the size of the image's width and height and store it.
 		texture[texture_index].width = surface->w;
@@ -93,8 +103,11 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+		uint32_t mipmapStart = SDL_GetTicks();
 		// Edit the texture object's image data using the information SDL_Surface gives us
+		// glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
 		gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+		mipmapBuildTime += SDL_GetTicks()-mipmapStart;
 		
 		// set the texture file name
 		texture[texture_index].textureFile = file;
@@ -106,6 +119,9 @@ void CTexture::LoadIMG(std::string file, int texture_index)
 	if (surface) {
 		SDL_FreeSurface(surface);
 	}
+	int addTime = SDL_GetTicks() - startTime - debugTime;
+	if ( addTime < 0 ) addTime = 0;
+	imgLoadTime += addTime;
 }
 
 

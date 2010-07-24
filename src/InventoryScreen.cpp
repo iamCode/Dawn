@@ -164,7 +164,10 @@ void InventoryScreen::loadTextures()
 	textures.LoadIMG("data/interface/inventory/goldcoin.tga",2);
 	textures.LoadIMG("data/interface/inventory/silvercoin.tga",3);
 	textures.LoadIMG("data/interface/inventory/coppercoin.tga",4);
+}
 
+void InventoryScreen::setTextureDependentPositions()
+{
 	posX = dawn_configuration::screenWidth - textures.texture[0].width - 50;
 }
 

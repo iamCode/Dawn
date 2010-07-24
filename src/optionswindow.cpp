@@ -57,7 +57,11 @@ OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
 	backgroundTexture = new CTexture();
 	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
+}
 
+void OptionsWindow::setTextureDependentPositions()
+{
+	// at this point the background texture has been loaded
 	frameWidth = backgroundTexture->texture[0].width;
 	frameHeight = backgroundTexture->texture[0].height;
 	// center on screen

@@ -18,12 +18,16 @@
 
 #include "debug.h"
 
+#include <SDL.h> // just for SDL_GetTicks()
+
 #ifndef WIN32
 #include <execinfo.h>
 #include <signal.h>
 #endif
 
 #include <cassert>
+
+uint32_t debugOutputTime = 0;
 
 namespace dawn_configuration {
 	std::string logfile = "dawn-log.cpp"; // The logfile
@@ -103,20 +107,24 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 
 void dawn_debug_info(const std::string& message ...)
 {
+	uint32_t debugStartTime = SDL_GetTicks();
 	std::va_list ap;
 
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_INFO);
 	va_end(ap);
+	debugOutputTime += SDL_GetTicks()-debugStartTime;
 }
 
 void dawn_debug_warn(const std::string& message ...)
 {
+	uint32_t debugStartTime = SDL_GetTicks();
 	std::va_list ap;
 
 	va_start(ap, message);
 		debug_args(message.c_str(), ap, DEBUG_WARN);
 	va_end(ap);
+	debugOutputTime += SDL_GetTicks()-debugStartTime;
 }
 
 void dawn_debug_fatal(const std::string& message ...)

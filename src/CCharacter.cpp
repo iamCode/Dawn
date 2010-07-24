@@ -1355,6 +1355,7 @@ std::string CCharacter::getCurrentSpellActionName() const
     if ( curSpellAction != NULL ) {
         return curSpellAction->getName();
     }
+    return "";
 }
 
 void CCharacter::CastingAborted()

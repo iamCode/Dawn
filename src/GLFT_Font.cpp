@@ -76,7 +76,7 @@ GLFT_Font::GLFT_Font() :
 {
 }
 
-extern bool processFilesDirectly;
+extern bool threadedMode;
 
 void processFontInOpenGLThread( GLFT_Font *font, const std::string &filename, unsigned int size );
 
@@ -93,11 +93,11 @@ GLFT_Font::~GLFT_Font()
 	release();
 }
 
-void GLFT_Font::open(const std::string& filename, unsigned int size)
+void GLFT_Font::open(const std::string& filename, unsigned int size, bool isOpenGLThreadInThreadedMode)
 {
 	const size_t MARGIN = 3;
 
-	if ( ! processFilesDirectly ){
+	if ( threadedMode && ! isOpenGLThreadInThreadedMode ){
 		processFontInOpenGLThread( this, filename, size );
 		return;
 	}
@@ -333,7 +333,7 @@ StreamFlusher GLFT_Font::endDraw()
 
 unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 {
-	if (processFilesDirectly && !isValid()) {
+	if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
 	}
 	unsigned int width=0;
@@ -348,7 +348,7 @@ unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 
 unsigned int GLFT_Font::getHeight() const
 {
-	if (processFilesDirectly && !isValid()) {
+	if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::getHeight call.");
 	}
 	return height_;

@@ -27,6 +27,7 @@
 #include <cmath>
 #include <memory>
 #include <csignal>
+#include <deque>
 
 #ifdef _WIN32
 	#include <windows.h> // Nothing uses this, perhaps it could be removed?
@@ -98,6 +99,7 @@ namespace dawn_configuration {
 	int screenHeight = 768;
 	int bpp = 32;
 }
+
 // FIXME: This is a temp hack until the
 // 	objects dont need those variables.
 //	david: I'll have this sorted pretty
@@ -109,6 +111,14 @@ int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
 CMessage message;
+
+extern uint32_t imgLoadTime;
+extern uint32_t sdlLoadTime;
+extern uint32_t imgInversionTime;
+extern uint32_t mipmapBuildTime;
+extern uint32_t debugOutputTime;
+uint32_t drawingTime = 0;
+uint32_t initStartTicks = 0;
 
 SDL_Surface *screen;
 Player character;
@@ -356,17 +366,28 @@ void dawn_init_signal_handlers()
 }
 
 class DawnInitObject;
-bool processFilesDirectly = true;
+bool threadedMode = false;
 DawnInitObject *curTextureProcessor = NULL;
 void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
+
+struct TextureQueueEntry
+{
+	TextureQueueEntry( CTexture *texture_, const std::string textureFile_, int textureIndex_ )
+		: 	texture( texture_ ),
+			textureFile( textureFile_ ),
+			textureIndex( textureIndex_ )
+	{}
+	CTexture *texture;
+	std::string textureFile;
+	int textureIndex;
+};
 
 class DawnInitObject : public CThread
 {
 private:
 	bool finished;
-	CTexture *curTexture;
-	std::string curTextureFile;
-	int curTextureIndex;
+	std::deque<TextureQueueEntry*> textureQueue;
+	
 	GLFT_Font *curFont;
 	std::string curFontFile;
 	unsigned int curFontSize;
@@ -377,7 +398,6 @@ public:
 	bool started;
 	DawnInitObject()
 	    : finished( false ),
-	      curTexture( NULL ),
 	      curFont( NULL ),
 	      progressString( "" ),
 	      progress( 0.0 ),
@@ -391,7 +411,7 @@ public:
 	{
 		bool result = false;
 		accessMutex.Lock();
-		result = finished;
+		result = finished && (textureQueue.size() == 0);
 		accessMutex.Unlock();
 		return result;
 	}
@@ -409,26 +429,27 @@ public:
 	void setCurrentTextureToProcess( CTexture *texture, std::string textureFile, int textureIndex )
 	{
 		accessMutex.Lock();
-		curTexture = texture;
-		curTextureFile = textureFile;
-		curTextureIndex = textureIndex;
+		TextureQueueEntry *newEntry = new TextureQueueEntry( texture, textureFile, textureIndex );
+		textureQueue.push_back( newEntry );
+		// this is just for first tests. later the queue will work autonomously
 		accessMutex.Unlock();
-		while ( curTexture != NULL ) {
-			Sleep(1);
-		}
+		// return without waiting for completion. This might cause some problems if the init thread accesses the texture
+		// which it should not do
 	}
 
 	void processCurTexture()
 	{
-		accessMutex.Lock();
-		if ( curTexture != NULL ) {
-			dawn_debug_info( "loading texture %s\n", curTextureFile.c_str());
-			processFilesDirectly = true;
-			curTexture->LoadIMG( curTextureFile, curTextureIndex );
-			processFilesDirectly = false;
-			curTexture = NULL;
+		if ( textureQueue.size() > 0 ) {
+			accessMutex.Lock();
+			TextureQueueEntry *curEntry = textureQueue.front();
+			accessMutex.Unlock();
+			dawn_debug_info( "loading texture %s\n", curEntry->textureFile.c_str());
+			curEntry->texture->LoadIMG( curEntry->textureFile, curEntry->textureIndex, true );
+			delete curEntry;
+			accessMutex.Lock();
+			textureQueue.pop_front();
+			accessMutex.Unlock();
 		}
-		accessMutex.Unlock();
 	}
 
 	void setCurrentFontToProcess( GLFT_Font *font, std::string fontFile, unsigned int fontSize )
@@ -448,12 +469,23 @@ public:
 		accessMutex.Lock();
 		if ( curFont != NULL ) {
 			dawn_debug_info( "loading font %s\n", curFontFile.c_str());
-			processFilesDirectly = true;
+			threadedMode = false;
 			curFont->open( curFontFile, curFontSize );
-			processFilesDirectly = false;
+			threadedMode = true;
 			curFont = NULL;
 		}
 		accessMutex.Unlock();
+	}
+	
+	void setProgress( double newProgress )
+	{
+		// wait for texture loading
+		size_t curSize;
+		while ( ( curSize = textureQueue.size() ) > 0 )
+		{
+			Sleep( 1 );
+		}
+		progress = newProgress;
 	}
 
 	void init()
@@ -461,58 +493,58 @@ public:
 		dawn_debug_info("Starting initialization");
 		progressString = "Initializing Editor";
 		Editor.LoadTextures();
+		setProgress( 0.025 );
 		progressString = "Initializing GUI";
-		progress = 0.025;
 		GUI.LoadTextures();
 		GUI.SetPlayer(&character);
+		setProgress( 0.05 );
 		progressString = "Initializing Character Screen";
-		progress = 0.05;
 		characterInfoScreen = std::auto_ptr<CharacterInfoScreen>( new CharacterInfoScreen( &character ) );
 		characterInfoScreen->LoadTextures();
+		setProgress( 0.075 );
 		progressString = "Initializing Inventory Screen";
-		progress = 0.075;
 		inventoryScreen = std::auto_ptr<InventoryScreen>( new InventoryScreen( &character ) );
 		inventoryScreen->loadTextures();
+		setProgress( 0.1 );
 		progressString = "Initializing Action Bar";
-		progress = 0.1;
 		actionBar = std::auto_ptr<ActionBar>( new ActionBar( &character ) );
 		actionBar->loadTextures();
+		setProgress( 0.125 );
 		progressString = "Initializing Spellbook";
-		progress = 0.125;
 		spellbook = std::auto_ptr<Spellbook>( new Spellbook( &character ) );
 		spellbook->loadTextures();
+		setProgress( 0.15 );
 		progressString = "Initializing Log Window";
-		progress = 0.15;
 		logWindow = std::auto_ptr<LogWindow>( new LogWindow );
 		logWindow->loadTextures();
+		setProgress( 0.16 );
 		progressString = "Initializing Buff Display";
-		progress = 0.15;
 		buffWindow = std::auto_ptr<BuffWindow>( new BuffWindow( &character ) );
+		setProgress( 0.175 );
 		progressString = "Initializing Quest Screen";
-		progress = 0.175;
 		questWindow = std::auto_ptr<QuestWindow>( new QuestWindow );
+		setProgress( 0.2 );
 		progressString = "Initializing Menu Screen";
-		progress = 0.2;
 		optionsWindow = std::auto_ptr<OptionsWindow>( new OptionsWindow );
 
 		/// testing the shop, should not be initialized like this!!!
 		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL /* was dynamic_cast<CNPC*>( &character ) [=NULL] */ ) );
 
 		dawn_debug_info("Loading the game data files and objects");
+		setProgress( 0.225 );
 		progressString = "Loading Spell Data";
-		progress = 0.225;
-        LuaFunctions::executeLuaFile("data/spells.lua");
-        progressString = "Loading Item Data";
-        progress = 0.375;
+		LuaFunctions::executeLuaFile("data/spells.lua");
+        setProgress( 0.375 );
+		progressString = "Loading Item Data";
         LuaFunctions::executeLuaFile("data/itemdatabase.lua");
-        progressString = "Loading Mob Data";
-        progress = 0.525;
-		LuaFunctions::executeLuaFile("data/mobdata.all");
+        setProgress( 0.525 );
+		progressString = "Loading Mob Data";
+        LuaFunctions::executeLuaFile("data/mobdata.all");
 		dawn_debug_info("Loading completed");
 
+		setProgress( 0.7 );
 		progressString = "Loading Character Data";
-		progress = 0.7;
-
+		
 		std::string characterDataString = "data/character/";
 
 		if ( character.getClass() == CharacterClass::Liche ) {
@@ -615,11 +647,11 @@ public:
 
 		dawn_debug_info("Character completed");
 
+		setProgress( 0.92 );
 		progressString = "Initializing load/save functions";
-		progress = 0.92;
 		LuaFunctions::executeLuaFile("data/loadsave.lua");
+		setProgress( 0.95 );
 		progressString = "Loading Game Init Data";
-		progress = 0.95;
 
 		CZone *newZone = new CZone();
 		newZone->LoadZone("data/zone1");
@@ -627,8 +659,8 @@ public:
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
 
 		// initialize random number generator
+		setProgress( 0.99 );
 		progressString = "Initializing Random Number Generator";
-		progress = 0.99;
 		srand( time( 0 ) );
 
 		accessMutex.Lock();
@@ -688,7 +720,7 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
-
+		
 		if (dawn_configuration::fullscreenenabled)
 			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
 			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
@@ -722,6 +754,7 @@ bool dawn_init(int argc, char** argv)
 
 		/// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
 		std::auto_ptr<ChooseClassScreen> chooseClassScreen( new ChooseClassScreen() );
+		chooseClassScreen->setTextureDependentPositions();
 
 		while ( chooseClassScreen->isDone() == false )
 		{
@@ -737,28 +770,53 @@ bool dawn_init(int argc, char** argv)
 			SDL_GL_SwapBuffers();
 
 		}
-
+		
+		initStartTicks = SDL_GetTicks();
+		imgLoadTime = 0;
+		sdlLoadTime = 0;
+		imgInversionTime = 0;
+		debugOutputTime = 0;
+		drawingTime = 0;
+		
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		DawnInitObject obj;
-		processFilesDirectly = false;
+		threadedMode = true;
 		curTextureProcessor = &obj;
 		do {
 			obj.Event();
 			Sleep( 10 );
 		} while ( ! obj.started );
 
+		uint32_t lastTicks = SDL_GetTicks();
+		uint32_t curTicks = lastTicks;
 		while ( ! obj.isFinished() ) {
 			obj.processCurTexture();
 			obj.processCurFont();
-			loadingScreen->setCurrentText( obj.getCurrentText() );
-			loadingScreen->setProgress( obj.getProgress() );
-			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			loadingScreen->draw();
-			SDL_GL_SwapBuffers();
+			curTicks = SDL_GetTicks();
+			if ( curTicks-lastTicks >= 100 )
+			{
+				lastTicks = curTicks;
+				loadingScreen->setCurrentText( obj.getCurrentText() );
+				loadingScreen->setProgress( obj.getProgress() );
+				glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+				loadingScreen->draw();
+				SDL_GL_SwapBuffers();
+				drawingTime += SDL_GetTicks()-curTicks;
+			}
 		}
-
-		processFilesDirectly = true;
+		
+		optionsWindow->setTextureDependentPositions();
+		inventoryScreen->setTextureDependentPositions();
+		
+		uint32_t initTime = SDL_GetTicks()-initStartTicks;
+		std::cout << "initialization took " << initTime << " ms" << std::endl;
+		std::cout << "included are " << imgLoadTime << " ms for image loading (" << sdlLoadTime << " ms for IMG_Load, " << imgInversionTime << " for image Y-inversion, " << mipmapBuildTime << " ms for mipmap-building, total >= " << (100*(sdlLoadTime+imgInversionTime+mipmapBuildTime))/imgLoadTime << "% of LoadIMG submeasured)" << std::endl;
+		std::cout << "included are " << debugOutputTime << " ms for debug output" << std::endl;
+		std::cout << "included are " << drawingTime << " ms for menu drawing" << std::endl;
+		std::cout << "total submeasures cover >= " << (100*(imgLoadTime+debugOutputTime+drawingTime)/initTime) << "% of init time" << std::endl;
+		
+		threadedMode = false;
 		curTextureProcessor = NULL;
 
 		// initialize fonts where needed

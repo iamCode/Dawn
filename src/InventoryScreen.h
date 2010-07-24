@@ -79,6 +79,7 @@ class InventoryScreen : public FramesBase
 		void clicked( int clickX, int clickY, uint8_t mouseState );
 
 		void loadTextures();
+		void setTextureDependentPositions();
 
 		void draw( int mouseX, int mouseY );
 		void drawCoins();

@@ -31,6 +31,7 @@ class OptionsWindow : public FramesBase
 		OptionsWindow();
 		~OptionsWindow();
 		void draw( int mouseX, int mouseY );
+		void setTextureDependentPositions();
 		//bool isMouseOnFrame( int posX, int posY ) const;
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
