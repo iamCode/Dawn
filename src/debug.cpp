@@ -18,7 +18,7 @@
 
 #include "debug.h"
 
-#include <SDL.h> // just for SDL_GetTicks()
+#include <SDL/SDL.h> // just for SDL_GetTicks()
 
 #ifndef WIN32
 #include <execinfo.h>
