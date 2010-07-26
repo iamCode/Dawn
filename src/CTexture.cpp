@@ -37,6 +37,7 @@ void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadI
 	}
 	uint32_t startTime = SDL_GetTicks();
 	uint32_t debugTime = 0;
+	SDL_Surface *surface = NULL;
 	if ((surface = IMG_Load(file.c_str()))) {
 		sdlLoadTime += SDL_GetTicks() - startTime;
 		uint32_t debugStartTime = SDL_GetTicks();
@@ -55,7 +56,7 @@ void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadI
 		debugTime = SDL_GetTicks() - debugStartTime;
 
 		// get the number of channels in the SDL surface
-		nOfColors = this->surface->format->BytesPerPixel;
+		nOfColors = surface->format->BytesPerPixel;
 		if (nOfColors == 4) { // contains an alpha channel
 			if (surface->format->Rmask == 0x000000ff)
 				texture_format = GL_RGBA;

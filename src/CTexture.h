@@ -61,7 +61,6 @@ class CTexture
 		int NumberOfTextures;
 
 	private:
-		SDL_Surface *surface;
 		GLenum texture_format;
 		GLint nOfColors;
 };
