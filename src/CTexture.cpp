@@ -19,6 +19,7 @@
 #include "CTexture.h"
 #include <SDL/SDL_image.h>
 #include <glu.h>
+#include <memory>
 
 #include "CDrawingHelpers.h"
 
@@ -29,98 +30,123 @@ uint32_t imgInversionTime = 0;
 uint32_t mipmapBuildTime = 0;
 void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
 
+std::auto_ptr<TextureCache> textureCache( new TextureCache() );
+
+sTexture TextureCache::getTextureFromCache( std::string filename )
+{
+	if ( textures.count( filename ) > 0 ) {
+		return textures[ filename ];
+	} else {
+	    uint32_t startTime = SDL_GetTicks();
+        uint32_t debugTime = 0;
+        SDL_Surface *surface;
+        GLenum texture_format;
+        GLint nOfColors;
+        if ((surface = IMG_Load(filename.c_str()))) {
+            sdlLoadTime += SDL_GetTicks() - startTime;
+            uint32_t debugStartTime = SDL_GetTicks();
+            dawn_debug_info("%s: width = %d and height = %d", filename.c_str(), surface->w, surface->h);
+
+            // Check that the image's width is a power of 2
+            if ((surface->w & (surface->w - 1)) != 0) {
+                dawn_debug_warn("The width of image %s is not a"
+                          " power of 2", filename.c_str());
+            }
+            // Also check if the height is a power of 2
+            if ((surface->h & (surface->h - 1)) != 0) {
+                dawn_debug_warn("The height of image %s is not a"
+                          " power of 2", filename.c_str());
+            }
+            debugTime = SDL_GetTicks() - debugStartTime;
+
+            // get the number of channels in the SDL surface
+            nOfColors = surface->format->BytesPerPixel;
+            if (nOfColors == 4) { // contains an alpha channel
+                if (surface->format->Rmask == 0x000000ff)
+                    texture_format = GL_RGBA;
+                else
+                    texture_format = GL_BGRA;
+            } else if (nOfColors == 3) {    // no alpha channel
+                if (surface->format->Rmask == 0x000000ff)
+                    texture_format = GL_RGB;
+                else
+                    texture_format = GL_BGR;
+            } else if (nOfColors < 3){
+                dawn_debug_warn("The image %s"
+                    " is not truecolor..  this will probably break", filename.c_str());
+                // this error should not go unhandled
+            }
+
+            // invert the image
+            uint32_t inversionStartTime = SDL_GetTicks();
+            char *tmpBytes = new char[surface->pitch];
+            char *surfaceBytes = static_cast<char*>(surface->pixels);
+            for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
+                size_t inverseY = (surface->h - curY - 1);
+                size_t curData = (curY * surface->pitch);
+                size_t yInverseData = (inverseY * surface->pitch);
+                memcpy( tmpBytes, surfaceBytes + yInverseData, surface->pitch );
+                memcpy( surfaceBytes + yInverseData, surfaceBytes + curData, surface->pitch );
+                memcpy( surfaceBytes + curData, tmpBytes, surface->pitch );
+            }
+            delete[] tmpBytes;
+            imgInversionTime += SDL_GetTicks() - inversionStartTime;
+
+            // give us the size of the image's width and height and store it.
+            textures[ filename ].width = surface->w;
+            textures[ filename ].height = surface->h;
+
+            // Have OpenGL generate a texture object handle for us
+            glGenTextures(1, &textures[ filename ].texture);
+
+            // Bind the texture object
+            glBindTexture(GL_TEXTURE_2D, textures[ filename ].texture);
+
+            // Set the texture's stretching properties
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            uint32_t mipmapStart = SDL_GetTicks();
+            // Edit the texture object's image data using the information SDL_Surface gives us
+            // glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+            gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+            mipmapBuildTime += SDL_GetTicks()-mipmapStart;
+
+            // set the texture file name
+            textures[ filename ].textureFile = filename;
+        } else {
+            dawn_debug_fatal("SDL could not load %s : %s", filename.c_str(), SDL_GetError());
+        }
+
+        // Free the SDL_Surface only if it was successfully created
+        if (surface) {
+            SDL_FreeSurface(surface);
+        }
+
+        int addTime = SDL_GetTicks() - startTime - debugTime;
+        if ( addTime < 0 ) addTime = 0;
+        imgLoadTime += addTime;
+
+        return textures[ filename ];
+	}
+}
+
+TextureCache::TextureCache()
+{
+}
+
+TextureCache::~TextureCache()
+{
+}
+
 void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode )
 {
 	if ( threadedMode && ! isOpenGLThreadInThreadedMode ) {
 		processTextureInOpenGLThread( this, file, texture_index );
 		return;
 	}
-	uint32_t startTime = SDL_GetTicks();
-	uint32_t debugTime = 0;
-	SDL_Surface *surface = NULL;
-	if ((surface = IMG_Load(file.c_str()))) {
-		sdlLoadTime += SDL_GetTicks() - startTime;
-		uint32_t debugStartTime = SDL_GetTicks();
-		dawn_debug_info("%s: width = %d and height = %d", file.c_str(), surface->w, surface->h);
 
-		// Check that the image's width is a power of 2
-		if ((surface->w & (surface->w - 1)) != 0) {
-			dawn_debug_warn("The width of image %s is not a"
-			          " power of 2", file.c_str());
-		}
-		// Also check if the height is a power of 2
-		if ((surface->h & (surface->h - 1)) != 0) {
-			dawn_debug_warn("The height of image %s is not a"
-			          " power of 2", file.c_str());
-		}
-		debugTime = SDL_GetTicks() - debugStartTime;
-
-		// get the number of channels in the SDL surface
-		nOfColors = surface->format->BytesPerPixel;
-		if (nOfColors == 4) { // contains an alpha channel
-			if (surface->format->Rmask == 0x000000ff)
-				texture_format = GL_RGBA;
-			else
-				texture_format = GL_BGRA;
-		} else if (nOfColors == 3) {    // no alpha channel
-			if (surface->format->Rmask == 0x000000ff)
-				texture_format = GL_RGB;
-			else
-				texture_format = GL_BGR;
-		} else if (nOfColors < 3){
-			dawn_debug_warn("The image %s"
-				" is not truecolor..  this will probably break", file.c_str());
-			// this error should not go unhandled
-		}
-
-		// invert the image
-		uint32_t inversionStartTime = SDL_GetTicks();
-		char *tmpBytes = new char[surface->pitch];
-		char *surfaceBytes = static_cast<char*>(surface->pixels);
-		for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
-			size_t inverseY = (surface->h - curY - 1);
-			size_t curData = (curY * surface->pitch);
-			size_t yInverseData = (inverseY * surface->pitch);
-			memcpy( tmpBytes, surfaceBytes + yInverseData, surface->pitch );
-			memcpy( surfaceBytes + yInverseData, surfaceBytes + curData, surface->pitch );
-			memcpy( surfaceBytes + curData, tmpBytes, surface->pitch );
-		}
-		delete[] tmpBytes;
-		imgInversionTime += SDL_GetTicks() - inversionStartTime;
-
-		// give us the size of the image's width and height and store it.
-		texture[texture_index].width = surface->w;
-		texture[texture_index].height = surface->h;
-
-		// Have OpenGL generate a texture object handle for us
-		glGenTextures(1, &texture[texture_index].texture);
-
-		// Bind the texture object
-		glBindTexture(GL_TEXTURE_2D, texture[texture_index].texture);
-
-		// Set the texture's stretching properties
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		uint32_t mipmapStart = SDL_GetTicks();
-		// Edit the texture object's image data using the information SDL_Surface gives us
-		// glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-		gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-		mipmapBuildTime += SDL_GetTicks()-mipmapStart;
-		
-		// set the texture file name
-		texture[texture_index].textureFile = file;
-	} else {
-		dawn_debug_fatal("SDL could not load %s : %s", file.c_str(), SDL_GetError());
-	}
-
-	// Free the SDL_Surface only if it was successfully created
-	if (surface) {
-		SDL_FreeSurface(surface);
-	}
-	int addTime = SDL_GetTicks() - startTime - debugTime;
-	if ( addTime < 0 ) addTime = 0;
-	imgLoadTime += addTime;
+	texture[ texture_index ] = textureCache->getTextureFromCache( file );
 }
 
 

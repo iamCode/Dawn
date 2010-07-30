@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "debug.h"
 
@@ -50,6 +51,18 @@ struct sTexture {
 	}
 };
 
+class TextureCache
+{
+private:
+	std::map< std::string, sTexture > textures;
+
+public:
+	TextureCache();
+	~TextureCache();
+
+	sTexture getTextureFromCache( std::string filename );
+};
+
 class CTexture
 {
 	public:
@@ -59,10 +72,6 @@ class CTexture
 		void LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode=false);
 		void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float x_scale = 1.0f, float y_scale = 1.0f);
 		int NumberOfTextures;
-
-	private:
-		GLenum texture_format;
-		GLint nOfColors;
 };
 
 #endif
