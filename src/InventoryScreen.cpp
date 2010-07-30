@@ -42,6 +42,7 @@ namespace dawn_configuration
 namespace DawnInterface
 {
 	extern void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+	extern void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
 extern std::auto_ptr<Spellbook> spellbook;
@@ -261,7 +262,9 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	        InventoryItem *useItem = inventory->getItemAt( fieldIndexX, fieldIndexY );
 	        assert ( useItem != NULL );
 	        if ( useItem->getItem()->isUseable()
-            && useItem->getItem()->getLevelReq() <= player->getLevel()
+            && useItem->getItem()->getRequiredLevel() <= player->getLevel()
+            && useItem->getItem()->getSpell()->getRequiredLevel() <= player->getLevel()
+            && ( useItem->getItem()->getSpell()->getRequiredClass() == player->getClass() || useItem->getItem()->getSpell()->getRequiredClass() == CharacterClass::ANYCLASS )
             && !player->getIsPreparing()
             && player->isSpellOnCooldown( useItem->getItem()->getSpell()->getName() ) == false )
             {
@@ -269,6 +272,8 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                 {
                     // item is a spellbook, learn new spell.
                     DawnInterface::inscribeSpellInPlayerSpellbook( dynamic_cast<CSpellActionBase*>( useItem->getItem()->getSpell() ) );
+                    GLfloat green[] = { 0.0f, 1.0f, 0.0f };
+                    DawnInterface::addTextToLogWindow( green, "You inscribed %s in your spellbook.", useItem->getItem()->getSpell()->getName().c_str() );
                     inventory->removeItem( useItem );
                 } else {
                     // item is potion or scroll, use it.

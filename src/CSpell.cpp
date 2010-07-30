@@ -43,7 +43,8 @@ double randomDouble( double min, double max )
 CSpellActionBase::CSpellActionBase()
 		: boundToCreator( false ),
 		  finished( false ),
-		  requiredClass( CharacterClass::NOCLASS )
+		  requiredClass( CharacterClass::NOCLASS ),
+		  requiredLevel( 1 )
 {
 }
 
@@ -128,6 +129,16 @@ void CSpellActionBase::setRequiredClass( CharacterClass::CharacterClass required
 CharacterClass::CharacterClass CSpellActionBase::getRequiredClass() const
 {
     return requiredClass;
+}
+
+void CSpellActionBase::setRequiredLevel( uint8_t requiredLevel )
+{
+    this->requiredLevel = requiredLevel;
+}
+
+uint8_t CSpellActionBase::getRequiredLevel() const
+{
+    return requiredLevel;
 }
 
 /// ConfigurableSpell

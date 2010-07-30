@@ -48,6 +48,28 @@ namespace CharacterClass
         Ranger,
         Warrior
     };
+
+    inline std::string getCharacterClassName( CharacterClass::CharacterClass characterClass )
+    {
+        switch ( characterClass ) {
+            case NOCLASS:
+                return "NOCLASS";
+            break;
+            case ANYCLASS:
+                return "ANYCLASS";
+            break;
+            case Liche:
+                return "Liche";
+            break;
+            case Ranger:
+                return "Ranger";
+            break;
+            case Warrior:
+                return "Warrior";
+            break;
+        }
+        return "";
+    }
 }
 
 namespace CharacterArchType

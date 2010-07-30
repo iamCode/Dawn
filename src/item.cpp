@@ -59,7 +59,7 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		spellEffectElementModifier( NULL ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
-		levelReq( 0 ),
+		requiredLevel( 1 ),
 		value( 0 ),
 		spellCharges( 0 ),
 		spell( NULL )
@@ -182,9 +182,9 @@ uint8_t Item::getMaxDamage() const
     return maxDamage;
 }
 
-uint8_t Item::getLevelReq() const
+uint8_t Item::getRequiredLevel() const
 {
-    return levelReq;
+    return requiredLevel;
 }
 
 uint32_t Item::getValue() const
@@ -227,9 +227,9 @@ void Item::setMaxDamage( uint8_t maxDamage_ )
     maxDamage = maxDamage_;
 }
 
-void Item::setLevelReq( uint8_t levelReq_ )
+void Item::setRequiredLevel( uint8_t requiredLevel )
 {
-    levelReq = levelReq_;
+    this->requiredLevel = requiredLevel;
 }
 
 void Item::setValue( uint32_t newValue )

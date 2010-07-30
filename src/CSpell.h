@@ -119,6 +119,10 @@ class CSpellActionBase
         void setRequiredClass( CharacterClass::CharacterClass requiredClass );
         CharacterClass::CharacterClass getRequiredClass() const;
 
+        /// and at what level we can use the spell
+        void setRequiredLevel( uint8_t requiredLevel );
+        uint8_t getRequiredLevel() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
     protected:
         CCharacter *creator;
@@ -126,6 +130,7 @@ class CSpellActionBase
         bool boundToCreator;
         bool finished;
         CharacterClass::CharacterClass requiredClass;
+        uint8_t requiredLevel;
         std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
 };
 

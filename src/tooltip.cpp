@@ -554,10 +554,28 @@ void itemTooltip::getParentText()
     }
 
     // display item level requirements if player's level is too low.
-    if ( parent->getLevelReq() > player->getLevel() )
+    uint8_t requiredLevel = 1;
+    if ( parent->isUseable() ) {
+        if ( parent->getSpell()->getRequiredLevel() > parent->getRequiredLevel() ) {
+            requiredLevel = parent->getSpell()->getRequiredLevel();
+        } else {
+            requiredLevel = parent->getRequiredLevel();
+        }
+    } else {
+        requiredLevel = parent->getRequiredLevel();
+    }
+
+    if ( requiredLevel > player->getLevel() )
     {
         addTooltipText( white, 12, "" );
-        addTooltipText( red, 12, "Requires level %d", parent->getLevelReq() );
+        addTooltipText( red, 12, "Requires level %d", parent->getRequiredLevel() );
+    }
+
+    // display item level requirements if player's level is too low.
+    if ( parent->isUseable() ) {
+        if ( parent->getSpell()->getRequiredClass() != player->getClass() && parent->getSpell()->getRequiredClass() != CharacterClass::ANYCLASS ) {
+            addTooltipText( red, 12, "Requires class %s", CharacterClass::getCharacterClassName( parent->getSpell()->getRequiredClass() ).c_str() );
+        }
     }
 
     int32_t coins = parent->getValue();

@@ -791,15 +791,7 @@ CharacterArchType::CharacterArchType CCharacter::getArchType() const
 
 std::string CCharacter::getClassName() const
 {
-    switch ( characterClass )
-    {
-        case CharacterClass::Liche:
-            return "Liche";
-        break;
-        case CharacterClass::Warrior:
-            return "Warrior";
-        break;
-    }
+    return CharacterClass::getCharacterClassName( getClass() );
 }
 
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )

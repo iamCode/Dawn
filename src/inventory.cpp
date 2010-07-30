@@ -472,10 +472,20 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 
 bool InventoryItem::isLevelReqMet() const
 {
-    if ( player->getLevel() < item->getLevelReq() )
-    {
-        return false;
-    } else {
-        return true;
+    bool useableItem = true;
+
+    if ( player->getLevel() < item->getRequiredLevel() ) {
+        useableItem = false;
     }
+
+    if ( item->isUseable() ) {
+        if ( player->getLevel() < item->getSpell()->getRequiredLevel() ) {
+            useableItem = false;
+        }
+        if ( player->getClass() != item->getSpell()->getRequiredClass() && item->getSpell()->getRequiredClass() != CharacterClass::ANYCLASS ) {
+            useableItem = false;
+        }
+    }
+
+    return useableItem;
 }

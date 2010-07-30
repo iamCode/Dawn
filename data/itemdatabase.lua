@@ -10,7 +10,7 @@ curItem:setStats( StatsType.Strength, 2 );
 curItem:setStats( StatsType.HitModifier, 5 );
 curItem:setMinDamage( 7 );
 curItem:setMaxDamage( 15 );
-curItem:setLevelReq( 1 );
+curItem:setRequiredLevel( 1 );
 curItem:setStats( StatsType.MeleeCritical, 25 );
 curItem:setValue( 56818 );
 
@@ -64,14 +64,14 @@ curItem:setStats( StatsType.Dexterity, 10 );
 curItem:setStats( StatsType.Strength, 10 );
 curItem:setMinDamage( 32 );
 curItem:setMaxDamage( 81 );
-curItem:setLevelReq( 5 );
+curItem:setRequiredLevel( 5 );
 curItem:setValue( 11500 );
 
 
 itemDatabase["snakeloop"]=DawnInterface.createNewItem( "Snakeloop", 1, 1, "data/items/Ring1.tga", ItemQuality.ENHANCED, EquipPosition.RING, ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["snakeloop"];
 curItem:setStats( StatsType.Intellect, 3 );
-curItem:setLevelReq( 1 );
+curItem:setRequiredLevel( 1 );
 curItem:setSpellEffectElementModifierPoints( ElementType.Light, 20 );
 curItem:setValue( 2500 );
 
@@ -82,7 +82,7 @@ curItem:setStats( StatsType.Strength, 4 );
 curItem:setStats( StatsType.Health, 5 );
 curItem:setMinDamage( 5 );
 curItem:setMaxDamage( 13 );
-curItem:setLevelReq( 3 );
+curItem:setRequiredLevel( 3 );
 curItem:setValue( 300 );
 
 
@@ -98,13 +98,13 @@ itemDatabase["shadering"]=DawnInterface.createNewItem( "Shade ring", 1, 1, "data
 curItem = itemDatabase["shadering"];
 curItem:setStats( StatsType.Dexterity, 2 );
 curItem:setStats( StatsType.EvadeModifier, 10 );
-curItem:setLevelReq( 3 );
+curItem:setRequiredLevel( 3 );
 curItem:setValue( 110 );
 
 
 itemDatabase["scrolloftheboar"]=DawnInterface.createNewItem( "Scroll of the Boar", 1, 1, "data/items/Scroll1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.SCROLL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["scrolloftheboar"];
-curItem:setLevelReq( 1 );
+curItem:setRequiredLevel( 1 );
 curItem:setSpell( spellDatabase["spiritoftheboar"] );
 curItem:setSpellCharges( 5 );
 curItem:setValue( 100 );

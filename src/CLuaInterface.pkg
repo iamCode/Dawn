@@ -302,6 +302,7 @@ class CSpellActionBase
 {
 	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+	void setRequiredLevel( int requiredLevel );
 };
 
 class CAction : public CSpellActionBase
@@ -320,7 +321,7 @@ class Item
 	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
-	void setLevelReq( int levelReq );
+	void setRequiredLevel( int requiredLevel );
 	void setValue( int newValue );
 	void setSpellCharges( int newSpellCharges );
 	void setSpell( CSpell *newSpell );

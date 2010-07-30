@@ -160,7 +160,7 @@ class Item
         uint8_t getMinDamage() const;
         uint8_t getMaxDamage() const;
         uint32_t getValue() const;
-        uint8_t getLevelReq() const;
+        uint8_t getRequiredLevel() const;
         uint8_t getSpellCharges() const;
         CSpell *getSpell() const;
 
@@ -170,7 +170,7 @@ class Item
 		void setMinDamage( uint8_t minDamage );
         void setMaxDamage( uint8_t maxDamage );
         void setValue( uint32_t newValue );
-        void setLevelReq( uint8_t levelReq );
+        void setRequiredLevel( uint8_t requiredLevel );
         void setSpellCharges( uint8_t newSpellCharges );
         void reduceSpellCharges();
         void setSpell( CSpell *newSpell );
@@ -212,7 +212,7 @@ class Item
         uint8_t minDamage;
         uint8_t maxDamage;
 
-        uint8_t levelReq;
+        uint8_t requiredLevel;
 
         uint32_t value;
 
