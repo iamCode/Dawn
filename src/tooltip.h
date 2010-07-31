@@ -66,6 +66,8 @@ class Tooltip
         int getTooltipWidth() const;
         int getTooltipHeight() const;
         void reloadTooltip();
+        std::string parseInfoText( CSpellActionBase *spell, const std::string infoText ) const;
+        std::string getDynamicValues( CSpellActionBase *spell, size_t val ) const;
 
     private:
         bool smallTooltip; // with this true, tooltip will merely display the name of things.
@@ -98,8 +100,6 @@ class spellTooltip : public Tooltip
         CSpellActionBase *parent;
         void getParentText();
         void getTicketFromPlayer();
-        std::string parseInfoText( const std::string infoText ) const;
-        std::string getDynamicValues( size_t val ) const;
 };
 
 class itemTooltip : public Tooltip

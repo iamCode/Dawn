@@ -533,8 +533,8 @@ void itemTooltip::getParentText()
 	// if the item is useable, display it here and what effect it has.
 	if ( parent->isUseable() )
 	{
-	    addTooltipText( green, 11, parent->getUseableDescription() );
-	    if ( parent->getSpellCharges() > 0 ) {
+        addTooltipText( green, 11, parseInfoText( parent->getSpell(), parent->getUseableDescription() ) );
+        if ( parent->getSpellCharges() > 0 ) {
 	        addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
 	    }
 	    if ( parent->getSpell() != NULL )
@@ -645,82 +645,82 @@ void spellTooltip::getParentText()
 
     // display description.
     addTooltipText( white, 12, "" ); // newline
-    addTooltipText( green, 12, parseInfoText( parent->getInfo() ) );
+    addTooltipText( green, 12, parseInfoText( parent, parent->getInfo() ) );
 }
 
-std::string spellTooltip::getDynamicValues( size_t val ) const
+std::string Tooltip::getDynamicValues( CSpellActionBase *spell, size_t val ) const
 {
     const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
     std::stringstream ss;
     ss.str() = "";
 
     switch ( val ) {
-        case 0: // minMeleeDamage
-            if ( dynamic_cast<MeleeDamageAction*>( parent )  != NULL ) {
-                MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( parent );
+        case 0: // minWeaponDamage
+            if ( dynamic_cast<MeleeDamageAction*>( spell )  != NULL ) {
+                MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( spell );
                 ss << static_cast<int16_t>( player->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
                 return ss.str();
             }
         break;
-        case 1: // maxMeleeDamage
-            if ( dynamic_cast<MeleeDamageAction*>( parent ) != NULL ) {
-                MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( parent );
+        case 1: // maxWeaponDamage
+            if ( dynamic_cast<MeleeDamageAction*>( spell ) != NULL ) {
+                MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( spell );
                 ss << static_cast<int16_t>( player->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
                 return ss.str();
             }
         break;
         case 2: // minSpellDirectDamage
-            if ( dynamic_cast<GeneralDamageSpell*>( parent ) != NULL ) {
-                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( parent );
+            if ( dynamic_cast<GeneralDamageSpell*>( spell ) != NULL ) {
+                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDirectDamageMin() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getDirectDamageElement() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 3: // maxSpellDirectDamage
-            if ( dynamic_cast<GeneralDamageSpell*>( parent ) != NULL ) {
-                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( parent );
+            if ( dynamic_cast<GeneralDamageSpell*>( spell ) != NULL ) {
+                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDirectDamageMax() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getDirectDamageElement() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 4: // minSpellContinuousDamage
-            if ( dynamic_cast<GeneralDamageSpell*>( parent ) != NULL ) {
-                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( parent );
+            if ( dynamic_cast<GeneralDamageSpell*>( spell ) != NULL ) {
+                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDuration() * curSpell->getContinuousDamageMin() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getContinuousDamageElement() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 5: // maxSpellContinuousDamage
-            if ( dynamic_cast<GeneralDamageSpell*>( parent ) != NULL ) {
-                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( parent );
+            if ( dynamic_cast<GeneralDamageSpell*>( spell ) != NULL ) {
+                GeneralDamageSpell *curSpell = dynamic_cast<GeneralDamageSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDuration() * curSpell->getContinuousDamageMax() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getContinuousDamageElement() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 6: // minDirectHealing
-            if ( dynamic_cast<GeneralHealingSpell*>( parent ) != NULL ) {
-                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( parent );
+            if ( dynamic_cast<GeneralHealingSpell*>( spell ) != NULL ) {
+                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDirectHealingMin() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getDirectElementType() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 7: // maxDirectHealing
-            if ( dynamic_cast<GeneralHealingSpell*>( parent ) != NULL ) {
-                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( parent );
+            if ( dynamic_cast<GeneralHealingSpell*>( spell ) != NULL ) {
+                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDirectHealingMax() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getDirectElementType() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 8: // minContinuousHealing
-            if ( dynamic_cast<GeneralHealingSpell*>( parent ) != NULL ) {
-                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( parent );
+            if ( dynamic_cast<GeneralHealingSpell*>( spell ) != NULL ) {
+                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDuration() * curSpell->getContinuousHealingMin() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getContinuousElementType() ), player->getLevel() ) );
                 return ss.str();
             }
         break;
         case 9: // maxContinuousHealing
-            if ( dynamic_cast<GeneralHealingSpell*>( parent ) != NULL ) {
-                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( parent );
+            if ( dynamic_cast<GeneralHealingSpell*>( spell ) != NULL ) {
+                GeneralHealingSpell *curSpell = dynamic_cast<GeneralHealingSpell*>( spell );
                 ss << static_cast<int16_t>( curSpell->getDuration() * curSpell->getContinuousHealingMax() * StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( player->getLevel(), player->getModifiedSpellEffectElementModifierPoints( curSpell->getContinuousElementType() ), player->getLevel() ) );
                 return ss.str();
             }
@@ -729,7 +729,7 @@ std::string spellTooltip::getDynamicValues( size_t val ) const
     return "";
 }
 
-std::string spellTooltip::parseInfoText( const std::string infoText ) const
+std::string Tooltip::parseInfoText( CSpellActionBase *spell, const std::string infoText ) const
 {
     std::string toReturn = infoText;
     std::vector<std::string> stats;
@@ -747,7 +747,7 @@ std::string spellTooltip::parseInfoText( const std::string infoText ) const
     for ( size_t index = 0; index < stats.size(); index++ ) {
         if ( toReturn.find( stats[ index ] ) != toReturn.npos ) {
             int findRet = toReturn.find( stats[ index ] );
-            toReturn.replace( findRet, stats[ index ].length(), getDynamicValues( index ) );
+            toReturn.replace( findRet, stats[ index ].length(), getDynamicValues( spell, index ) );
         }
     }
     return toReturn;
