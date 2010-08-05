@@ -357,11 +357,11 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 		InventoryItem *newItem = new InventoryItem( item, foundX, foundY, player );
         insertItemAt( newItem, foundX, foundY, itemTab );
 	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
 	}
 
 	if ( givePlayerMoney ) {
 	    player->giveCoins( sellItem->getItem()->getValue() * 0.75 );
+        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
 	    // player only gets 75% of the itemvalue when he sells an item
 	}
 }
