@@ -564,7 +564,7 @@ void CEditor::DrawEditor()
 				glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
 			}
 
-			DrawingHelpers::mapTextureToRect( interfacetexture.texture[1].texture,
+			DrawingHelpers::mapTextureToRect( interfacetexture.texture[1],
 			                                  zoneToEdit->CollisionMap[x].CR.x, zoneToEdit->CollisionMap[x].CR.w,
 			                                  zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h );
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -585,12 +585,12 @@ void CEditor::DrawEditor()
 	}
 
 	// quad on the top, baseframe for the object-selection.
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0].texture,
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0],
 	                                  editorFocus->getX(), RES_X,
 	                                  editorFocus->getY()+RES_Y-100, 100 );
 
 	// quad on bottom, baseframe for our helptext.
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0].texture,
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0],
 	                                  editorFocus->getX(), RES_X,
 	                                  editorFocus->getY(), 100 );
 
@@ -620,7 +620,7 @@ void CEditor::DrawEditor()
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
 
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[1].texture,
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[1],
 	                                  editorFocus->getX()+(RES_X/2)-5, 50,
 	                                  editorFocus->getY()+RES_Y-65, 50 );
 
@@ -640,7 +640,7 @@ void CEditor::DrawEditor()
 			// draw all tileset tiles in edit frame
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneTiles.NumberOfTextures;tilepos++) {
 
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos].texture,
+				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos],
 				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
 				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
@@ -650,7 +650,7 @@ void CEditor::DrawEditor()
 			// draw all environment objects in edit frame
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneEnvironment.NumberOfTextures; tilepos++) {
 
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos].texture,
+				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos],
 				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
 				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
@@ -660,7 +660,7 @@ void CEditor::DrawEditor()
 			// draw all available shadows in edit frame
 			for (tilepos=1;tilepos<=zoneToEdit->ZoneShadow.NumberOfTextures; tilepos++) {
 
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos].texture,
+				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos],
 				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
 				                                  editorFocus->getY()+RES_Y-60, 40 );
 			}
@@ -680,7 +680,7 @@ void CEditor::LoadTextures()
 void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id)
 {
 	// draws a white quad as our editframe
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3].texture,
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
 	                                  editorFocus->getX()+50, 350,
 	                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
 
@@ -690,7 +690,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 	glScalef(editobject->x_scale,editobject->y_scale,1.0f);
 	glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
 
-	DrawingHelpers::mapTextureToRect( texture->texture[editobject->id].texture,
+	DrawingHelpers::mapTextureToRect( texture->texture[editobject->id],
 	                                  editorFocus->getX()+55, texture->texture[editobject->id].width,
 	                                  editorFocus->getY()+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
 

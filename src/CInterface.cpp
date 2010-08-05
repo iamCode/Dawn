@@ -77,7 +77,7 @@ void CInterface::LoadTextures()
 void CInterface::DrawInterface()
 {
 	// drawing the base of the life and mana bar.
-	DrawingHelpers::mapTextureToRect( interfacetextures.texture[1].texture,
+	DrawingHelpers::mapTextureToRect( interfacetextures.texture[1],
 	                                  world_x, interfacetextures.texture[1].width,
 	                                  world_y+RES_Y-interfacetextures.texture[1].height, interfacetextures.texture[1].height );
 
@@ -92,13 +92,13 @@ void CInterface::DrawInterface()
     // draw the backdrop with transparency.
     /// health bar
     glColor4f( 0.815f, 0.16f, 0.16f, 0.4f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
 	                                  world_x+31, 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 0.4f );
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
                                         world_x+31, 91,
                                         world_y+RES_Y-64, 32 );
     }
@@ -106,13 +106,13 @@ void CInterface::DrawInterface()
     // draw the barwidth with no transparency.
     /// health bar
     glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
 	                                  world_x+31, lifeBarPercentage * 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
                                         world_x+31, manaBarPercentage * 91,
                                         world_y+RES_Y-64, 32 );
     }
@@ -126,14 +126,14 @@ void CInterface::DrawInterface()
         } else {
             glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
         }
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8].texture,
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
                                           world_x+31, fatigueBarPercentage * 91,
                                           world_y+RES_Y-64, 32 );
     }
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     // drawing the top part of the life and mana bar
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[2].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[2],
 	                                  world_x, interfacetextures.texture[2].width,
 	                                  world_y+RES_Y-interfacetextures.texture[2].height, interfacetextures.texture[2].height );
 
@@ -141,10 +141,10 @@ void CInterface::DrawInterface()
 	if (player->continuePreparing()) {
 		// draw backdrop first.
         glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0].texture,world_x+512,100,world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0],world_x+512,100,world_y+100,20);
 		// then the actual castbar
         glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0].texture,world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0],world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
 
@@ -220,7 +220,7 @@ void CInterface::drawCombatText()
 
         //sets the color of the text we're drawing based on what type of damage type we're displaying.
         glColor4f(damageType[damageDisplay[currentDamageDisplay].damageType][0],damageType[damageDisplay[currentDamageDisplay].damageType][1],damageType[damageDisplay[currentDamageDisplay].damageType][2],damageDisplay[currentDamageDisplay].transparency);
-        DrawingHelpers::mapTextureToRect( fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].texture,
+        DrawingHelpers::mapTextureToRect( fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay],
                                         damageDisplay[currentDamageDisplay].x_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].width,
                                         damageDisplay[currentDamageDisplay].y_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].height );
 
@@ -246,19 +246,19 @@ void CInterface::drawTargetedNPCText()
     int fontStart = npc->x_pos+npc->getWidth()/2-stringWidth/2;
     int tooltipStart = npc->x_pos+npc->getWidth()/2-(width+64)/2;
 
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[6].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[6],
                                       tooltipStart, 32,
                                       npc->y_pos+npc->getHeight()-3, 32 );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[5].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[5],
                                       tooltipStart+32, width,
                                       npc->y_pos+npc->getHeight()-3, 32 );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[7].texture,
+    DrawingHelpers::mapTextureToRect( interfacetextures.texture[7],
                                       tooltipStart+32+width, 32,
                                       npc->y_pos+npc->getHeight()-3, 32 );
 
     float life_percentage = static_cast<float>(npc->getCurrentHealth()) / static_cast<float>(npc->getModifiedMaxHealth());
     glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
-	DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+	DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
 	                                  npc->getXPos(), npc->getWidth()*life_percentage,
 	                                  npc->getYPos()+npc->getHeight(), 8 );
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -294,12 +294,12 @@ void CInterface::drawTargetedNPCText()
             } else {
                 glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
             }
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[9].texture,
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[9],
                                             npc->getXPos()+(19*curSpell)+2, 18,
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
             // background
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[10].texture,
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[10],
                                             npc->getXPos()+(19*curSpell)+2, 18,
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
@@ -311,12 +311,12 @@ void CInterface::drawTargetedNPCText()
     if (npc->continuePreparing()) {
         // draw backdrop first.
         glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
 	                                  npc->getXPos(), npc->getWidth(),
 	                                  npc->getYPos()+npc->getHeight()-12, 8 );
         // then the actual castbar
 		glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0].texture,
+		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
 	                                  npc->getXPos(), npc->getWidth()*npc->getPreparationPercentage(),
 	                                  npc->getYPos()+npc->getHeight()-12, 8 );
         glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );

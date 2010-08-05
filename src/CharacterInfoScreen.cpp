@@ -76,7 +76,7 @@ void CharacterInfoScreen::initFonts()
 
 void CharacterInfoScreen::draw( int mouseX, int mouseY )
 {
-	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+	DrawingHelpers::mapTextureToRect( textures.texture[0],
 	                                  world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height );
 
 	size_t descriptionTextStart = 60;
@@ -188,17 +188,17 @@ void CharacterInfoScreen::drawExpBar()
     int expBarWidth = static_cast<float>(currentXP) / neededXP * 100;
 
     glColor3f( 0.7f, 0.73f, 0.29f );
-    DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[1],
                                     world_x + posX + 280, 100, world_y + posY + 433, 10 );
     glColor3f( 0.9f, 0.93f, 0.29f );
-    DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[1],
                                     world_x + posX + 280, expBarWidth, world_y + posY + 433, 10 );
     glColor3f( 1.0f, 1.0f, 1.0f );
 }
 
 void CharacterInfoScreen::drawTabs()
 {
-    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
+    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0],
                                       world_x + tabs[currentTab].posX + posX, tabs[currentTab].tabimage.texture[0].width, world_y + tabs[currentTab].posY + posY, tabs[currentTab].tabimage.texture[0].height );
 
 	const StatsSystem *statsSystem = StatsSystem::getStatsSystem();

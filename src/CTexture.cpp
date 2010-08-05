@@ -22,6 +22,10 @@
 #include <memory>
 
 #include "CDrawingHelpers.h"
+#include "textureframe.h"
+
+extern bool initPhase;
+extern TextureFrame *textureFrame;
 
 extern bool threadedMode;
 uint32_t imgLoadTime = 0;
@@ -95,25 +99,34 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
             // give us the size of the image's width and height and store it.
             textures[ filename ].width = surface->w;
             textures[ filename ].height = surface->h;
-
-            // Have OpenGL generate a texture object handle for us
-            glGenTextures(1, &textures[ filename ].texture);
-
-            // Bind the texture object
-            glBindTexture(GL_TEXTURE_2D, textures[ filename ].texture);
-
-            // Set the texture's stretching properties
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            uint32_t mipmapStart = SDL_GetTicks();
-            // Edit the texture object's image data using the information SDL_Surface gives us
-            // glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-            gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-            mipmapBuildTime += SDL_GetTicks()-mipmapStart;
+            textures[ filename ].x1=0.0f;
+            textures[ filename ].x2=1.0f;
+            textures[ filename ].y1=0.0f;
+            textures[ filename ].y2=1.0f;
 
             // set the texture file name
             textures[ filename ].textureFile = filename;
+
+            if ( initPhase && nOfColors==4 && texture_format==GL_BGRA) {
+                std::cout << "nOfColors=" << nOfColors << ", textureFormat=" << texture_format << std::endl;
+                textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
+            } else {
+                // Have OpenGL generate a texture object handle for us
+                glGenTextures(1, &textures[ filename ].texture);
+
+                // Bind the texture object
+                glBindTexture(GL_TEXTURE_2D, textures[ filename ].texture);
+
+                // Set the texture's stretching properties
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                uint32_t mipmapStart = SDL_GetTicks();
+                // Edit the texture object's image data using the information SDL_Surface gives us
+                // glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+                gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+                mipmapBuildTime += SDL_GetTicks()-mipmapStart;
+            }
         } else {
             dawn_debug_fatal("SDL could not load %s : %s", filename.c_str(), SDL_GetError());
         }
@@ -167,7 +180,7 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
 		glPushMatrix();
 		glScalef(x_scale,y_scale,1.0f);
 	}
-	DrawingHelpers::mapTextureToRect( texture[draw_id].texture,
+	DrawingHelpers::mapTextureToRect( texture[draw_id],
 	                                  x, texture[draw_id].width,
 	                                  y, texture[draw_id].height );
 	if ( needToScale ) {

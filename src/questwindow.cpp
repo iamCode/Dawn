@@ -78,7 +78,7 @@ QuestWindow::~QuestWindow()
 
 void QuestWindow::draw( int mouseX, int mouseY )
 {
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
 	                                  posX + world_x, backgroundTexture->texture[0].width,
 	                                  posY + world_y, backgroundTexture->texture[0].height );
 

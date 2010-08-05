@@ -82,7 +82,7 @@ extern int mouseY;
 void OptionsWindow::draw( int mouseX, int mouseY )
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
 	                                  posX + world_x, frameWidth,
 	                                  posY + world_y, frameHeight );
 
@@ -239,7 +239,7 @@ bool ChooseClassScreen::isDone() const
 void ChooseClassScreen::draw( int mouseX, int mouseY )
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
 	                                  posX + world_x, frameWidth,
 	                                  posY + world_y, frameHeight );
 

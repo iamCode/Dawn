@@ -55,7 +55,7 @@ void LogWindow::loadTextures()
 
 void LogWindow::draw()
 {
-    DrawingHelpers::mapTextureToRect(   textures.texture[0].texture,
+    DrawingHelpers::mapTextureToRect(   textures.texture[0],
                                         world_x + posX, width,
                                         world_y + posY, height
                                     );

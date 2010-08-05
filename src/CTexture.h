@@ -30,24 +30,23 @@
 
 struct sTexture {
 	GLuint texture;
+	float x1,x2,y1,y2;
 	int height, width;
 	bool contains_collision_box;
 	SDL_Rect collision_box;
 	std::string textureFile;
 
-	sTexture(int _height, int _width, bool _ccb) {
-		textureFile = "";
-		height = _height;
-		width = _width;
-		contains_collision_box = _ccb;
-	};
-
 	sTexture()
 	{
-		textureFile = "";
+		texture = 0;
+		x1=0.0f;
+		x2=0.0f;
+		y1=0.0f;
+		y2=0.0f;
 		height = 0;
 		width = 0;
 		contains_collision_box = false;
+		textureFile = "";
 	}
 };
 

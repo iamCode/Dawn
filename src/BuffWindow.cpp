@@ -67,12 +67,12 @@ void BuffWindow::draw()
                 glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
             }
 
-            DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+            DrawingHelpers::mapTextureToRect( textures.texture[0],
                                             world_x+posX, 36,
                                             world_y+posY-40*curSpell, 36 );
 
             // background
-            DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+            DrawingHelpers::mapTextureToRect( textures.texture[1],
                                             world_x+posX+36, 168,
                                             world_y+posY-40*curSpell, 36 );
 

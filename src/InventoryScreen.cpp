@@ -372,7 +372,7 @@ void InventoryScreen::drawBackpack()
 		size_t sizeX = curItem->getSizeX();
 		size_t sizeY = curItem->getSizeY();
 
-		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0],
 		                                  world_x + posX + backpackOffsetX + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
 		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
@@ -388,7 +388,7 @@ void InventoryScreen::drawFloatingSelection( int mouseX, int mouseY )
 		size_t sizeX = floatingItem->getSizeX();
 		size_t sizeY = floatingItem->getSizeY();
 
-		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0].texture,
+		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0],
 		                                  mouseX, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  mouseY-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}
@@ -406,15 +406,15 @@ void InventoryScreen::drawCoins()
     coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(copper),world_y+posY+263, copper );
 
     // gold coin
-    DrawingHelpers::mapTextureToRect( textures.texture[2].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[2],
                                       world_x+posX+167, textures.texture[2].width,
                                       world_y+posY+308, textures.texture[2].height );
     // silver coin
-    DrawingHelpers::mapTextureToRect( textures.texture[3].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[3],
                                       world_x+posX+167, textures.texture[3].width,
                                       world_y+posY+286, textures.texture[3].height );
     // copper coin
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[4],
                                       world_x+posX+167, textures.texture[4].width,
                                       world_y+posY+264, textures.texture[4].height );
 
@@ -468,7 +468,7 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
         }
 
         glColor4fv(shade);
-        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[1],
                                           shadePosX,
                                           shadeWidth,
                                           shadePosY,
@@ -494,7 +494,7 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 
 			InventoryScreenSlot *curScreenSlot = mySlots[ curSlotNr ];
 			glColor4fv(shade);
-			DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+			DrawingHelpers::mapTextureToRect( textures.texture[1],
 											  world_x + posX + curScreenSlot->getOffsetX(),
 											  curScreenSlot->getSizeX(),
 											  world_y + posY + curScreenSlot->getOffsetY(),
@@ -508,7 +508,7 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 
 void InventoryScreen::draw( int mouseX, int mouseY )
 {
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[0],
                                       world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
 
 	drawCoins();
@@ -552,7 +552,7 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
 		size_t centerOffsetY = (curScreenSlot->getSizeY() - drawSizeY) / 2;
 
         // draw the plain background image of the item, hiding the item placeholder.
-        DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[0].texture,
+        DrawingHelpers::mapTextureToRect( curScreenSlot->getTexture()->texture[0],
                                           world_x + posX + curScreenSlot->getOffsetX(),
                                           curScreenSlot->getTexture()->texture[0].width,
                                           world_y + posY + curScreenSlot->getOffsetY(),
@@ -561,14 +561,14 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
         // we draw the two-handed weapons on our off-handslot with 50% transparency
         if ( item->isTwoHandedWeapon() == true && curSlot == ItemSlot::OFF_HAND ) {
             glColor4f( 1.0f, 1.0f, 1.0f, 0.5f );
-            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0],
                                               world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
                                               drawSizeX,
                                               world_y + posY + curScreenSlot->getOffsetY() + centerOffsetY,
                                               drawSizeY );
         } else {
             // draw the actual item image
-            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+            DrawingHelpers::mapTextureToRect( symbolTexture->texture[0],
                                               world_x + posX + curScreenSlot->getOffsetX() + centerOffsetX,
                                               drawSizeX,
                                               world_y + posY + curScreenSlot->getOffsetY() + centerOffsetY,

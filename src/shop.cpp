@@ -115,7 +115,7 @@ void Shop::loadShopkeeperInventory()
 
 void Shop::draw( int mouseX, int mouseY )
 {
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[0],
                                       world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height);
     drawTabs();
     drawItems();
@@ -125,7 +125,7 @@ void Shop::draw( int mouseX, int mouseY )
 
 void Shop::drawTabs()
 {
-    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0].texture,
+    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0],
                                       world_x + tabs[currentTab].posX + posX, tabs[currentTab].width , world_y + tabs[currentTab].posY + posY, tabs[currentTab].height );
 }
 
@@ -154,7 +154,7 @@ void Shop::drawItems()
         }
 
         glColor4fv(shade);
-        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[1],
                                           world_x + posX + backpackOffsetX + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
 		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
@@ -162,7 +162,7 @@ void Shop::drawItems()
 
         glColor4f(1.0f,1.0f,1.0f,1.0f);
 
-		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0].texture,
+		DrawingHelpers::mapTextureToRect( symbolTexture->texture[0],
 		                                  world_x + posX + backpackOffsetX + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
 		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
@@ -232,7 +232,7 @@ void Shop::drawFloatingSelection( int mouseX, int mouseY )
 		size_t sizeX = floatingItem->getSizeX();
 		size_t sizeY = floatingItem->getSizeY();
 
-		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0].texture,
+		DrawingHelpers::mapTextureToRect( floatingItem->getSymbolTexture()->texture[0],
 		                                  mouseX, backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  mouseY-20, backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
 	}

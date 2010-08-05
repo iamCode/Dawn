@@ -275,14 +275,14 @@ void Tooltip::drawSmallTooltip( int x, int y )
     y += world_y;
 
     // draw the corners
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture, x, 16, y, 16); // lower left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[1].texture, x+width+16, 16, y, 16); // lower right corner
-    DrawingHelpers::mapTextureToRect( textures.texture[2].texture, x, 16, y+16, 16); // upper left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[3].texture, x+width+16, 16, y+16, 16); // upper right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[0], x, 16, y, 16); // lower left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[1], x+width+16, 16, y, 16); // lower right corner
+    DrawingHelpers::mapTextureToRect( textures.texture[2], x, 16, y+16, 16); // upper left corner
+    DrawingHelpers::mapTextureToRect( textures.texture[3], x+width+16, 16, y+16, 16); // upper right corner
 
     // draw the borders
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y,16); // bottom border
-    DrawingHelpers::mapTextureToRect( textures.texture[4].texture, x+16,width,y+16,16); // top border
+    DrawingHelpers::mapTextureToRect( textures.texture[4], x+16,width,y,16); // bottom border
+    DrawingHelpers::mapTextureToRect( textures.texture[4], x+16,width,y+16,16); // top border
 
     // draw the name of the tooltip, since it's a small tooltip.
     glColor4fv(tooltipText[ 0].color);
@@ -786,23 +786,23 @@ namespace Frames
 	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
 	{
 		// draw the corners
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[0].texture, leftX, blockWidth, bottomY, blockHeight); // lower left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[1].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[2].texture, leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[3].texture, leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[0], leftX, blockWidth, bottomY, blockHeight); // lower left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[1], leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[2], leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->texture[3], leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
 
 		// draw the top and bottom borders
 		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
 		{
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[5].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[6].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[5], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[6], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
 		}
 
 		// draw the right and left borders
 		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
 		{
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[7].texture, leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[8].texture, leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[7], leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
+			DrawingHelpers::mapTextureToRect( frameTextures->texture[8], leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
 		}
 
 		// draw the background
@@ -810,7 +810,7 @@ namespace Frames
 		{
 			for ( int blockX = 0; blockX < numBlocksX; blockX++ )
 			{
-				DrawingHelpers::mapTextureToRect( frameTextures->texture[4].texture, leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
+				DrawingHelpers::mapTextureToRect( frameTextures->texture[4], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
 			}
 		}
 	}
@@ -819,15 +819,15 @@ namespace Frames
 	{
 	    if ( coin == currency::GOLD )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[9].texture, x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[9], x, 16, y, 16 );
 	    }
 	    if ( coin == currency::SILVER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[10].texture, x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[10], x, 16, y, 16 );
 	    }
 	    if ( coin == currency::COPPER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[11].texture, x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->texture[11], x, 16, y, 16 );
 	    }
 	}
 } // namespace Frames

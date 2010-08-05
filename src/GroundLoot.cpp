@@ -254,7 +254,7 @@ void GroundLoot::draw()
 {
 	for ( size_t curItem = 0; curItem < groundItems.size(); curItem++ )
 	{
-		DrawingHelpers::mapTextureToRect( groundItems[ curItem ].item->getSymbolTexture()->texture[0].texture,
+		DrawingHelpers::mapTextureToRect( groundItems[ curItem ].item->getSymbolTexture()->texture[0],
 		                                  groundItems[ curItem ].xpos,
 		                                  groundItems[ curItem ].item->getSizeX() * 32,
 		                                  groundItems[ curItem ].ypos,
@@ -279,19 +279,19 @@ void GroundLoot::drawTooltip()
             }
 
             // left border
-            DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+            DrawingHelpers::mapTextureToRect( textures.texture[1],
                                               groundItems[curItem].tooltipXpos,
                                               textures.texture[1].width,
                                               groundItems[curItem].tooltipYpos,
                                               textures.texture[1].height );
             // background
-            DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+            DrawingHelpers::mapTextureToRect( textures.texture[0],
                                               groundItems[curItem].tooltipXpos+16,
                                               groundItems[curItem].tooltipWidth-16,
                                               groundItems[curItem].tooltipYpos,
                                               textures.texture[0].height );
             // right border
-            DrawingHelpers::mapTextureToRect( textures.texture[2].texture,
+            DrawingHelpers::mapTextureToRect( textures.texture[2],
                                               groundItems[curItem].tooltipXpos+groundItems[curItem].tooltipWidth,
                                               textures.texture[2].width,
                                               groundItems[curItem].tooltipYpos,

@@ -65,10 +65,10 @@ LoadingScreen::~LoadingScreen()
 void LoadingScreen::draw()
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture,
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
 	                                  posX, width,
 	                                  posY, height );
-	DrawingHelpers::mapTextureToRect( progressTexture->texture[0].texture,
+	DrawingHelpers::mapTextureToRect( progressTexture->texture[0],
 	                                  posX+92, progress * (width-184),
 	                                  posY+92, 32 );
 

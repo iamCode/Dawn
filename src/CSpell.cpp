@@ -95,7 +95,7 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 {
 	CTexture *texture = getSymbol();
 	if ( texture != NULL ) {
-	    DrawingHelpers::mapTextureToRect( texture->texture[0].texture,
+	    DrawingHelpers::mapTextureToRect( texture->texture[0],
                                         left, width, bottom, height );
 	}
 }
@@ -640,7 +640,7 @@ void GeneralRayDamageSpell::drawEffect()
 {
 	if ( numTextures > 0 ) {
 	    float degrees;
-        degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getXPos() - target->getYPos(),2)))) * 57.296;
+        degrees = asin((creator->getYPos() - target->getYPos())/sqrt((pow(creator->getXPos() - target->getXPos(),2)+pow(creator->getYPos() - target->getYPos(),2)))) * 57.296;
         degrees += 90;
 
         animationTimerStop = SDL_GetTicks();
@@ -652,26 +652,11 @@ void GeneralRayDamageSpell::drawEffect()
 
 
         glPushMatrix();
-        glBindTexture( GL_TEXTURE_2D, spellTexture->texture[frameCount].texture);
-
         glTranslatef(creator->getXPos()+32, creator->getYPos()+32, 0.0f);
         glRotatef(degrees,0.0f,0.0f,1.0f);
         glTranslatef(-160-creator->getXPos(),-creator->getYPos()-32,0.0);
 
-        glBegin( GL_QUADS );
-        // Bottom-left vertex (corner)
-        glTexCoord2f( 0.0f, 0.0f );
-        glVertex3f( creator->getXPos()+32, creator->getYPos()+64, 0.0f );
-        // Bottom-right vertex (corner)
-        glTexCoord2f( 1.0f, 0.0f );
-        glVertex3f( creator->getXPos()+256+32, creator->getYPos()+64, 0.0f );
-        // Top-right vertex (corner)
-        glTexCoord2f( 1.0f, 1.0f );
-        glVertex3f( creator->getXPos()+256+32, creator->getYPos()+400+64, 0.0f );
-        // Top-left vertex (corner)
-        glTexCoord2f( 0.0f, 1.0f );
-        glVertex3f( creator->getXPos()+32, creator->getYPos()+400+64, 0.0f );
-        glEnd();
+        DrawingHelpers::mapTextureToRect( spellTexture->texture[frameCount], creator->getXPos()+32, 256, creator->getYPos()+64, 400 );
         glPopMatrix();
 	}
 }
@@ -823,7 +808,7 @@ void GeneralBoltDamageSpell::drawEffect()
         glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
 
         DrawingHelpers::mapTextureToRect(
-                    boltTexture->texture[frameCount].texture,
+                    boltTexture->texture[frameCount],
                     0, textureWidth,
                     0, textureHeight );
         glPopMatrix();
@@ -1442,7 +1427,7 @@ void RangedDamageAction::drawEffect()
         glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
 
         DrawingHelpers::mapTextureToRect(
-                    projectileTexture->texture[frameCount].texture,
+                    projectileTexture->texture[frameCount],
                     0, textureWidth,
                     0, textureHeight );
         glPopMatrix();

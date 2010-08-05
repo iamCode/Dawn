@@ -79,7 +79,7 @@ void ActionBar::draw()
     cooldownSpells = player->getCooldownSpells();
 
     // background at bottom of screen, black and nicely blended.
-	DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+	DrawingHelpers::mapTextureToRect( textures.texture[0],
 	                                  world_x + posX - 20, RES_X - posX + 20,
 	                                  world_y, 80 );
 
@@ -98,7 +98,7 @@ void ActionBar::draw()
             }
 	    }
 
-	    DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+	    DrawingHelpers::mapTextureToRect( textures.texture[1],
 		                                  world_x+ 420 + buttonId * 60, 50,
 		                                  world_y+ 8, 50 );
 

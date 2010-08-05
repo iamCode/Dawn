@@ -81,14 +81,14 @@ void Spellbook::loadTextures()
 void Spellbook::draw( int mouseX, int mouseY )
 {
     // draw spellbook base
-    DrawingHelpers::mapTextureToRect( textures.texture[0].texture,
+    DrawingHelpers::mapTextureToRect( textures.texture[0],
                                         world_x + posX, textures.texture[0].width,
                                         world_y + posY, textures.texture[0].height );
 
     // draw placeholders, the actual spell symbol and title of the spell.
     for ( size_t x = 0; x < spellSlot.size(); x++ )
     {
-        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[1],
                                         world_x + spellSlot[x].posX+posX, spellSlot[x].width,
                                         world_y + spellSlot[x].posY+posY, spellSlot[x].height );
 
@@ -108,7 +108,7 @@ void Spellbook::draw( int mouseX, int mouseY )
     size_t numSlots = spellSlot.size();
 	size_t numSpells = inscribedSpells.size();
     if ( numSlots * (curPage+1) < numSpells ) {
-        DrawingHelpers::mapTextureToRect( textures.texture[3].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[3],
                                             world_x + posX + nextPageButtonOffsetX, pageButtonWidth,
                                             world_y + posY + nextPageButtonOffsetY, pageButtonHeight );
     }
@@ -116,7 +116,7 @@ void Spellbook::draw( int mouseX, int mouseY )
     // if we are on another page than first page, draw left arrowsymbol to show that there are spells on a previous page.
     if ( curPage > 0 )
     {
-        DrawingHelpers::mapTextureToRect( textures.texture[4].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[4],
                                             world_x + posX + previousPageButtonOffsetX, pageButtonWidth,
                                             world_y + posY + previousPageButtonOffsetY, pageButtonHeight );
     }
@@ -141,7 +141,7 @@ void Spellbook::drawFloatingSpell( int mouseX, int mouseY )
     if ( floatingSpell != NULL )
     {
         // draw background and borders
-        DrawingHelpers::mapTextureToRect( textures.texture[1].texture,
+        DrawingHelpers::mapTextureToRect( textures.texture[1],
                                           world_x + mouseX, 50,
                                           world_y + mouseY + 20, 50 );
 

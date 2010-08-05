@@ -82,6 +82,7 @@
 #include "globals.h"
 #include "FramesBase.h"
 #include "LogWindow.h"
+#include "textureframe.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -369,7 +370,7 @@ class DawnInitObject;
 bool threadedMode = false;
 DawnInitObject *curTextureProcessor = NULL;
 void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
-
+bool initPhase = false;
 struct TextureQueueEntry
 {
 	TextureQueueEntry( CTexture *texture_, const std::string textureFile_, int textureIndex_ )
@@ -543,6 +544,7 @@ public:
 		dawn_debug_info("Loading completed");
 
 		setProgress( 0.7 );
+        
 		progressString = "Loading Character Data";
 		
 		std::string characterDataString = "data/character/";
@@ -683,6 +685,11 @@ void processTextureInOpenGLThread( CTexture *texture, std::string textureFile, i
 	curTextureProcessor->setCurrentTextureToProcess( texture, textureFile, textureIndex );
 }
 
+extern int64_t numCharactersDrawn;
+int64_t numTexturesDrawn = 0;
+
+TextureFrame *textureFrame = NULL;
+
 void processFontInOpenGLThread( GLFT_Font *font, const std::string &filename, unsigned int size )
 {
 	curTextureProcessor->setCurrentFontToProcess( font, filename, size );
@@ -752,9 +759,12 @@ bool dawn_init(int argc, char** argv)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
+		textureFrame = new TextureFrame();
+		initPhase = true;
 		/// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
 		std::auto_ptr<ChooseClassScreen> chooseClassScreen( new ChooseClassScreen() );
 		chooseClassScreen->setTextureDependentPositions();
+		textureFrame->finishFrame();
 
 		while ( chooseClassScreen->isDone() == false )
 		{
@@ -779,6 +789,7 @@ bool dawn_init(int argc, char** argv)
 		drawingTime = 0;
 		
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
+		textureFrame->finishFrame();
 		DawnInitObject obj;
 		threadedMode = true;
 		curTextureProcessor = &obj;
@@ -805,6 +816,9 @@ bool dawn_init(int argc, char** argv)
 				drawingTime += SDL_GetTicks()-curTicks;
 			}
 		}
+		textureFrame->finishFrame();
+		delete textureFrame;
+		initPhase = false;
 		
 		optionsWindow->setTextureDependentPositions();
 		inventoryScreen->setTextureDependentPositions();
@@ -1213,6 +1227,8 @@ void game_loop()
         DrawScene();
         focus.updateFocus();
 	}
+	std::cout << "numTexturesDrawn:   " << numTexturesDrawn << std::endl;
+	std::cout << "numCharactersDrawn: " << numCharactersDrawn << std::endl;
 }
 
 int main(int argc, char* argv[])

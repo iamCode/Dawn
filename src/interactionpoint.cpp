@@ -127,7 +127,7 @@ void InteractionPoint::draw()
 		return;
 	}
 
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0].texture, posX, width, posY, height );
+	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0], posX, width, posY, height );
 }
 
 void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY, int characterXpos, int characterYpos )
@@ -149,7 +149,7 @@ void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY, int charac
 	    available_symbol = 1;
 	}
 
-	DrawingHelpers::mapTextureToRect( interactionTexture->texture[available_symbol].texture,
+	DrawingHelpers::mapTextureToRect( interactionTexture->texture[available_symbol],
 	                                  mouseX+world_x,
 	                                  interactionTexture->texture[available_symbol].width,
 	                                  mouseY+world_y,
