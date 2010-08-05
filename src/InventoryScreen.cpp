@@ -216,14 +216,14 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
                     // special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
-                    if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                    if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
                             // successfully put the offhand in the inventory. now we just swap the floatingselection with the equipped item.
                             InventoryItem *tmp = floatingSelection;
                             floatingSelection = inventory->getItemAtSlot( curSlotEnum );
                             inventory->wieldItemAtSlot( curSlotEnum, tmp);
                         }
-                    } else if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                    } else if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
                         InventoryItem *tmp = floatingSelection;
 						floatingSelection = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
@@ -313,7 +313,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                     ItemSlot::ItemSlot curSlotEnum = static_cast< ItemSlot::ItemSlot>(usedSlot);
 
                     // special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
-                    if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                    if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
                             InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
                             inventory->removeItem( useItem );
@@ -324,7 +324,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                                 floatingSelection = tmp;
                             }
                         }
-                    } else if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+                    } else if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
                         InventoryItem *tmp = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
 						inventory->removeItem( useItem );
