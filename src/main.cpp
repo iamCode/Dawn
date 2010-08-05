@@ -1228,7 +1228,6 @@ void game_loop()
         focus.updateFocus();
 	}
 	std::cout << "numTexturesDrawn:   " << numTexturesDrawn << std::endl;
-	std::cout << "numCharactersDrawn: " << numCharactersDrawn << std::endl;
 }
 
 int main(int argc, char* argv[])

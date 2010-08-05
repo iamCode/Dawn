@@ -107,7 +107,13 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
             // set the texture file name
             textures[ filename ].textureFile = filename;
 
-            if ( initPhase && nOfColors==4 && texture_format==GL_BGRA) {
+            size_t minPotX=2;
+            size_t minPotY=2;
+            while ( minPotX<surface->w ) minPotX *= 2;
+            while ( minPotY<surface->h ) minPotY *= 2;
+            bool isPOT = (surface->w==minPotX) && (surface->h==minPotY);
+
+            if ( initPhase && (! isPOT) && nOfColors==4 && texture_format==GL_BGRA && surface->w<=textureFrame->getWidth() && surface->h<=textureFrame->getHeight() ) {
                 std::cout << "nOfColors=" << nOfColors << ", textureFormat=" << texture_format << std::endl;
                 textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
             } else {
@@ -123,8 +129,11 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
 
                 uint32_t mipmapStart = SDL_GetTicks();
                 // Edit the texture object's image data using the information SDL_Surface gives us
-                // glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-                gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+                if (isPOT) {
+                    glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+                } else {
+                    gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+                }
                 mipmapBuildTime += SDL_GetTicks()-mipmapStart;
             }
         } else {
