@@ -298,21 +298,6 @@ namespace WeaponType
 	};
 }
 
-class CSpellActionBase
-{
-	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
-	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
-	void setRequiredLevel( int requiredLevel );
-};
-
-class CAction : public CSpellActionBase
-{
-};
-
-class CSpell : public CSpellActionBase
-{
-};
-
 class Item
 {
 	void setDescription( std::string description );
@@ -384,6 +369,22 @@ class Shop
 {
 	void toggle();
 	void addItem( Item *item );
+};
+
+class CSpellActionBase
+{
+	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+	void setRequiredLevel( int requiredLevel );
+	void setRank( int rank );
+};
+
+class CAction : public CSpellActionBase
+{
+};
+
+class CSpell : public CSpellActionBase
+{
 };
 
 class ConfigurableSpell : public CSpell
@@ -482,6 +483,12 @@ namespace DawnInterface
 	GeneralBuffSpell* createGeneralBuffSpell();
 	MeleeDamageAction* createMeleeDamageAction();
 	RangedDamageAction* createRangedDamageAction();		
+	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
+	GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+	GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+	GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+	MeleeDamageAction* copySpell( MeleeDamageAction *other );
+	RangedDamageAction* copySpell( RangedDamageAction *other );
 	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );

@@ -11,6 +11,17 @@
 --"%minContinuousHealing%"
 --"%maxContinuousHealing%"
 
+-- Spell ranks --
+-- When creating a spell, it automatically becomes rank 1.
+-- To create rank X of this spell, use DawnInterface.copySpell( spellDatabase["name_of_spell"] );
+-- Example:
+-- curSpell = DawnInterface.copySpell( spellDatabase["magicmissile"] );
+-- spellDatabase["magicmissilerank2"] = curSpell;
+-- curSpell:setRank( 2 );
+-- curSpell:setDirectDamage( 12, 18, ElementType.Light );
+--
+-- It's possible to alter most of the properties of a spell in another rank.
+
 spellDatabase = {};
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
@@ -25,6 +36,14 @@ curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/magicmissile/magicmissile.tga" );
 curSpell:setMoveSpeed( 500 );
 curSpell:setRequiredClass( CharacterClass.Liche );
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.copySpell( spellDatabase["magicmissile"] );
+spellDatabase["magicmissilerank2"] = curSpell;
+curSpell:setDirectDamage( 12, 18, ElementType.Light );
+curSpell:setRank( 2 );
+curSpell:setRequiredLevel( 3 );
+curSpell:setSpellCost( 17 );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["venomspiteffect1"] = curSpell;
@@ -143,6 +162,14 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.copySpell( spellDatabase["leatherskin"] );
+spellDatabase["leatherskinrank2"] = curSpell;
+curSpell:setRank( 2 );
+curSpell:setStats( StatsType.Armor, 120 );
+curSpell:setSpellCost( 125 );
+curSpell:setRequiredLevel( 4 );
+curSpell:setInfo( "Encoats your skin with leather, increasing armor by 125." );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["spiritoftheboar"] = curSpell;

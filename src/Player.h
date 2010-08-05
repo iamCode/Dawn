@@ -73,6 +73,8 @@ class Player : public CCharacter
 		Inventory* getInventory();
 		void clearInventory();
 
+		bool isSpellInscribedInSpellbook( CSpellActionBase *spell ) const;
+
 		std::string getSaveText() const;
 };
 

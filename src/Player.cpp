@@ -399,6 +399,18 @@ uint32_t Player::getTicketForSpellTooltip() const
     return ticketForSpellTooltip;
 }
 
+bool Player::isSpellInscribedInSpellbook( CSpellActionBase *spell ) const
+{
+    for ( size_t curSpell = 0; curSpell < getSpellbook().size(); curSpell++ ) {
+        if ( getSpellbook()[ curSpell ]->getName() == spell->getName() ) {
+            if ( getSpellbook()[ curSpell ]->getRank() >= spell->getRank() ) {
+                return true; // yes, spell is already inscribed in spellbook with same or higher rank.
+            }
+        }
+    }
+    return false;
+}
+
 std::string Player::getSaveText() const
 {
 	std::ostringstream oss;

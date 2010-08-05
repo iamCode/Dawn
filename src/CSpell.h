@@ -66,6 +66,13 @@ namespace EffectType
 // NOTE: Not used yet, deactivate this comment once that changes ;)
 #include "CCharacter.h"
 
+class GeneralRayDamageSpell;
+class GeneralBoltDamageSpell;
+class GeneralHealingSpell;
+class GeneralBuffSpell;
+class MeleeDamageAction;
+class RangedDamageAction;
+
 class CSpellActionBase
 {
 	protected:
@@ -115,13 +122,17 @@ class CSpellActionBase
 		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
         void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
 
-        /// set which class can use the spell
+        /// which class can use the spell
         void setRequiredClass( CharacterClass::CharacterClass requiredClass );
         CharacterClass::CharacterClass getRequiredClass() const;
 
-        /// and at what level we can use the spell
+        /// what level we can use the spell
         void setRequiredLevel( uint8_t requiredLevel );
         uint8_t getRequiredLevel() const;
+
+        /// rank of the spell
+        void setRank( uint8_t rank );
+        uint8_t getRank() const;
 
 		void drawSymbol( int left, int width, int bottom, int height ) const;
     protected:
@@ -131,6 +142,7 @@ class CSpellActionBase
         bool finished;
         CharacterClass::CharacterClass requiredClass;
         uint8_t requiredLevel;
+        uint8_t rank;
         std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
 };
 
@@ -147,14 +159,22 @@ class CAction : public CSpellActionBase
 		virtual double getProgress() const = 0;
 };
 
+class GeneralBoltDamageSpell;
+
 namespace SpellCreation
 {
 	CSpellActionBase* getGeneralRayDamageSpell();
+	CSpellActionBase* getGeneralRayDamageSpell( GeneralRayDamageSpell *other );
 	CSpellActionBase* getGeneralBoltDamageSpell();
+	CSpellActionBase* getGeneralBoltDamageSpell( GeneralBoltDamageSpell *other );
 	CSpellActionBase* getGeneralHealingSpell();
+	CSpellActionBase* getGeneralHealingSpell( GeneralHealingSpell *other );
 	CSpellActionBase* getGeneralBuffSpell();
+	CSpellActionBase* getGeneralBuffSpell( GeneralBuffSpell *other );
 	CSpellActionBase* getMeleeDamageAction();
+	CSpellActionBase* getMeleeDamageAction( MeleeDamageAction *other );
 	CSpellActionBase* getRangedDamageAction();
+	CSpellActionBase* getRangedDamageAction( RangedDamageAction *other );
 }
 
 class ConfigurableSpell : public CSpell
@@ -290,6 +310,7 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralRayDamageSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralRayDamageSpell( GeneralRayDamageSpell *other );
 
 		uint8_t frameCount;
 		uint32_t effectStart;
@@ -323,6 +344,7 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell( GeneralBoltDamageSpell *other );
 
 		uint32_t moveSpeed;
 		uint32_t expireTime;
@@ -368,6 +390,7 @@ class GeneralHealingSpell : public ConfigurableSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralHealingSpell( GeneralHealingSpell *other );
 
 		EffectType::EffectType effectType;
 		uint32_t effectStart;
@@ -408,6 +431,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 
 	private:
 		friend CSpellActionBase* SpellCreation::getGeneralBuffSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralBuffSpell( GeneralBuffSpell *other );
 
 		EffectType::EffectType effectType;
 		int16_t *statsModifier;
@@ -440,6 +464,8 @@ class MeleeDamageAction : public ConfigurableAction
 
     private:
         friend CSpellActionBase* SpellCreation::getMeleeDamageAction();
+        friend CSpellActionBase* SpellCreation::getMeleeDamageAction( MeleeDamageAction *other );
+
 		uint32_t effectStart;
 		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
 };
@@ -472,7 +498,8 @@ class RangedDamageAction : public ConfigurableAction
 		RangedDamageAction( RangedDamageAction *other );
 
     private:
-		friend CSpellActionBase* SpellCreation::getGeneralBoltDamageSpell();
+		friend CSpellActionBase* SpellCreation::getRangedDamageAction();
+		friend CSpellActionBase* SpellCreation::getRangedDamageAction( RangedDamageAction *other );
 
 		uint32_t moveSpeed;
 		uint32_t expireTime;
@@ -488,7 +515,6 @@ class RangedDamageAction : public ConfigurableAction
 		int numProjectileTextures;
 		CTexture *projectileTexture;
 
-        friend CSpellActionBase* SpellCreation::getRangedDamageAction();
 		double damageBonus; // How much damage bonus should we add to our min and max weapon damage?
 };
 

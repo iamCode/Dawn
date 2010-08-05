@@ -122,10 +122,9 @@ curItem = itemDatabase["tornleatherbelt"];
 curItem:setStats( StatsType.Armor, 12 );
 curItem:setValue( 86 );
 
-
-itemDatabase["bookofmagicmissile"]=DawnInterface.createNewItem( "Book of Magic Missile", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
-curItem = itemDatabase["bookofmagicmissile"];
-curItem:setSpell( spellDatabase["magicmissile"] );
+itemDatabase["bookofmagicmissilerank2"]=DawnInterface.createNewItem( "Book of Magic Missile", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["bookofmagicmissilerank2"];
+curItem:setSpell( spellDatabase["magicmissilerank2"] );
 curItem:setSpellCharges( 0 );
 curItem:setValue( 2500 );
 
@@ -149,3 +148,9 @@ curItem = itemDatabase["fungalboots"];
 curItem:setStats( StatsType.Armor, 7 );
 curItem:setStats( StatsType.HealthRegen, 2 );
 curItem:setValue( 78 );
+
+itemDatabase["bookofleatherskinrank2"]=DawnInterface.createNewItem( "Book of Leatherskin", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["bookofleatherskinrank2"];
+curItem:setSpell( spellDatabase["leatherskinrank2"] );
+curItem:setSpellCharges( 0 );
+curItem:setValue( 2500 );

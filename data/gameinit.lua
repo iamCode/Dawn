@@ -23,7 +23,7 @@ DawnInterface.giveItemToPlayer( itemDatabase["smallhealingpotion"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["tornleatherbelt"] );
 
-DawnInterface.giveItemToPlayer( itemDatabase["bookofmagicmissile"] );
+DawnInterface.giveItemToPlayer( itemDatabase["bookofmagicmissilerank2"] );
 DawnInterface.giveItemToPlayer( itemDatabase["coppernecklace"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["daggerofflowingthought"] );

@@ -56,6 +56,7 @@ function quest_playHideAndSeek.init()
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
 	traderShop:addItem( itemDatabase["bladeofstrength"] );
+	traderShop:addItem( itemDatabase["bookofleatherskinrank2"] );
 
 	john = DawnInterface.addInteractionPoint();
 	john:setPosition( 820, 270, 25, 33 );

@@ -485,6 +485,11 @@ bool InventoryItem::isLevelReqMet() const
         if ( player->getClass() != item->getSpell()->getRequiredClass() && item->getSpell()->getRequiredClass() != CharacterClass::ANYCLASS ) {
             useableItem = false;
         }
+        if ( item->getItemType() == ItemType::NEWSPELL ) {
+            if ( player->isSpellInscribedInSpellbook( item->getSpell() ) == true ) {
+                useableItem = false;
+            }
+        }
     }
 
     return useableItem;

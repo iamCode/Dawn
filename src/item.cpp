@@ -436,8 +436,9 @@ std::string Item::getUseableDescription() const
         case ItemType::NEWSPELL:
             if ( getSpell() != NULL )
             {
-                // TODO: add actual rank of spell.
-                return std::string("Memorize: Inscribes ").append( getSpell()->getName() ).append( " (rank X)" ).append(" to spellbook.");
+                char rank[10];
+                sprintf(rank, " (rank %d)", getSpell()->getRank() );
+                return std::string("Memorize: Inscribes ").append( getSpell()->getName() ).append( rank ).append(" to spellbook.");
             }
         break;
         case ItemType::POTION:

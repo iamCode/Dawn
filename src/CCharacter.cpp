@@ -757,6 +757,10 @@ void CCharacter::raiseLevel()
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
 		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+		if ( isPlayer() == true ) {
+		    dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+		    dynamic_cast<Player*>(this)->setTicketForSpellTooltip();
+		}
 		DawnInterface::addTextToLogWindow( yellow, "You are now a level %d %s.", getLevel(), getClassName().c_str() );
 	}
 }
@@ -1540,7 +1544,24 @@ void CCharacter::inscribeSpellInSpellbook( CSpellActionBase *spell )
 {
     assert( spell != NULL );
     if ( spell->getRequiredClass() == getClass() || spell->getRequiredClass() == CharacterClass::ANYCLASS ) {
+        for ( size_t curSpell = 0; curSpell < spellbook.size(); curSpell++ ) {
+            if ( spellbook[ curSpell ]->getName() == spell->getName() ) {
+                if ( spellbook[ curSpell ]->getRank() < spell->getRank() ) {
+                    spellbook[ curSpell ] = spell;
+                    if ( isPlayer() == true ) {
+                        // this will seed a new ticket for the itemtooltip, causing it to reload. We might need this because of the tooltip message displaying already known spells and ranks.
+                        dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+                    }
+                }
+                return;
+            }
+        }
         spellbook.push_back( spell );
+
+        if ( isPlayer() == true ) {
+            // this will seed a new ticket for the itemtooltip, causing it to reload. We might need this because of the tooltip message displaying already known spells and ranks.
+            dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+        }
     }
 }
 

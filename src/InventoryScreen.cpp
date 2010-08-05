@@ -270,10 +270,14 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
             {
                 if ( useItem->getItem()->getItemType() == ItemType::NEWSPELL )
                 {
+                    if ( player->isSpellInscribedInSpellbook( useItem->getItem()->getSpell() ) == true ) {
+                        // spell is already inscribed, return without learning it again.
+                        return;
+                    }
                     // item is a spellbook, learn new spell.
                     DawnInterface::inscribeSpellInPlayerSpellbook( dynamic_cast<CSpellActionBase*>( useItem->getItem()->getSpell() ) );
                     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
-                    DawnInterface::addTextToLogWindow( green, "You inscribed %s in your spellbook.", useItem->getItem()->getSpell()->getName().c_str() );
+                    DawnInterface::addTextToLogWindow( green, "You inscribed %s (rank %d) in your spellbook.", useItem->getItem()->getSpell()->getName().c_str(), useItem->getItem()->getSpell()->getRank() );
                     inventory->removeItem( useItem );
                 } else {
                     // item is potion or scroll, use it.

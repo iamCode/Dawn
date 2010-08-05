@@ -44,7 +44,8 @@ CSpellActionBase::CSpellActionBase()
 		: boundToCreator( false ),
 		  finished( false ),
 		  requiredClass( CharacterClass::NOCLASS ),
-		  requiredLevel( 1 )
+		  requiredLevel( 1 ),
+          rank( 1 )
 {
 }
 
@@ -141,6 +142,16 @@ uint8_t CSpellActionBase::getRequiredLevel() const
     return requiredLevel;
 }
 
+void CSpellActionBase::setRank( uint8_t rank )
+{
+    this->rank = rank;
+}
+
+uint8_t CSpellActionBase::getRank() const
+{
+    return rank;
+}
+
 /// ConfigurableSpell
 
 ConfigurableSpell::ConfigurableSpell()
@@ -172,6 +183,9 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
     hostileSpell = other->hostileSpell;
 
     additionalSpells = other->additionalSpells;
+
+    requiredClass = other->requiredClass;
+    requiredLevel = other->requiredLevel;
 
 	name = other->name;
 	info = other->info;
@@ -259,7 +273,9 @@ uint16_t ConfigurableSpell::getDuration() const
 
 void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 {
-	assert( spellSymbol == NULL );
+	if ( spellSymbol != NULL ) {
+	    delete spellSymbol;
+    }
 	spellSymbol = new CTexture();
 	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
@@ -301,6 +317,9 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
     hostileSpell = other->hostileSpell;
 
     additionalSpells = other->additionalSpells;
+
+    requiredClass = other->requiredClass;
+    requiredLevel = other->requiredLevel;
 
 	name = other->name;
 	info = other->info;
@@ -388,8 +407,10 @@ uint16_t ConfigurableAction::getDuration() const
 
 void ConfigurableAction::setSpellSymbol( std::string symbolFile )
 {
-	assert( spellSymbol == NULL );
-	spellSymbol = new CTexture();
+	if ( spellSymbol != NULL ) {
+	    delete spellSymbol;
+    }
+    spellSymbol = new CTexture();
 	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
@@ -553,7 +574,9 @@ CSpellActionBase* GeneralRayDamageSpell::cast( CCharacter *creator, CCharacter *
 
 void GeneralRayDamageSpell::setNumAnimations( int count )
 {
-	assert( spellTexture == NULL );
+	if ( spellTexture != NULL ) {
+	    delete spellTexture;
+    }
 	spellTexture = new CTexture();
 	numTextures = count;
 	spellTexture->texture.resize( count );
@@ -702,8 +725,10 @@ void GeneralBoltDamageSpell::setExpireTime( int newExpireTime )
 
 void GeneralBoltDamageSpell::setNumAnimations( int count )
 {
-	assert( boltTexture == NULL );
-	boltTexture = new CTexture();
+	if ( boltTexture != NULL ) {
+	    delete boltTexture;
+    }
+    boltTexture = new CTexture();
 	numBoltTextures = count;
 	boltTexture->texture.resize( count );
 }
@@ -1314,8 +1339,10 @@ void RangedDamageAction::setExpireTime( int newExpireTime )
 
 void RangedDamageAction::setNumAnimations( int count )
 {
-	assert( projectileTexture == NULL );
-	projectileTexture = new CTexture();
+	if ( projectileTexture != NULL ) {
+	    delete projectileTexture;
+    }
+    projectileTexture = new CTexture();
 	numProjectileTextures = count;
 	projectileTexture->texture.resize( count );
 }
@@ -1505,9 +1532,19 @@ namespace SpellCreation
 		return new GeneralRayDamageSpell();
 	}
 
+	CSpellActionBase* getGeneralRayDamageSpell(GeneralRayDamageSpell *other)
+	{
+		return new GeneralRayDamageSpell( other );
+	}
+
 	CSpellActionBase* getGeneralBoltDamageSpell()
 	{
 		return new GeneralBoltDamageSpell();
+	}
+
+	CSpellActionBase* getGeneralBoltDamageSpell( GeneralBoltDamageSpell *other )
+	{
+		return new GeneralBoltDamageSpell( other );
 	}
 
 	CSpellActionBase* getGeneralHealingSpell()
@@ -1515,9 +1552,19 @@ namespace SpellCreation
 		return new GeneralHealingSpell();
 	}
 
+	CSpellActionBase* getGeneralHealingSpell( GeneralHealingSpell *other)
+	{
+		return new GeneralHealingSpell( other );
+	}
+
 	CSpellActionBase* getGeneralBuffSpell()
 	{
 		return new GeneralBuffSpell();
+	}
+
+	CSpellActionBase* getGeneralBuffSpell( GeneralBuffSpell *other)
+	{
+		return new GeneralBuffSpell( other );
 	}
 
 	CSpellActionBase* getMeleeDamageAction()
@@ -1525,9 +1572,19 @@ namespace SpellCreation
 	    return new MeleeDamageAction();
 	}
 
+	CSpellActionBase* getMeleeDamageAction( MeleeDamageAction *other)
+	{
+	    return new MeleeDamageAction( other );
+	}
+
 	CSpellActionBase* getRangedDamageAction()
 	{
 	    return new RangedDamageAction();
+	}
+
+	CSpellActionBase* getRangedDamageAction( RangedDamageAction *other)
+	{
+	    return new RangedDamageAction( other );
 	}
 } // namespace SpellCreation
 
@@ -1568,7 +1625,40 @@ namespace DawnInterface
 	    std::auto_ptr<RangedDamageAction> newAction( dynamic_cast<RangedDamageAction*>( SpellCreation::getRangedDamageAction() ) );
         return newAction.release();
 	}
+
+    GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other )
+	{
+		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell( other ) ) );
+		 return newSpell.release();
+	}
+
+    GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other )
+	{
+		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell( other ) ) );
+		 return newSpell.release();
+	}
+
+    GeneralHealingSpell* copySpell( GeneralHealingSpell *other )
+	{
+		 std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell( other ) ) );
+		 return newSpell.release();
+	}
+
+    GeneralBuffSpell* copySpell( GeneralBuffSpell *other )
+	{
+		 std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell( other ) ) );
+		 return newSpell.release();
+	}
+
+    MeleeDamageAction* copySpell( MeleeDamageAction *other )
+	{
+		 std::auto_ptr<MeleeDamageAction> newSpell( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction( other ) ) );
+		 return newSpell.release();
+	}
+
+    RangedDamageAction* copySpell( RangedDamageAction *other )
+	{
+		 std::auto_ptr<RangedDamageAction> newSpell( dynamic_cast<RangedDamageAction*>( SpellCreation::getRangedDamageAction( other ) ) );
+		 return newSpell.release();
+	}
 }
-
-
-

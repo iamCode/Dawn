@@ -47,7 +47,13 @@ namespace DawnInterface
 	GeneralBuffSpell* createGeneralBuffSpell();
 	MeleeDamageAction* createMeleeDamageAction();
 	RangedDamageAction* createRangedDamageAction();
-	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
+    GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+    GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+    GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+    MeleeDamageAction* copySpell( MeleeDamageAction *other );
+    RangedDamageAction* copySpell( RangedDamageAction *other );
+    void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );

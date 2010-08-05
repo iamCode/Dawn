@@ -565,16 +565,21 @@ void itemTooltip::getParentText()
         requiredLevel = parent->getRequiredLevel();
     }
 
-    if ( requiredLevel > player->getLevel() )
-    {
+    if ( requiredLevel > player->getLevel() ) {
         addTooltipText( white, 12, "" );
-        addTooltipText( red, 12, "Requires level %d", parent->getRequiredLevel() );
+        addTooltipText( red, 12, "Requires level %d", requiredLevel );
     }
 
     // display item level requirements if player's level is too low.
     if ( parent->isUseable() ) {
         if ( parent->getSpell()->getRequiredClass() != player->getClass() && parent->getSpell()->getRequiredClass() != CharacterClass::ANYCLASS ) {
             addTooltipText( red, 12, "Requires class %s", CharacterClass::getCharacterClassName( parent->getSpell()->getRequiredClass() ).c_str() );
+        }
+
+        if ( parent->getItemType() == ItemType::NEWSPELL ) {
+            if ( player->isSpellInscribedInSpellbook( parent->getSpell() ) == true ) {
+                addTooltipText( red, 11, "Already inscribed in spellbook." );
+            }
         }
     }
 
@@ -603,17 +608,15 @@ void spellTooltip::getParentText()
     ticketFromPlayer = player->getTicketForSpellTooltip();
 
     GLfloat white[] = { 1.0f, 1.0f, 1.0f };
+    GLfloat grey[] = { 0.7f, 0.7f, 0.7f };
     GLfloat blue[] = { 0.3f, 0.3f, 1.0f };
     GLfloat green[] = { 0.0f, 1.0f, 0.0f };
     GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
 
-    // name of the spell
+    // name of the spell and rank
     addTooltipText( white, 14, parent->getName() );
     addTooltipText( white, 12, "" );
-
-    // display healing (direct and healing over time,
-    //damage, damagetype (direct damage, damage over time) and damageschool (physical, fire, etc..)
-    // not added yet.
+    addTooltipText( grey, 12, "Rank %d", parent->getRank() );
 
     // display mana or fatigue-cost, if any.
     if ( parent->getSpellCost() > 0 )

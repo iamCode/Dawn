@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Thu Jul 29 14:11:55 2010.
+** Generated automatically by tolua++-1.0.93 on Wed Aug  4 21:00:10 2010.
 */
 
 #ifndef __cplusplus
@@ -27,19 +27,19 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"LuaCallIndirection");
  tolua_usertype(tolua_S,"RangedDamageAction");
  tolua_usertype(tolua_S,"MeleeDamageAction");
+ tolua_usertype(tolua_S,"TextWindow");
  tolua_usertype(tolua_S,"InteractionPoint");
- tolua_usertype(tolua_S,"CAction");
  tolua_usertype(tolua_S,"CallIndirection");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
  tolua_usertype(tolua_S,"GeneralBoltDamageSpell");
  tolua_usertype(tolua_S,"GeneralBuffSpell");
- tolua_usertype(tolua_S,"CCharacter");
- tolua_usertype(tolua_S,"Shop");
- tolua_usertype(tolua_S,"TextWindow");
- tolua_usertype(tolua_S,"GeneralDamageSpell");
  tolua_usertype(tolua_S,"Player");
  tolua_usertype(tolua_S,"CNPC");
  tolua_usertype(tolua_S,"CSpell");
+ tolua_usertype(tolua_S,"GeneralDamageSpell");
+ tolua_usertype(tolua_S,"CAction");
+ tolua_usertype(tolua_S,"CCharacter");
+ tolua_usertype(tolua_S,"Shop");
 }
 
 /* method: baseOnType of class  CCharacter */
@@ -2002,107 +2002,6 @@ static int tolua_CLuaInterface_CCharacter_inscribeSpellInSpellbook00(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: addAdditionalSpell of class  CSpellActionBase */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00
-static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
-  CSpellActionBase* spell = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
-  double chanceToExecute = ((double)  tolua_tonumber(tolua_S,3,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpell'", NULL);
-#endif
-  {
-   self->addAdditionalSpell(spell,chanceToExecute);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'addAdditionalSpell'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: setRequiredClass of class  CSpellActionBase */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setRequiredClass00
-static int tolua_CLuaInterface_CSpellActionBase_setRequiredClass00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
-  CharacterClass::CharacterClass requiredClass = ((CharacterClass::CharacterClass) (int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRequiredClass'", NULL);
-#endif
-  {
-   self->setRequiredClass(requiredClass);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setRequiredClass'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: setRequiredLevel of class  CSpellActionBase */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00
-static int tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
-  int requiredLevel = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRequiredLevel'", NULL);
-#endif
-  {
-   self->setRequiredLevel(requiredLevel);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setRequiredLevel'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: setDescription of class  Item */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setDescription00
 static int tolua_CLuaInterface_Item_setDescription00(lua_State* tolua_S)
@@ -3008,6 +2907,140 @@ static int tolua_CLuaInterface_Shop_addItem00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'addItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addAdditionalSpell of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00
+static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  CSpellActionBase* spell = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  double chanceToExecute = ((double)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpell'", NULL);
+#endif
+  {
+   self->addAdditionalSpell(spell,chanceToExecute);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addAdditionalSpell'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setRequiredClass of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setRequiredClass00
+static int tolua_CLuaInterface_CSpellActionBase_setRequiredClass00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  CharacterClass::CharacterClass requiredClass = ((CharacterClass::CharacterClass) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRequiredClass'", NULL);
+#endif
+  {
+   self->setRequiredClass(requiredClass);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRequiredClass'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setRequiredLevel of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00
+static int tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  int requiredLevel = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRequiredLevel'", NULL);
+#endif
+  {
+   self->setRequiredLevel(requiredLevel);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRequiredLevel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setRank of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setRank00
+static int tolua_CLuaInterface_CSpellActionBase_setRank00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  int rank = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setRank'", NULL);
+#endif
+  {
+   self->setRank(rank);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setRank'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4566,6 +4599,155 @@ static int tolua_CLuaInterface_DawnInterface_createRangedDamageAction00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell00
+static int tolua_CLuaInterface_DawnInterface_copySpell00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralRayDamageSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  GeneralRayDamageSpell* other = ((GeneralRayDamageSpell*)  tolua_tousertype(tolua_S,1,0));
+  {
+   GeneralRayDamageSpell* tolua_ret = (GeneralRayDamageSpell*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralRayDamageSpell");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'copySpell'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell01
+static int tolua_CLuaInterface_DawnInterface_copySpell01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralBoltDamageSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  GeneralBoltDamageSpell* other = ((GeneralBoltDamageSpell*)  tolua_tousertype(tolua_S,1,0));
+  {
+   GeneralBoltDamageSpell* tolua_ret = (GeneralBoltDamageSpell*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBoltDamageSpell");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_copySpell00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell02
+static int tolua_CLuaInterface_DawnInterface_copySpell02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralHealingSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  GeneralHealingSpell* other = ((GeneralHealingSpell*)  tolua_tousertype(tolua_S,1,0));
+  {
+   GeneralHealingSpell* tolua_ret = (GeneralHealingSpell*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralHealingSpell");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_copySpell01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell03
+static int tolua_CLuaInterface_DawnInterface_copySpell03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"GeneralBuffSpell",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  GeneralBuffSpell* other = ((GeneralBuffSpell*)  tolua_tousertype(tolua_S,1,0));
+  {
+   GeneralBuffSpell* tolua_ret = (GeneralBuffSpell*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"GeneralBuffSpell");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_copySpell02(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell04
+static int tolua_CLuaInterface_DawnInterface_copySpell04(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"MeleeDamageAction",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  MeleeDamageAction* other = ((MeleeDamageAction*)  tolua_tousertype(tolua_S,1,0));
+  {
+   MeleeDamageAction* tolua_ret = (MeleeDamageAction*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"MeleeDamageAction");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_copySpell03(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: DawnInterface::copySpell */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_copySpell05
+static int tolua_CLuaInterface_DawnInterface_copySpell05(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RangedDamageAction",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  RangedDamageAction* other = ((RangedDamageAction*)  tolua_tousertype(tolua_S,1,0));
+  {
+   RangedDamageAction* tolua_ret = (RangedDamageAction*)  DawnInterface::copySpell(other);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"RangedDamageAction");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_CLuaInterface_DawnInterface_copySpell04(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::inscribeSpellInPlayerSpellbook */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00
 static int tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00(lua_State* tolua_S)
@@ -5867,18 +6049,6 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"CROSSBOW",WeaponType::CROSSBOW);
    tolua_constant(tolua_S,"SHIELD",WeaponType::SHIELD);
   tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"CSpellActionBase","CSpellActionBase","",NULL);
-  tolua_beginmodule(tolua_S,"CSpellActionBase");
-   tolua_function(tolua_S,"addAdditionalSpell",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00);
-   tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
-   tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"CAction","CAction","CSpellActionBase",NULL);
-  tolua_beginmodule(tolua_S,"CAction");
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"CSpell","CSpell","CSpellActionBase",NULL);
-  tolua_beginmodule(tolua_S,"CSpell");
-  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"Item","Item","",NULL);
   tolua_beginmodule(tolua_S,"Item");
    tolua_function(tolua_S,"setDescription",tolua_CLuaInterface_Item_setDescription00);
@@ -5938,6 +6108,19 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"Shop");
    tolua_function(tolua_S,"toggle",tolua_CLuaInterface_Shop_toggle00);
    tolua_function(tolua_S,"addItem",tolua_CLuaInterface_Shop_addItem00);
+  tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"CSpellActionBase","CSpellActionBase","",NULL);
+  tolua_beginmodule(tolua_S,"CSpellActionBase");
+   tolua_function(tolua_S,"addAdditionalSpell",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00);
+   tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
+   tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
+   tolua_function(tolua_S,"setRank",tolua_CLuaInterface_CSpellActionBase_setRank00);
+  tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"CAction","CAction","CSpellActionBase",NULL);
+  tolua_beginmodule(tolua_S,"CAction");
+  tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"CSpell","CSpell","CSpellActionBase",NULL);
+  tolua_beginmodule(tolua_S,"CSpell");
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"ConfigurableSpell","ConfigurableSpell","CSpell",NULL);
   tolua_beginmodule(tolua_S,"ConfigurableSpell");
@@ -6015,6 +6198,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"createGeneralBuffSpell",tolua_CLuaInterface_DawnInterface_createGeneralBuffSpell00);
    tolua_function(tolua_S,"createMeleeDamageAction",tolua_CLuaInterface_DawnInterface_createMeleeDamageAction00);
    tolua_function(tolua_S,"createRangedDamageAction",tolua_CLuaInterface_DawnInterface_createRangedDamageAction00);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell00);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell01);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell02);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell03);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell04);
+   tolua_function(tolua_S,"copySpell",tolua_CLuaInterface_DawnInterface_copySpell05);
    tolua_function(tolua_S,"inscribeSpellInPlayerSpellbook",tolua_CLuaInterface_DawnInterface_inscribeSpellInPlayerSpellbook00);
    tolua_function(tolua_S,"addInteractionPoint",tolua_CLuaInterface_DawnInterface_addInteractionPoint00);
    tolua_function(tolua_S,"addCharacterInteractionPoint",tolua_CLuaInterface_DawnInterface_addCharacterInteractionPoint00);
