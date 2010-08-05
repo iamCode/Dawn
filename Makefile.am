@@ -84,6 +84,7 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/stats.h \
 	src/StatsSystem.cpp \
 	src/StatsSystem.h \
+	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
 	src/TimeConverterHelper.h \

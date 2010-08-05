@@ -1,5 +1,23 @@
-#ifndef TEXTUREFRAME_H
-#define TEXTUREFRAME_H
+/**
+    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+
+#ifndef __TEXTUREFRAME_H__
+#define __TEXTUREFRAME_H__
 
 #include <iostream>
 
@@ -31,17 +49,17 @@ class TextureFrame
 			// Have OpenGL generate a texture object handle for us
 			glGenTextures(1, &texID);
 		}
-		
+
 		size_t getWidth() const
 		{
 			return width;
 		}
-		
+
 		size_t getHeight() const
 		{
 			return height;
 		}
-		
+
 		void addTexture( sTexture &stexture, char *texture, size_t w, size_t h )
 		{
 			if ( w > width || h > height )
@@ -84,9 +102,9 @@ class TextureFrame
 			// Set the texture's stretching properties
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
+
 			glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, buffer);
-			
+
 			std::cout << "texID=" << texID << std::endl;
 			std::cout << "texture frame finished with " << curTextures << " textures on it and " << float(usedSpace)/(width*height)*100 << " % of space used" << std::endl;
 			memset( buffer, 0, width*height*20 );
@@ -96,10 +114,10 @@ class TextureFrame
 			maxY=0;
 			curTextures = 0;
 			usedSpace = 0;
-			
+
 			// Have OpenGL generate a texture object handle for us
 			glGenTextures(1, &texID);
 		}
 };
 
-#endif // TEXTUREFRAME_H
+#endif // __TEXTUREFRAME_H__
