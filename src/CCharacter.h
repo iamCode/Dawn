@@ -93,6 +93,20 @@ namespace ActivityType
 	};
 }
 
+namespace CharacterStates
+{
+    enum CharacterStates
+    {
+        Invisible,
+        Sneaking,
+        Stunned,
+        Feared,
+        Movementspeed,
+        Charmed,
+        Confused
+    };
+}
+
 struct sLootTable
 {
     Item *item;
@@ -142,8 +156,8 @@ class CCharacter
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
-		void executeSpellWithoutCasting( CSpellActionBase *spell );
-		void castSpell(CSpellActionBase *spell );
+        void executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target );
+        void castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();
 		void startSpellAction();
@@ -399,8 +413,15 @@ class CCharacter
 
 		bool alive;
 
-		// states of the NPC
+		// states of the NPC. the functions are from the CharacterStates namespace.
 		bool wandering, moving, in_combat;
+		bool isStunned() const;
+		bool isCharmed() const;
+        bool isFeared() const;
+        bool isInvisible() const;
+        bool isSneaking() const;
+        bool isConfused() const;
+        float getMovementSpeed() const;
 
 		// timers
 		float wander_thisframe, wander_lastframe;

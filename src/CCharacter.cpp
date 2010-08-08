@@ -1082,6 +1082,11 @@ void CCharacter::MoveRight()
 
 void CCharacter::Move()
 {
+    if ( isStunned() == true ) {
+        remainingMovePoints = 0;
+        return;
+    }
+
 	continuePreparing();
 	if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		if ( ! mayDoAnythingAffectingSpellActionWithAborting() ) {
@@ -1100,6 +1105,9 @@ void CCharacter::Move()
 	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
 	if ( movingDirection == NW || movingDirection == NE || movingDirection == SW || movingDirection == SE )
 		movePerStep = 14;
+
+    // recalculate the movementpoints based on our movementspeed (spells that affect this can be immobolizing spells, snares or movement enhancer
+    remainingMovePoints *= getMovementSpeed();
 
 	while ( remainingMovePoints > movePerStep ) {
 		remainingMovePoints -= movePerStep;
@@ -1192,6 +1200,10 @@ ActivityType::ActivityType CCharacter::getCurActivity() const
 
 int CCharacter::GetDirectionTexture()
 {
+	if ( isStunned() == true ) {
+	    return activeDirection;
+	}
+
 	int direction = GetDirection();
 	if ( direction != STOP ) {
 		activeDirection = direction;
@@ -1234,16 +1246,13 @@ int CCharacter::GetDirectionTexture()
 	}
 }
 
-void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
+void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target )
 {
     assert ( spell != NULL );
+    assert ( target != NULL );
     CSpellActionBase *newSpell = NULL;
 
-    if ( spell->getEffectType() == EffectType::SingleTargetSpell && getTarget() != NULL ) {
-        newSpell = spell->cast( this, getTarget() );
-    } else if ( spell->getEffectType() == EffectType::SelfAffectingSpell ) {
-        newSpell = spell->cast( this, this );
-    }
+    newSpell = spell->cast( this, target );
 
     if ( newSpell != NULL ) {
         newSpell->startEffect();
@@ -1253,6 +1262,11 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
 // use this function to cast spells with rules (mana requirement, range etc...
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
+    if ( isStunned() == true ) {
+        /// can't cast, we're stunned. Should perhaps display message about it.
+        return;
+    }
+
     if ( dynamic_cast<CAction*>( spell ) != NULL ) {
         if ( spell->getSpellCost() > getCurrentFatigue() ) {
             /// can't cast. cost more fatigue than we can afford. Display message here about it.
@@ -1305,6 +1319,11 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 
 bool CCharacter::continuePreparing()
 {
+    /// if we're preparing a spell while getting stunned, abort the spellcasting.
+	if ( isStunned() == true && getIsPreparing() == true ) {
+	    CastingAborted();
+	}
+
 	if ( isPreparing ) {
 		bool preparationFinished = (curSpellAction->getCastTime() == 0);
 		if ( ! preparationFinished ) {
@@ -1477,6 +1496,81 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 	} else {
 	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
 	}
+}
+
+bool CCharacter::isStunned() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Stunned ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isCharmed() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Charmed ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isFeared() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Feared ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isInvisible() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Invisible ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isSneaking() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Sneaking ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isConfused() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Confused ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+float CCharacter::getMovementSpeed() const
+{
+    /** Fix this function. As of now, we only return the first movementspeed we can find.
+    We probably should return the lowest value. If that is not available we should return the highest.
+    **/
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Movementspeed ) {
+            if ( activeSpells[ activeSpell ].first->getEffect().second < lowestMovementSpeed ) {
+                return activeSpells[ activeSpell ].first->getEffect().second
+            }
+        }
+    }
+    return 1.0f;
 }
 
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )

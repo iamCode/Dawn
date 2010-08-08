@@ -61,7 +61,7 @@ curSpell:setDirectDamage(  10, 20, ElementType.Earth );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
 curSpell:setMoveSpeed( 600 );
-curSpell:addAdditionalSpell( spellDatabase["venomspiteffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
@@ -307,7 +307,7 @@ curSpell:setCooldown( 4 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
 curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
-curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["shardsofvenomeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -331,7 +331,7 @@ curSpell:setDamageBonus( 1.5 );
 curSpell:setCooldown( 1 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
-curSpell:addAdditionalSpell( spellDatabase["rabies"], 0.05 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["rabies"], 0.05 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
@@ -364,7 +364,28 @@ curSpell:setCooldown( 12 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 30 );
 curSpell:setInfo("Tactical strike, causing %minWeaponDamage% to %maxWeaponDamage% and increasing your parry chance the next 6 seconds.");
-curSpell:addAdditionalSpell( spellDatabase["lungeeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnCreator( spellDatabase["lungeeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["shieldbasheffect1"] = curSpell;
+curSpell:setName("Shield bash");
+curSpell:setEffect( CharacterStates.Stunned );
+curSpell:setDuration( 3 );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+
+curSpell = DawnInterface.createMeleeDamageAction();
+spellDatabase["shieldbash"] = curSpell;
+curSpell:setName("Shield bash");
+curSpell:setDamageBonus( 1.2 );
+curSpell:setCooldown( 12 );
+curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellCost( 40 );
+curSpell:setInfo("Bash with your shield, causing %minWeaponDamage% to %maxWeaponDamage% and stunning your enemy for 3 seconds.");
+curSpell:addAdditionalSpellOnTarget( spellDatabase["shieldbasheffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook

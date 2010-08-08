@@ -47,6 +47,20 @@ namespace CharacterClass
 	};
 }
 
+namespace CharacterStates
+{
+    enum CharacterStates
+    {
+        Invisible,
+        Sneaking,
+        Stunned,
+        Feared,
+        Movementspeed,
+        Charmed,
+        Confused
+    };
+}
+
 class CCharacter {
     void baseOnType( std::string otherType );
 
@@ -373,10 +387,12 @@ class Shop
 
 class CSpellActionBase
 {
-	void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+	void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
+	void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 	void setRequiredLevel( int requiredLevel );
 	void setRank( int rank );
+	void setEffect( CharacterStates::CharacterStates characterState, float value = 1.0 );
 };
 
 class CAction : public CSpellActionBase

@@ -111,34 +111,41 @@ void ActionBar::draw()
 	        /** make the spellicon darker if:
                     * not enough mana
                     * out of range
-                    * it's on cooldown       **/
+                    * it's on cooldown
+                    * we are stunned        **/
             bool isSpellUseable = true;
 
             if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
                 if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
                         isSpellUseable = false;
                 }
-            } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL ) {
+            } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL && isSpellUseable == true ) {
                 if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
                     isSpellUseable = false;
                 }
             }
 
-            if ( player->getTarget() != NULL ) {
+            if ( player->getTarget() != NULL && isSpellUseable == true ) {
                 uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
                 if ( button[buttonId].action->isInRange( distance ) == false ) {
                     isSpellUseable = false;
                 }
             }
 
-	        for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
-	        {
-	            if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
-	            {
-                    isSpellUseable = false;
-                    drawCooldownText = true;
-                    cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
-	            }
+            if ( isSpellUseable == true ) {
+                for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+                {
+                    if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
+                    {
+                        isSpellUseable = false;
+                        drawCooldownText = true;
+                        cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
+                    }
+                }
+            }
+
+            if ( player->isStunned() == true ) {
+                isSpellUseable = false;
             }
 
             if ( isSpellUseable == false ) {
