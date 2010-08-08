@@ -1565,9 +1565,7 @@ float CCharacter::getMovementSpeed() const
     **/
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
         if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Movementspeed ) {
-            if ( activeSpells[ activeSpell ].first->getEffect().second < lowestMovementSpeed ) {
-                return activeSpells[ activeSpell ].first->getEffect().second
-            }
+            return activeSpells[ activeSpell ].first->getEffect().second;
         }
     }
     return 1.0f;
