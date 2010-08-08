@@ -1560,15 +1560,25 @@ bool CCharacter::isConfused() const
 
 float CCharacter::getMovementSpeed() const
 {
-    /** Fix this function. As of now, we only return the first movementspeed we can find.
-    We probably should return the lowest value. If that is not available we should return the highest.
-    **/
+    // see if we are affected by movement altering spells. If we are we get the lowest value and return it.
+    // if we have no spell lowering the movement, we look for enhancers and return that. If that's not found, 1.0 is returned.
+    float lowestMovementSpeed = 1.0f;
+    float highestMovementSpeed = 1.0f;
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
         if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Movementspeed ) {
-            return activeSpells[ activeSpell ].first->getEffect().second;
+            if ( lowestMovementSpeed > activeSpells[ activeSpell ].first->getEffect().second ) {
+                lowestMovementSpeed = activeSpells[ activeSpell ].first->getEffect().second;
+            }
+            if ( highestMovementSpeed < activeSpells[ activeSpell ].first->getEffect().second ) {
+                highestMovementSpeed = activeSpells[ activeSpell ].first->getEffect().second;
+            }
         }
     }
-    return 1.0f;
+    if ( lowestMovementSpeed < 1.0 ) {
+        return lowestMovementSpeed;
+    } else {
+        return highestMovementSpeed;
+    }
 }
 
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )
