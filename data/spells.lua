@@ -375,14 +375,14 @@ spellDatabase["shieldbasheffect1"] = curSpell;
 curSpell:setName("Shield bash");
 curSpell:setEffect( CharacterStates.Stunned );
 curSpell:setDuration( 3 );
-curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
 
 curSpell = DawnInterface.createMeleeDamageAction();
 spellDatabase["shieldbash"] = curSpell;
 curSpell:setName("Shield bash");
 curSpell:setDamageBonus( 1.2 );
 curSpell:setCooldown( 12 );
-curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
 curSpell:setSpellCost( 40 );
 curSpell:setInfo("Bash with your shield, causing %minWeaponDamage% to %maxWeaponDamage% and stunning your enemy for 3 seconds.");
 curSpell:addAdditionalSpellOnTarget( spellDatabase["shieldbasheffect1"], 1.0 );
