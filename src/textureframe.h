@@ -89,7 +89,6 @@ class TextureFrame
 			maxY = std::max(maxY, curY+h);
 			++curTextures;
 			usedSpace += w*h;
-			std::cout << stexture.x1 << "," << stexture.x2 << "," << stexture.y1 << "," << stexture.y2 << std::endl;
 		}
 
 		void finishFrame()
@@ -105,8 +104,7 @@ class TextureFrame
 
 			glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, buffer);
 
-			std::cout << "texID=" << texID << std::endl;
-			std::cout << "texture frame finished with " << curTextures << " textures on it and " << float(usedSpace)/(width*height)*100 << " % of space used" << std::endl;
+			dawn_debug_info( "texture frame finished with %d textures on it and %.2f% of space used", curTextures, float(usedSpace)/(width*height)*100);
 			memset( buffer, 0, width*height*20 );
 
 			curX=0;

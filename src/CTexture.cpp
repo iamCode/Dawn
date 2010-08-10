@@ -114,7 +114,6 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
             bool isPOT = (surface->w==minPotX) && (surface->h==minPotY);
 
             if ( initPhase && (! isPOT) && nOfColors==4 && texture_format==GL_BGRA && surface->w<=textureFrame->getWidth() && surface->h<=textureFrame->getHeight() ) {
-                std::cout << "nOfColors=" << nOfColors << ", textureFormat=" << texture_format << std::endl;
                 textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
             } else {
                 // Have OpenGL generate a texture object handle for us
