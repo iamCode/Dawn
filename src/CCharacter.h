@@ -97,14 +97,15 @@ namespace CharacterStates
 {
     enum CharacterStates
     {
-        NOEFFECT,
+        Channeling,
+        Charmed,
+        Confused,
+        Feared,
         Invisible,
+        Movementspeed,
         Sneaking,
         Stunned,
-        Feared,
-        Movementspeed,
-        Charmed,
-        Confused
+		NOEFFECT
     };
 }
 
@@ -423,6 +424,7 @@ class CCharacter
         bool isInvisible() const;
         bool isSneaking() const;
         bool isConfused() const;
+        bool isChanneling() const;
         float getMovementSpeed() const;
 
 		// timers

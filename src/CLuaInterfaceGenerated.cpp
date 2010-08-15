@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sun Aug 15 11:21:52 2010.
+** Generated automatically by tolua++-1.0.93 on Mon Aug 16 01:20:03 2010.
 */
 
 #ifndef __cplusplus
@@ -5929,14 +5929,15 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"CharacterStates",0);
   tolua_beginmodule(tolua_S,"CharacterStates");
-   tolua_constant(tolua_S,"NOEFFECT",CharacterStates::NOEFFECT);
-   tolua_constant(tolua_S,"Invisible",CharacterStates::Invisible);
-   tolua_constant(tolua_S,"Sneaking",CharacterStates::Sneaking);
-   tolua_constant(tolua_S,"Stunned",CharacterStates::Stunned);
-   tolua_constant(tolua_S,"Feared",CharacterStates::Feared);
-   tolua_constant(tolua_S,"Movementspeed",CharacterStates::Movementspeed);
+   tolua_constant(tolua_S,"Channeling",CharacterStates::Channeling);
    tolua_constant(tolua_S,"Charmed",CharacterStates::Charmed);
    tolua_constant(tolua_S,"Confused",CharacterStates::Confused);
+   tolua_constant(tolua_S,"Feared",CharacterStates::Feared);
+   tolua_constant(tolua_S,"Invisible",CharacterStates::Invisible);
+   tolua_constant(tolua_S,"Movementspeed",CharacterStates::Movementspeed);
+   tolua_constant(tolua_S,"Sneaking",CharacterStates::Sneaking);
+   tolua_constant(tolua_S,"Stunned",CharacterStates::Stunned);
+   tolua_constant(tolua_S,"NOEFFECT",CharacterStates::NOEFFECT);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CCharacter","CCharacter","",NULL);
   tolua_beginmodule(tolua_S,"CCharacter");

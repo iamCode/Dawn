@@ -51,14 +51,15 @@ namespace CharacterStates
 {
     enum CharacterStates
     {
-		NOEFFECT,        
-		Invisible,
+        Channeling,
+        Charmed,
+        Confused,
+        Feared,
+        Invisible,
+        Movementspeed,
         Sneaking,
         Stunned,
-        Feared,
-        Movementspeed,
-        Charmed,
-        Confused
+		NOEFFECT
     };
 }
 

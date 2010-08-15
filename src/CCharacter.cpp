@@ -1535,6 +1535,16 @@ bool CCharacter::isCharmed() const
     return false;
 }
 
+bool CCharacter::isChanneling() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Channeling ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool CCharacter::isFeared() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
