@@ -158,8 +158,11 @@ void CNPC::Move()
 	double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
     // if player is inside agro range of NPC, we set NPC to attack mode.
-    if ( distance < 200 && getAttitude() == Attitude::HOSTILE )
+    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && character.isInvisible() == false && character.isSneaking() == false )
     {
+        chasingPlayer = true;
+        setTarget( &character );
+    } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && character.isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
         chasingPlayer = true;
         setTarget( &character );
     }

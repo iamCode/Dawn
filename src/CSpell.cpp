@@ -47,6 +47,8 @@ CSpellActionBase::CSpellActionBase()
 		  requiredLevel( 1 ),
           rank( 1 )
 {
+    characterStateEffects.first = CharacterStates::NOEFFECT;
+    characterStateEffects.second = 1.0f;
 }
 
 CSpellActionBase::~CSpellActionBase()
@@ -1081,6 +1083,8 @@ void GeneralHealingSpell::drawEffect()
 GeneralBuffSpell::GeneralBuffSpell()
 {
 	effectType = EffectType::SelfAffectingSpell;
+
+	hostileSpell = false;
 
     resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];

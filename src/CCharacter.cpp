@@ -1299,6 +1299,15 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	    }
 	}
 
+	// if we're invisible or sneaking while casting, we remove that spell.
+	if ( isSneaking() == true ) {
+	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
+	}
+
+	if ( isInvisible() == true ) {
+	    removeSpellsWithCharacterState( CharacterStates::Invisible );
+	}
+
     giveToPreparation( spell );
 }
 
@@ -1416,6 +1425,14 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 
 void CCharacter::Damage(int amount, bool criticalHit)
 {
+	if ( isSneaking() == true ) { // if we're sneaking while taking damage, we loose the sneak state
+	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
+	}
+
+	if ( isInvisible() == true ) { // if we're invisible while taking damage, we loose the invisible state
+	    removeSpellsWithCharacterState( CharacterStates::Invisible );
+	}
+
 	if (alive) {
         addDamageDisplayToGUI( amount, criticalHit, 0 );
 		if (current_health <= amount) {
@@ -1574,8 +1591,12 @@ float CCharacter::getMovementSpeed() const
             }
         }
     }
+
+
     if ( lowestMovementSpeed < 1.0 ) {
         return lowestMovementSpeed;
+    } else if ( isSneaking() == true ) { // if we are sneaking, we reduce the movementspeed aswell of the character. good place to do that is here
+        return 0.75;
     } else {
         return highestMovementSpeed;
     }
@@ -1719,6 +1740,17 @@ std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getActiveSpells
     return activeSpells;
 }
 
+void CCharacter::removeSpellsWithCharacterState( CharacterStates::CharacterStates characterState )
+{
+    // we remove spells based on what character states they have.
+    // removing active spells can cause NULL pointers, because they can be active in some damage cycle or other functions.
+    // Therefor in order to "remove" these spells we just mark them as completed, and let the cleanup-function handle the removal of the spells.
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ ) {
+        if ( activeSpells[ curSpell ].first->getEffect().first == characterState ) {
+            activeSpells[ curSpell ].first->markSpellActionAsFinished();
+        }
+    }
+}
 
 void CCharacter::addCooldownSpell( CSpellActionBase *spell )
 {

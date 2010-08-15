@@ -51,7 +51,8 @@ namespace CharacterStates
 {
     enum CharacterStates
     {
-        Invisible,
+		NOEFFECT,        
+		Invisible,
         Sneaking,
         Stunned,
         Feared,

@@ -403,3 +403,30 @@ curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
 curSpell:setMoveSpeed( 1000 );
 curSpell:setRequiredClass( CharacterClass.Ranger );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["invisibility"] = curSpell;
+curSpell:setName("Invisibility");
+curSpell:setDuration( 12 );
+curSpell:setInfo("Granting you invisibility, making you undetectable by most enemies.");
+curSpell:setSpellCost( 50 );
+curSpell:setCastTime( 1000 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Liche );
+curSpell:setEffect( CharacterStates.Invisible );
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["sneak"] = curSpell;
+curSpell:setName("Sneak");
+curSpell:setDuration( 30 );
+curSpell:setInfo("Hiding in shadows and sneaking allows you to go undetected from most enemies.");
+curSpell:setSpellCost( 50 );
+curSpell:setCastTime( 1000 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.NOCLASS );
+curSpell:setEffect( CharacterStates.Sneaking );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );

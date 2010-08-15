@@ -97,6 +97,7 @@ namespace CharacterStates
 {
     enum CharacterStates
     {
+        NOEFFECT,
         Invisible,
         Sneaking,
         Stunned,
@@ -178,6 +179,7 @@ class CCharacter
 		void cleanupActiveSpells();
 		void clearActiveSpells();
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
+		void removeSpellsWithCharacterState( CharacterStates::CharacterStates characterState );
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpellActionBase *spell );

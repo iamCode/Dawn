@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sun Aug  8 01:15:39 2010.
+** Generated automatically by tolua++-1.0.93 on Sun Aug 15 11:21:52 2010.
 */
 
 #ifndef __cplusplus
@@ -5929,6 +5929,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"CharacterStates",0);
   tolua_beginmodule(tolua_S,"CharacterStates");
+   tolua_constant(tolua_S,"NOEFFECT",CharacterStates::NOEFFECT);
    tolua_constant(tolua_S,"Invisible",CharacterStates::Invisible);
    tolua_constant(tolua_S,"Sneaking",CharacterStates::Sneaking);
    tolua_constant(tolua_S,"Stunned",CharacterStates::Stunned);
