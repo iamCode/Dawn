@@ -18,7 +18,9 @@
 
 #include "CInterface.h"
 #include "CSpell.h"
+#include "globals.h"
 #include "CNPC.h"
+#include "CZone.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
 #include <vector>
@@ -35,7 +37,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(11);
+	interfacetextures.texture.resize(12);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -47,7 +49,7 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/white2x2pixel.tga",8);
     interfacetextures.LoadIMG("data/interface/BuffWindow/frame.tga",9);
 	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",10);
-
+	interfacetextures.LoadIMG("data/fear.tga",11);
 
     damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -150,6 +152,8 @@ void CInterface::DrawInterface()
 
     // drawing damage / healing text floating upwards fading away.
 	drawCombatText();
+	// draw symboms displaying different states of characters / NPCs (fear is one as an example).
+	drawCharacterStates();
 }
 
 void CInterface::SetPlayer(CCharacter *player_)
@@ -323,4 +327,26 @@ void CInterface::drawTargetedNPCText()
         NPCTextFont->drawText( npc->getXPos(), npc->getYPos()+npc->getHeight()-24, "%s",npc->getCurrentSpellActionName().c_str() );
 	}
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+}
+
+void CInterface::drawCharacterStates()
+{
+    /// draws states for the NPCs
+    /// Todo: stunned, charmed, mezmerized, confused
+    std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+    for ( size_t curNPC = 0; curNPC < zoneNPCs.size(); curNPC++ ) {
+        /// draws fear symbol
+        if ( zoneNPCs[ curNPC ]->isFeared() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
+                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[11].height );
+        }
+    }
+
+    /// draws states for the player
+    if ( player->isFeared() == true ) {
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
+                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
+    }
 }

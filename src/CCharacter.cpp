@@ -37,6 +37,8 @@
 
 std::map< std::string, CCharacter* > allMobTypes;
 
+extern size_t randomSizeT( size_t min, size_t max );
+
 // Dawn LUA Interface
 namespace DawnInterface
 {
@@ -1087,6 +1089,10 @@ void CCharacter::Move()
         return;
     }
 
+    if ( isFeared() == false ) {
+        hasChoosenFearDirection = false;
+    }
+
 	continuePreparing();
 	if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		if ( ! mayDoAnythingAffectingSpellActionWithAborting() ) {
@@ -1098,6 +1104,15 @@ void CCharacter::Move()
 	Direction movingDirection = GetDirection();
 	if (( movingDirection != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		CastingAborted();
+	}
+
+	/// if we are feared (fleeing) we run at a random direction. Only choose a direction once for each fear effect.
+	if ( isFeared() == true ) {
+	    if ( hasChoosenFearDirection == false ) {
+	        fearDirection = static_cast<Direction>( randomSizeT( 1, 8 ) );
+	        hasChoosenFearDirection = true;
+	    }
+	    movingDirection = fearDirection;
 	}
 
 	unsigned int movePerStep = 10; // moves one step per movePerStep ms
@@ -1208,6 +1223,11 @@ int CCharacter::GetDirectionTexture()
 	if ( direction != STOP ) {
 		activeDirection = direction;
 	}
+
+	if ( isFeared() == true && hasChoosenFearDirection == true ) {
+	    direction = fearDirection;
+	}
+
 	ActivityType::ActivityType curActivity = getCurActivity();
 
 	switch ( curActivity ) {
@@ -1262,8 +1282,8 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter
 // use this function to cast spells with rules (mana requirement, range etc...
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
-    if ( isStunned() == true ) {
-        /// can't cast, we're stunned. Should perhaps display message about it.
+    if ( isStunned() == true || isFeared() == true ) {
+        /// can't cast, we're stunned or feared. Should perhaps display message about it.
         return;
     }
 
@@ -1328,8 +1348,8 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 
 bool CCharacter::continuePreparing()
 {
-    /// if we're preparing a spell while getting stunned, abort the spellcasting.
-	if ( isStunned() == true && getIsPreparing() == true ) {
+    /// if we're preparing a spell while getting stunned or feared, abort the spellcasting.
+	if ( ( isStunned() == true || isFeared() == true ) && getIsPreparing() == true ) {
 	    CastingAborted();
 	}
 
@@ -1457,8 +1477,6 @@ void CCharacter::regenerateLifeManaFatigue(uint32_t regenPoints)
 		remainingRegenPoints -= 1000;
 	}
 }
-
-extern size_t randomSizeT( size_t min, size_t max );
 
 void CCharacter::dropItems()
 {
@@ -1605,6 +1623,8 @@ float CCharacter::getMovementSpeed() const
 
     if ( lowestMovementSpeed < 1.0 ) {
         return lowestMovementSpeed;
+    } else if ( isFeared() == true ) { // if we are feared, we reduce the movementspeed. Mostly so we dont run too far away.
+        return 0.60;
     } else if ( isSneaking() == true ) { // if we are sneaking, we reduce the movementspeed aswell of the character. good place to do that is here
         return 0.75;
     } else {

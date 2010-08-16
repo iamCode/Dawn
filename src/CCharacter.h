@@ -148,6 +148,7 @@ class CCharacter
 			remainingMovePoints = 0;
 			isPreparing = false;
 			alive = true;
+			hasChoosenFearDirection = false;
 			curSpellAction = NULL;
 			experience = 0;
 			coins = 0;
@@ -205,7 +206,7 @@ class CCharacter
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
 		ActivityType::ActivityType getCurActivity() const;
 
-		Direction WanderDirection, MovingDirection;
+		Direction WanderDirection, MovingDirection, fearDirection;
 
 		Uint8 *keys;
 
@@ -510,6 +511,7 @@ class CCharacter
 
 		int *numMoveTexturesPerDirection;
 		int activeDirection;
+        bool hasChoosenFearDirection;
 
         std::vector<sLootTable> lootTable;
         uint32_t coins;

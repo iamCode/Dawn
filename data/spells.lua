@@ -429,4 +429,36 @@ curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setRequiredClass( CharacterClass.NOCLASS );
 curSpell:setEffect( CharacterStates.Sneaking );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["terrifyeffect2"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCastTime( 0 );
+curSpell:setDuration( 60 );
+curSpell:setSpellCost( 0 );
+curSpell:setResistElementModifierPoints( ElementType.Dark, -10 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["terrifyeffect1"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setEffect( CharacterStates.Feared );
+curSpell:setDuration( 4 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect2"], 1.0 );
+
+curSpell = DawnInterface.createGeneralBoltDamageSpell();
+spellDatabase["terrify"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCooldown( 1 );
+curSpell:setDirectDamage( 20, 30, ElementType.Dark );
+curSpell:setCastTime( 1500 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+curSpell:setSpellCost( 40 );
+curSpell:setInfo("Sends a dark soul of the Umbral'un to terrorize the target dealing %minSpellDirectDamage%-%maxSpellDirectDamage% damage and causing it to flee for a short period. When the soul leaves it curses the target, reducing Dark magic resistance for a minute.");
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/terrify/0.tga" );
+curSpell:setMoveSpeed( 650 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Liche );
+
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
