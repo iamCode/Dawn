@@ -37,7 +37,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(12);
+	interfacetextures.texture.resize(13);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -50,6 +50,7 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/interface/BuffWindow/frame.tga",9);
 	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",10);
 	interfacetextures.LoadIMG("data/fear.tga",11);
+	interfacetextures.LoadIMG("data/stun.tga",12);
 
     damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -341,11 +342,23 @@ void CInterface::drawCharacterStates()
                                               zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
                                               zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[11].height );
         }
+        /// draws stun symbol
+        if ( zoneNPCs[ curNPC ]->isStunned() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
+                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[11].height );
+        }
     }
 
     /// draws states for the player
     if ( player->isFeared() == true ) {
         DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
+                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
+    }
+
+    if ( player->isStunned() == true ) {
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
                                           player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
                                           player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
     }
