@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Mon Aug 16 01:20:03 2010.
+** Generated automatically by tolua++-1.0.93 on Mon Aug 16 17:39:36 2010.
 */
 
 #ifndef __cplusplus
@@ -5934,6 +5934,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Confused",CharacterStates::Confused);
    tolua_constant(tolua_S,"Feared",CharacterStates::Feared);
    tolua_constant(tolua_S,"Invisible",CharacterStates::Invisible);
+   tolua_constant(tolua_S,"Mesmerized",CharacterStates::Mesmerized);
    tolua_constant(tolua_S,"Movementspeed",CharacterStates::Movementspeed);
    tolua_constant(tolua_S,"Sneaking",CharacterStates::Sneaking);
    tolua_constant(tolua_S,"Stunned",CharacterStates::Stunned);

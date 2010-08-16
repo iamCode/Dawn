@@ -102,6 +102,7 @@ namespace CharacterStates
         Confused,
         Feared,
         Invisible,
+        Mesmerized,
         Movementspeed,
         Sneaking,
         Stunned,
