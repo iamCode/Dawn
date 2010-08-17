@@ -144,7 +144,7 @@ void ActionBar::draw()
                 }
             }
 
-            if ( player->isStunned() == true ) {
+            if ( player->isStunned() == true || player->isFeared() == true || player->isMesmerized() == true || player->isCharmed() == true ) {
                 isSpellUseable = false;
             }
 

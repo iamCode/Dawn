@@ -37,7 +37,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(13);
+	interfacetextures.texture.resize(15);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -51,6 +51,8 @@ void CInterface::LoadTextures()
 	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",10);
 	interfacetextures.LoadIMG("data/fear.tga",11);
 	interfacetextures.LoadIMG("data/stun.tga",12);
+	interfacetextures.LoadIMG("data/confused.tga",13);
+	interfacetextures.LoadIMG("data/mesmerized.tga",14);
 
     damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -333,7 +335,7 @@ void CInterface::drawTargetedNPCText()
 void CInterface::drawCharacterStates()
 {
     /// draws states for the NPCs
-    /// Todo: stunned, charmed, mezmerized, confused
+    /// Todo: charmed
     std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
     for ( size_t curNPC = 0; curNPC < zoneNPCs.size(); curNPC++ ) {
         /// draws fear symbol
@@ -345,21 +347,46 @@ void CInterface::drawCharacterStates()
         /// draws stun symbol
         if ( zoneNPCs[ curNPC ]->isStunned() == true ) {
             DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
-                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
-                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[11].height );
+                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
+                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[12].height );
+        }
+        /// draws confused symbol
+        if ( zoneNPCs[ curNPC ]->isConfused() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
+                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
+                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[13].height );
+        }
+        /// draws mesmerized symbol
+        if ( zoneNPCs[ curNPC ]->isMesmerized() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
+                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
+                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[14].height );
         }
     }
 
     /// draws states for the player
+    /// feared
     if ( player->isFeared() == true ) {
         DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
                                           player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
                                           player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
     }
-
+    /// stunned
     if ( player->isStunned() == true ) {
         DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
-                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
-                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
+                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
+                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[12].height );
+    }
+    /// confused
+    if ( player->isConfused() == true ) {
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
+                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
+                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[13].height );
+    }
+    /// mesmerized
+    if ( player->isMesmerized() == true ) {
+        DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
+                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
+                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[14].height );
     }
 }

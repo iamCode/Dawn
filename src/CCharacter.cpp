@@ -1084,7 +1084,7 @@ void CCharacter::MoveRight()
 
 void CCharacter::Move()
 {
-    if ( isStunned() == true ) {
+    if ( isStunned() == true || isMesmerized() == true ) {
         remainingMovePoints = 0;
         return;
     }
@@ -1282,8 +1282,8 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter
 // use this function to cast spells with rules (mana requirement, range etc...
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
-    if ( isStunned() == true || isFeared() == true ) {
-        /// can't cast, we're stunned or feared. Should perhaps display message about it.
+    if ( isStunned() == true || isFeared() == true || isMesmerized() == true || isCharmed() == true ) {
+        /// can't cast, we're stunned, feared, mesmerized or charmed. Should perhaps display message about it.
         return;
     }
 
