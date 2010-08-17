@@ -101,7 +101,25 @@ void CNPC::Draw()
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
 		}
-		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture);
+
+        float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// if sneaking and character is less than 260 pixels away we draw at 0.5 and with darker colors (shade)
+        // if NPC is invisible or sneaking with more than 260 pixels away we don't draw the NPC at all.
+        double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                           +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+
+		if ( isSneaking() == true ) {
+		    color[0] = 0.7f;
+		    color[1] = 0.7f;
+		    color[2] = 0.7f;
+		    color[3] = 0.5f;
+		}
+		if ( isInvisible() == true || ( isSneaking() == true && distance > 260 ) ) {
+		    return;
+		}
+
+		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture, color[3], color[0], color[1], color[2]);
 	}
 }
 

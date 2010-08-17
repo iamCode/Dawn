@@ -1126,9 +1126,15 @@ void game_loop()
                 for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
                     // if NPC is in on screen (might be changed to line of sight or something)
                     // this makes a list of all visible NPCs, easier to select next target this way.
+                    // also makes sure the NPC isn't invisible or sneaking outside of our vision range.
                     CNPC *curNPC = zoneNPCs[curNPCNr];
+                    double distance = sqrt( pow((curNPC->getXPos()+curNPC->getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                           +pow((curNPC->getYPos()+curNPC->getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+
                     if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
-                            && curNPC->isAlive() ) {
+                            && curNPC->isAlive()
+                            && curNPC->isInvisible() == false
+                            && ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && distance < 260 ) ) ) {
                         NPClist.push_back(curNPC);
                     }
                 }

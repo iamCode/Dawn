@@ -334,59 +334,39 @@ void CInterface::drawTargetedNPCText()
 
 void CInterface::drawCharacterStates()
 {
-    /// draws states for the NPCs
+    /// draws states for the characters
     /// Todo: charmed
     std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+    std::vector<CCharacter*> allCharacters;
+    allCharacters.push_back( player );
     for ( size_t curNPC = 0; curNPC < zoneNPCs.size(); curNPC++ ) {
-        /// draws fear symbol
-        if ( zoneNPCs[ curNPC ]->isFeared() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
-                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
-                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[11].height );
-        }
-        /// draws stun symbol
-        if ( zoneNPCs[ curNPC ]->isStunned() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
-                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
-                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[12].height );
-        }
-        /// draws confused symbol
-        if ( zoneNPCs[ curNPC ]->isConfused() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
-                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
-                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[13].height );
-        }
-        /// draws mesmerized symbol
-        if ( zoneNPCs[ curNPC ]->isMesmerized() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
-                                              zoneNPCs[ curNPC ]->getXPos() + zoneNPCs[ curNPC ]->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
-                                              zoneNPCs[ curNPC ]->getYPos() + zoneNPCs[ curNPC ]->getHeight() / 2, interfacetextures.texture[14].height );
-        }
+        allCharacters.push_back( zoneNPCs[ curNPC ] );
     }
 
-    /// draws states for the player
-    /// feared
-    if ( player->isFeared() == true ) {
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
-                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
-                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[11].height );
-    }
-    /// stunned
-    if ( player->isStunned() == true ) {
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
-                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
-                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[12].height );
-    }
-    /// confused
-    if ( player->isConfused() == true ) {
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
-                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
-                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[13].height );
-    }
-    /// mesmerized
-    if ( player->isMesmerized() == true ) {
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
-                                          player->getXPos() + player->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
-                                          player->getYPos() + player->getHeight() / 2, interfacetextures.texture[14].height );
+    for ( size_t curCharacter = 0; curCharacter < allCharacters.size(); curCharacter++ ) {
+        /// draws fear symbol
+        if ( allCharacters[ curCharacter  ]->isFeared() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[11].height );
+        }
+        /// draws stun symbol
+        if ( allCharacters[ curCharacter ]->isStunned() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[12].height );
+        }
+        /// draws confused symbol
+        if ( allCharacters[ curCharacter ]->isConfused() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[13].height );
+        }
+        /// draws mesmerized symbol
+        if ( allCharacters[ curCharacter ]->isMesmerized() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[14].height );
+        }
     }
 }
