@@ -1603,6 +1603,16 @@ bool CCharacter::isConfused() const
     return false;
 }
 
+bool CCharacter::isMesmerized() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Mesmerized ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 float CCharacter::getMovementSpeed() const
 {
     // see if we are affected by movement altering spells. If we are we get the lowest value and return it.

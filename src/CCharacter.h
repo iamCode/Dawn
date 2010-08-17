@@ -427,6 +427,7 @@ class CCharacter
         bool isSneaking() const;
         bool isConfused() const;
         bool isChanneling() const;
+        bool isMesmerized() const;
         float getMovementSpeed() const;
 
 		// timers
