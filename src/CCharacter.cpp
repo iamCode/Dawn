@@ -1215,7 +1215,7 @@ ActivityType::ActivityType CCharacter::getCurActivity() const
 
 int CCharacter::GetDirectionTexture()
 {
-	if ( isStunned() == true ) {
+	if ( isStunned() == true || isMesmerized() == true ) {
 	    return activeDirection;
 	}
 
@@ -1348,8 +1348,8 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 
 bool CCharacter::continuePreparing()
 {
-    /// if we're preparing a spell while getting stunned or feared, abort the spellcasting.
-	if ( ( isStunned() == true || isFeared() == true ) && getIsPreparing() == true ) {
+    /// if we're preparing a spell while getting stunned, feared, mesmerized or charmed, abort the spellcasting.
+	if ( ( isStunned() == true || isFeared() == true || isMesmerized() == true || isCharmed() == true ) && getIsPreparing() == true ) {
 	    CastingAborted();
 	}
 
@@ -1451,6 +1451,10 @@ void CCharacter::Damage(int amount, bool criticalHit)
 
 	if ( isInvisible() == true ) { // if we're invisible while taking damage, we loose the invisible state
 	    removeSpellsWithCharacterState( CharacterStates::Invisible );
+	}
+
+	if ( isMesmerized() == true ) { // if we're mesmerized while taking damage, we loose the mesmerize state
+	    removeSpellsWithCharacterState( CharacterStates::Mesmerized );
 	}
 
 	if (alive) {
