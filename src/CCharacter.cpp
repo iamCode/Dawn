@@ -1445,6 +1445,12 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 
 void CCharacter::Damage(int amount, bool criticalHit)
 {
+    if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
+        if ( randomSizeT( 0, 100 ) <= 20 ) {
+            removeSpellsWithCharacterState( CharacterStates::Feared );
+        }
+    }
+
 	if ( isSneaking() == true ) { // if we're sneaking while taking damage, we loose the sneak state
 	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
 	}
