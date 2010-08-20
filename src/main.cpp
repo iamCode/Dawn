@@ -388,7 +388,7 @@ class DawnInitObject : public CThread
 private:
 	bool finished;
 	std::deque<TextureQueueEntry*> textureQueue;
-	
+
 	GLFT_Font *curFont;
 	std::string curFontFile;
 	unsigned int curFontSize;
@@ -477,7 +477,7 @@ public:
 		}
 		accessMutex.Unlock();
 	}
-	
+
 	void setProgress( double newProgress )
 	{
 		// wait for texture loading
@@ -544,9 +544,9 @@ public:
 		dawn_debug_info("Loading completed");
 
 		setProgress( 0.7 );
-        
+
 		progressString = "Loading Character Data";
-		
+
 		std::string characterDataString = "data/character/";
 
 		if ( character.getClass() == CharacterClass::Liche ) {
@@ -727,7 +727,7 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
-		
+
 		if (dawn_configuration::fullscreenenabled)
 			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
 			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
@@ -780,14 +780,14 @@ bool dawn_init(int argc, char** argv)
 			SDL_GL_SwapBuffers();
 
 		}
-		
+
 		initStartTicks = SDL_GetTicks();
 		imgLoadTime = 0;
 		sdlLoadTime = 0;
 		imgInversionTime = 0;
 		debugOutputTime = 0;
 		drawingTime = 0;
-		
+
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		textureFrame->finishFrame();
 		DawnInitObject obj;
@@ -819,17 +819,17 @@ bool dawn_init(int argc, char** argv)
 		textureFrame->finishFrame();
 		delete textureFrame;
 		initPhase = false;
-		
+
 		optionsWindow->setTextureDependentPositions();
 		inventoryScreen->setTextureDependentPositions();
-		
+
 		uint32_t initTime = SDL_GetTicks()-initStartTicks;
 		std::cout << "initialization took " << initTime << " ms" << std::endl;
 		std::cout << "included are " << imgLoadTime << " ms for image loading (" << sdlLoadTime << " ms for IMG_Load, " << imgInversionTime << " for image Y-inversion, " << mipmapBuildTime << " ms for mipmap-building, total >= " << (100*(sdlLoadTime+imgInversionTime+mipmapBuildTime))/imgLoadTime << "% of LoadIMG submeasured)" << std::endl;
 		std::cout << "included are " << debugOutputTime << " ms for debug output" << std::endl;
 		std::cout << "included are " << drawingTime << " ms for menu drawing" << std::endl;
 		std::cout << "total submeasures cover >= " << (100*(imgLoadTime+debugOutputTime+drawingTime)/initTime) << "% of init time" << std::endl;
-		
+
 		threadedMode = false;
 		curTextureProcessor = NULL;
 
@@ -1063,10 +1063,15 @@ void game_loop()
 
             }
 
-            // making sure our target is still alive, if not well set our target to NULL.
+            // making sure our target is still alive, not invisible and still in range while stealthed. if not well set our target to NULL.
             if (character.getTarget()) {
-                if ( !character.getTarget()->isAlive() )
+                double distance = sqrt( pow((character.getTarget()->getXPos()+character.getTarget()->getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                                        +pow((character.getTarget()->getYPos()+character.getTarget()->getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+                if ( character.getTarget()->isAlive() == false
+                || character.getTarget()->isInvisible() == true
+                || ( character.getTarget()->isSneaking() == true && distance > 260 ) ) {
                     character.setTarget(NULL);
+                }
             }
 
             // check all active spells for inEffects on our player.
