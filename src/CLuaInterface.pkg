@@ -58,6 +58,8 @@ namespace CharacterStates
         Invisible,
 		Mesmerized,
         Movementspeed,
+		SeeInvisible,
+		SeeSneaking,
         Sneaking,
         Stunned,
 		NOEFFECT

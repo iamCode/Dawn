@@ -1623,6 +1623,27 @@ bool CCharacter::isMesmerized() const
     return false;
 }
 
+bool CCharacter::canSeeInvisible() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::SeeInvisible ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::canSeeSneaking() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::SeeSneaking ) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
 float CCharacter::getMovementSpeed() const
 {
     // see if we are affected by movement altering spells. If we are we get the lowest value and return it.

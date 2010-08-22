@@ -102,8 +102,10 @@ namespace CharacterStates
         Confused,
         Feared,
         Invisible,
-        Mesmerized,
+		Mesmerized,
         Movementspeed,
+		SeeInvisible,
+		SeeSneaking,
         Sneaking,
         Stunned,
 		NOEFFECT
@@ -428,6 +430,8 @@ class CCharacter
         bool isConfused() const;
         bool isChanneling() const;
         bool isMesmerized() const;
+        bool canSeeInvisible() const;
+        bool canSeeSneaking() const;
         float getMovementSpeed() const;
 
 		// timers

@@ -1068,8 +1068,8 @@ void game_loop()
                 double distance = sqrt( pow((character.getTarget()->getXPos()+character.getTarget()->getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
                                         +pow((character.getTarget()->getYPos()+character.getTarget()->getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
                 if ( character.getTarget()->isAlive() == false
-                || character.getTarget()->isInvisible() == true
-                || ( character.getTarget()->isSneaking() == true && distance > 260 ) ) {
+                || ( character.getTarget()->isInvisible() == true && character.canSeeInvisible() == false )
+                || ( character.getTarget()->isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
                     character.setTarget(NULL);
                 }
             }
@@ -1138,8 +1138,8 @@ void game_loop()
 
                     if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
                             && curNPC->isAlive()
-                            && curNPC->isInvisible() == false
-                            && ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && distance < 260 ) ) ) {
+                            && ( curNPC->isInvisible() == false || ( curNPC->isInvisible() == true && character.canSeeInvisible() == true ) )
+                            && ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && ( distance < 260 || character.canSeeSneaking() == true ) ) ) ) {
                         NPClist.push_back(curNPC);
                     }
                 }

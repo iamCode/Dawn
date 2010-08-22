@@ -106,16 +106,22 @@ void CNPC::Draw()
 
 		// if sneaking and character is less than 260 pixels away we draw at 0.5 and with darker colors (shade)
         // if NPC is invisible or sneaking with more than 260 pixels away we don't draw the NPC at all.
+        // if the character can see invisible or sneaking, we draw with 0.5 transparency.
         double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
                            +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
 
-		if ( isSneaking() == true ) {
+		if ( isSneaking() == true && ( distance < 260 || character.canSeeSneaking() == true ) ) {
 		    color[0] = 0.7f;
 		    color[1] = 0.7f;
 		    color[2] = 0.7f;
 		    color[3] = 0.5f;
 		}
-		if ( isInvisible() == true || ( isSneaking() == true && distance > 260 ) ) {
+
+		if ( isInvisible() == true && character.canSeeInvisible() == true ) {
+		    color[3] = 0.5f;
+		}
+
+		if ( ( isInvisible() == true && character.canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
 		    return;
 		}
 
@@ -176,7 +182,7 @@ void CNPC::Move()
 	double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
     // if player is inside agro range of NPC, we set NPC to attack mode.
-    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && character.isInvisible() == false && character.isSneaking() == false )
+    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( character.isInvisible() == false || canSeeInvisible() == true ) && ( character.isSneaking() == false || canSeeSneaking() == true ) )
     {
         chasingPlayer = true;
         setTarget( &character );
