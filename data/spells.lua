@@ -469,7 +469,7 @@ curSpell:setName("Food");
 curSpell:setStats( StatsType.HealthRegen, 10 );
 curSpell:setDuration( 18 );
 curSpell:setInfo("Increases health regeneration by 10 while eating.");
-curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/food/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setEffect( CharacterStates.Channeling );
 curSpell:setRequiredClass( CharacterClass.ANYCLASS );
