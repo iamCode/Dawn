@@ -1106,6 +1106,11 @@ void CCharacter::Move()
 		CastingAborted();
 	}
 
+	if ( movingDirection != STOP && isChanneling() == true ) {
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
+    }
+
+
 	/// if we are feared (fleeing) we run at a random direction. Only choose a direction once for each fear effect.
 	if ( isFeared() == true ) {
 	    if ( hasChoosenFearDirection == false ) {
@@ -1449,6 +1454,10 @@ void CCharacter::Damage(int amount, bool criticalHit)
         if ( randomSizeT( 0, 100 ) <= 20 ) {
             removeSpellsWithCharacterState( CharacterStates::Feared );
         }
+    }
+
+    if ( isChanneling() == true ) { // if we're channeling something while taking damage, we loose focus and abort the channeling.
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
     }
 
 	if ( isSneaking() == true ) { // if we're sneaking while taking damage, we loose the sneak state

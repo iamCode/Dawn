@@ -462,3 +462,21 @@ curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["food"] = curSpell;
+curSpell:setName("Food");
+curSpell:setStats( StatsType.HealthRegen, 10 );
+curSpell:setDuration( 18 );
+curSpell:setInfo("Increases health regeneration by 10 while eating.");
+curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setEffect( CharacterStates.Channeling );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
+
+curSpell = DawnInterface.copySpell( spellDatabase["food"] );
+spellDatabase["foodrank2"] = curSpell;
+curSpell:setRank( 2 );
+curSpell:setStats( StatsType.HealthRegen, 15 );
+curSpell:setInfo("Increases health regeneration by 15 while eating.");
+curSpell:setRequiredLevel( 3 );

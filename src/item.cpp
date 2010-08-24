@@ -428,10 +428,14 @@ std::string Item::getUseableDescription() const
     switch ( itemType )
     {
         case ItemType::DRINK:
-            return std::string("Drink: "); // later on add .append(getUsableSpellDescription) or so..
+            if ( getSpell() != NULL ) {
+                return std::string("Drink: ").append( getSpell()->getInfo() );
+            }
         break;
         case ItemType::FOOD:
-            return std::string("Food: "); // later on add .append(getUsableSpellDescription) or so..
+            if ( getSpell() != NULL ) {
+                return std::string("Eat: ").append( getSpell()->getInfo() );
+            }
         break;
         case ItemType::NEWSPELL:
             if ( getSpell() != NULL )
@@ -444,7 +448,7 @@ std::string Item::getUseableDescription() const
         case ItemType::POTION:
             if ( getSpell() != NULL )
             {
-                return std::string("Drink: ").append(getSpell()->getInfo() );
+                return std::string("Quaff: ").append(getSpell()->getInfo() );
             }
         break;
         case ItemType::SCROLL:

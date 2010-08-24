@@ -1105,9 +1105,19 @@ GeneralBuffSpell::GeneralBuffSpell( GeneralBuffSpell *other )
 	: ConfigurableSpell( other )
 {
 	effectType = other->effectType;
-    statsModifier = other->statsModifier;
-    resistElementModifier = other->resistElementModifier;
-    spellEffectElementModifier = other->spellEffectElementModifier;
+    resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	statsModifier = new int16_t[ static_cast<size_t>( StatsType::Count ) ];
+
+	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+		resistElementModifier[ curElement ] = other->resistElementModifier[ curElement ];
+		spellEffectElementModifier[ curElement ] = other->spellEffectElementModifier[ curElement ];
+	}
+
+	for (size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
+	{
+	    statsModifier[ curStat ] = other->statsModifier[ curStat ];
+	}
 }
 
 CSpellActionBase* GeneralBuffSpell::cast( CCharacter *creator, CCharacter *target )
