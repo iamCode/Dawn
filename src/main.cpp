@@ -388,7 +388,7 @@ class DawnInitObject : public CThread
 private:
 	bool finished;
 	std::deque<TextureQueueEntry*> textureQueue;
-	
+
 	GLFT_Font *curFont;
 	std::string curFontFile;
 	unsigned int curFontSize;
@@ -477,7 +477,7 @@ public:
 		}
 		accessMutex.Unlock();
 	}
-	
+
 	void setProgress( double newProgress )
 	{
 		// wait for texture loading
@@ -544,9 +544,9 @@ public:
 		dawn_debug_info("Loading completed");
 
 		setProgress( 0.7 );
-        
+
 		progressString = "Loading Character Data";
-		
+
 		std::string characterDataString = "data/character/";
 
 		if ( character.getClass() == CharacterClass::Liche ) {
@@ -727,7 +727,7 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
-		
+
 		if (dawn_configuration::fullscreenenabled)
 			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
 			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
@@ -780,14 +780,14 @@ bool dawn_init(int argc, char** argv)
 			SDL_GL_SwapBuffers();
 
 		}
-		
+
 		initStartTicks = SDL_GetTicks();
 		imgLoadTime = 0;
 		sdlLoadTime = 0;
 		imgInversionTime = 0;
 		debugOutputTime = 0;
 		drawingTime = 0;
-		
+
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		textureFrame->finishFrame();
 		DawnInitObject obj;
@@ -819,17 +819,17 @@ bool dawn_init(int argc, char** argv)
 		textureFrame->finishFrame();
 		delete textureFrame;
 		initPhase = false;
-		
+
 		optionsWindow->setTextureDependentPositions();
 		inventoryScreen->setTextureDependentPositions();
-		
+
 		uint32_t initTime = SDL_GetTicks()-initStartTicks;
 		std::cout << "initialization took " << initTime << " ms" << std::endl;
 		std::cout << "included are " << imgLoadTime << " ms for image loading (" << sdlLoadTime << " ms for IMG_Load, " << imgInversionTime << " for image Y-inversion, " << mipmapBuildTime << " ms for mipmap-building, total >= " << (100*(sdlLoadTime+imgInversionTime+mipmapBuildTime))/imgLoadTime << "% of LoadIMG submeasured)" << std::endl;
 		std::cout << "included are " << debugOutputTime << " ms for debug output" << std::endl;
 		std::cout << "included are " << drawingTime << " ms for menu drawing" << std::endl;
 		std::cout << "total submeasures cover >= " << (100*(imgLoadTime+debugOutputTime+drawingTime)/initTime) << "% of init time" << std::endl;
-		
+
 		threadedMode = false;
 		curTextureProcessor = NULL;
 
@@ -1063,10 +1063,15 @@ void game_loop()
 
             }
 
-            // making sure our target is still alive, if not well set our target to NULL.
+            // making sure our target is still alive, not invisible and still in range while stealthed. if not well set our target to NULL.
             if (character.getTarget()) {
-                if ( !character.getTarget()->isAlive() )
+                double distance = sqrt( pow((character.getTarget()->getXPos()+character.getTarget()->getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                                        +pow((character.getTarget()->getYPos()+character.getTarget()->getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+                if ( character.getTarget()->isAlive() == false
+                || ( character.getTarget()->isInvisible() == true && character.canSeeInvisible() == false )
+                || ( character.getTarget()->isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
                     character.setTarget(NULL);
+                }
             }
 
             // check all active spells for inEffects on our player.
@@ -1126,9 +1131,15 @@ void game_loop()
                 for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
                     // if NPC is in on screen (might be changed to line of sight or something)
                     // this makes a list of all visible NPCs, easier to select next target this way.
+                    // also makes sure the NPC isn't invisible or sneaking outside of our vision range.
                     CNPC *curNPC = zoneNPCs[curNPCNr];
+                    double distance = sqrt( pow((curNPC->getXPos()+curNPC->getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                           +pow((curNPC->getYPos()+curNPC->getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+
                     if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
-                            && curNPC->isAlive() ) {
+                            && curNPC->isAlive()
+                            && ( curNPC->isInvisible() == false || ( curNPC->isInvisible() == true && character.canSeeInvisible() == true ) )
+                            && ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && ( distance < 260 || character.canSeeSneaking() == true ) ) ) ) {
                         NPClist.push_back(curNPC);
                     }
                 }

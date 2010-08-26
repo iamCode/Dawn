@@ -93,6 +93,25 @@ namespace ActivityType
 	};
 }
 
+namespace CharacterStates
+{
+    enum CharacterStates
+    {
+        Channeling,
+        Charmed,
+        Confused,
+        Feared,
+        Invisible,
+		Mesmerized,
+        Movementspeed,
+		SeeInvisible,
+		SeeSneaking,
+        Sneaking,
+        Stunned,
+		NOEFFECT
+    };
+}
+
 struct sLootTable
 {
     Item *item;
@@ -132,6 +151,7 @@ class CCharacter
 			remainingMovePoints = 0;
 			isPreparing = false;
 			alive = true;
+			hasChoosenFearDirection = false;
 			curSpellAction = NULL;
 			experience = 0;
 			coins = 0;
@@ -142,8 +162,8 @@ class CCharacter
 		int CollisionCheck(Direction direction);
 
 		// casting spells and executing actions
-		void executeSpellWithoutCasting( CSpellActionBase *spell );
-		void castSpell(CSpellActionBase *spell );
+        void executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target );
+        void castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();
 		void startSpellAction();
@@ -164,6 +184,7 @@ class CCharacter
 		void cleanupActiveSpells();
 		void clearActiveSpells();
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
+		void removeSpellsWithCharacterState( CharacterStates::CharacterStates characterState );
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpellActionBase *spell );
@@ -188,7 +209,7 @@ class CCharacter
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
 		ActivityType::ActivityType getCurActivity() const;
 
-		Direction WanderDirection, MovingDirection;
+		Direction WanderDirection, MovingDirection, fearDirection;
 
 		Uint8 *keys;
 
@@ -399,8 +420,19 @@ class CCharacter
 
 		bool alive;
 
-		// states of the NPC
+		// states of the NPC. the functions are from the CharacterStates namespace.
 		bool wandering, moving, in_combat;
+		bool isStunned() const;
+		bool isCharmed() const;
+        bool isFeared() const;
+        bool isInvisible() const;
+        bool isSneaking() const;
+        bool isConfused() const;
+        bool isChanneling() const;
+        bool isMesmerized() const;
+        bool canSeeInvisible() const;
+        bool canSeeSneaking() const;
+        float getMovementSpeed() const;
 
 		// timers
 		float wander_thisframe, wander_lastframe;
@@ -485,6 +517,7 @@ class CCharacter
 
 		int *numMoveTexturesPerDirection;
 		int activeDirection;
+        bool hasChoosenFearDirection;
 
         std::vector<sLootTable> lootTable;
         uint32_t coins;

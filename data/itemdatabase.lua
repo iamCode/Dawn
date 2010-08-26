@@ -154,3 +154,9 @@ curItem = itemDatabase["bookofleatherskinrank2"];
 curItem:setSpell( spellDatabase["leatherskinrank2"] );
 curItem:setSpellCharges( 0 );
 curItem:setValue( 2500 );
+
+itemDatabase["ajuicyapple"]=DawnInterface.createNewItem( "A juicy apple", 1, 1, "data/items/Food1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.FOOD, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["ajuicyapple"];
+curItem:setSpell( spellDatabase["food"] );
+curItem:setSpellCharges( 1 );
+curItem:setValue( 25 );

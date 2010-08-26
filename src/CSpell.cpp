@@ -47,6 +47,8 @@ CSpellActionBase::CSpellActionBase()
 		  requiredLevel( 1 ),
           rank( 1 )
 {
+    characterStateEffects.first = CharacterStates::NOEFFECT;
+    characterStateEffects.second = 1.0f;
 }
 
 CSpellActionBase::~CSpellActionBase()
@@ -63,10 +65,17 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
+		uint16_t spellCost = getSpellCost();
+
+		// if we're confused while casting, we add 20% more to the spell cost.
+        if ( creator->isConfused() == true ) {
+            spellCost  *= 1.20;
+        }
+
 		if ( creator->getArchType() == CharacterArchType::Fighter ) {
-	        creator->modifyCurrentFatigue( -getSpellCost() );
+	        creator->modifyCurrentFatigue( -spellCost );
 	    } else {
-	        creator->modifyCurrentMana( -getSpellCost() );
+	        creator->modifyCurrentMana( -spellCost );
 	    }
     }
 }
@@ -117,9 +126,14 @@ std::string CSpellActionBase::getID() const
 	return idstream.str();
 }
 
-void CSpellActionBase::addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute )
+void CSpellActionBase::addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute )
 {
-    additionalSpells.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+    additionalSpellsOnTarget.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+}
+
+void CSpellActionBase::addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute )
+{
+    additionalSpellsOnCreator.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
 }
 
 void CSpellActionBase::setRequiredClass( CharacterClass::CharacterClass requiredClass )
@@ -152,6 +166,17 @@ uint8_t CSpellActionBase::getRank() const
     return rank;
 }
 
+void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
+{
+    characterStateEffects.first = characterState;
+    characterStateEffects.second = value;
+}
+
+std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getCharacterState() const
+{
+    return characterStateEffects;
+}
+
 /// ConfigurableSpell
 
 ConfigurableSpell::ConfigurableSpell()
@@ -182,7 +207,10 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
     maxRange = other->maxRange;
     hostileSpell = other->hostileSpell;
 
-    additionalSpells = other->additionalSpells;
+    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+
+    characterStateEffects = other->characterStateEffects;
 
     requiredClass = other->requiredClass;
     requiredLevel = other->requiredLevel;
@@ -316,7 +344,10 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
     maxRange = other->maxRange;
     hostileSpell = other->hostileSpell;
 
-    additionalSpells = other->additionalSpells;
+    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+
+    characterStateEffects = other->characterStateEffects;
 
     requiredClass = other->requiredClass;
     requiredLevel = other->requiredLevel;
@@ -651,10 +682,17 @@ void GeneralRayDamageSpell::finishEffect()
 {
 	markSpellActionAsFinished();
 
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }
@@ -801,10 +839,17 @@ void GeneralBoltDamageSpell::finishEffect()
 	dealDirectDamage();
 	markSpellActionAsFinished();
 
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }
@@ -1021,10 +1066,17 @@ void GeneralHealingSpell::finishEffect()
 {
 	markSpellActionAsFinished();
 
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }
@@ -1038,6 +1090,8 @@ void GeneralHealingSpell::drawEffect()
 GeneralBuffSpell::GeneralBuffSpell()
 {
 	effectType = EffectType::SelfAffectingSpell;
+
+	hostileSpell = false;
 
     resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -1058,14 +1112,23 @@ GeneralBuffSpell::GeneralBuffSpell( GeneralBuffSpell *other )
 	: ConfigurableSpell( other )
 {
 	effectType = other->effectType;
-    statsModifier = other->statsModifier;
-    resistElementModifier = other->resistElementModifier;
-    spellEffectElementModifier = other->spellEffectElementModifier;
+    resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
+	statsModifier = new int16_t[ static_cast<size_t>( StatsType::Count ) ];
+
+	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+		resistElementModifier[ curElement ] = other->resistElementModifier[ curElement ];
+		spellEffectElementModifier[ curElement ] = other->spellEffectElementModifier[ curElement ];
+	}
+
+	for (size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
+	{
+	    statsModifier[ curStat ] = other->statsModifier[ curStat ];
+	}
 }
 
 CSpellActionBase* GeneralBuffSpell::cast( CCharacter *creator, CCharacter *target )
 {
-	assert( effectType != EffectType::SelfAffectingSpell || creator == target );
 	std::auto_ptr<GeneralBuffSpell> newSpell( new GeneralBuffSpell( this ) );
 	newSpell->creator = creator;
 	newSpell->target = target;
@@ -1155,10 +1218,18 @@ void GeneralBuffSpell::drawEffect()
 void GeneralBuffSpell::finishEffect()
 {
     markSpellActionAsFinished();
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }
@@ -1285,10 +1356,17 @@ void MeleeDamageAction::finishEffect()
     dealDamage();
     markSpellActionAsFinished();
 
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }
@@ -1415,10 +1493,17 @@ void RangedDamageAction::finishEffect()
 	dealDamage();
 	markSpellActionAsFinished();
 
-    // do we have an additional spell that perhaps should be cast?
-    for ( size_t additionalSpell = 0; additionalSpell < additionalSpells.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpells[ additionalSpell ].second * 10000 ) {
-            creator->executeSpellWithoutCasting( additionalSpells[ additionalSpell ].first );
+    // do we have an additional spell that perhaps should be cast on our target?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
+        }
+    }
+
+    // do we have an additional spell that perhaps should be cast on our creator?
+    for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
+        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+            creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
 }

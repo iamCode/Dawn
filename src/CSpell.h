@@ -120,7 +120,8 @@ class CSpellActionBase
 		void markSpellActionAsFinished();
 
 		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
-        void addAdditionalSpell( CSpellActionBase *spell, double chanceToExecute );
+        void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
+        void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 
         /// which class can use the spell
         void setRequiredClass( CharacterClass::CharacterClass requiredClass );
@@ -134,6 +135,10 @@ class CSpellActionBase
         void setRank( uint8_t rank );
         uint8_t getRank() const;
 
+        /// characterStates which affects the target. Stunned, charmed etc...
+        void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
+        std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
     protected:
         CCharacter *creator;
@@ -143,7 +148,9 @@ class CSpellActionBase
         CharacterClass::CharacterClass requiredClass;
         uint8_t requiredLevel;
         uint8_t rank;
-        std::vector< std::pair<CSpellActionBase*,double> > additionalSpells;
+        std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnTarget;
+        std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnCreator;
+        std::pair<CharacterStates::CharacterStates,float> characterStateEffects;
 };
 
 class CSpell : public CSpellActionBase

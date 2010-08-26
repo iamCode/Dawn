@@ -56,6 +56,7 @@ class CInterface
 		void DrawInterface();
         void drawTargetedNPCText();
 		void drawCombatText();
+		void drawCharacterStates();
 		void SetPlayer(CCharacter *player_);
 
 		void addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos);

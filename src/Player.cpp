@@ -70,7 +70,19 @@ void Player::Draw()
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
 		}
-		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture);
+
+		float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// if player is invisible we draw at 0.2 transparency.. if sneaking we draw at 0.5 and with darker colors (shade)
+		if ( isSneaking() == true ) {
+		    color[0] = 0.7f;
+		    color[1] = 0.7f;
+		    color[2] = 0.7f;
+		    color[3] = 0.5f;
+		} else if ( isInvisible() == true ) {
+		    color[3] = 0.2f;
+		}
+		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture,color[3], color[0], color[1], color[2]);
 	}
 }
 

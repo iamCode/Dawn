@@ -1,3 +1,4 @@
+-- ==== Dynamic values ====
 -- Note about dynamic values for the speltooltip.
 -- Dynamic values can be set here. In the setInfo function, you can use these values that will be displayed in the game:
 --"%minWeaponDamage%"
@@ -11,7 +12,7 @@
 --"%minContinuousHealing%"
 --"%maxContinuousHealing%"
 
--- Spell ranks --
+-- ==== Spell ranks ====
 -- When creating a spell, it automatically becomes rank 1.
 -- To create rank X of this spell, use DawnInterface.copySpell( spellDatabase["name_of_spell"] );
 -- Example:
@@ -21,6 +22,24 @@
 -- curSpell:setDirectDamage( 12, 18, ElementType.Light );
 --
 -- It's possible to alter most of the properties of a spell in another rank.
+
+-- ==== Character States ====
+-- To set character states to an effect we use setCharacterState( CharacterStates::CharacterStates );
+--
+-- Following CharacterStates are available:
+--
+--	Channeling
+--	Charmed
+--	Confused
+--	Feared
+--	Invisible
+--	Mesmerized
+--	Movementspeed
+--	SeeInvisible
+--	SeeSneaking
+--	Sneaking
+--	Stunned
+
 
 spellDatabase = {};
 
@@ -61,7 +80,7 @@ curSpell:setDirectDamage(  10, 20, ElementType.Earth );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
 curSpell:setMoveSpeed( 600 );
-curSpell:addAdditionalSpell( spellDatabase["venomspiteffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
@@ -307,7 +326,7 @@ curSpell:setCooldown( 4 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 25 );
 curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
-curSpell:addAdditionalSpell( spellDatabase["shardsofvenomeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["shardsofvenomeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -331,7 +350,7 @@ curSpell:setDamageBonus( 1.5 );
 curSpell:setCooldown( 1 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 0 );
-curSpell:addAdditionalSpell( spellDatabase["rabies"], 0.05 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["rabies"], 0.05 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 curSpell = DawnInterface.createGeneralHealingSpell();
@@ -364,7 +383,28 @@ curSpell:setCooldown( 12 );
 curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
 curSpell:setSpellCost( 30 );
 curSpell:setInfo("Tactical strike, causing %minWeaponDamage% to %maxWeaponDamage% and increasing your parry chance the next 6 seconds.");
-curSpell:addAdditionalSpell( spellDatabase["lungeeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnCreator( spellDatabase["lungeeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Warrior );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["shieldbasheffect1"] = curSpell;
+curSpell:setName("Shield bash");
+curSpell:setCharacterState( CharacterStates.Stunned );
+curSpell:setDuration( 3 );
+curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
+
+curSpell = DawnInterface.createMeleeDamageAction();
+spellDatabase["shieldbash"] = curSpell;
+curSpell:setName("Shield bash");
+curSpell:setDamageBonus( 1.2 );
+curSpell:setCooldown( 12 );
+curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
+curSpell:setSpellCost( 40 );
+curSpell:setInfo("Bash with your shield, causing %minWeaponDamage% to %maxWeaponDamage% and stunning your enemy for 3 seconds.");
+curSpell:addAdditionalSpellOnTarget( spellDatabase["shieldbasheffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook
@@ -382,3 +422,79 @@ curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
 curSpell:setMoveSpeed( 1000 );
 curSpell:setRequiredClass( CharacterClass.Ranger );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["invisibility"] = curSpell;
+curSpell:setName("Invisibility");
+curSpell:setDuration( 12 );
+curSpell:setInfo("Granting you invisibility, making you undetectable by most enemies.");
+curSpell:setSpellCost( 50 );
+curSpell:setCastTime( 1000 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.NOCLASS );
+curSpell:setCharacterState( CharacterStates.Invisible );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["sneak"] = curSpell;
+curSpell:setName("Sneak");
+curSpell:setDuration( 30 );
+curSpell:setInfo("Hiding in shadows and sneaking allows you to go undetected from most enemies.");
+curSpell:setSpellCost( 50 );
+curSpell:setCastTime( 1000 );
+curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.NOCLASS );
+curSpell:setCharacterState( CharacterStates.Sneaking );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["terrifyeffect2"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCastTime( 0 );
+curSpell:setDuration( 60 );
+curSpell:setSpellCost( 0 );
+curSpell:setResistElementModifierPoints( ElementType.Dark, -10 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["terrifyeffect1"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCharacterState( CharacterStates.Feared );
+curSpell:setDuration( 4 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect2"], 1.0 );
+
+curSpell = DawnInterface.createGeneralBoltDamageSpell();
+spellDatabase["terrify"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCooldown( 1 );
+curSpell:setDirectDamage( 20, 30, ElementType.Dark );
+curSpell:setCastTime( 1500 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+curSpell:setSpellCost( 40 );
+curSpell:setInfo("Sends a dark soul of the Umbral'un to terrorize the target dealing %minSpellDirectDamage%-%maxSpellDirectDamage% damage and causing it to flee for a short period. When the soul leaves it curses the target, reducing Dark magic resistance for a minute.");
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/terrify/0.tga" );
+curSpell:setMoveSpeed( 650 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Liche );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["food"] = curSpell;
+curSpell:setName("Food");
+curSpell:setStats( StatsType.HealthRegen, 10 );
+curSpell:setDuration( 18 );
+curSpell:setInfo("Increases health regeneration by 10 while eating.");
+curSpell:setSpellSymbol( "data/spells/food/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setCharacterState( CharacterStates.Channeling );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
+
+curSpell = DawnInterface.copySpell( spellDatabase["food"] );
+spellDatabase["foodrank2"] = curSpell;
+curSpell:setRank( 2 );
+curSpell:setStats( StatsType.HealthRegen, 15 );
+curSpell:setInfo("Increases health regeneration by 15 while eating.");
+curSpell:setRequiredLevel( 3 );

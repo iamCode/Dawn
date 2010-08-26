@@ -37,6 +37,8 @@
 
 std::map< std::string, CCharacter* > allMobTypes;
 
+extern size_t randomSizeT( size_t min, size_t max );
+
 // Dawn LUA Interface
 namespace DawnInterface
 {
@@ -1082,6 +1084,15 @@ void CCharacter::MoveRight()
 
 void CCharacter::Move()
 {
+    if ( isStunned() == true || isMesmerized() == true ) {
+        remainingMovePoints = 0;
+        return;
+    }
+
+    if ( isFeared() == false ) {
+        hasChoosenFearDirection = false;
+    }
+
 	continuePreparing();
 	if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
 		if ( ! mayDoAnythingAffectingSpellActionWithAborting() ) {
@@ -1095,11 +1106,28 @@ void CCharacter::Move()
 		CastingAborted();
 	}
 
+	if ( movingDirection != STOP && isChanneling() == true ) {
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
+    }
+
+
+	/// if we are feared (fleeing) we run at a random direction. Only choose a direction once for each fear effect.
+	if ( isFeared() == true ) {
+	    if ( hasChoosenFearDirection == false ) {
+	        fearDirection = static_cast<Direction>( randomSizeT( 1, 8 ) );
+	        hasChoosenFearDirection = true;
+	    }
+	    movingDirection = fearDirection;
+	}
+
 	unsigned int movePerStep = 10; // moves one step per movePerStep ms
 
 	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
 	if ( movingDirection == NW || movingDirection == NE || movingDirection == SW || movingDirection == SE )
 		movePerStep = 14;
+
+    // recalculate the movementpoints based on our movementspeed (spells that affect this can be immobolizing spells, snares or movement enhancer
+    remainingMovePoints *= getMovementSpeed();
 
 	while ( remainingMovePoints > movePerStep ) {
 		remainingMovePoints -= movePerStep;
@@ -1192,10 +1220,19 @@ ActivityType::ActivityType CCharacter::getCurActivity() const
 
 int CCharacter::GetDirectionTexture()
 {
+	if ( isStunned() == true || isMesmerized() == true ) {
+	    return activeDirection;
+	}
+
 	int direction = GetDirection();
 	if ( direction != STOP ) {
 		activeDirection = direction;
 	}
+
+	if ( isFeared() == true && hasChoosenFearDirection == true ) {
+	    direction = fearDirection;
+	}
+
 	ActivityType::ActivityType curActivity = getCurActivity();
 
 	switch ( curActivity ) {
@@ -1234,16 +1271,13 @@ int CCharacter::GetDirectionTexture()
 	}
 }
 
-void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
+void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target )
 {
     assert ( spell != NULL );
+    assert ( target != NULL );
     CSpellActionBase *newSpell = NULL;
 
-    if ( spell->getEffectType() == EffectType::SingleTargetSpell && getTarget() != NULL ) {
-        newSpell = spell->cast( this, getTarget() );
-    } else if ( spell->getEffectType() == EffectType::SelfAffectingSpell ) {
-        newSpell = spell->cast( this, this );
-    }
+    newSpell = spell->cast( this, target );
 
     if ( newSpell != NULL ) {
         newSpell->startEffect();
@@ -1253,6 +1287,11 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell )
 // use this function to cast spells with rules (mana requirement, range etc...
 void CCharacter::castSpell( CSpellActionBase *spell )
 {
+    if ( isStunned() == true || isFeared() == true || isMesmerized() == true || isCharmed() == true ) {
+        /// can't cast, we're stunned, feared, mesmerized or charmed. Should perhaps display message about it.
+        return;
+    }
+
     if ( dynamic_cast<CAction*>( spell ) != NULL ) {
         if ( spell->getSpellCost() > getCurrentFatigue() ) {
             /// can't cast. cost more fatigue than we can afford. Display message here about it.
@@ -1285,6 +1324,15 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	    }
 	}
 
+	// if we're invisible or sneaking while casting, we remove that spell.
+	if ( isSneaking() == true ) {
+	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
+	}
+
+	if ( isInvisible() == true ) {
+	    removeSpellsWithCharacterState( CharacterStates::Invisible );
+	}
+
     giveToPreparation( spell );
 }
 
@@ -1305,13 +1353,25 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 
 bool CCharacter::continuePreparing()
 {
+    /// if we're preparing a spell while getting stunned, feared, mesmerized or charmed, abort the spellcasting.
+	if ( ( isStunned() == true || isFeared() == true || isMesmerized() == true || isCharmed() == true ) && getIsPreparing() == true ) {
+	    CastingAborted();
+	}
+
 	if ( isPreparing ) {
 		bool preparationFinished = (curSpellAction->getCastTime() == 0);
 		if ( ! preparationFinished ) {
 			preparationCurrentTime = SDL_GetTicks();
 
 			// casting_percentage is mostly just for the castbar display, guess we could alter this code.
-			preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / curSpellAction->getCastTime();
+			uint16_t spellCastTime = curSpellAction->getCastTime();
+
+			// if we're confused while casting, we add 35% more time to our spellcasting.
+			if ( isConfused() == true ) {
+			    spellCastTime *= 1.35;
+			}
+
+			preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / spellCastTime;
 			preparationFinished = ( preparationPercentage >= 1.0f );
 		}
 		if ( preparationFinished ) {
@@ -1397,6 +1457,28 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 
 void CCharacter::Damage(int amount, bool criticalHit)
 {
+    if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
+        if ( randomSizeT( 0, 100 ) <= 20 ) {
+            removeSpellsWithCharacterState( CharacterStates::Feared );
+        }
+    }
+
+    if ( isChanneling() == true ) { // if we're channeling something while taking damage, we loose focus and abort the channeling.
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
+    }
+
+	if ( isSneaking() == true ) { // if we're sneaking while taking damage, we loose the sneak state
+	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
+	}
+
+	if ( isInvisible() == true ) { // if we're invisible while taking damage, we loose the invisible state
+	    removeSpellsWithCharacterState( CharacterStates::Invisible );
+	}
+
+	if ( isMesmerized() == true ) { // if we're mesmerized while taking damage, we loose the mesmerize state
+	    removeSpellsWithCharacterState( CharacterStates::Mesmerized );
+	}
+
 	if (alive) {
         addDamageDisplayToGUI( amount, criticalHit, 0 );
 		if (current_health <= amount) {
@@ -1421,8 +1503,6 @@ void CCharacter::regenerateLifeManaFatigue(uint32_t regenPoints)
 		remainingRegenPoints -= 1000;
 	}
 }
-
-extern size_t randomSizeT( size_t min, size_t max );
 
 void CCharacter::dropItems()
 {
@@ -1477,6 +1557,136 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 	} else {
 	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
 	}
+}
+
+bool CCharacter::isStunned() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Stunned ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isCharmed() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Charmed ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isChanneling() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Channeling ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isFeared() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Feared ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isInvisible() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Invisible ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isSneaking() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Sneaking ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isConfused() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Confused ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::isMesmerized() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Mesmerized ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::canSeeInvisible() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::SeeInvisible ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CCharacter::canSeeSneaking() const
+{
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::SeeSneaking ) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
+float CCharacter::getMovementSpeed() const
+{
+    // see if we are affected by movement altering spells. If we are we get the lowest value and return it.
+    // if we have no spell lowering the movement, we look for enhancers and return that. If that's not found, 1.0 is returned.
+    float lowestMovementSpeed = 1.0f;
+    float highestMovementSpeed = 1.0f;
+    for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Movementspeed ) {
+            if ( lowestMovementSpeed > activeSpells[ activeSpell ].first->getCharacterState().second ) {
+                lowestMovementSpeed = activeSpells[ activeSpell ].first->getCharacterState().second;
+            }
+            if ( highestMovementSpeed < activeSpells[ activeSpell ].first->getCharacterState().second ) {
+                highestMovementSpeed = activeSpells[ activeSpell ].first->getCharacterState().second;
+            }
+        }
+    }
+
+
+    if ( lowestMovementSpeed < 1.0 ) {
+        return lowestMovementSpeed;
+    } else if ( isFeared() == true ) { // if we are feared, we reduce the movementspeed. Mostly so we dont run too far away.
+        return 0.60;
+    } else if ( isSneaking() == true ) { // if we are sneaking, we reduce the movementspeed aswell of the character. good place to do that is here
+        return 0.75;
+    } else {
+        return highestMovementSpeed;
+    }
 }
 
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )
@@ -1617,6 +1827,17 @@ std::vector<std::pair<CSpellActionBase*, uint32_t> > CCharacter::getActiveSpells
     return activeSpells;
 }
 
+void CCharacter::removeSpellsWithCharacterState( CharacterStates::CharacterStates characterState )
+{
+    // we remove spells based on what character states they have.
+    // removing active spells can cause NULL pointers, because they can be active in some damage cycle or other functions.
+    // Therefor in order to "remove" these spells we just mark them as completed, and let the cleanup-function handle the removal of the spells.
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ ) {
+        if ( activeSpells[ curSpell ].first->getCharacterState().first == characterState ) {
+            activeSpells[ curSpell ].first->markSpellActionAsFinished();
+        }
+    }
+}
 
 void CCharacter::addCooldownSpell( CSpellActionBase *spell )
 {

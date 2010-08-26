@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Wed Aug  4 21:00:10 2010.
+** Generated automatically by tolua++-1.0.93 on Thu Aug 26 21:22:18 2010.
 */
 
 #ifndef __cplusplus
@@ -2912,9 +2912,9 @@ static int tolua_CLuaInterface_Shop_addItem00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: addAdditionalSpell of class  CSpellActionBase */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00
-static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00(lua_State* tolua_S)
+/* method: addAdditionalSpellOnTarget of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnTarget00
+static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnTarget00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2932,16 +2932,51 @@ static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00(lua_State* 
   CSpellActionBase* spell = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
   double chanceToExecute = ((double)  tolua_tonumber(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpell'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpellOnTarget'", NULL);
 #endif
   {
-   self->addAdditionalSpell(spell,chanceToExecute);
+   self->addAdditionalSpellOnTarget(spell,chanceToExecute);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'addAdditionalSpell'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'addAdditionalSpellOnTarget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addAdditionalSpellOnCreator of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnCreator00
+static int tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnCreator00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  CSpellActionBase* spell = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  double chanceToExecute = ((double)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdditionalSpellOnCreator'", NULL);
+#endif
+  {
+   self->addAdditionalSpellOnCreator(spell,chanceToExecute);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addAdditionalSpellOnCreator'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3041,6 +3076,41 @@ static int tolua_CLuaInterface_CSpellActionBase_setRank00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setRank'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setCharacterState of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setCharacterState00
+static int tolua_CLuaInterface_CSpellActionBase_setCharacterState00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  CharacterStates::CharacterStates characterState = ((CharacterStates::CharacterStates) (int)  tolua_tonumber(tolua_S,2,0));
+  float value = ((float)  tolua_tonumber(tolua_S,3,1.0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCharacterState'", NULL);
+#endif
+  {
+   self->setCharacterState(characterState,value);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCharacterState'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5857,6 +5927,21 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Ranger",CharacterClass::Ranger);
    tolua_constant(tolua_S,"Warrior",CharacterClass::Warrior);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"CharacterStates",0);
+  tolua_beginmodule(tolua_S,"CharacterStates");
+   tolua_constant(tolua_S,"Channeling",CharacterStates::Channeling);
+   tolua_constant(tolua_S,"Charmed",CharacterStates::Charmed);
+   tolua_constant(tolua_S,"Confused",CharacterStates::Confused);
+   tolua_constant(tolua_S,"Feared",CharacterStates::Feared);
+   tolua_constant(tolua_S,"Invisible",CharacterStates::Invisible);
+   tolua_constant(tolua_S,"Mesmerized",CharacterStates::Mesmerized);
+   tolua_constant(tolua_S,"Movementspeed",CharacterStates::Movementspeed);
+   tolua_constant(tolua_S,"SeeInvisible",CharacterStates::SeeInvisible);
+   tolua_constant(tolua_S,"SeeSneaking",CharacterStates::SeeSneaking);
+   tolua_constant(tolua_S,"Sneaking",CharacterStates::Sneaking);
+   tolua_constant(tolua_S,"Stunned",CharacterStates::Stunned);
+   tolua_constant(tolua_S,"NOEFFECT",CharacterStates::NOEFFECT);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CCharacter","CCharacter","",NULL);
   tolua_beginmodule(tolua_S,"CCharacter");
    tolua_function(tolua_S,"baseOnType",tolua_CLuaInterface_CCharacter_baseOnType00);
@@ -6111,10 +6196,12 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CSpellActionBase","CSpellActionBase","",NULL);
   tolua_beginmodule(tolua_S,"CSpellActionBase");
-   tolua_function(tolua_S,"addAdditionalSpell",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpell00);
+   tolua_function(tolua_S,"addAdditionalSpellOnTarget",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnTarget00);
+   tolua_function(tolua_S,"addAdditionalSpellOnCreator",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnCreator00);
    tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
    tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
    tolua_function(tolua_S,"setRank",tolua_CLuaInterface_CSpellActionBase_setRank00);
+   tolua_function(tolua_S,"setCharacterState",tolua_CLuaInterface_CSpellActionBase_setCharacterState00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CAction","CAction","CSpellActionBase",NULL);
   tolua_beginmodule(tolua_S,"CAction");

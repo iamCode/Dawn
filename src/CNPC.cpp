@@ -101,7 +101,31 @@ void CNPC::Draw()
 			drawX -= getBoundingBoxX();
 			drawY -= getBoundingBoxY();
 		}
-		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture);
+
+        float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		// if sneaking and character is less than 260 pixels away we draw at 0.5 and with darker colors (shade)
+        // if NPC is invisible or sneaking with more than 260 pixels away we don't draw the NPC at all.
+        // if the character can see invisible or sneaking, we draw with 0.5 transparency.
+        double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
+                           +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+
+		if ( isSneaking() == true && ( distance < 260 || character.canSeeSneaking() == true ) ) {
+		    color[0] = 0.7f;
+		    color[1] = 0.7f;
+		    color[2] = 0.7f;
+		    color[3] = 0.5f;
+		}
+
+		if ( isInvisible() == true && character.canSeeInvisible() == true ) {
+		    color[3] = 0.5f;
+		}
+
+		if ( ( isInvisible() == true && character.canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
+		    return;
+		}
+
+		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture, color[3], color[0], color[1], color[2]);
 	}
 }
 
@@ -155,11 +179,72 @@ void CNPC::Wander()
 
 void CNPC::Move()
 {
+    std::vector<CSpellActionBase*> curSpellbook = getSpellbook();
+    for ( size_t spellIndex = 0; spellIndex < curSpellbook.size(); spellIndex++ ) {
+
+        /// \todo better AI to determine what spells to be cast.
+        ///
+        /// As of now, we just check if the spell is within range,
+        /// has enough mana and isn't on cooldown...
+        bool castableSpell = true;
+
+        if ( dynamic_cast<GeneralBuffSpell*>( curSpellbook[ spellIndex ] ) == NULL ) {
+            castableSpell = false;
+        }
+
+        if ( dynamic_cast<CSpell*>( curSpellbook[ spellIndex ] ) != NULL ) {
+            if ( curSpellbook[ spellIndex ]->getSpellCost() > getCurrentMana() )	{
+                /// can't cast. not enough mana.
+                castableSpell = false;
+            }
+        }
+
+        if ( curSpellbook[ spellIndex ]->getEffectType() != EffectType::SelfAffectingSpell && getTarget() != NULL ) {
+            uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
+            if ( curSpellbook[ spellIndex ]->isInRange( distance ) == false ) {
+                /// can't cast, not in range.
+                castableSpell = false;
+            }
+        }
+
+        for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+        {
+            if ( cooldownSpells[ curSpell ].first->getID() == curSpellbook[ spellIndex ]->getID() )
+            {
+                if ( SDL_GetTicks() < cooldownSpells[curSpell].second + curSpellbook[ spellIndex ]->getCooldown() * 1000 )
+                {
+                    /// can't cast, spell has a cooldown on it.
+                    castableSpell = false;
+                }
+            }
+        }
+
+        if ( castableSpell == true ) {
+            CSpellActionBase *curAction = NULL;
+
+            EffectType::EffectType effectType = curSpellbook[spellIndex]->getEffectType();
+
+            if ( effectType == EffectType::SingleTargetSpell
+                     && getTarget() != NULL ) {
+                curAction = curSpellbook[spellIndex]->cast( this, getTarget() );
+            } else if ( effectType == EffectType::SelfAffectingSpell ) {
+                curAction = curSpellbook[spellIndex]->cast( this, this );
+            }
+
+            if ( curAction != NULL ) {
+                castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+            }
+        }
+    }
+
 	double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
 		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
     // if player is inside agro range of NPC, we set NPC to attack mode.
-    if ( distance < 200 && getAttitude() == Attitude::HOSTILE )
+    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( character.isInvisible() == false || canSeeInvisible() == true ) && ( character.isSneaking() == false || canSeeSneaking() == true ) )
     {
+        chasingPlayer = true;
+        setTarget( &character );
+    } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && character.isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
         chasingPlayer = true;
         setTarget( &character );
     }

@@ -18,7 +18,9 @@
 
 #include "CInterface.h"
 #include "CSpell.h"
+#include "globals.h"
 #include "CNPC.h"
+#include "CZone.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
 #include <vector>
@@ -35,7 +37,7 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(11);
+	interfacetextures.texture.resize(15);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -47,7 +49,10 @@ void CInterface::LoadTextures()
     interfacetextures.LoadIMG("data/white2x2pixel.tga",8);
     interfacetextures.LoadIMG("data/interface/BuffWindow/frame.tga",9);
 	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",10);
-
+	interfacetextures.LoadIMG("data/fear.tga",11);
+	interfacetextures.LoadIMG("data/stun.tga",12);
+	interfacetextures.LoadIMG("data/confused.tga",13);
+	interfacetextures.LoadIMG("data/mesmerized.tga",14);
 
     damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
@@ -150,6 +155,8 @@ void CInterface::DrawInterface()
 
     // drawing damage / healing text floating upwards fading away.
 	drawCombatText();
+	// draw symboms displaying different states of characters / NPCs (fear is one as an example).
+	drawCharacterStates();
 }
 
 void CInterface::SetPlayer(CCharacter *player_)
@@ -323,4 +330,43 @@ void CInterface::drawTargetedNPCText()
         NPCTextFont->drawText( npc->getXPos(), npc->getYPos()+npc->getHeight()-24, "%s",npc->getCurrentSpellActionName().c_str() );
 	}
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+}
+
+void CInterface::drawCharacterStates()
+{
+    /// draws states for the characters
+    /// Todo: charmed
+    std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+    std::vector<CCharacter*> allCharacters;
+    allCharacters.push_back( player );
+    for ( size_t curNPC = 0; curNPC < zoneNPCs.size(); curNPC++ ) {
+        allCharacters.push_back( zoneNPCs[ curNPC ] );
+    }
+
+    for ( size_t curCharacter = 0; curCharacter < allCharacters.size(); curCharacter++ ) {
+        /// draws fear symbol
+        if ( allCharacters[ curCharacter  ]->isFeared() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[11].height );
+        }
+        /// draws stun symbol
+        if ( allCharacters[ curCharacter ]->isStunned() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[12].height );
+        }
+        /// draws confused symbol
+        if ( allCharacters[ curCharacter ]->isConfused() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[13].height );
+        }
+        /// draws mesmerized symbol
+        if ( allCharacters[ curCharacter ]->isMesmerized() == true ) {
+            DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[14].height );
+        }
+    }
 }
