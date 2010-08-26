@@ -136,8 +136,8 @@ class CSpellActionBase
         uint8_t getRank() const;
 
         /// characterStates which affects the target. Stunned, charmed etc...
-        void setEffect( CharacterStates::CharacterStates characterState, float value = 1.0f );
-        std::pair<CharacterStates::CharacterStates, float> getEffect() const;
+        void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
+        std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
 
 		void drawSymbol( int left, int width, int bottom, int height ) const;
     protected:

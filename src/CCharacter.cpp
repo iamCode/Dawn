@@ -1555,7 +1555,7 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 bool CCharacter::isStunned() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Stunned ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Stunned ) {
             return true;
         }
     }
@@ -1565,7 +1565,7 @@ bool CCharacter::isStunned() const
 bool CCharacter::isCharmed() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Charmed ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Charmed ) {
             return true;
         }
     }
@@ -1575,7 +1575,7 @@ bool CCharacter::isCharmed() const
 bool CCharacter::isChanneling() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Channeling ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Channeling ) {
             return true;
         }
     }
@@ -1585,7 +1585,7 @@ bool CCharacter::isChanneling() const
 bool CCharacter::isFeared() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Feared ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Feared ) {
             return true;
         }
     }
@@ -1595,7 +1595,7 @@ bool CCharacter::isFeared() const
 bool CCharacter::isInvisible() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Invisible ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Invisible ) {
             return true;
         }
     }
@@ -1605,7 +1605,7 @@ bool CCharacter::isInvisible() const
 bool CCharacter::isSneaking() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Sneaking ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Sneaking ) {
             return true;
         }
     }
@@ -1615,7 +1615,7 @@ bool CCharacter::isSneaking() const
 bool CCharacter::isConfused() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Confused ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Confused ) {
             return true;
         }
     }
@@ -1625,7 +1625,7 @@ bool CCharacter::isConfused() const
 bool CCharacter::isMesmerized() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Mesmerized ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Mesmerized ) {
             return true;
         }
     }
@@ -1635,7 +1635,7 @@ bool CCharacter::isMesmerized() const
 bool CCharacter::canSeeInvisible() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::SeeInvisible ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::SeeInvisible ) {
             return true;
         }
     }
@@ -1645,7 +1645,7 @@ bool CCharacter::canSeeInvisible() const
 bool CCharacter::canSeeSneaking() const
 {
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::SeeSneaking ) {
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::SeeSneaking ) {
             return true;
         }
     }
@@ -1660,12 +1660,12 @@ float CCharacter::getMovementSpeed() const
     float lowestMovementSpeed = 1.0f;
     float highestMovementSpeed = 1.0f;
     for ( size_t activeSpell = 0; activeSpell < activeSpells.size(); activeSpell++ ) {
-        if ( activeSpells[ activeSpell ].first->getEffect().first == CharacterStates::Movementspeed ) {
-            if ( lowestMovementSpeed > activeSpells[ activeSpell ].first->getEffect().second ) {
-                lowestMovementSpeed = activeSpells[ activeSpell ].first->getEffect().second;
+        if ( activeSpells[ activeSpell ].first->getCharacterState().first == CharacterStates::Movementspeed ) {
+            if ( lowestMovementSpeed > activeSpells[ activeSpell ].first->getCharacterState().second ) {
+                lowestMovementSpeed = activeSpells[ activeSpell ].first->getCharacterState().second;
             }
-            if ( highestMovementSpeed < activeSpells[ activeSpell ].first->getEffect().second ) {
-                highestMovementSpeed = activeSpells[ activeSpell ].first->getEffect().second;
+            if ( highestMovementSpeed < activeSpells[ activeSpell ].first->getCharacterState().second ) {
+                highestMovementSpeed = activeSpells[ activeSpell ].first->getCharacterState().second;
             }
         }
     }
@@ -1826,7 +1826,7 @@ void CCharacter::removeSpellsWithCharacterState( CharacterStates::CharacterState
     // removing active spells can cause NULL pointers, because they can be active in some damage cycle or other functions.
     // Therefor in order to "remove" these spells we just mark them as completed, and let the cleanup-function handle the removal of the spells.
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ ) {
-        if ( activeSpells[ curSpell ].first->getEffect().first == characterState ) {
+        if ( activeSpells[ curSpell ].first->getCharacterState().first == characterState ) {
             activeSpells[ curSpell ].first->markSpellActionAsFinished();
         }
     }

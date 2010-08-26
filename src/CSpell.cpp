@@ -159,13 +159,13 @@ uint8_t CSpellActionBase::getRank() const
     return rank;
 }
 
-void CSpellActionBase::setEffect( CharacterStates::CharacterStates characterState, float value )
+void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
     characterStateEffects.first = characterState;
     characterStateEffects.second = value;
 }
 
-std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getEffect() const
+std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getCharacterState() const
 {
     return characterStateEffects;
 }

@@ -397,7 +397,7 @@ class CSpellActionBase
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 	void setRequiredLevel( int requiredLevel );
 	void setRank( int rank );
-	void setEffect( CharacterStates::CharacterStates characterState, float value = 1.0 );
+	void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0 );
 };
 
 class CAction : public CSpellActionBase

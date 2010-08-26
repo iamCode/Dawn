@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sat Aug 21 21:38:21 2010.
+** Generated automatically by tolua++-1.0.93 on Thu Aug 26 21:22:18 2010.
 */
 
 #ifndef __cplusplus
@@ -3081,9 +3081,9 @@ static int tolua_CLuaInterface_CSpellActionBase_setRank00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setEffect of class  CSpellActionBase */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setEffect00
-static int tolua_CLuaInterface_CSpellActionBase_setEffect00(lua_State* tolua_S)
+/* method: setCharacterState of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setCharacterState00
+static int tolua_CLuaInterface_CSpellActionBase_setCharacterState00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3101,16 +3101,16 @@ static int tolua_CLuaInterface_CSpellActionBase_setEffect00(lua_State* tolua_S)
   CharacterStates::CharacterStates characterState = ((CharacterStates::CharacterStates) (int)  tolua_tonumber(tolua_S,2,0));
   float value = ((float)  tolua_tonumber(tolua_S,3,1.0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setEffect'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCharacterState'", NULL);
 #endif
   {
-   self->setEffect(characterState,value);
+   self->setCharacterState(characterState,value);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setEffect'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'setCharacterState'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6201,7 +6201,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
    tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
    tolua_function(tolua_S,"setRank",tolua_CLuaInterface_CSpellActionBase_setRank00);
-   tolua_function(tolua_S,"setEffect",tolua_CLuaInterface_CSpellActionBase_setEffect00);
+   tolua_function(tolua_S,"setCharacterState",tolua_CLuaInterface_CSpellActionBase_setCharacterState00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"CAction","CAction","CSpellActionBase",NULL);
   tolua_beginmodule(tolua_S,"CAction");

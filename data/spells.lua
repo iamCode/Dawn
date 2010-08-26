@@ -1,3 +1,4 @@
+-- ==== Dynamic values ====
 -- Note about dynamic values for the speltooltip.
 -- Dynamic values can be set here. In the setInfo function, you can use these values that will be displayed in the game:
 --"%minWeaponDamage%"
@@ -11,7 +12,7 @@
 --"%minContinuousHealing%"
 --"%maxContinuousHealing%"
 
--- Spell ranks --
+-- ==== Spell ranks ====
 -- When creating a spell, it automatically becomes rank 1.
 -- To create rank X of this spell, use DawnInterface.copySpell( spellDatabase["name_of_spell"] );
 -- Example:
@@ -21,6 +22,24 @@
 -- curSpell:setDirectDamage( 12, 18, ElementType.Light );
 --
 -- It's possible to alter most of the properties of a spell in another rank.
+
+-- ==== Character States ====
+-- To set character states to an effect we use setCharacterState( CharacterStates::CharacterStates );
+--
+-- Following CharacterStates are available:
+--
+--	Channeling
+--	Charmed
+--	Confused
+--	Feared
+--	Invisible
+--	Mesmerized
+--	Movementspeed
+--	SeeInvisible
+--	SeeSneaking
+--	Sneaking
+--	Stunned
+
 
 spellDatabase = {};
 
@@ -373,7 +392,7 @@ DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["shieldbasheffect1"] = curSpell;
 curSpell:setName("Shield bash");
-curSpell:setEffect( CharacterStates.Stunned );
+curSpell:setCharacterState( CharacterStates.Stunned );
 curSpell:setDuration( 3 );
 curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
 
@@ -413,9 +432,8 @@ curSpell:setSpellCost( 50 );
 curSpell:setCastTime( 1000 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setRequiredClass( CharacterClass.Liche );
-curSpell:setEffect( CharacterStates.Invisible );
-DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+curSpell:setRequiredClass( CharacterClass.NOCLASS );
+curSpell:setCharacterState( CharacterStates.Invisible );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["sneak"] = curSpell;
@@ -427,7 +445,7 @@ curSpell:setCastTime( 1000 );
 curSpell:setSpellSymbol( "data/spells/healing/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setRequiredClass( CharacterClass.NOCLASS );
-curSpell:setEffect( CharacterStates.Sneaking );
+curSpell:setCharacterState( CharacterStates.Sneaking );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["terrifyeffect2"] = curSpell;
@@ -441,7 +459,7 @@ curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["terrifyeffect1"] = curSpell;
 curSpell:setName("Terrify");
-curSpell:setEffect( CharacterStates.Feared );
+curSpell:setCharacterState( CharacterStates.Feared );
 curSpell:setDuration( 4 );
 curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
 curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect2"], 1.0 );
@@ -471,7 +489,7 @@ curSpell:setDuration( 18 );
 curSpell:setInfo("Increases health regeneration by 10 while eating.");
 curSpell:setSpellSymbol( "data/spells/food/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setEffect( CharacterStates.Channeling );
+curSpell:setCharacterState( CharacterStates.Channeling );
 curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 curSpell = DawnInterface.copySpell( spellDatabase["food"] );
