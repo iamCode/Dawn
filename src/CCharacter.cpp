@@ -1364,7 +1364,14 @@ bool CCharacter::continuePreparing()
 			preparationCurrentTime = SDL_GetTicks();
 
 			// casting_percentage is mostly just for the castbar display, guess we could alter this code.
-			preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / curSpellAction->getCastTime();
+			uint16_t spellCastTime = curSpellAction->getCastTime();
+
+			// if we're confused while casting, we add 35% more time to our spellcasting.
+			if ( isConfused() == true ) {
+			    spellCastTime *= 1.35;
+			}
+
+			preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / spellCastTime;
 			preparationFinished = ( preparationPercentage >= 1.0f );
 		}
 		if ( preparationFinished ) {

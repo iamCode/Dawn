@@ -65,10 +65,17 @@ void CSpellActionBase::unbindFromCreator()
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
+		uint16_t spellCost = getSpellCost();
+
+		// if we're confused while casting, we add 20% more to the spell cost.
+        if ( creator->isConfused() == true ) {
+            spellCost  *= 1.20;
+        }
+
 		if ( creator->getArchType() == CharacterArchType::Fighter ) {
-	        creator->modifyCurrentFatigue( -getSpellCost() );
+	        creator->modifyCurrentFatigue( -spellCost );
 	    } else {
-	        creator->modifyCurrentMana( -getSpellCost() );
+	        creator->modifyCurrentMana( -spellCost );
 	    }
     }
 }
