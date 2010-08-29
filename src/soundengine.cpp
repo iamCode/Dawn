@@ -26,6 +26,7 @@
 #include "configuration.h"
 
 std::auto_ptr<MusicCache> musicCache( new MusicCache() );
+std::auto_ptr<SoundCache> soundCache( new SoundCache() );
 
 void SoundEngine::initSound()
 {
@@ -65,6 +66,17 @@ void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 		loops = -1;
 	if ( Mix_PlayMusic( musicSample, loops ) == -1 ) {
 		dawn_debug_fatal( "Could not play music %s: %s", musicFile.c_str(), Mix_GetError() );
+	}
+}
+
+void SoundEngine::playSound( std::string soundFile )
+{
+	if ( ! Configuration::soundenabled )
+		return;
+
+	Mix_Chunk *soundSample = soundCache->getSoundFromCache( soundFile );
+	if ( Mix_PlayChannel( -1, soundSample, 0 ) == -1 ) {
+		dawn_debug_fatal( "Could not play sound %s: %s", soundFile.c_str(), Mix_GetError() );
 	}
 }
 

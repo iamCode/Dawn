@@ -36,6 +36,9 @@ class SoundEngine
 		static void playMusic( std::string musicFile, bool playInLoop );
 		/// This will decouple music loading and music playing. The file will be loaded into memory.
 		static void preloadMusic( std::string musicFile );
+		/// This plays a certain sound file. The sound file will be loaded into memory if not already done so.
+		/// For faster access to sound files they can be preloaded with preloadSound.
+		static void playSound( std::string soundFile );
 };
 
 #endif // SOUNDENGINE_H
