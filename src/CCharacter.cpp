@@ -28,6 +28,7 @@
 #include "CNPC.h"
 #include "Player.h"
 #include "globals.h"
+#include "configuration.h"
 
 #include <map>
 #include <string>
@@ -1553,7 +1554,7 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 {
     if (isPlayer())
 	{
-        activeGUI->addCombatText(amount, critical, damageType, world_x+140,dawn_configuration::screenHeight-40+world_y);
+        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y);
 	} else {
 	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
 	}

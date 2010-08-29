@@ -27,14 +27,6 @@
 #include <cstdarg>
 #include <sstream>
 
-namespace dawn_configuration {
-	extern std::string logfile; // The logfile
-	extern bool debug_stdout; // Write messages to stdout
-	extern bool debug_fileout; // Write messages to a file
-	extern bool show_info_messages; // Show or hide debug info
-	extern bool show_warn_messages; // show or hide warnings
-}
-
 enum debug_message_type { DEBUG_INFO, DEBUG_WARN, DEBUG_FATAL };
 
 void dawn_debug_info(const std::string& message ...); /* Logs useful

@@ -83,30 +83,26 @@
 #include "FramesBase.h"
 #include "LogWindow.h"
 #include "textureframe.h"
+#include "soundengine.h"
+#include "configuration.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
 #endif
 
 /* Global settings now reside in the
-   dawn_configuration namespace, variables
+   Configuration namespace, variables
    are added to this across multiple files.
    current headers adding to it:
    debug.h
  */
-namespace dawn_configuration {
-	bool fullscreenenabled = true;
-	int screenWidth = 1024;
-	int screenHeight = 768;
-	int bpp = 32;
-}
 
 // FIXME: This is a temp hack until the
 // 	objects dont need those variables.
 //	david: I'll have this sorted pretty
 //	quick.
-int RES_X = dawn_configuration::screenWidth;
-int RES_Y = dawn_configuration::screenHeight;
+int RES_X = Configuration::screenWidth;
+int RES_Y = Configuration::screenHeight;
 
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
@@ -123,7 +119,7 @@ uint32_t initStartTicks = 0;
 
 SDL_Surface *screen;
 Player character;
-cameraFocusHandler focus(dawn_configuration::screenWidth, dawn_configuration::screenHeight);
+cameraFocusHandler focus(Configuration::screenWidth, Configuration::screenHeight);
 
 CEditor Editor;
 
@@ -165,23 +161,26 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 {
 	bool run_game = true;
 	std::string executable(argv[0]);
+	Configuration::soundenabled = true;
 #ifdef _WIN32
 	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
 #endif
 	for (int i=1 ; i < argc ; ++i) {
 		std::string currentarg(argv[i]);
 		if (currentarg == "-f" || currentarg == "--fullscreen") {
-			dawn_configuration::fullscreenenabled = true;
-			run_game = true;
+			Configuration::fullscreenenabled = true;
 		} else if (currentarg == "-w" || currentarg == "--window") {
-			dawn_configuration::fullscreenenabled = false;
-			run_game = true;
+			Configuration::fullscreenenabled = false;
+		} else if (currentarg == "--nosound" ) {
+			Configuration::soundenabled = false;
 		} else if (currentarg == "-h" || currentarg == "--help") {
 			std::cout << "Dawn-RPG Startup Parameters" <<
 			          std::endl << std::endl <<
 			          " -f, --fullscreen         Run Dawn in fullscreen mode" <<
 			          std::endl <<
 			          " -w, --window             Run Dawn inside a window" <<
+			          std::endl <<
+			          " --nosound                Run Dawn without sound" <<
 			          std::endl <<
 			          " -h, --help               Show this help screen" <<
 			          std::endl;
@@ -632,7 +631,7 @@ public:
 		character.setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
 		character.setBoundingBox( 18, 20, 64, 64 );
 		character.setUseBoundingBox( true );
-		character.Init(dawn_configuration::screenWidth/2,dawn_configuration::screenHeight/2);
+		character.Init(Configuration::screenWidth/2,Configuration::screenHeight/2);
 		character.setActiveGUI( &GUI );
 		character.setMaxHealth(400);
 		character.setMaxMana(250);
@@ -728,30 +727,31 @@ bool dawn_init(int argc, char** argv)
 
 		atexit(SDL_Quit);
 
-		if (dawn_configuration::fullscreenenabled)
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
-			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
+		if (Configuration::fullscreenenabled)
+			screen = SDL_SetVideoMode(Configuration::screenWidth,
+			                          Configuration::screenHeight, Configuration::bpp,
 			                          SDL_OPENGL | SDL_FULLSCREEN);
 		else
-			screen = SDL_SetVideoMode(dawn_configuration::screenWidth,
-			                          dawn_configuration::screenHeight, dawn_configuration::bpp,
+			screen = SDL_SetVideoMode(Configuration::screenWidth,
+			                          Configuration::screenHeight, Configuration::bpp,
 			                          SDL_OPENGL);
-
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
 
+		SoundEngine::initSound();
+
 		glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		glViewport( 0, 0, dawn_configuration::screenWidth, dawn_configuration::screenHeight );
+		glViewport( 0, 0, Configuration::screenWidth, Configuration::screenHeight );
 
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity(); // reset view to 0,0
 
-		glOrtho(0.0f, dawn_configuration::screenWidth, 0.0f, dawn_configuration::screenHeight, -1.0f, 1.0f);
+		glOrtho(0.0f, Configuration::screenWidth, 0.0f, Configuration::screenHeight, -1.0f, 1.0f);
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();  // reset view to 0,0
 
@@ -772,11 +772,11 @@ bool dawn_init(int argc, char** argv)
             SDL_PollEvent(&event);
 
 			if (event.type == SDL_MOUSEBUTTONDOWN) {
-                chooseClassScreen->clicked( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1, event.button.button );
+                chooseClassScreen->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
 			}
 			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			chooseClassScreen->draw( event.motion.x, dawn_configuration::screenHeight - event.motion.y - 1 );
+			chooseClassScreen->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
 
 		}
@@ -854,6 +854,7 @@ void game_loop()
 {
 
 	// TODO: Break this down into subroutines
+	SoundEngine::playMusic( "data/music/mika_FallToPieces_Silence.ogg", true );
 
 	Uint32 lastTicks = SDL_GetTicks();
 	Uint32 curTicks  = lastTicks;
@@ -986,7 +987,7 @@ void game_loop()
                 if (event.type == SDL_MOUSEMOTION)
                 {
                     mouseX = event.motion.x;
-                    mouseY = dawn_configuration::screenHeight - event.motion.y - 1;
+                    mouseY = Configuration::screenHeight - event.motion.y - 1;
 
                     if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
                     {
@@ -1243,11 +1244,11 @@ void game_loop()
 
 int main(int argc, char* argv[])
 {
-	dawn_configuration::logfile = "dawn-log.log";
-	dawn_configuration::debug_stdout = true;
-	dawn_configuration::debug_fileout = true;
-	dawn_configuration::show_info_messages = true;
-	dawn_configuration::show_warn_messages = true;
+	Configuration::logfile = "dawn-log.log";
+	Configuration::debug_stdout = true;
+	Configuration::debug_fileout = true;
+	Configuration::show_info_messages = true;
+	Configuration::show_warn_messages = true;
 
 	if(dawn_init(argc, argv))
 		game_loop();

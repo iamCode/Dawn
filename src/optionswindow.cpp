@@ -32,6 +32,7 @@
 #include "Spellbook.h"
 #include "ActionBar.h"
 #include "FramesBase.h"
+#include "configuration.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -39,12 +40,6 @@ extern std::auto_ptr<QuestWindow> questWindow;
 namespace DawnInterface
 {
     void clearLogWindow();
-}
-
-namespace dawn_configuration
-{
-	extern int screenWidth;
-	extern int screenHeight;
 }
 
 OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
@@ -65,8 +60,8 @@ void OptionsWindow::setTextureDependentPositions()
 	frameWidth = backgroundTexture->texture[0].width;
 	frameHeight = backgroundTexture->texture[0].height;
 	// center on screen
-	posX = (dawn_configuration::screenWidth - frameWidth) / 2;
-	posY = (dawn_configuration::screenHeight - frameHeight) / 2;
+	posX = (Configuration::screenWidth - frameWidth) / 2;
+	posY = (Configuration::screenHeight - frameHeight) / 2;
 }
 
 OptionsWindow::~OptionsWindow()

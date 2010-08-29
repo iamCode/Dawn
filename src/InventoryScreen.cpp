@@ -28,16 +28,12 @@
 #include "shop.h"
 #include "CZone.h"
 #include "globals.h"
+#include "configuration.h"
 
 #include <cassert>
 #include <memory>
 
 extern std::auto_ptr<Shop> shopWindow;
-
-namespace dawn_configuration
-{
-	extern int screenWidth;
-}
 
 namespace DawnInterface
 {
@@ -169,7 +165,7 @@ void InventoryScreen::loadTextures()
 
 void InventoryScreen::setTextureDependentPositions()
 {
-	posX = dawn_configuration::screenWidth - textures.texture[0].width - 50;
+	posX = Configuration::screenWidth - textures.texture[0].width - 50;
 }
 
 void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
@@ -666,7 +662,7 @@ void InventoryScreen::drawItemTooltip( int mouseX, int mouseY )
 
                         // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
                         if ( firstItemCompared == false ) {
-                            if ( dawn_configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+                            if ( Configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
                                 thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
                             } else {
                                 thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();

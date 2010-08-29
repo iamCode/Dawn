@@ -22,12 +22,7 @@
 #include "CDrawingHelpers.h"
 #include "GLFT_Font.h"
 #include "fontcache.h"
-
-namespace dawn_configuration
-{
-	extern int screenWidth;
-	extern int screenHeight;
-}
+#include "configuration.h"
 
 LoadingScreen::LoadingScreen()
 {
@@ -46,8 +41,8 @@ LoadingScreen::LoadingScreen()
 	width = backgroundTexture->texture[0].width;
 	height = backgroundTexture->texture[0].height;
 	// center on screen
-	posX = (dawn_configuration::screenWidth - width) / 2;
-	posY = (dawn_configuration::screenHeight - height) / 2;
+	posX = (Configuration::screenWidth - width) / 2;
+	posY = (Configuration::screenHeight - height) / 2;
 	curText = "";
 	progress = 0.0;
 }

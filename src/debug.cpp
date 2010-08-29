@@ -18,6 +18,8 @@
 
 #include "debug.h"
 
+#include "configuration.h"
+
 #include <SDL/SDL.h> // just for SDL_GetTicks()
 
 #ifndef WIN32
@@ -28,14 +30,6 @@
 #include <cassert>
 
 uint32_t debugOutputTime = 0;
-
-namespace dawn_configuration {
-	std::string logfile = "dawn-log.cpp"; // The logfile
-	bool debug_stdout = false; // Write messages to stdout
-	bool debug_fileout = false; // Write messages to a file
-	bool show_info_messages = false; // Show or hide debug info
-	bool show_warn_messages = false; // show or hide warnings
-}
 
 static bool log_started = false; /* This gets set to true
 	after the first write (so that the log file is
@@ -69,13 +63,13 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 		case(DEBUG_INFO):
 			ss << date_time_string() << ": Information : " << buf;
 			output_string = ss.str();
-			if(dawn_configuration::show_info_messages)
+			if(Configuration::show_info_messages)
 				should_output = true;
 			break;
 		case(DEBUG_WARN):
 			ss << date_time_string() << ": Warning : " << buf;
 			output_string = ss.str();
-			if(dawn_configuration::show_warn_messages)
+			if(Configuration::show_warn_messages)
 				should_output = true;
 			break;
 		case(DEBUG_FATAL):
@@ -88,16 +82,16 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 	if(should_output) {
 		if(!log_started) {
 			/* This will reset the file if this is the first write this session */
-			std::ofstream temp(dawn_configuration::logfile.c_str());
+			std::ofstream temp(Configuration::logfile.c_str());
 			log_started = true;
 			temp.close();
 		}
 
-		std::ofstream outputfile(dawn_configuration::logfile.c_str(), std::ios_base::app);
+		std::ofstream outputfile(Configuration::logfile.c_str(), std::ios_base::app);
 
-		if(dawn_configuration::debug_stdout)
+		if(Configuration::debug_stdout)
 			std::cout << output_string << std::endl;
-		if(dawn_configuration::debug_fileout)
+		if(Configuration::debug_fileout)
 			if(outputfile)
 				outputfile << output_string << std::endl;
 

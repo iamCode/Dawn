@@ -25,6 +25,7 @@
 #include "StatsSystem.h"
 #include "elements.h"
 #include "shop.h"
+#include "configuration.h"
 #include <memory>
 
 extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
@@ -146,14 +147,14 @@ void itemTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (blockNumberWidth + 2) * blockWidth > dawn_configuration::screenWidth )
+    if ( x + (blockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = dawn_configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
+        x = Configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
     }
 
-    if ( y + (blockNumberHeight + 2) * blockHeight > dawn_configuration::screenHeight )
+    if ( y + (blockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
     {
-        y = dawn_configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
+        y = Configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
     }
 
     // set the correct position based on where we are
@@ -216,14 +217,14 @@ void spellTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (blockNumberWidth + 2) * blockWidth > dawn_configuration::screenWidth )
+    if ( x + (blockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = dawn_configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
+        x = Configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
     }
 
-    if ( y + (blockNumberHeight + 2) * blockHeight > dawn_configuration::screenHeight )
+    if ( y + (blockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
     {
-        y = dawn_configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
+        y = Configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
     }
 
     // set the correct position based on where we are
@@ -257,14 +258,14 @@ void Tooltip::drawSmallTooltip( int x, int y )
     width = tooltipText[0].font->calcStringWidth( tooltipText[0].text );
 
     // make sure the tooltip doesnt go "off screen"
-    if ( width + x + 32 > dawn_configuration::screenWidth )
+    if ( width + x + 32 > Configuration::screenWidth )
     {
-        x = dawn_configuration::screenWidth - width - 32;
+        x = Configuration::screenWidth - width - 32;
     }
 
-    if ( height + y + 32 > dawn_configuration::screenHeight )
+    if ( height + y + 32 > Configuration::screenHeight )
     {
-        y = dawn_configuration::screenHeight - height - 32;
+        y = Configuration::screenHeight - height - 32;
     }
 
     // set the first font Y-position on the top of the tooltip.

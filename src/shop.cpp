@@ -24,6 +24,7 @@
 #include "CDrawingHelpers.h"
 #include "FramesBase.h"
 #include "InventoryScreen.h"
+#include "configuration.h"
 
 extern std::auto_ptr<InventoryScreen> inventoryScreen;
 extern std::auto_ptr<Shop> shopWindow;
@@ -210,7 +211,7 @@ void Shop::drawItemTooltip( int mouseX, int mouseY )
 
                         // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
                         if ( firstItemCompared == false ) {
-                            if ( dawn_configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+                            if ( Configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
                                 thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
                             } else {
                                 thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();
