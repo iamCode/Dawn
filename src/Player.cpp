@@ -22,6 +22,7 @@
 #include "StatsSystem.h"
 #include "CZone.h"
 #include "globals.h"
+#include "soundengine.h"
 
 #include <limits>
 #include <cassert>
@@ -133,7 +134,17 @@ void Player::clearInventory()
 
 void Player::Move()
 {
+	int oldX = getXPos();
+	int oldY = getYPos();
+
 	CCharacter::Move();
+
+	// if the character has moved, enable walking sound
+	if ( oldX != getXPos() || oldY != getYPos() ) {
+		SoundEngine::useWalkingSound( true );
+	} else {
+		SoundEngine::useWalkingSound( false );
+	}
 }
 
 void Player::Die()

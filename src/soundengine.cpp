@@ -80,5 +80,28 @@ void SoundEngine::playSound( std::string soundFile )
 	}
 }
 
+static int walkingChannel = -1;
 
+void SoundEngine::useWalkingSound( bool enabled )
+{
+	if ( ! Configuration::soundenabled )
+		return;
+
+	if ( !enabled && walkingChannel >= 0 ) {
+		if ( ! Mix_Paused( walkingChannel ) ) {
+			Mix_Pause( walkingChannel );
+		}
+	} else if ( enabled ) {
+		if ( walkingChannel == -1 ) {
+			std::string soundFile = "data/sound/walking.ogg";
+			Mix_Chunk *soundSample = soundCache->getSoundFromCache( soundFile.c_str() );
+			walkingChannel = Mix_PlayChannel( -1, soundSample, -1 );
+			if ( walkingChannel == -1 ) {
+				dawn_debug_fatal( "Could not play sound %s: %s", soundFile.c_str(), Mix_GetError() );
+			}
+		} else if ( Mix_Paused( walkingChannel ) ) {
+			Mix_Resume( walkingChannel );
+		}
+	}
+}
 
