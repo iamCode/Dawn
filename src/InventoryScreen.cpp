@@ -29,6 +29,7 @@
 #include "CZone.h"
 #include "globals.h"
 #include "configuration.h"
+#include "commonsounds.h"
 
 #include <cassert>
 #include <memory>
@@ -218,25 +219,30 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                             InventoryItem *tmp = floatingSelection;
                             floatingSelection = inventory->getItemAtSlot( curSlotEnum );
                             inventory->wieldItemAtSlot( curSlotEnum, tmp);
+                            CommonSounds::playClickSound();
                         }
                     } else if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
                         InventoryItem *tmp = floatingSelection;
 						floatingSelection = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
 						inventory->wieldItemAtSlot( curSlotEnum, tmp);
+						CommonSounds::playClickSound();
                     } else if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
 						inventory->wieldItemAtSlot( curSlotEnum, floatingSelection );
 						floatingSelection = NULL;
+						CommonSounds::playClickSound();
 					} else {
 						InventoryItem *tmp = floatingSelection;
 						floatingSelection = inventory->getItemAtSlot( curSlotEnum );
 						inventory->wieldItemAtSlot( curSlotEnum, tmp);
+						CommonSounds::playClickSound();
 					}
 				}
 			}
 			else if ( floatingSelection == NULL && inventory->getItemAtSlot( curSlotEnum ) != NULL ) {
 				floatingSelection = inventory->getItemAtSlot( curSlotEnum );
 				inventory->wieldItemAtSlot( curSlotEnum, NULL );
+				CommonSounds::playClickSound();
 			}
 			return;
 		}
@@ -314,6 +320,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                             InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
                             inventory->removeItem( useItem );
                             inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                            CommonSounds::playClickSound();
                             if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
                                 delete tmp;
                             } else {
@@ -323,8 +330,9 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                     } else if ( useItem->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
                         // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
                         InventoryItem *tmp = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
-						inventory->removeItem( useItem );
+                        inventory->removeItem( useItem );
                         inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                        CommonSounds::playClickSound();
                         if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
                             delete tmp;
                         } else {
@@ -334,6 +342,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                         InventoryItem *tmp = inventory->getItemAtSlot( curSlotEnum );
                         inventory->removeItem( useItem );
                         inventory->wieldItemAtSlot( curSlotEnum, useItem );
+                        CommonSounds::playClickSound();
                         if ( tmp != NULL && inventory->insertItem( tmp->getItem() ) ) {
                             delete tmp;
                         } else {
@@ -349,10 +358,12 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	if ( floatingSelection != NULL ) {
 		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {
 			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelection, fieldIndexX, fieldIndexY );
+			CommonSounds::playClickSound();
 		}
 	} else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
 		floatingSelection = inventory->getItemAt( fieldIndexX, fieldIndexY );
 		inventory->removeItem( floatingSelection );
+		CommonSounds::playClickSound();
 	}
 }
 
