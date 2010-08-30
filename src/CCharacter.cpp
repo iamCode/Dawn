@@ -961,8 +961,6 @@ void CCharacter::setPosition( int xpos, int ypos )
 
 extern std::vector <CNPC*> NPC;
 
-extern Player character;
-
 bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
 {
 	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
@@ -1002,7 +1000,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 
 	// check for collision with player
 	{
-		CCharacter *curNPC = &character;
+		CCharacter *curNPC = Globals::getPlayer();
 		if ( curNPC != this && curNPC->isAlive() ) {
 			int other_l = curNPC->getXPos(), other_r = curNPC->getXPos() + curNPC->getWidth();
 			int other_b = curNPC->getYPos(), other_t = curNPC->getYPos() + curNPC->getHeight();

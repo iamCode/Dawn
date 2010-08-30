@@ -145,7 +145,7 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 
 void setQuitGame();
 
-extern Player character;
+
 extern std::auto_ptr<Shop> shopWindow;
 extern std::auto_ptr<Spellbook> spellbook;
 extern std::auto_ptr<ActionBar> actionBar;
@@ -182,17 +182,17 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		}
 		Globals::allZones.clear();
 
-		character.clearInventory();
+		Globals::getPlayer()->clearInventory();
 		// clear shop data
-		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
+		shopWindow = std::auto_ptr<Shop>( new Shop( Globals::getPlayer(), NULL ) );
 		// clear spellbook
 		spellbook->clear();
 		// clear action bar
 		actionBar->clear();
 		// clear cooldowns
-		character.clearCooldownSpells();
+		Globals::getPlayer()->clearCooldownSpells();
 		// clear buffs
-		character.clearActiveSpells();
+		Globals::getPlayer()->clearActiveSpells();
 
 		// reenter map
 		// 1. Load all zones
@@ -294,10 +294,10 @@ void ChooseClassScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	}
 
 	if ( selectedEntry == 0 ) { // we choose liche
-		character.setClass( CharacterClass::Liche );
+		Globals::getPlayer()->setClass( CharacterClass::Liche );
 		done = true;
 	} else if ( selectedEntry == 1 ) { // we choose warrior
-        character.setClass( CharacterClass::Warrior );
+        Globals::getPlayer()->setClass( CharacterClass::Warrior );
 		done = true;
 	}
 }

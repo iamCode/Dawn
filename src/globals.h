@@ -24,6 +24,7 @@
 
 // ideally this file should not add any include dependency on dawn files
 class CZone;
+class Player;
 
 namespace Globals
 {
@@ -32,6 +33,7 @@ namespace Globals
 	void setCurrentZone( CZone *newCurZone );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
+	Player *getPlayer();
 }
 
 #endif // GLOBALS_H
