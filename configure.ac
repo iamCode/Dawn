@@ -26,6 +26,10 @@ AC_CHECK_LIB([SDL_image], [IMG_Load], [], [
         echo "Cannot locate SDL_image library. You need this for Dawn to work."
         exit -1
         ])
+AC_CHECK_LIB([SDL_mixer], [Mix_PlayMusic], [], [
+        echo "Cannot locate SDL_mixer library. You need this for Dawn to work."
+        exit -1
+        ])
 AC_CHECK_LIB([freetype], [FT_New_Memory_Face], [], [
         echo "Cannot locate freetype library. You need this for Dawn to work."
         exit -1
@@ -47,7 +51,7 @@ AC_SEARCH_LIBS([tolua_open], [tolua++5.1 tolua++], [], [
 
 
 # Checks for header files.
-AC_CHECK_HEADERS([zlib.h stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h])
+AC_CHECK_HEADERS([zlib.h stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_mixer.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
