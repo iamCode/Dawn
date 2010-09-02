@@ -854,13 +854,13 @@ void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType acti
 	texture[ activityNr ]->texture.resize( 8 * numTextures + 1 );
 }
 
-void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename )
+void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX, int textureOffsetY )
 {
 	size_t activityNr = static_cast<size_t>(activity);
 	assert( texture[activityNr] != NULL );
 	assert( index < numMoveTexturesPerDirection[activityNr] );
 
-	texture[ activityNr ]->LoadIMG( filename, direction + 8*index );
+	texture[ activityNr ]->LoadIMG( filename, direction + 8*index, false, textureOffsetX, textureOffsetY );
 }
 
 // end of Dawn LUA Interface
@@ -1215,6 +1215,11 @@ ActivityType::ActivityType CCharacter::getCurActivity() const
 			curActivity = ActivityType::Attacking;
 		}
 	}
+
+	if ( isAlive() == false && ( dyingStartFrame < SDL_GetTicks() + 10000 ) ) {
+	    curActivity = ActivityType::Dying;
+	}
+
 	return curActivity;
 }
 
@@ -1236,6 +1241,19 @@ int CCharacter::GetDirectionTexture()
 	ActivityType::ActivityType curActivity = getCurActivity();
 
 	switch ( curActivity ) {
+	    case ActivityType::Dying:
+		{
+		    if ( hasDrawnDyingOnce == true ) {
+		        return static_cast<int>( dyingDirection ) + 8*(numMoveTexturesPerDirection[ ActivityType::Dying ]-1);
+		    }
+			int msPerDrawFrame = 80;
+			int index = ((SDL_GetTicks() % (msPerDrawFrame * numMoveTexturesPerDirection[ curActivity ] )) / msPerDrawFrame );
+            if ( index == numMoveTexturesPerDirection[ ActivityType::Dying ]-1 ) {
+                hasDrawnDyingOnce = true;
+            }
+			return static_cast<int>( dyingDirection ) + 8*index;;
+		}
+		break;
 		case ActivityType::Walking:
 		{
 			if ( direction == STOP )
@@ -1528,8 +1546,11 @@ void CCharacter::dropItems()
 
 void CCharacter::Die()
 {
-
-
+    if ( hasChoosenDyingDirection == false ) {
+        dyingDirection = static_cast<Direction>( activeDirection );
+        dyingStartFrame = SDL_GetTicks();
+        reduceDyingTranspFrame = SDL_GetTicks() + 7000;
+    }
 }
 
 void CCharacter::Heal(int amount)

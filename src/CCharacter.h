@@ -89,6 +89,7 @@ namespace ActivityType
 		Casting,
 		Attacking,
 		Shooting,
+		Dying,
 		Count
 	};
 }
@@ -151,10 +152,13 @@ class CCharacter
 			remainingMovePoints = 0;
 			isPreparing = false;
 			alive = true;
+			hasDrawnDyingOnce = false;
 			hasChoosenFearDirection = false;
+			hasChoosenDyingDirection = false;
 			curSpellAction = NULL;
 			experience = 0;
 			coins = 0;
+			dyingTransparency = 1.0f;
 		}
 
 		virtual bool isPlayer() const;
@@ -209,7 +213,7 @@ class CCharacter
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
 		ActivityType::ActivityType getCurActivity() const;
 
-		Direction WanderDirection, MovingDirection, fearDirection;
+		Direction WanderDirection, MovingDirection, fearDirection, dyingDirection;
 
 		Uint8 *keys;
 
@@ -403,7 +407,7 @@ class CCharacter
 		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
 		CTexture *getTexture( ActivityType::ActivityType activity ) const;
 		void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
-		void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
+		void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
 		CTexture **texture;
 
 		void setActiveGUI( CInterface *GUI_ );
@@ -419,6 +423,8 @@ class CCharacter
 
 
 		bool alive;
+
+		bool hasDrawnDyingOnce;
 
 		// states of the NPC. the functions are from the CharacterStates namespace.
 		bool wandering, moving, in_combat;
@@ -437,6 +443,7 @@ class CCharacter
 		// timers
 		float wander_thisframe, wander_lastframe;
 		float respawn_thisframe, respawn_lastframe;
+        float dyingStartFrame, reduceDyingTranspFrame;
 
 		// stats
 		float life_percentage, mana_percentage, fatigue_percentage;
@@ -447,6 +454,8 @@ class CCharacter
 		int x_spawn_pos, y_spawn_pos;
 		int NPC_id;
 		int seconds_to_respawn;
+
+        float dyingTransparency;
 
 	protected:
         std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
@@ -518,6 +527,7 @@ class CCharacter
 		int *numMoveTexturesPerDirection;
 		int activeDirection;
         bool hasChoosenFearDirection;
+        bool hasChoosenDyingDirection;
 
         std::vector<sLootTable> lootTable;
         uint32_t coins;

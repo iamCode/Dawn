@@ -264,17 +264,23 @@ void DrawScene()
 		curInteraction->draw();
 	}
 
-	character.Draw();
-
-	// draw tooltips if we're holding left ALT key.
-	curZone->getGroundLoot()->drawTooltip();
-
-	// draw NPC (and if it's in target, their lifebar and name)
+    // draw the NPC
 	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
 	for (unsigned int x=0; x<zoneNPCs.size(); x++)
 	{
 		CNPC *curNPC = zoneNPCs[x];
 		curNPC->Draw();
+	}
+
+	character.Draw();
+
+    // draw tooltips if we're holding left ALT key.
+	curZone->getGroundLoot()->drawTooltip();
+
+	// draw NPC's name and lifebar if it's in target
+	for (unsigned int x=0; x<zoneNPCs.size(); x++)
+	{
+		CNPC *curNPC = zoneNPCs[x];
 		if ( character.getTarget() == curNPC )
 		{
             GUI.drawTargetedNPCText();
@@ -369,18 +375,20 @@ void dawn_init_signal_handlers()
 class DawnInitObject;
 bool threadedMode = false;
 DawnInitObject *curTextureProcessor = NULL;
-void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
+void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex, int textureOffsetX = 0, int textureOffsetY = 0 );
 bool initPhase = false;
 struct TextureQueueEntry
 {
-	TextureQueueEntry( CTexture *texture_, const std::string textureFile_, int textureIndex_ )
+	TextureQueueEntry( CTexture *texture_, const std::string textureFile_, int textureIndex_, int textureOffsetX_, int textureOffsetY_ )
 		: 	texture( texture_ ),
 			textureFile( textureFile_ ),
-			textureIndex( textureIndex_ )
+			textureIndex( textureIndex_ ),
+			textureOffsetX( textureOffsetX_ ),
+			textureOffsetY( textureOffsetY_ )
 	{}
 	CTexture *texture;
 	std::string textureFile;
-	int textureIndex;
+	int textureIndex, textureOffsetX, textureOffsetY;
 };
 
 class DawnInitObject : public CThread
@@ -427,10 +435,10 @@ public:
 		return progress;
 	}
 
-	void setCurrentTextureToProcess( CTexture *texture, std::string textureFile, int textureIndex )
+	void setCurrentTextureToProcess( CTexture *texture, std::string textureFile, int textureIndex, int textureOffsetX, int textureOffsetY )
 	{
 		accessMutex.Lock();
-		TextureQueueEntry *newEntry = new TextureQueueEntry( texture, textureFile, textureIndex );
+		TextureQueueEntry *newEntry = new TextureQueueEntry( texture, textureFile, textureIndex, textureOffsetX, textureOffsetY );
 		textureQueue.push_back( newEntry );
 		// this is just for first tests. later the queue will work autonomously
 		accessMutex.Unlock();
@@ -445,7 +453,7 @@ public:
 			TextureQueueEntry *curEntry = textureQueue.front();
 			accessMutex.Unlock();
 			dawn_debug_info( "loading texture %s\n", curEntry->textureFile.c_str());
-			curEntry->texture->LoadIMG( curEntry->textureFile, curEntry->textureIndex, true );
+            curEntry->texture->LoadIMG( curEntry->textureFile, curEntry->textureIndex, true, curEntry->textureOffsetX, curEntry->textureOffsetY );
 			delete curEntry;
 			accessMutex.Lock();
 			textureQueue.pop_front();
@@ -574,10 +582,7 @@ public:
 		character.setNumMoveTexturesPerDirection( activity, 13 );
 		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
 			std::ostringstream ostr;
-			if ( curIndex < 10 )
-				ostr << "000" << curIndex;
-			else
-				ostr << "00" << curIndex;
+			ostr << "000" << curIndex;
 
 			std::string numberString = ostr.str();
 			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
@@ -593,10 +598,7 @@ public:
 		character.setNumMoveTexturesPerDirection( activity, 13 );
 		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
 			std::ostringstream ostr;
-			if ( curIndex < 10 )
-				ostr << "000" << curIndex;
-			else
-				ostr << "00" << curIndex;
+			ostr << "000" << curIndex;
 
 			std::string numberString = ostr.str();
 			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
@@ -613,10 +615,7 @@ public:
 		character.setNumMoveTexturesPerDirection( activity, 13 );
 		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
 			std::ostringstream ostr;
-			if ( curIndex < 10 )
-				ostr << "000" << curIndex;
-			else
-				ostr << "00" << curIndex;
+			ostr << "000" << curIndex;
 
 			std::string numberString = ostr.str();
 			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("attacking n").append(numberString).append(".tga" ) );
@@ -627,6 +626,29 @@ public:
 			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("attacking sw").append(numberString).append(".tga" ) );
 			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("attacking w").append(numberString).append(".tga" ) );
 			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
+		}
+
+        activity = ActivityType::Dying;
+        int numOfMoves = 0;
+        if ( character.getClass() == CharacterClass::Warrior ) {
+            numOfMoves = 9;
+        } else if ( character.getClass() == CharacterClass::Liche ) {
+            numOfMoves = 13;
+        }
+		character.setNumMoveTexturesPerDirection( activity, numOfMoves );
+		for ( size_t curIndex=0; curIndex<numOfMoves; ++curIndex ) {
+			std::ostringstream ostr;
+			ostr << "000" << curIndex;
+
+			std::string numberString = ostr.str();
+			character.setMoveTexture( activity, N, curIndex, std::string("").append( characterDataString ).append("dying n").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NE, curIndex, std::string("").append( characterDataString ).append("dying ne").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, E, curIndex, std::string("").append( characterDataString ).append("dying e").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SE, curIndex, std::string("").append( characterDataString ).append("dying se").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, S, curIndex, std::string("").append( characterDataString ).append("dying s").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, SW, curIndex, std::string("").append( characterDataString ).append("dying sw").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("dying w").append(numberString).append(".tga" ) );
+			character.setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("dying nw").append(numberString).append(".tga" ) );
 		}
 
 		character.setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
@@ -680,9 +702,9 @@ public:
 	}
 };
 
-void processTextureInOpenGLThread( CTexture *texture, std::string textureFile, int textureIndex )
+void processTextureInOpenGLThread( CTexture *texture, std::string textureFile, int textureIndex, int textureOffsetX, int textureOffsetY )
 {
-	curTextureProcessor->setCurrentTextureToProcess( texture, textureFile, textureIndex );
+	curTextureProcessor->setCurrentTextureToProcess( texture, textureFile, textureIndex, textureOffsetX, textureOffsetY );
 }
 
 extern int64_t numCharactersDrawn;

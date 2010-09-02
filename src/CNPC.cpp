@@ -81,6 +81,7 @@ void CNPC::Damage(int amount, bool criticalHit)
 
 void CNPC::Die()
 {
+	CCharacter::Die();
     dropItems();
     alive = false;
 	respawn_lastframe = SDL_GetTicks();
@@ -94,7 +95,7 @@ void CNPC::Draw()
 	cleanupCooldownSpells();
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
-	if (alive == true) {
+	if ( alive == true || curActivity == ActivityType::Dying ) {
 		int drawX = getXPos();
 		int drawY = getYPos();
 		if ( getUseBoundingBox() ) {
@@ -123,6 +124,14 @@ void CNPC::Draw()
 
 		if ( ( isInvisible() == true && character.canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
 		    return;
+		}
+
+		if ( curActivity == ActivityType::Dying ) {
+		    if ( reduceDyingTranspFrame < SDL_GetTicks() - 50 ) {
+		        dyingTransparency -= 0.025;
+                reduceDyingTranspFrame = SDL_GetTicks();
+		    }
+		    color[3] = dyingTransparency;
 		}
 
 		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture, color[3], color[0], color[1], color[2]);

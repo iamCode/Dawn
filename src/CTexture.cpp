@@ -32,7 +32,7 @@ uint32_t imgLoadTime = 0;
 uint32_t sdlLoadTime = 0;
 uint32_t imgInversionTime = 0;
 uint32_t mipmapBuildTime = 0;
-void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex );
+void processTextureInOpenGLThread( CTexture *texture, std::string texturefile, int textureIndex, int textureOffsetX = 0, int textureOffsetY = 0 );
 
 std::auto_ptr<TextureCache> textureCache( new TextureCache() );
 
@@ -160,14 +160,16 @@ TextureCache::~TextureCache()
 {
 }
 
-void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode )
+void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode, int textureOffsetX, int textureOffsetY )
 {
 	if ( threadedMode && ! isOpenGLThreadInThreadedMode ) {
-		processTextureInOpenGLThread( this, file, texture_index );
+		processTextureInOpenGLThread( this, file, texture_index, textureOffsetX, textureOffsetY );
 		return;
 	}
 
 	texture[ texture_index ] = textureCache->getTextureFromCache( file );
+	texture[ texture_index ].textureOffsetX = textureOffsetX;
+	texture[ texture_index ].textureOffsetY = textureOffsetY;
 }
 
 
@@ -189,8 +191,8 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
 		glScalef(x_scale,y_scale,1.0f);
 	}
 	DrawingHelpers::mapTextureToRect( texture[draw_id],
-	                                  x, texture[draw_id].width,
-	                                  y, texture[draw_id].height );
+	                                  x+texture[draw_id].textureOffsetX, texture[draw_id].width,
+	                                  y+texture[draw_id].textureOffsetY, texture[draw_id].height );
 	if ( needToScale ) {
 		glPopMatrix();
 	}
@@ -231,11 +233,7 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 	rewind(fp);
 
 	// resize our texture vector so all our texture-ID's can fit in there ;)
-	/**
-	Needs to replace the reserve-call here with some other *better* function.
-	I think texture.reserve(highest_texture+1) would do, but not sure...
-	**/
-	texture.resize(200/**highest_texture+1**/);
+	texture.resize(highest_texture+1);
 	if (!try_load_collision_box) {
 		while (!feof(fp)) {
 			if ( fgets(buf, 255, fp) != NULL ) {
