@@ -189,6 +189,7 @@ class CCharacter
 		void clearActiveSpells();
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
 		void removeSpellsWithCharacterState( CharacterStates::CharacterStates characterState );
+		void removeActiveSpell( CSpellActionBase* activeSpell );
 
 		//active cooldowns on spells
 		void addCooldownSpell( CSpellActionBase *spell );

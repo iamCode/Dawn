@@ -333,8 +333,6 @@ void DrawScene()
 	    activeFrames[ curFrame ]->draw( mouseX, mouseY );
 	}
 
-	buffWindow->draw();
-
 	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
 	{
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
@@ -944,6 +942,7 @@ void game_loop()
                     if ( clickedInFrame == false )
                     {
                         actionBar->clicked( mouseX, mouseY );
+                        buffWindow->clicked( mouseX, mouseY, event.button.button );
                         if ( shopWindow->hasFloatingSelection() )
                         {
                             shopWindow->clicked( mouseX, mouseY, event.button.button );

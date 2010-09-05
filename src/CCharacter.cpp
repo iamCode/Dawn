@@ -1860,6 +1860,15 @@ void CCharacter::removeSpellsWithCharacterState( CharacterStates::CharacterState
     }
 }
 
+void CCharacter::removeActiveSpell( CSpellActionBase* activeSpell )
+{
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ ) {
+        if ( activeSpells[ curSpell ].first == activeSpell ) {
+            activeSpells[ curSpell ].first->markSpellActionAsFinished();
+        }
+    }
+}
+
 void CCharacter::addCooldownSpell( CSpellActionBase *spell )
 {
     assert( spell != NULL );
