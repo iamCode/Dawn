@@ -132,15 +132,13 @@ void ActionBar::draw()
                 }
             }
 
-            if ( isSpellUseable == true ) {
-                for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+            for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+            {
+                if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
                 {
-                    if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
-                    {
-                        isSpellUseable = false;
-                        drawCooldownText = true;
-                        cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
-                    }
+                    isSpellUseable = false;
+                    drawCooldownText = true;
+                    cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
                 }
             }
 
