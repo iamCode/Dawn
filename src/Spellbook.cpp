@@ -284,6 +284,8 @@ void Spellbook::refreshPage()
 {
 	size_t spellsOnPreviousPages = curPage * spellSlot.size();
 
+    floatingSpell = NULL;
+
 	for ( size_t curSlot=0; curSlot<spellSlot.size(); ++curSlot ) {
 		// reset slot to empty
 		spellSlot[curSlot].action = NULL;
