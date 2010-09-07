@@ -48,6 +48,7 @@ class CNPC : public CCharacter
 		void setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_respawn, int _do_respawn );
 
 		void Draw();
+		void chasePlayer( CCharacter *player );
 		void Move();
 		Direction GetDirection();
 		void Respawn();

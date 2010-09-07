@@ -72,10 +72,15 @@ Direction CNPC::GetDirection()
 	}
 }
 
+void CNPC::chasePlayer( CCharacter *player )
+{
+    chasingPlayer = true;
+    setTarget( player );
+}
+
 void CNPC::Damage(int amount, bool criticalHit)
 {
-	chasingPlayer = true;
-	setTarget( &character );
+    chasePlayer( &character );
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -251,11 +256,9 @@ void CNPC::Move()
     // if player is inside agro range of NPC, we set NPC to attack mode.
     if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( character.isInvisible() == false || canSeeInvisible() == true ) && ( character.isSneaking() == false || canSeeSneaking() == true ) )
     {
-        chasingPlayer = true;
-        setTarget( &character );
+        chasePlayer( &character );
     } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && character.isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
-        chasingPlayer = true;
-        setTarget( &character );
+        chasePlayer( &character );
     }
 
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {

@@ -38,6 +38,7 @@
 std::map< std::string, CCharacter* > allMobTypes;
 
 extern size_t randomSizeT( size_t min, size_t max );
+extern Player character;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -1823,6 +1824,12 @@ void CCharacter::addActiveSpell( CSpellActionBase *spell )
 
     // add new spell on character.
     activeSpells.push_back( std::pair<CSpellActionBase*, uint32_t>( spell, SDL_GetTicks() ) );
+
+    // if we're an NPC and the spell is hostile, we want to set the caster to hostile.
+    if ( isPlayer() == false && spell->isSpellHostile() == true ) {
+        // in the future when having more than one player playing, this function needs to be reworked.
+        dynamic_cast<CNPC*>( this )->chasePlayer( &character );
+    }
 }
 
 void CCharacter::cleanupActiveSpells()
