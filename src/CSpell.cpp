@@ -1164,27 +1164,27 @@ int16_t GeneralBuffSpell::getSpellEffectElementModifierPoints( ElementType::Elem
 
 void GeneralBuffSpell::setStats( StatsType::StatsType statsType, int16_t amount )
 {
-    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
-    if ( amount > 0 ) {
-        hostileSpell = false;
+    // here we set the state of the spell. If the amount is negative, the spell is hostile.
+    if ( amount < 0 ) {
+        hostileSpell = true;
     }
     statsModifier[ static_cast<size_t>( statsType ) ] = amount;
 }
 
 void GeneralBuffSpell::setResistElementModifierPoints( ElementType::ElementType elementType, int16_t resistModifierPoints )
 {
-    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
-    if ( resistModifierPoints > 0 ) {
-        hostileSpell = false;
+    // here we set the state of the spell. If the amount is negative, the spell is hostile.
+    if ( resistModifierPoints < 0 ) {
+        hostileSpell = true;
     }
 	resistElementModifier[ static_cast<size_t>( elementType ) ] = resistModifierPoints;
 }
 
 void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int16_t spellEffectElementModifierPoints )
 {
-    // here we set the state of the spell. If the amount is positive, the spell is not hostile.
-    if ( spellEffectElementModifierPoints > 0 ) {
-        hostileSpell = false;
+    // here we set the state of the spell. If the amount is negative, the spell is hostile.
+    if ( spellEffectElementModifierPoints < 0 ) {
+        hostileSpell = true;
     }
     spellEffectElementModifier[ static_cast<size_t>( elementType ) ] = spellEffectElementModifierPoints;
 }

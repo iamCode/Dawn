@@ -37,7 +37,7 @@ class BuffWindow : public FramesBase
         void loadTextures();
         void draw( int mouseX, int mouseY );
         void clicked( int mouseX, int mouseY, uint8_t mouseState );
-        CSpellActionBase* getSpellAtMouse( int mouseX, int mouseX );
+        CSpellActionBase* getSpellAtMouse( int mouseX, int mouseY );
 
     private:
         Tooltip *tooltip;
