@@ -533,25 +533,9 @@ void InventoryScreen::drawSlot( ItemSlot::ItemSlot curSlot )
 
 		InventoryScreenSlot *curScreenSlot = mySlots[ static_cast<size_t>( curSlot ) ];
 
-		double stretchX = ((double)curScreenSlot->getSizeX()) / ((double)symbolTexture->texture[0].width);
-		double stretchY = ((double)curScreenSlot->getSizeY()) / ((double)symbolTexture->texture[0].height);
+		size_t drawSizeX = symbolTexture->texture[0].width;
+		size_t drawSizeY = symbolTexture->texture[0].height;
 
-		size_t drawSizeX;
-		size_t drawSizeY;
-
-		if ( stretchX < stretchY ) {
-			drawSizeX = curScreenSlot->getSizeX();
-			drawSizeY = symbolTexture->texture[0].height * stretchX;
-			if ( drawSizeY > curScreenSlot->getSizeY() ) {
-				drawSizeY = curScreenSlot->getSizeY();
-			}
-		} else {
-			drawSizeX = symbolTexture->texture[0].width * stretchY;
-			if ( drawSizeX > curScreenSlot->getSizeX() ) {
-				drawSizeX = curScreenSlot->getSizeX();
-			}
-			drawSizeY = curScreenSlot->getSizeY();
-		}
 		size_t centerOffsetX = (curScreenSlot->getSizeX() - drawSizeX) / 2;
 		size_t centerOffsetY = (curScreenSlot->getSizeY() - drawSizeY) / 2;
 
