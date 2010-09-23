@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Wed Sep 22 22:39:18 2010.
+** Generated automatically by tolua++-1.0.92 on Thu Sep 23 23:03:04 2010.
 */
 
 #ifndef __cplusplus
@@ -906,7 +906,9 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,6,&tolua_err)
+     !tolua_isnumber(tolua_S,6,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -917,11 +919,13 @@ static int tolua_CLuaInterface_CCharacter_setMoveTexture00(lua_State* tolua_S)
   int direction = ((int)  tolua_tonumber(tolua_S,3,0));
   int index = ((int)  tolua_tonumber(tolua_S,4,0));
   std::string filename = ((std::string)  tolua_tocppstring(tolua_S,5,0));
+  int textureOffsetX = ((int)  tolua_tonumber(tolua_S,6,0));
+  int textureOffsetY = ((int)  tolua_tonumber(tolua_S,7,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMoveTexture'", NULL);
 #endif
   {
-   self->setMoveTexture(activity,direction,index,filename);
+   self->setMoveTexture(activity,direction,index,filename,textureOffsetX,textureOffsetY);
   }
  }
  return 0;
@@ -5939,6 +5943,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"Casting",ActivityType::Casting);
    tolua_constant(tolua_S,"Attacking",ActivityType::Attacking);
    tolua_constant(tolua_S,"Shooting",ActivityType::Shooting);
+   tolua_constant(tolua_S,"Dying",ActivityType::Dying);
    tolua_constant(tolua_S,"Count",ActivityType::Count);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Attitude",0);

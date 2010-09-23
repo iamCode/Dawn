@@ -32,6 +32,17 @@ for index=0,8,1 do
 	wolfbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/wolf/attacking e000"..index..".tga" );
 	wolfbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/wolf/attacking ne000"..index..".tga" );
 end
+wolfbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 9 );
+for index=0,8,1 do
+	wolfbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/wolf/dying n000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/wolf/dying nw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/wolf/dying w000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/wolf/dying sw000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/wolf/dying s000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/wolf/dying se000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/wolf/dying e000"..index..".tga" );
+	wolfbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/wolf/dying ne000"..index..".tga" );
+end
 
 wolfbase:setStrength( 15 )
 wolfbase:setDexterity( 25 )
@@ -103,6 +114,18 @@ for index=0,7,1 do
 	humanbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/swordsman/walking ne000"..index..".tga" );
 end
 
+humanbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 9 );
+for index=0,8,1 do
+	humanbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/swordsman/dying n000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/swordsman/dying nw000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/swordsman/dying w000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/swordsman/dying sw000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/swordsman/dying s000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/swordsman/dying se000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/swordsman/dying e000"..index..".tga", -16, -16 );
+	humanbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/swordsman/dying ne000"..index..".tga", -16, -16 );
+end
+
 humanbase:setBoundingBox( 18, 20, 64, 64 );
 humanbase:setUseBoundingBox( true );
 
@@ -140,6 +163,17 @@ for index=0,7,1 do
 	wizardbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/wizard/walking se000"..index..".tga" );
 	wizardbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/wizard/walking e000"..index..".tga" );
 	wizardbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/wizard/walking ne000"..index..".tga" );
+end
+wizardbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 13 );
+for index=0,12,1 do
+	wizardbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/wizard/dying n000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/wizard/dying nw000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/wizard/dying w000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/wizard/dying sw000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/wizard/dying s000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/wizard/dying se000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/wizard/dying e000"..index..".tga", -16, -16 );
+	wizardbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/wizard/dying ne000"..index..".tga", -16, -16 );
 end
 
 wizardbase:setBoundingBox( 18, 20, 64, 64 );
@@ -199,6 +233,18 @@ for index=0,8,1 do
 	spiderbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/spider/attacking se000"..index..".tga" );
 	spiderbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/spider/attacking e000"..index..".tga" );
 	spiderbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/spider/attacking ne000"..index..".tga" );
+end
+
+spiderbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 11 );
+for index=0,10,1 do
+	spiderbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/spider/dying n000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/spider/dying nw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/spider/dying w000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/spider/dying sw000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/spider/dying s000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/spider/dying se000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/spider/dying e000"..index..".tga" );
+	spiderbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/spider/dying ne000"..index..".tga" );
 end
 
 spiderbase:setStrength( 20 )
@@ -262,6 +308,18 @@ for index=0,9,1 do
 	skeletonbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/skeleton/attacking se000"..index..".tga" );
 	skeletonbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/skeleton/attacking e000"..index..".tga" );
 	skeletonbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/skeleton/attacking ne000"..index..".tga" );
+end
+
+skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 9 );
+for index=0,8,1 do
+	skeletonbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/skeleton/dying n000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/skeleton/dying nw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/skeleton/dying w000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/skeleton/dying sw000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/skeleton/dying s000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/skeleton/dying se000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/skeleton/dying e000"..index..".tga" );
+	skeletonbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/skeleton/dying ne000"..index..".tga" );
 end
 
 skeletonbase:setStrength( 25 )
@@ -334,6 +392,18 @@ for index=0,12,1 do
 	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, SE, index, "data/character/skeletonarcher/attacking se000"..index..".tga" );
 	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, E, index, "data/character/skeletonarcher/attacking e000"..index..".tga" );
 	skeletonarcherbase:setMoveTexture( ActivityType.Shooting, NE, index, "data/character/skeletonarcher/attacking ne000"..index..".tga" );
+end
+
+skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 9 );
+for index=0,8,1 do
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/skeletonarcher/dying n000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/skeletonarcher/dying nw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/skeletonarcher/dying w000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/skeletonarcher/dying sw000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/skeletonarcher/dying s000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/skeletonarcher/dying se000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/skeletonarcher/dying e000"..index..".tga" );
+	skeletonarcherbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/skeletonarcher/dying ne000"..index..".tga" );
 end
 
 skeletonarcherbase:setStrength( 25 )

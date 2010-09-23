@@ -757,6 +757,16 @@ std::string Tooltip::parseInfoText( CSpellActionBase *spell, const std::string i
     return toReturn;
 }
 
+CSpellActionBase *spellTooltip::getParent() const
+{
+    return parent;
+}
+
+Item *itemTooltip::getParent() const
+{
+    return parent;
+}
+
 /// FRAMES
 
 std::auto_ptr<CTexture> frameTextures( NULL );

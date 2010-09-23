@@ -21,6 +21,7 @@ namespace ActivityType
 		Casting,
 		Attacking,
 		Shooting,
+		Dying,
 		Count
 	};
 }
@@ -103,7 +104,7 @@ class CCharacter {
 
 
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
-    void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename );
+    void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
 
     void setClass( CharacterClass::CharacterClass characterClass );    
 

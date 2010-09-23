@@ -467,7 +467,7 @@ curSpell:addAdditionalSpellOnTarget( spellDatabase["terrifyeffect2"], 1.0 );
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["terrify"] = curSpell;
 curSpell:setName("Terrify");
-curSpell:setCooldown( 1 );
+curSpell:setCooldown( 30 );
 curSpell:setDirectDamage( 20, 30, ElementType.Dark );
 curSpell:setCastTime( 1500 );
 curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );

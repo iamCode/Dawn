@@ -72,15 +72,21 @@ Direction CNPC::GetDirection()
 	}
 }
 
+void CNPC::chasePlayer( CCharacter *player )
+{
+    chasingPlayer = true;
+    setTarget( player );
+}
+
 void CNPC::Damage(int amount, bool criticalHit)
 {
-	chasingPlayer = true;
-	setTarget( Globals::getPlayer() );
+	chasePlayer( Globals::getPlayer() );
 	CCharacter::Damage( amount, criticalHit );
 }
 
 void CNPC::Die()
 {
+	CCharacter::Die();
     dropItems();
     alive = false;
 	respawn_lastframe = SDL_GetTicks();
@@ -94,7 +100,7 @@ void CNPC::Draw()
 	cleanupCooldownSpells();
 	direction_texture = GetDirectionTexture();
 	ActivityType::ActivityType curActivity = getCurActivity();
-	if (alive == true) {
+	if ( alive == true || curActivity == ActivityType::Dying ) {
 		int drawX = getXPos();
 		int drawY = getYPos();
 		if ( getUseBoundingBox() ) {
@@ -124,6 +130,14 @@ void CNPC::Draw()
 
 		if ( ( isInvisible() == true && player->canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && player->canSeeSneaking() == false ) ) {
 		    return;
+		}
+
+		if ( curActivity == ActivityType::Dying ) {
+		    if ( reduceDyingTranspFrame < SDL_GetTicks() - 50 ) {
+		        dyingTransparency -= 0.025;
+                reduceDyingTranspFrame = SDL_GetTicks();
+		    }
+		    color[3] = dyingTransparency;
 		}
 
 		texture[ static_cast<size_t>(curActivity) ]->DrawTexture(drawX,drawY,direction_texture, color[3], color[0], color[1], color[2]);
@@ -244,11 +258,9 @@ void CNPC::Move()
     // if player is inside agro range of NPC, we set NPC to attack mode.
     if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( player->isInvisible() == false || canSeeInvisible() == true ) && ( player->isSneaking() == false || canSeeSneaking() == true ) )
     {
-        chasingPlayer = true;
-        setTarget( player );
+	chasePlayer( player );
     } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && player->isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
-        chasingPlayer = true;
-        setTarget( player );
+	chasePlayer( Globals::getPlayer() );
     }
 
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {

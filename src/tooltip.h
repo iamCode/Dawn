@@ -89,6 +89,7 @@ class spellTooltip : public Tooltip
     public:
         spellTooltip(CSpellActionBase *parent, Player *player);
         void draw( int x, int y );
+        CSpellActionBase *getParent() const;
 
     private:
         CSpellActionBase *parent;
@@ -102,6 +103,7 @@ class itemTooltip : public Tooltip
         itemTooltip(Item *parent, Player *player);
         void draw( int x, int y );
         void setShopItem( bool isShopItem_ );
+        Item *getParent() const;
 
     private:
         Item *parent;

@@ -24,13 +24,13 @@
 #include "fontcache.h"
 #include "configuration.h"
 
-BuffWindow::BuffWindow( Player *player_)
-        :   player( player_ ),
-            posX( 300 ),
-            spellFont( NULL )
+BuffWindow::BuffWindow( Player *player ) : FramesBase ( 0, 0, 0, 0, 0, 0 )
 {
     initFonts();
     loadTextures();
+    toggle();
+    this->player = player;
+    tooltip = NULL;
     posY = Configuration::screenHeight - 50;
     posX = Configuration::screenWidth - 204;
 }
@@ -51,7 +51,7 @@ void BuffWindow::loadTextures()
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
 }
 
-void BuffWindow::draw()
+void BuffWindow::draw( int mouseX, int mouseY )
 {
     // load the active spells from the player
     activeSpells = player->getActiveSpells();
@@ -85,4 +85,48 @@ void BuffWindow::draw()
         }
     }
 
+    CSpellActionBase *spellUnderMouse = getSpellAtMouse( mouseX, mouseY );
+    if ( spellUnderMouse != NULL ) {
+        if ( tooltip != NULL ) {
+            if ( dynamic_cast<spellTooltip*>( tooltip )->getParent() != spellUnderMouse ) {
+                delete tooltip;
+                tooltip = new spellTooltip( spellUnderMouse, player );
+            }
+        } else {
+            tooltip = new spellTooltip( spellUnderMouse, player );
+        }
+        tooltip->draw( mouseX, mouseY );
+    }
+}
+
+CSpellActionBase* BuffWindow::getSpellAtMouse( int mouseX, int mouseY )
+{
+    for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
+    {
+        // only draw spells that has a duration.
+        if ( activeSpells[ curSpell ].first->getDuration() > 0 ) {
+            int spellPosYStart = posY-40*curSpell;
+            int spellPosXStart = posX;
+            if ( mouseY > spellPosYStart
+              && mouseY < spellPosYStart + 36
+              && mouseX > spellPosXStart
+              && mouseX < spellPosXStart + 204 ) {
+                return activeSpells[ curSpell ].first;
+            }
+        }
+    }
+    return NULL;
+}
+
+void BuffWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
+{
+    // if the right mouse button is used, we try to remove the spell.
+    if ( mouseState == SDL_BUTTON_RIGHT ) {
+        CSpellActionBase *spellUnderMouse = getSpellAtMouse( mouseX, mouseY );
+        if ( spellUnderMouse != NULL ) {
+            if ( spellUnderMouse->isSpellHostile() == false ) {
+                player->removeActiveSpell( spellUnderMouse );
+            }
+        }
+    }
 }

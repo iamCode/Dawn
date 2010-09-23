@@ -22,23 +22,26 @@
 #include "CTexture.h"
 #include "GLFT_Font.h"
 #include "CSpell.h"
+#include "FramesBase.h"
+#include "tooltip.h"
 
 class Player;
 
-class BuffWindow
+class BuffWindow : public FramesBase
 {
     public:
-        BuffWindow( Player *player_ );
+        BuffWindow( Player *player );
         ~BuffWindow();
 
         void initFonts();
         void loadTextures();
-        void draw();
+        void draw( int mouseX, int mouseY );
+        void clicked( int mouseX, int mouseY, uint8_t mouseState );
+        CSpellActionBase* getSpellAtMouse( int mouseX, int mouseY );
 
     private:
+        Tooltip *tooltip;
         Player *player;
-        int posX;
-        int posY;
         GLFT_Font *spellFont;
         CTexture textures;
         std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
