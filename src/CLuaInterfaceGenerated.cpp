@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Thu Aug 26 21:22:18 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Sep 22 22:39:18 2010.
 */
 
 #ifndef __cplusplus
@@ -5243,6 +5243,34 @@ static int tolua_CLuaInterface_DawnInterface_setSavingAllowed00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: DawnInterface::setBackgroundMusic */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_setBackgroundMusic00
+static int tolua_CLuaInterface_DawnInterface_setBackgroundMusic00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  {
+   DawnInterface::setBackgroundMusic(filename);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setBackgroundMusic'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::getPlayer */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_getPlayer00
 static int tolua_CLuaInterface_DawnInterface_getPlayer00(lua_State* tolua_S)
@@ -6306,6 +6334,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"enterZone",tolua_CLuaInterface_DawnInterface_enterZone00);
    tolua_function(tolua_S,"isSavingAllowed",tolua_CLuaInterface_DawnInterface_isSavingAllowed00);
    tolua_function(tolua_S,"setSavingAllowed",tolua_CLuaInterface_DawnInterface_setSavingAllowed00);
+   tolua_function(tolua_S,"setBackgroundMusic",tolua_CLuaInterface_DawnInterface_setBackgroundMusic00);
    tolua_function(tolua_S,"getPlayer",tolua_CLuaInterface_DawnInterface_getPlayer00);
    tolua_function(tolua_S,"getQuestSaveText",tolua_CLuaInterface_DawnInterface_getQuestSaveText00);
    tolua_function(tolua_S,"getInventorySaveText",tolua_CLuaInterface_DawnInterface_getInventorySaveText00);

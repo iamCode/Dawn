@@ -851,7 +851,6 @@ void game_loop()
 {
 
 	// TODO: Break this down into subroutines
-	SoundEngine::playMusic( "data/music/mika_FallToPieces_Silence.ogg", true );
 
 	Uint32 lastTicks = SDL_GetTicks();
 	Uint32 curTicks  = lastTicks;
