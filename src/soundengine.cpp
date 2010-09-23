@@ -28,19 +28,26 @@
 std::auto_ptr<MusicCache> musicCache( new MusicCache() );
 std::auto_ptr<SoundCache> soundCache( new SoundCache() );
 
+static std::string currentlyPlayedMusic = "";
+static bool currentMusicInLoop = false;
+
 void SoundEngine::initSound()
 {
 	if ( ! Configuration::soundenabled )
 		return;
 
+	// This seems to be done, but since I found it in the library documentation it might be code
+	// needed for a higher version of SDL_Mixer
 	//int flags = MIX_INIT_OGG;
 	//int initedFlags = Mix_Init( flags );
 	//if ( initedFlags != flags )
 	//{
 	//	dawn_debug_fatal( "Could not initialize all sound modes (Mix_Init left error message \"%s\")", Mix_GetError() );
 	//}
-	// use default setting for audio and check for chunk callbacks every 64 bytes (don't know what is a good default here)
-	if ( Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 512) == -1 )
+	
+	// Chunksize is 256 since this is the smallest my system can handle.
+	// Higher chunk sizes seem to make time between click and click sound noticable
+	if ( Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 256) == -1 )
 	{
 		dawn_debug_fatal( "Could not open audio (Mix_OpenAudio exited with error message \"%s\")", Mix_GetError() );
 	}
@@ -60,6 +67,9 @@ void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 	if ( ! Configuration::soundenabled )
 		return;
 
+	if ( currentlyPlayedMusic == musicFile && currentMusicInLoop == playInLoop )
+		return;
+
 	Mix_Music *musicSample = musicCache->getMusicFromCache( musicFile );
 	int loops = 1;
 	if ( playInLoop )
@@ -67,6 +77,8 @@ void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 	if ( Mix_PlayMusic( musicSample, loops ) == -1 ) {
 		dawn_debug_fatal( "Could not play music %s: %s", musicFile.c_str(), Mix_GetError() );
 	}
+	currentlyPlayedMusic = musicFile;
+	currentMusicInLoop = playInLoop;
 }
 
 void SoundEngine::playSound( std::string soundFile )
@@ -102,6 +114,14 @@ void SoundEngine::useWalkingSound( bool enabled )
 		} else if ( Mix_Paused( walkingChannel ) ) {
 			Mix_Resume( walkingChannel );
 		}
+	}
+}
+
+namespace DawnInterface
+{
+	void setBackgroundMusic( std::string filename )
+	{
+		SoundEngine::playMusic( filename, true );
 	}
 }
 
