@@ -24,6 +24,8 @@
 #include "CDrawingHelpers.h"
 #include "FramesBase.h"
 #include "InventoryScreen.h"
+#include "configuration.h"
+#include "soundengine.h"
 
 extern std::auto_ptr<InventoryScreen> inventoryScreen;
 extern std::auto_ptr<Shop> shopWindow;
@@ -210,7 +212,7 @@ void Shop::drawItemTooltip( int mouseX, int mouseY )
 
                         // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
                         if ( firstItemCompared == false ) {
-                            if ( dawn_configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+                            if ( Configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
                                 thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
                             } else {
                                 thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();
@@ -362,16 +364,19 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
     }
 
 	if ( givePlayerMoney ) {
-        GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+        SoundEngine::playSound( "data/sound/sell_buy_item.ogg" );
+	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
 	    player->giveCoins( sellItem->getItem()->getValue() * 0.75 );
         DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
-	    // player only gets 75% of the itemvalue when he sells an item
+        // player only gets 75% of the itemvalue when he sells an item
 	}
 }
 
 void Shop::buyFromShop()
 {
     player->reduceCoins( floatingSelection->getItem()->getValue() );
+
+    SoundEngine::playSound( "data/sound/sell_buy_item.ogg" );
 
     GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
     DawnInterface::addTextToLogWindow( yellow, "Purchased %s.", floatingSelection->getItem()->getName().c_str() );

@@ -16,24 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef COMMONSOUNDS_H
+#define COMMONSOUNDS_H
 
-#include <string>
-#include <map>
-
-// ideally this file should not add any include dependency on dawn files
-class CZone;
-class Player;
-
-namespace Globals
+namespace CommonSounds
 {
-	extern std::map< std::string, CZone* > allZones;
-	CZone *getCurrentZone();
-	void setCurrentZone( CZone *newCurZone );
-	bool isSavingAllowed();
-	void setSavingAllowed( bool savingAllowed );
-	Player *getPlayer();
+	void playClickSound();
 }
 
-#endif // GLOBALS_H
+#endif // COMMONSOUNDS_H

@@ -27,12 +27,6 @@
 
 class Player;
 
-namespace dawn_configuration
-{
-	extern int screenWidth;
-	extern int screenHeight;
-}
-
 struct sTooltipText
 {
     std::string text;

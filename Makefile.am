@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/GLee -I/usr/include/freetype2 -I/usr/include/GL -I/usr/include/lua5.1
-# LDADD = -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut -lGLU
+# LDADD = -lSDL -lSDL_image -lGL -llua5.1 -ltolua++5.1 -lfreetype -lglut -lGLU -lSDL_mixer
 
 
 bin_PROGRAMS = dawn-rpg
@@ -35,6 +35,10 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CMessage.h \
 	src/CNPC.cpp \
 	src/CNPC.h \
+	src/commonsounds.cpp \
+	src/commonsounds.h \
+	src/configuration.cpp \
+	src/configuration.h \
 	src/CSpell.cpp \
 	src/CSpell.h \
 	src/CTexture.cpp \
@@ -71,6 +75,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
 	src/main.h \
+	src/musiccache.cpp \
+	src/musiccache.h \
 	src/optionswindow.cpp \
 	src/optionswindow.h \
 	src/Player.cpp \
@@ -79,6 +85,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/questwindow.h \
 	src/shop.cpp \
 	src/shop.h \
+	src/soundengine.cpp \
+	src/soundengine.h \
 	src/Spellbook.cpp \
 	src/Spellbook.h \
 	src/stats.h \

@@ -54,18 +54,20 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CCharacter.$(OBJEXT) CEditor.$(OBJEXT) \
 	CharacterInfoScreen.$(OBJEXT) CInterface.$(OBJEXT) \
 	CLuaFunctions.$(OBJEXT) CLuaInterfaceGenerated.$(OBJEXT) \
-	CMessage.$(OBJEXT) CNPC.$(OBJEXT) CSpell.$(OBJEXT) \
-	CTexture.$(OBJEXT) CZone.$(OBJEXT) debug.$(OBJEXT) \
-	elements.$(OBJEXT) FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
-	GLFT_Font.$(OBJEXT) globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
+	CMessage.$(OBJEXT) CNPC.$(OBJEXT) commonsounds.$(OBJEXT) \
+	configuration.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
+	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
+	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) \
+	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
-	optionswindow.$(OBJEXT) Player.$(OBJEXT) questwindow.$(OBJEXT) \
-	shop.$(OBJEXT) Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) \
-	textwindow.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
-	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
-	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
+	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
+	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
+	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
+	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
+	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
+	Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -241,6 +243,10 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CMessage.h \
 	src/CNPC.cpp \
 	src/CNPC.h \
+	src/commonsounds.cpp \
+	src/commonsounds.h \
+	src/configuration.cpp \
+	src/configuration.h \
 	src/CSpell.cpp \
 	src/CSpell.h \
 	src/CTexture.cpp \
@@ -277,6 +283,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
 	src/main.h \
+	src/musiccache.cpp \
+	src/musiccache.h \
 	src/optionswindow.cpp \
 	src/optionswindow.h \
 	src/Player.cpp \
@@ -285,6 +293,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/questwindow.h \
 	src/shop.cpp \
 	src/shop.h \
+	src/soundengine.cpp \
+	src/soundengine.h \
 	src/Spellbook.cpp \
 	src/Spellbook.h \
 	src/stats.h \
@@ -422,6 +432,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callindirection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cameraFocusHandler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/commonsounds.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elements.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fontcache.Po@am__quote@
@@ -432,10 +444,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loadingscreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/musiccache.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/optionswindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnglite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/questwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tooltip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
@@ -649,6 +663,34 @@ CNPC.obj: src/CNPC.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CNPC.cpp' object='CNPC.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CNPC.obj `if test -f 'src/CNPC.cpp'; then $(CYGPATH_W) 'src/CNPC.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CNPC.cpp'; fi`
+
+commonsounds.o: src/commonsounds.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT commonsounds.o -MD -MP -MF $(DEPDIR)/commonsounds.Tpo -c -o commonsounds.o `test -f 'src/commonsounds.cpp' || echo '$(srcdir)/'`src/commonsounds.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/commonsounds.Tpo $(DEPDIR)/commonsounds.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/commonsounds.cpp' object='commonsounds.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o commonsounds.o `test -f 'src/commonsounds.cpp' || echo '$(srcdir)/'`src/commonsounds.cpp
+
+commonsounds.obj: src/commonsounds.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT commonsounds.obj -MD -MP -MF $(DEPDIR)/commonsounds.Tpo -c -o commonsounds.obj `if test -f 'src/commonsounds.cpp'; then $(CYGPATH_W) 'src/commonsounds.cpp'; else $(CYGPATH_W) '$(srcdir)/src/commonsounds.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/commonsounds.Tpo $(DEPDIR)/commonsounds.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/commonsounds.cpp' object='commonsounds.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o commonsounds.obj `if test -f 'src/commonsounds.cpp'; then $(CYGPATH_W) 'src/commonsounds.cpp'; else $(CYGPATH_W) '$(srcdir)/src/commonsounds.cpp'; fi`
+
+configuration.o: src/configuration.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT configuration.o -MD -MP -MF $(DEPDIR)/configuration.Tpo -c -o configuration.o `test -f 'src/configuration.cpp' || echo '$(srcdir)/'`src/configuration.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/configuration.Tpo $(DEPDIR)/configuration.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/configuration.cpp' object='configuration.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o configuration.o `test -f 'src/configuration.cpp' || echo '$(srcdir)/'`src/configuration.cpp
+
+configuration.obj: src/configuration.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT configuration.obj -MD -MP -MF $(DEPDIR)/configuration.Tpo -c -o configuration.obj `if test -f 'src/configuration.cpp'; then $(CYGPATH_W) 'src/configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/src/configuration.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/configuration.Tpo $(DEPDIR)/configuration.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/configuration.cpp' object='configuration.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o configuration.obj `if test -f 'src/configuration.cpp'; then $(CYGPATH_W) 'src/configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/src/configuration.cpp'; fi`
 
 CSpell.o: src/CSpell.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CSpell.o -MD -MP -MF $(DEPDIR)/CSpell.Tpo -c -o CSpell.o `test -f 'src/CSpell.cpp' || echo '$(srcdir)/'`src/CSpell.cpp
@@ -902,6 +944,20 @@ main.obj: src/main.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
 
+musiccache.o: src/musiccache.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT musiccache.o -MD -MP -MF $(DEPDIR)/musiccache.Tpo -c -o musiccache.o `test -f 'src/musiccache.cpp' || echo '$(srcdir)/'`src/musiccache.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/musiccache.Tpo $(DEPDIR)/musiccache.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/musiccache.cpp' object='musiccache.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o musiccache.o `test -f 'src/musiccache.cpp' || echo '$(srcdir)/'`src/musiccache.cpp
+
+musiccache.obj: src/musiccache.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT musiccache.obj -MD -MP -MF $(DEPDIR)/musiccache.Tpo -c -o musiccache.obj `if test -f 'src/musiccache.cpp'; then $(CYGPATH_W) 'src/musiccache.cpp'; else $(CYGPATH_W) '$(srcdir)/src/musiccache.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/musiccache.Tpo $(DEPDIR)/musiccache.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/musiccache.cpp' object='musiccache.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o musiccache.obj `if test -f 'src/musiccache.cpp'; then $(CYGPATH_W) 'src/musiccache.cpp'; else $(CYGPATH_W) '$(srcdir)/src/musiccache.cpp'; fi`
+
 optionswindow.o: src/optionswindow.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT optionswindow.o -MD -MP -MF $(DEPDIR)/optionswindow.Tpo -c -o optionswindow.o `test -f 'src/optionswindow.cpp' || echo '$(srcdir)/'`src/optionswindow.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/optionswindow.Tpo $(DEPDIR)/optionswindow.Po
@@ -957,6 +1013,20 @@ shop.obj: src/shop.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/shop.cpp' object='shop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o shop.obj `if test -f 'src/shop.cpp'; then $(CYGPATH_W) 'src/shop.cpp'; else $(CYGPATH_W) '$(srcdir)/src/shop.cpp'; fi`
+
+soundengine.o: src/soundengine.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT soundengine.o -MD -MP -MF $(DEPDIR)/soundengine.Tpo -c -o soundengine.o `test -f 'src/soundengine.cpp' || echo '$(srcdir)/'`src/soundengine.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/soundengine.Tpo $(DEPDIR)/soundengine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/soundengine.cpp' object='soundengine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o soundengine.o `test -f 'src/soundengine.cpp' || echo '$(srcdir)/'`src/soundengine.cpp
+
+soundengine.obj: src/soundengine.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT soundengine.obj -MD -MP -MF $(DEPDIR)/soundengine.Tpo -c -o soundengine.obj `if test -f 'src/soundengine.cpp'; then $(CYGPATH_W) 'src/soundengine.cpp'; else $(CYGPATH_W) '$(srcdir)/src/soundengine.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/soundengine.Tpo $(DEPDIR)/soundengine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/soundengine.cpp' object='soundengine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o soundengine.obj `if test -f 'src/soundengine.cpp'; then $(CYGPATH_W) 'src/soundengine.cpp'; else $(CYGPATH_W) '$(srcdir)/src/soundengine.cpp'; fi`
 
 Spellbook.o: src/Spellbook.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Spellbook.o -MD -MP -MF $(DEPDIR)/Spellbook.Tpo -c -o Spellbook.o `test -f 'src/Spellbook.cpp' || echo '$(srcdir)/'`src/Spellbook.cpp

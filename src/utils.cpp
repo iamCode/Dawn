@@ -17,17 +17,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "utils.h"
+
+#include "configuration.h"
+
 #include "pnglite/pnglite.h"
 #include "GLee/GLee.h"
 #include <sstream>
 #include <cstring>
 #include <memory>
-
-namespace dawn_configuration
-{
-	extern int screenWidth;
-	extern int screenHeight;
-}
 
 extern int world_x, world_y;
 
@@ -42,8 +39,8 @@ bool utils::file_exists(const std::string& file)
 
 void utils::takeScreenshot()
 {
-    int w = dawn_configuration::screenWidth;
-	int h = dawn_configuration::screenHeight;
+    int w = Configuration::screenWidth;
+	int h = Configuration::screenHeight;
 
 	png_t pngOutput;
 
@@ -57,7 +54,7 @@ void utils::takeScreenshot()
 
     std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );
     unsigned char *outputImage = outputImageAuto.get();
-    unsigned char *tempImage = outputImage;// dawn_configuration::screenHeight*dawn_configuration::screenWidth*4;
+    unsigned char *tempImage = outputImage;// Configuration::screenHeight*Configuration::screenWidth*4;
 
     glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
 
@@ -83,7 +80,7 @@ void utils::takeScreenshot()
         png_init(0,0);
         png_open_file_write(&pngOutput,filename.c_str());
 
-        png_set_data(&pngOutput, dawn_configuration::screenWidth, dawn_configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
+        png_set_data(&pngOutput, Configuration::screenWidth, Configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
         png_close_file(&pngOutput);
     }

@@ -4405,6 +4405,56 @@ else
 
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Mix_PlayMusic in -lSDL_mixer" >&5
+$as_echo_n "checking for Mix_PlayMusic in -lSDL_mixer... " >&6; }
+if test "${ac_cv_lib_SDL_mixer_Mix_PlayMusic+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lSDL_mixer  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char Mix_PlayMusic ();
+int
+main ()
+{
+return Mix_PlayMusic ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_SDL_mixer_Mix_PlayMusic=yes
+else
+  ac_cv_lib_SDL_mixer_Mix_PlayMusic=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_SDL_mixer_Mix_PlayMusic" >&5
+$as_echo "$ac_cv_lib_SDL_mixer_Mix_PlayMusic" >&6; }
+if test "x$ac_cv_lib_SDL_mixer_Mix_PlayMusic" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSDL_MIXER 1
+_ACEOF
+
+  LIBS="-lSDL_mixer $LIBS"
+
+else
+
+        echo "Cannot locate SDL_mixer library. You need this for Dawn to work."
+        exit -1
+
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_New_Memory_Face in -lfreetype" >&5
 $as_echo_n "checking for FT_New_Memory_Face in -lfreetype... " >&6; }
 if test "${ac_cv_lib_freetype_FT_New_Memory_Face+set}" = set; then :
@@ -5018,7 +5068,7 @@ fi
 done
 
 
-for ac_header in zlib.h stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h
+for ac_header in zlib.h stddef.h stdint.h stdlib.h string.h tolua++ SDL/SDL.h SDL/SDL_mixer.h SDL/SDL_opengl.h SDL/SDL_image.h GL/gl.h /usr/include/ft2build.h GL/glu.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"

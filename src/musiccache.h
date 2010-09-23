@@ -16,24 +16,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef MUSICCACHE_H
+#define MUSICCACHE_H
 
 #include <string>
 #include <map>
+#include <SDL/SDL_mixer.h>
 
-// ideally this file should not add any include dependency on dawn files
-class CZone;
-class Player;
-
-namespace Globals
+/// This class is used by the SoundEngine to keep track of loaded music
+class MusicCache
 {
-	extern std::map< std::string, CZone* > allZones;
-	CZone *getCurrentZone();
-	void setCurrentZone( CZone *newCurZone );
-	bool isSavingAllowed();
-	void setSavingAllowed( bool savingAllowed );
-	Player *getPlayer();
-}
+	private:
+		std::map< std::string, Mix_Music* > internalMap;
+	public:
+		MusicCache();
+		~MusicCache();
+		Mix_Music* getMusicFromCache( std::string musicFile );
+};
 
-#endif // GLOBALS_H
+/// This class is used by the SoundEngine to keep track of loaded sounds
+class SoundCache
+{
+	private:
+		std::map< std::string, Mix_Chunk* > internalMap;
+	public:
+		SoundCache();
+		~SoundCache();
+		Mix_Chunk* getSoundFromCache( std::string soundFile );
+};
+
+#endif // MUSICCACHE_H

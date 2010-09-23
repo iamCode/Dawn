@@ -526,6 +526,7 @@ namespace DawnInterface
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
+	void setBackgroundMusic( std::string filename );
 
 	Player *getPlayer();
 

@@ -22,6 +22,7 @@
 #include "TimeConverterHelper.h"
 #include "debug.h"
 #include "fontcache.h"
+#include "configuration.h"
 
 BuffWindow::BuffWindow( Player *player ) : FramesBase ( 0, 0, 0, 0, 0, 0 )
 {
@@ -30,8 +31,8 @@ BuffWindow::BuffWindow( Player *player ) : FramesBase ( 0, 0, 0, 0, 0, 0 )
     toggle();
     this->player = player;
     tooltip = NULL;
-    posY = dawn_configuration::screenHeight - 50;
-    posX = dawn_configuration::screenWidth - 204;
+    posY = Configuration::screenHeight - 50;
+    posX = Configuration::screenWidth - 204;
 }
 
 BuffWindow::~BuffWindow()

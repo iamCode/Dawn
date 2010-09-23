@@ -20,6 +20,7 @@
 #include "CDrawingHelpers.h"
 #include "CCharacter.h"
 #include "Player.h"
+#include "globals.h"
 
 #include <cassert>
 #include <memory>
@@ -314,13 +315,12 @@ std::string Spellbook::getLuaSaveText() const
 }
 
 extern std::auto_ptr<Spellbook> spellbook;
-extern Player character;
 
 namespace DawnInterface
 {
 	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell )
 	{
-		character.inscribeSpellInSpellbook( inscribedSpell );
+		Globals::getPlayer()->inscribeSpellInSpellbook( inscribedSpell );
 		spellbook->reloadSpellsFromPlayer();
 	}
 

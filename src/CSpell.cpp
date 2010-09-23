@@ -22,9 +22,12 @@
 #include <cstdlib>
 #include <memory>
 #include "CCharacter.h"
+#include "Player.h"
 #include "CTexture.h"
 #include "StatsSystem.h"
 #include "CDrawingHelpers.h"
+#include "soundengine.h"
+#include "globals.h"
 
 #include <cassert>
 
@@ -1312,6 +1315,13 @@ void MeleeDamageAction::dealDamage()
         if ( ! target->isAlive() ) {
             creator->gainExperience( target->getModifiedMaxHealth() / 10 );
         }
+        if ( creator == Globals::getPlayer() ) {
+            SoundEngine::playSound( "data/sound/sword_01.ogg" );
+        }
+    } else {
+        if ( creator == Globals::getPlayer() ) {
+            SoundEngine::playSound( "data/sound/sword_swwosh.ogg" );
+        }
     }
 }
 
@@ -1445,6 +1455,7 @@ void RangedDamageAction::startEffect()
 	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
+	SoundEngine::playSound( "data/sound/arrowHit06.ogg" );
 }
 
 void RangedDamageAction::inEffect()

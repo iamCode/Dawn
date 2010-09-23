@@ -18,6 +18,9 @@
 
 #include "globals.h"
 
+#include "Player.h"
+Player thePlayer;
+
 namespace Globals
 {
 
@@ -44,6 +47,11 @@ void setSavingAllowed( bool savingAllowed_ )
 	savingAllowed = savingAllowed_;
 }
 
+Player* getPlayer()
+{
+	return &thePlayer;
+}
+
 } // namespace Globals
 
 namespace DawnInterface
@@ -56,5 +64,10 @@ namespace DawnInterface
 	void setSavingAllowed( bool savingAllowed )
 	{
 		Globals::setSavingAllowed( savingAllowed );
+	}
+	
+	Player* getPlayer()
+	{
+		return &thePlayer;
 	}
 }

@@ -20,8 +20,7 @@
 #include "Player.h"
 #include "CLuaInterface.h"
 #include "callindirection.h"
-
-extern Player character;
+#include "globals.h"
 
 CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn ) {
 	Init( x_spawn_pos, y_spawn_pos );
@@ -62,8 +61,9 @@ void CNPC::setSpawnInfo( int _x_spawn_pos, int _y_spawn_pos, int _seconds_to_res
 
 Direction CNPC::GetDirection()
 {
+	Player *player = Globals::getPlayer();
 	if ( chasingPlayer == true ) {
-		return getDirectionTowards( (character.x_pos + character.getWidth()) / 2, (character.y_pos + character.getHeight()) / 2 );
+		return getDirectionTowards( (player->x_pos + player->getWidth()) / 2, (player->y_pos + player->getHeight()) / 2 );
 	}
 	if ( wandering ) {
 		return WanderDirection;
@@ -80,7 +80,7 @@ void CNPC::chasePlayer( CCharacter *player )
 
 void CNPC::Damage(int amount, bool criticalHit)
 {
-    chasePlayer( &character );
+	chasePlayer( Globals::getPlayer() );
 	CCharacter::Damage( amount, criticalHit );
 }
 
@@ -113,21 +113,22 @@ void CNPC::Draw()
 		// if sneaking and character is less than 260 pixels away we draw at 0.5 and with darker colors (shade)
         // if NPC is invisible or sneaking with more than 260 pixels away we don't draw the NPC at all.
         // if the character can see invisible or sneaking, we draw with 0.5 transparency.
-        double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
-                           +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+        Player *player = Globals::getPlayer();
+        double distance = sqrt( pow((getXPos()+getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
+                           +pow((getYPos()+getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
 
-		if ( isSneaking() == true && ( distance < 260 || character.canSeeSneaking() == true ) ) {
+		if ( isSneaking() == true && ( distance < 260 || player->canSeeSneaking() == true ) ) {
 		    color[0] = 0.7f;
 		    color[1] = 0.7f;
 		    color[2] = 0.7f;
 		    color[3] = 0.5f;
 		}
 
-		if ( isInvisible() == true && character.canSeeInvisible() == true ) {
+		if ( isInvisible() == true && player->canSeeInvisible() == true ) {
 		    color[3] = 0.5f;
 		}
 
-		if ( ( isInvisible() == true && character.canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && character.canSeeSneaking() == false ) ) {
+		if ( ( isInvisible() == true && player->canSeeInvisible() == false ) || ( isSneaking() == true && distance > 260 && player->canSeeSneaking() == false ) ) {
 		    return;
 		}
 
@@ -251,14 +252,15 @@ void CNPC::Move()
         }
     }
 
-	double distance = sqrt( pow((getXPos()+getWidth()/2) - (character.getXPos()+character.getWidth()/2),2)
-		                       +pow((getYPos()+getHeight()/2) - (character.getYPos()+character.getHeight()/2),2) );
+	Player *player = Globals::getPlayer();
+	double distance = sqrt( pow((getXPos()+getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
+		                       +pow((getYPos()+getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
     // if player is inside agro range of NPC, we set NPC to attack mode.
-    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( character.isInvisible() == false || canSeeInvisible() == true ) && ( character.isSneaking() == false || canSeeSneaking() == true ) )
+    if ( distance < 200 && getAttitude() == Attitude::HOSTILE && ( player->isInvisible() == false || canSeeInvisible() == true ) && ( player->isSneaking() == false || canSeeSneaking() == true ) )
     {
-        chasePlayer( &character );
-    } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && character.isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
-        chasePlayer( &character );
+	chasePlayer( player );
+    } else if ( distance < 80 && getAttitude() == Attitude::HOSTILE && player->isSneaking() == true ) { // do this if player is sneaking and NPC is near the character.
+	chasePlayer( Globals::getPlayer() );
     }
 
     if ( mayDoAnythingAffectingSpellActionWithoutAborting() && chasingPlayer == true ) {

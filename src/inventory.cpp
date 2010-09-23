@@ -21,6 +21,8 @@
 #include "item.h"
 #include "CCharacter.h"
 #include "Player.h"
+#include "globals.h"
+
 #include <cassert>
 
 
@@ -411,26 +413,24 @@ void Inventory::clear()
 	}
 }
 
-extern Player character;
-
 namespace DawnInterface
 {
 	std::string getInventorySaveText()
 	{
-		return character.getInventory()->getReloadText();
+		return Globals::getPlayer()->getInventory()->getReloadText();
 	}
 
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
 	{
-		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, &character );
-		character.getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
+		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, Globals::getPlayer() );
+		Globals::getPlayer()->getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
 	}
 
 	void restoreWieldItem( int slot, Item *item )
 	{
 		ItemSlot::ItemSlot slotToUse = static_cast<ItemSlot::ItemSlot>( slot );
-		InventoryItem *invItem = new InventoryItem( item, 0, 0, &character );
-		character.getInventory()->wieldItemAtSlot( slotToUse, invItem );
+		InventoryItem *invItem = new InventoryItem( item, 0, 0, Globals::getPlayer() );
+		Globals::getPlayer()->getInventory()->wieldItemAtSlot( slotToUse, invItem );
 	}
 }
 

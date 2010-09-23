@@ -28,6 +28,7 @@
 #include "CNPC.h"
 #include "Player.h"
 #include "globals.h"
+#include "configuration.h"
 
 #include <map>
 #include <string>
@@ -38,7 +39,6 @@
 std::map< std::string, CCharacter* > allMobTypes;
 
 extern size_t randomSizeT( size_t min, size_t max );
-extern Player character;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -961,8 +961,6 @@ void CCharacter::setPosition( int xpos, int ypos )
 
 extern std::vector <CNPC*> NPC;
 
-extern Player character;
-
 bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r, int r2_b, int r2_t )
 {
 	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
@@ -1002,7 +1000,7 @@ int CCharacter::CheckForCollision(int x_pos, int y_pos)
 
 	// check for collision with player
 	{
-		CCharacter *curNPC = &character;
+		CCharacter *curNPC = Globals::getPlayer();
 		if ( curNPC != this && curNPC->isAlive() ) {
 			int other_l = curNPC->getXPos(), other_r = curNPC->getXPos() + curNPC->getWidth();
 			int other_b = curNPC->getYPos(), other_t = curNPC->getYPos() + curNPC->getHeight();
@@ -1575,7 +1573,7 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 {
     if (isPlayer())
 	{
-        activeGUI->addCombatText(amount, critical, damageType, world_x+140,dawn_configuration::screenHeight-40+world_y);
+        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y);
 	} else {
 	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
 	}
@@ -1828,7 +1826,7 @@ void CCharacter::addActiveSpell( CSpellActionBase *spell )
     // if we're an NPC and the spell is hostile, we want to set the caster to hostile.
     if ( isPlayer() == false && spell->isSpellHostile() == true ) {
         // in the future when having more than one player playing, this function needs to be reworked.
-        dynamic_cast<CNPC*>( this )->chasePlayer( &character );
+        dynamic_cast<CNPC*>( this )->chasePlayer( Globals::getPlayer() );
     }
 }
 

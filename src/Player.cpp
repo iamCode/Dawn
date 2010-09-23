@@ -22,6 +22,7 @@
 #include "StatsSystem.h"
 #include "CZone.h"
 #include "globals.h"
+#include "soundengine.h"
 
 #include <limits>
 #include <cassert>
@@ -30,19 +31,18 @@
 const uint16_t NULLABLE_ATTRIBUTE_MIN = 0;
 const uint16_t NON_NULLABLE_ATTRIBUTE_MIN = 1;
 
-extern Player character;
-
 namespace DawnInterface
 {
     void addTextToLogWindow( GLfloat color[], const char *text, ... );
 
 	void giveItemToPlayer( Item *item )
 	{
-		Inventory *playerInventory = character.getInventory();
+		Inventory *playerInventory = Globals::getPlayer()->getInventory();
 		bool wasInserted = playerInventory->insertItem( item );
 		if ( ! wasInserted )
 		{
-			Globals::getCurrentZone()->getGroundLoot()->addItem( character.getXPos(), character.getYPos(), item );
+			Player *player = Globals::getPlayer();
+			Globals::getCurrentZone()->getGroundLoot()->addItem( player->getXPos(), player->getYPos(), item );
 		} else {
 		    GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
             DawnInterface::addTextToLogWindow( blue, "You receive %s.",item->getName().c_str() );
@@ -133,7 +133,17 @@ void Player::clearInventory()
 
 void Player::Move()
 {
+	int oldX = getXPos();
+	int oldY = getYPos();
+
 	CCharacter::Move();
+
+	// if the character has moved, enable walking sound
+	if ( oldX != getXPos() || oldY != getYPos() ) {
+		SoundEngine::useWalkingSound( true );
+	} else {
+		SoundEngine::useWalkingSound( false );
+	}
 }
 
 void Player::Die()

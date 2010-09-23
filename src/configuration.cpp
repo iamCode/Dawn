@@ -16,24 +16,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#include "configuration.h"
 
-#include <string>
-#include <map>
-
-// ideally this file should not add any include dependency on dawn files
-class CZone;
-class Player;
-
-namespace Globals
-{
-	extern std::map< std::string, CZone* > allZones;
-	CZone *getCurrentZone();
-	void setCurrentZone( CZone *newCurZone );
-	bool isSavingAllowed();
-	void setSavingAllowed( bool savingAllowed );
-	Player *getPlayer();
+namespace Configuration {
+	bool fullscreenenabled = true;
+	bool soundenabled = true;
+	int screenWidth = 1024;
+	int screenHeight = 768;
+	int bpp = 32;
+	
+	std::string logfile = "dawn-log.cpp"; // The logfile
+	bool debug_stdout = false; // Write messages to stdout
+	bool debug_fileout = false; // Write messages to a file
+	bool show_info_messages = false; // Show or hide debug info
+	bool show_warn_messages = false; // show or hide warnings
 }
-
-#endif // GLOBALS_H

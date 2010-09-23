@@ -32,6 +32,7 @@
 #include "Spellbook.h"
 #include "ActionBar.h"
 #include "FramesBase.h"
+#include "configuration.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -39,12 +40,6 @@ extern std::auto_ptr<QuestWindow> questWindow;
 namespace DawnInterface
 {
     void clearLogWindow();
-}
-
-namespace dawn_configuration
-{
-	extern int screenWidth;
-	extern int screenHeight;
 }
 
 OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
@@ -65,8 +60,8 @@ void OptionsWindow::setTextureDependentPositions()
 	frameWidth = backgroundTexture->texture[0].width;
 	frameHeight = backgroundTexture->texture[0].height;
 	// center on screen
-	posX = (dawn_configuration::screenWidth - frameWidth) / 2;
-	posY = (dawn_configuration::screenHeight - frameHeight) / 2;
+	posX = (Configuration::screenWidth - frameWidth) / 2;
+	posY = (Configuration::screenHeight - frameHeight) / 2;
 }
 
 OptionsWindow::~OptionsWindow()
@@ -150,7 +145,7 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 
 void setQuitGame();
 
-extern Player character;
+
 extern std::auto_ptr<Shop> shopWindow;
 extern std::auto_ptr<Spellbook> spellbook;
 extern std::auto_ptr<ActionBar> actionBar;
@@ -187,17 +182,17 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		}
 		Globals::allZones.clear();
 
-		character.clearInventory();
+		Globals::getPlayer()->clearInventory();
 		// clear shop data
-		shopWindow = std::auto_ptr<Shop>( new Shop( &character, NULL ) );
+		shopWindow = std::auto_ptr<Shop>( new Shop( Globals::getPlayer(), NULL ) );
 		// clear spellbook
 		spellbook->clear();
 		// clear action bar
 		actionBar->clear();
 		// clear cooldowns
-		character.clearCooldownSpells();
+		Globals::getPlayer()->clearCooldownSpells();
 		// clear buffs
-		character.clearActiveSpells();
+		Globals::getPlayer()->clearActiveSpells();
 
 		// reenter map
 		// 1. Load all zones
@@ -299,10 +294,10 @@ void ChooseClassScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	}
 
 	if ( selectedEntry == 0 ) { // we choose liche
-		character.setClass( CharacterClass::Liche );
+		Globals::getPlayer()->setClass( CharacterClass::Liche );
 		done = true;
 	} else if ( selectedEntry == 1 ) { // we choose warrior
-        character.setClass( CharacterClass::Warrior );
+        Globals::getPlayer()->setClass( CharacterClass::Warrior );
 		done = true;
 	}
 }

@@ -28,14 +28,13 @@
 #include "callindirection.h"
 #include "textwindow.h"
 #include "CLuaInterface.h"
+#include "globals.h"
 
 #include <cassert>
 #include <memory>
 
-extern Player character;
-
 CZone::CZone()
-	: groundLoot( &character ),
+	: groundLoot( Globals::getPlayer() ),
 	  mapLoaded( false )
 {
 }
