@@ -126,6 +126,9 @@ std::string CSpellActionBase::getID() const
 			idstream << char( name[curChar] );
 		}
 	}
+	if ( rank > 1 ) {
+		idstream << "rank" << static_cast<int>( rank );
+	}
 	return idstream.str();
 }
 
