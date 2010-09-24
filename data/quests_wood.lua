@@ -59,8 +59,8 @@ function quest_playHideAndSeek.init()
 	traderShop:addItem( itemDatabase["bookofleatherskinrank2"] );
 
 	john = DawnInterface.addInteractionPoint();
-	john:setPosition( 820, 270, 25, 33 );
-	john:setBackgroundTexture( "data/character/link/link1.tga" );
+	john:setPosition( 820, 270, 64, 64 );
+	john:setBackgroundTexture( "data/character/John.tga" );
 	john:setInteractionType( InteractionType.Quest );
 	john:setInteractionCode( "quest_playHideAndSeek.onActivateJohn()" );
 end
@@ -106,8 +106,8 @@ end
 
 function quest_playHideAndSeek.onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
-	james:setPosition( 3783,640, 20, 26 );
-	james:setBackgroundTexture( "data/character/link/link1.tga" );
+	james:setPosition( 3783,640, 64, 64 );
+	james:setBackgroundTexture( "data/character/James.tga" );
 	james:setInteractionType( InteractionType.Quest );
 	james:setInteractionCode( "quest_playHideAndSeek.onActivateJames()" );
 	DawnInterface.removeMobSpawnPoint( quest_playHideAndSeek.monsterSpawnPoint );
@@ -127,7 +127,7 @@ function quest_playHideAndSeek.onActivateJames()
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Thank you for helping me. I walked through this wonderful forest when suddenly I saw this huge wolf. Then I hid in the trees and hoped it would get away, but it didn't. I was so afraid. I'll better hurry to my brother John now." );
 		textWindow:setAutocloseTime( 10000 );
-		james:setPosition( 800, 200, 20, 26 );
+		james:setPosition( 800, 200, 64, 64 );
 		quest_playHideAndSeek.fulfilled = true;
 		DawnInterface.changeQuestDescription("hide and seek", "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
 	end
