@@ -109,6 +109,9 @@ std::string Item::getID() const
 			idstream << char( name[curChar] );
 		}
 	}
+	if ( spell != NULL && spell->getRank() > 1 ) {
+		idstream << "rank" << static_cast<int>(spell->getRank());
+	}
 	return idstream.str();
 }
 
