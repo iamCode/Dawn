@@ -30,6 +30,15 @@ std::auto_ptr<SoundCache> soundCache( new SoundCache() );
 
 static std::string currentlyPlayedMusic = "";
 static bool currentMusicInLoop = false;
+static size_t maxChannelsUsed = 0;
+
+static void logChannelUsage( int curChannel )
+{
+	if ( static_cast<size_t>(curChannel+1) > maxChannelsUsed ) {
+		maxChannelsUsed = static_cast<size_t>(curChannel+1);
+		dawn_debug_info("Using a total maximum of %d channels for sound playing", maxChannelsUsed);
+	}
+}
 
 void SoundEngine::initSound()
 {
@@ -51,6 +60,11 @@ void SoundEngine::initSound()
 	{
 		dawn_debug_fatal( "Could not open audio (Mix_OpenAudio exited with error message \"%s\")", Mix_GetError() );
 	}
+	// this should be enough for the beginning, but we might need to group the channels so each group can take care of
+	// and fade out old channels if more are needed.
+	const int totalNumChannels = 64;
+	int numChannels = Mix_AllocateChannels(totalNumChannels);
+	dawn_debug_info( "Currently allocated channels for sound = %d", numChannels );
 }
 
 void SoundEngine::cleanupSound()
@@ -87,9 +101,11 @@ void SoundEngine::playSound( std::string soundFile )
 		return;
 
 	Mix_Chunk *soundSample = soundCache->getSoundFromCache( soundFile );
-	if ( Mix_PlayChannel( -1, soundSample, 0 ) == -1 ) {
+	int curChannel = Mix_PlayChannel( -1, soundSample, 0 );
+	if ( curChannel  == -1 ) {
 		dawn_debug_fatal( "Could not play sound %s: %s", soundFile.c_str(), Mix_GetError() );
 	}
+	logChannelUsage( curChannel );
 }
 
 static int walkingChannel = -1;
@@ -111,6 +127,8 @@ void SoundEngine::useWalkingSound( bool enabled )
 			if ( walkingChannel == -1 ) {
 				dawn_debug_fatal( "Could not play sound %s: %s", soundFile.c_str(), Mix_GetError() );
 			}
+			dawn_debug_info("using channel %d for walking sound", walkingChannel);
+			logChannelUsage( walkingChannel );
 		} else if ( Mix_Paused( walkingChannel ) ) {
 			Mix_Resume( walkingChannel );
 		}
