@@ -758,7 +758,7 @@ bool dawn_init(int argc, char** argv)
 
 		SoundEngine::initSound();
 
-		SoundEngine::playSound("data/music/loading.ogg");
+		SoundEngine::playMusic("data/music/loading.ogg", true);
         glEnable( GL_TEXTURE_2D );
         
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
