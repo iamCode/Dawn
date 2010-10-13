@@ -758,8 +758,9 @@ bool dawn_init(int argc, char** argv)
 
 		SoundEngine::initSound();
 
-		glEnable( GL_TEXTURE_2D );
-
+		SoundEngine::playSound("data/music/loading.ogg");
+        glEnable( GL_TEXTURE_2D );
+        
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 		glViewport( 0, 0, Configuration::screenWidth, Configuration::screenHeight );
 
@@ -858,7 +859,7 @@ bool dawn_init(int argc, char** argv)
         actionBar->initFonts();
         GUI.initFonts();
         logWindow->clear();
-
+		SoundEngine::stopMusic();
 		return true;
 }
 

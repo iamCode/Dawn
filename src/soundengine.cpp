@@ -53,7 +53,7 @@ void SoundEngine::initSound()
 	//{
 	//	dawn_debug_fatal( "Could not initialize all sound modes (Mix_Init left error message \"%s\")", Mix_GetError() );
 	//}
-	
+
 	// Chunksize is 256 since this is the smallest my system can handle.
 	// Higher chunk sizes seem to make time between click and click sound noticable
 	if ( Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 256) == -1 )
@@ -76,6 +76,15 @@ void SoundEngine::cleanupSound()
 	//Mix_Quit();
 }
 
+void SoundEngine::stopMusic()
+{
+    if ( !Configuration::soundenabled )
+    {
+        return;
+    }
+    Mix_HaltMusic();
+}
+
 void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 {
 	if ( ! Configuration::soundenabled )
@@ -83,6 +92,8 @@ void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 
 	if ( currentlyPlayedMusic == musicFile && currentMusicInLoop == playInLoop )
 		return;
+
+	Mix_HaltMusic(); // halts the current played music stream so we don't mix music. Perhaps should be handled in other manners.
 
 	Mix_Music *musicSample = musicCache->getMusicFromCache( musicFile );
 	int loops = 1;
