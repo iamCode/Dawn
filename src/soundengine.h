@@ -33,7 +33,6 @@ class SoundEngine
 		/// This plays a certain music file. The music file will be loaded into memory if not already done so.
 		/// The music will be stopped by another music file being played.
 		static void playMusic( std::string musicFile, bool playInLoop );
-		static void stopMusic();
 		/// This plays a certain sound file. The sound file will be loaded into memory if not already done so.
 		static void playSound( std::string soundFile );
 

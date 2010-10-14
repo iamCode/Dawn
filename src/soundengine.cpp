@@ -76,15 +76,6 @@ void SoundEngine::cleanupSound()
 	//Mix_Quit();
 }
 
-void SoundEngine::stopMusic()
-{
-    if ( !Configuration::soundenabled )
-    {
-        return;
-    }
-    Mix_HaltMusic();
-}
-
 void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 {
 	if ( ! Configuration::soundenabled )
