@@ -662,6 +662,12 @@ public:
 		player->setManaRegen(2);
 		player->setFatigueRegen( 5 );
 		player->giveCoins( 576 );
+		
+		// setting initial actions in the action bar
+		const std::vector<CSpellActionBase*> inscribedSpells = player->getSpellbook();
+		for ( size_t curEntry=0; curEntry<=9 && curEntry < inscribedSpells.size(); ++curEntry ) {
+			actionBar->bindActionToButtonNr( curEntry, inscribedSpells[ curEntry ] );
+		}
 
 		dawn_debug_info("Character completed");
 
