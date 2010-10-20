@@ -90,3 +90,10 @@ namespace DawnInterface
     void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
+#include "tileset.h"
+
+namespace EditorInterface
+{
+	TileSet *getTileSet();
+}
+

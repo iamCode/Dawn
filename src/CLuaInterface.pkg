@@ -554,3 +554,39 @@ namespace DawnInterface
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );
 }
+
+// EDITOR Stuff
+namespace TileClassificationType
+{
+	enum TileClassificationType
+	{
+		FLOOR,
+		WALL,
+		MAJORFILL,
+		DECORATION
+	};
+}
+
+namespace AdjacencyType
+{
+	enum AdjacencyType
+	{
+		RIGHT,
+		LEFT,
+		TOP,
+		BOTTOM
+	};
+}
+
+class TileSet
+{
+	int addTile( std::string filename, TileClassificationType::TileClassificationType tileType );
+	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2 );
+	void printTileSet() const;
+};
+
+namespace EditorInterface
+{
+	TileSet *getTileSet();
+}
+
