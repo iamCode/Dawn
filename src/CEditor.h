@@ -36,8 +36,8 @@ class CEditor
 		CEditor() {
 			enabled = false;
 			tilepos_offset = 0;
-			tilepos = 1;
-			current_tilepos = 1;
+			tilepos = 0;
+			current_tilepos = 0;
 			current_object = 0;
 			objectedit_selected = -1;
 			zoneToEdit = NULL;
@@ -65,7 +65,7 @@ class CEditor
 		void inc_tilepos();
 		void dec_tilepos();
 
-		void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
+		void DrawEditFrame(sEnvironmentMap *editobject);
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;

@@ -202,6 +202,24 @@ void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
+std::string getID( std::string filename )
+{
+	std::ostringstream idstream;
+	for ( size_t curChar=5; curChar<filename.size(); ++curChar ) {
+		if ( isspace( filename[curChar] ) ) {
+			// ignore
+		} else if ( isupper( filename[curChar] ) ) {
+			idstream << char( tolower( filename[curChar] ) );
+		} else if ( islower( filename[curChar] ) || isdigit( filename[curChar] ) ){
+			idstream << char( filename[curChar] );
+		} else {
+			idstream << '_';
+		}
+	}
+	
+	return idstream.str();
+}
+
 int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 {
 	FILE *fp;
@@ -232,6 +250,9 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 
 	rewind(fp);
 
+	std::string luaName = file.append(".lua");
+	std::ofstream ofs( luaName.c_str() );
+
 	// resize our texture vector so all our texture-ID's can fit in there ;)
 	texture.resize(highest_texture+1);
 	if (!try_load_collision_box) {
@@ -239,7 +260,8 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 			if ( fgets(buf, 255, fp) != NULL ) {
 				if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' && buf[0] != '\n' && strlen(buf) != 0) {
 					sscanf(buf, "%d %s", &loaded_texture_id, filename); // search for the texture id and the filename for the texture.
-					LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
+					//LoadIMG(filename,loaded_texture_id); // load the image in our texture vector along with the texture id.
+					ofs << getID( filename ) << " = tileSet:addTile( \"" << filename << "\", TileClassificationType.FLOOR );" << std::endl;
 				}
 			} else {
 				// fgets returned NULL. Either end of file or error. check for error
@@ -260,6 +282,12 @@ int CTexture::LoadTextureMap(std::string file, bool try_load_collision_box)
 					texture[loaded_texture_id].collision_box.y = CR_y;
 					texture[loaded_texture_id].collision_box.w = CR_w;
 					texture[loaded_texture_id].collision_box.h = CR_h;
+					
+					if ( contains_collision_box ) {
+						ofs << getID( filename ) << " = tileSet:addTileWithCollisionBox( \"" << filename << "\", TileClassificationType.ENVIRONMENT, " << CR_x << ", " << CR_y << ", " << CR_w << ", " << CR_h << " );" << std::endl;
+					} else {
+						ofs << getID( filename ) << " = tileSet:addTile( \"" << filename << "\", TileClassificationType.ENVIRONMENT );" << std::endl;
+					}
 				}
 			} else {
 				// fgets returned NULL. Either end of file or error. check for error

@@ -32,27 +32,28 @@ class CNPC;
 class InteractionPoint;
 class InteractionRegion;
 class CallIndirection;
+class Tile;
 
 struct sTileMap {
-	int x_pos, y_pos, id;
-	sTileMap(int _x, int _y, int _tex_id) {
+	int x_pos, y_pos;
+	Tile *tile;
+	sTileMap(int _x, int _y, Tile *_tile) {
 		x_pos = _x;
 		y_pos = _y;
-		id = _tex_id;
+		tile = _tile;
 	};
 
-	bool operator<(const sTileMap& tile1) const { // instead of using a predicate in our sort call.
-		return id < tile1.id;
-	};
+	bool operator<(const sTileMap& tile1) const;
 };
 
 struct sEnvironmentMap {
-	int x_pos, y_pos, id, z_pos;
+	int x_pos, y_pos, z_pos;
+	Tile *tile;
 	float transparency, red, green, blue, x_scale, y_scale;
-	sEnvironmentMap(int _x, int _y, int _tex_id, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale, int _z_pos) {
+	sEnvironmentMap(int _x, int _y, Tile *_tile, float _tp, float _red, float _green, float _blue, float _x_scale, float _y_scale, int _z_pos) {
 		x_pos = _x;
 		y_pos = _y;
-		id = _tex_id;
+		tile = _tile;
 		transparency = _tp;
 		red = _red;
 		green = _green;
@@ -127,8 +128,8 @@ class CZone
 
 		void LoadZone(std::string file);
 		int LoadMap(std::string file);
-		int LoadEnvironment(std::string file);
-		int LoadShadow(std::string file);
+		int LoadEnvironment(std::string file, size_t tileSetOffset);
+		int LoadShadow(std::string file, size_t tileSetOffset);
 		int LoadCollisions(std::string file);
 		bool zoneDataLoaded() const;
 
@@ -137,9 +138,9 @@ class CZone
 		int LocateEnvironment(int x, int y);
 		int LocateCollisionbox(int x, int y);
 
-		void ChangeTile(int iId, int texture);
-		void AddEnvironment(int x_pos, int y_pos, int texture);
-		void AddShadow(int x_pos, int y_pos, int texture);
+		void ChangeTile(int iId, Tile *tile);
+		void AddEnvironment(int x_pos, int y_pos, Tile *tile);
+		void AddShadow(int x_pos, int y_pos, Tile *tile);
 		void AddCollisionbox(int x_pos, int y_pos);
 		int DeleteEnvironment(int x, int y);
 		int DeleteShadow(int x, int y);
@@ -182,10 +183,6 @@ class CZone
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;
 		std::vector<sCollisionMap> CollisionMap;
-		
-		CTexture ZoneTiles;
-		CTexture ZoneEnvironment;
-		CTexture ZoneShadow;
 };
 
 #endif

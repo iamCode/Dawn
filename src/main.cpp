@@ -721,7 +721,7 @@ bool dawn_init(int argc, char** argv)
 {
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
-
+			
 		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
 		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
 

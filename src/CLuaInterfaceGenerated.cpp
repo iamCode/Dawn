@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Wed Oct 20 21:58:16 2010.
+** Generated automatically by tolua++-1.0.92 on Wed Oct 27 19:22:44 2010.
 */
 
 #ifndef __cplusplus
@@ -5958,6 +5958,50 @@ static int tolua_CLuaInterface_TileSet_addTile00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: addTileWithCollisionBox of class  TileSet */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_TileSet_addTileWithCollisionBox00
+static int tolua_CLuaInterface_TileSet_addTileWithCollisionBox00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TileSet",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TileSet* self = (TileSet*)  tolua_tousertype(tolua_S,1,0);
+  std::string filename = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+  TileClassificationType::TileClassificationType tileType = ((TileClassificationType::TileClassificationType) (int)  tolua_tonumber(tolua_S,3,0));
+  int cbx = ((int)  tolua_tonumber(tolua_S,4,0));
+  int cby = ((int)  tolua_tonumber(tolua_S,5,0));
+  int cbw = ((int)  tolua_tonumber(tolua_S,6,0));
+  int cbh = ((int)  tolua_tonumber(tolua_S,7,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addTileWithCollisionBox'", NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->addTileWithCollisionBox(filename,tileType,cbx,cby,cbw,cbh);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addTileWithCollisionBox'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: addAdjacency of class  TileSet */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_TileSet_addAdjacency00
 static int tolua_CLuaInterface_TileSet_addAdjacency00(lua_State* tolua_S)
@@ -6048,6 +6092,170 @@ static int tolua_CLuaInterface_EditorInterface_getTileSet00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getTileSet'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: EditorInterface::addGroundTile */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_EditorInterface_addGroundTile00
+static int tolua_CLuaInterface_EditorInterface_addGroundTile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int posX = ((int)  tolua_tonumber(tolua_S,1,0));
+  int posY = ((int)  tolua_tonumber(tolua_S,2,0));
+  int tile = ((int)  tolua_tonumber(tolua_S,3,0));
+  {
+   EditorInterface::addGroundTile(posX,posY,tile);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addGroundTile'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: EditorInterface::addEnvironment */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_EditorInterface_addEnvironment00
+static int tolua_CLuaInterface_EditorInterface_addEnvironment00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int posX = ((int)  tolua_tonumber(tolua_S,1,0));
+  int posY = ((int)  tolua_tonumber(tolua_S,2,0));
+  int posZ = ((int)  tolua_tonumber(tolua_S,3,0));
+  int tile = ((int)  tolua_tonumber(tolua_S,4,0));
+  {
+   EditorInterface::addEnvironment(posX,posY,posZ,tile);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addEnvironment'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: EditorInterface::adjustLastRGBA */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_EditorInterface_adjustLastRGBA00
+static int tolua_CLuaInterface_EditorInterface_adjustLastRGBA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  double red = ((double)  tolua_tonumber(tolua_S,1,0));
+  double green = ((double)  tolua_tonumber(tolua_S,2,0));
+  double blue = ((double)  tolua_tonumber(tolua_S,3,0));
+  double alpha = ((double)  tolua_tonumber(tolua_S,4,0));
+  {
+   EditorInterface::adjustLastRGBA(red,green,blue,alpha);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'adjustLastRGBA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: EditorInterface::adjustLastScale */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_EditorInterface_adjustLastScale00
+static int tolua_CLuaInterface_EditorInterface_adjustLastScale00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  double scaleX = ((double)  tolua_tonumber(tolua_S,1,0));
+  double scaleY = ((double)  tolua_tonumber(tolua_S,2,0));
+  {
+   EditorInterface::adjustLastScale(scaleX,scaleY);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'adjustLastScale'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: EditorInterface::addCollisionRect */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_EditorInterface_addCollisionRect00
+static int tolua_CLuaInterface_EditorInterface_addCollisionRect00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int lrx = ((int)  tolua_tonumber(tolua_S,1,0));
+  int lry = ((int)  tolua_tonumber(tolua_S,2,0));
+  int width = ((int)  tolua_tonumber(tolua_S,3,0));
+  int height = ((int)  tolua_tonumber(tolua_S,4,0));
+  {
+   EditorInterface::addCollisionRect(lrx,lry,width,height);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addCollisionRect'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6499,9 +6707,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_module(tolua_S,"TileClassificationType",0);
   tolua_beginmodule(tolua_S,"TileClassificationType");
    tolua_constant(tolua_S,"FLOOR",TileClassificationType::FLOOR);
-   tolua_constant(tolua_S,"WALL",TileClassificationType::WALL);
-   tolua_constant(tolua_S,"MAJORFILL",TileClassificationType::MAJORFILL);
-   tolua_constant(tolua_S,"DECORATION",TileClassificationType::DECORATION);
+   tolua_constant(tolua_S,"ENVIRONMENT",TileClassificationType::ENVIRONMENT);
+   tolua_constant(tolua_S,"SHADOW",TileClassificationType::SHADOW);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"AdjacencyType",0);
   tolua_beginmodule(tolua_S,"AdjacencyType");
@@ -6513,12 +6720,18 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
   tolua_cclass(tolua_S,"TileSet","TileSet","",NULL);
   tolua_beginmodule(tolua_S,"TileSet");
    tolua_function(tolua_S,"addTile",tolua_CLuaInterface_TileSet_addTile00);
+   tolua_function(tolua_S,"addTileWithCollisionBox",tolua_CLuaInterface_TileSet_addTileWithCollisionBox00);
    tolua_function(tolua_S,"addAdjacency",tolua_CLuaInterface_TileSet_addAdjacency00);
    tolua_function(tolua_S,"printTileSet",tolua_CLuaInterface_TileSet_printTileSet00);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EditorInterface",0);
   tolua_beginmodule(tolua_S,"EditorInterface");
    tolua_function(tolua_S,"getTileSet",tolua_CLuaInterface_EditorInterface_getTileSet00);
+   tolua_function(tolua_S,"addGroundTile",tolua_CLuaInterface_EditorInterface_addGroundTile00);
+   tolua_function(tolua_S,"addEnvironment",tolua_CLuaInterface_EditorInterface_addEnvironment00);
+   tolua_function(tolua_S,"adjustLastRGBA",tolua_CLuaInterface_EditorInterface_adjustLastRGBA00);
+   tolua_function(tolua_S,"adjustLastScale",tolua_CLuaInterface_EditorInterface_adjustLastScale00);
+   tolua_function(tolua_S,"addCollisionRect",tolua_CLuaInterface_EditorInterface_addCollisionRect00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

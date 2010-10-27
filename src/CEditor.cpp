@@ -23,6 +23,7 @@
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
 #include "globals.h"
+#include "tileset.h"
 
 extern CMessage message;
 
@@ -34,23 +35,31 @@ void CEditor::initFonts()
 
 void CEditor::inc_tilepos()
 {
+	TileSet *curTileSet = EditorInterface::getTileSet();
+
 	switch (current_object) {
 		case 0: // tiles
-			if (current_tilepos < zoneToEdit->ZoneTiles.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::FLOOR ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 1: // environment
-			if (current_tilepos < zoneToEdit->ZoneEnvironment.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::ENVIRONMENT ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 2: // shadows
-			if (current_tilepos < zoneToEdit->ZoneShadow.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::SHADOW ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 3: // collisionboxes
@@ -60,7 +69,7 @@ void CEditor::inc_tilepos()
 
 void CEditor::dec_tilepos()
 {
-	if (current_tilepos > 1) {
+	if (current_tilepos > 0) {
 		current_tilepos--;
 		tilepos_offset++;
 	}
@@ -77,7 +86,7 @@ int CEditor::SaveZone()
 	fprintf(fp,"#x-pos y-pos tile-id");
 
 	for (unsigned int x=0; x<zoneToEdit->TileMap.size();x++) {
-		fprintf(fp,"\n%d %d %d",zoneToEdit->TileMap[x].x_pos,zoneToEdit->TileMap[x].y_pos,zoneToEdit->TileMap[x].id);
+		fprintf(fp,"\n%d %d %d",zoneToEdit->TileMap[x].x_pos,zoneToEdit->TileMap[x].y_pos,zoneToEdit->TileMap[x].tile->tileID);
 	}
 
 	fclose(fp);
@@ -96,7 +105,7 @@ int CEditor::SaveZone()
 
 
 	for (unsigned int x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].id, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale, zoneToEdit->EnvironmentMap[x].z_pos);
+		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].tile->tileID, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale, zoneToEdit->EnvironmentMap[x].z_pos);
 	}
 	fclose(fp);
 	////////////////////////////////////////////////////////////////////////
@@ -111,7 +120,7 @@ int CEditor::SaveZone()
 	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
 
 	for (unsigned int x=0;x<zoneToEdit->ShadowMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->ShadowMap[x].x_pos,zoneToEdit->ShadowMap[x].y_pos, zoneToEdit->ShadowMap[x].id, zoneToEdit->ShadowMap[x].transparency, zoneToEdit->ShadowMap[x].red, zoneToEdit->ShadowMap[x].green, zoneToEdit->ShadowMap[x].blue, zoneToEdit->ShadowMap[x].x_scale, zoneToEdit->ShadowMap[x].y_scale);
+		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->ShadowMap[x].x_pos,zoneToEdit->ShadowMap[x].y_pos, zoneToEdit->ShadowMap[x].tile->tileID, zoneToEdit->ShadowMap[x].transparency, zoneToEdit->ShadowMap[x].red, zoneToEdit->ShadowMap[x].green, zoneToEdit->ShadowMap[x].blue, zoneToEdit->ShadowMap[x].x_scale, zoneToEdit->ShadowMap[x].y_scale);
 	}
 	fclose(fp);
 	/////////////////////////////////////////////////////////
@@ -342,15 +351,25 @@ void CEditor::HandleKeys()
 	if (keys[SDLK_RETURN] && !KP_add_environment) {
 		objectedit_selected = -1;
 		KP_add_environment = true;
+
 		switch (current_object) {
 			case 0: // tiles
-				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY),current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::FLOOR )[ current_tilepos ];
+				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY),currentTile);
+			}
 			break;
 			case 1: // environment
-				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::ENVIRONMENT )[ current_tilepos ];
+				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile);
+			}
 			break;
 			case 2: // shadows
-				zoneToEdit->AddShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::SHADOW )[ current_tilepos ];
+				zoneToEdit->AddShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile);
+			}
 			break;
 			case 3: // collisionboxes
 				zoneToEdit->AddCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
@@ -363,7 +382,7 @@ void CEditor::HandleKeys()
 	}
 
 	if (keys[SDLK_l] && !KP_toggle_editor) {
-		current_tilepos = 1;
+		current_tilepos = 0;
 		tilepos_offset = 0;
 		objectedit_selected = -1;
 		enabled = false;
@@ -525,7 +544,7 @@ void CEditor::HandleKeys()
     }
 
 	if (keys[SDLK_F1] && !KP_toggle_tileset) {
-		current_tilepos = 1;
+		current_tilepos = 0;
 		tilepos_offset = 0;
 		objectedit_selected = -1;
 
@@ -574,10 +593,10 @@ void CEditor::DrawEditor()
 	if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
 		switch (current_object) {
 			case 1:
-				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]), &(zoneToEdit->ZoneEnvironment), objectedit_selected);
+				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]) );
 			break;
 			case 2:
-				DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]), &(zoneToEdit->ZoneShadow), objectedit_selected);
+				DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]));
 			break;
 			case 3:
 			break;
@@ -635,36 +654,32 @@ void CEditor::DrawEditor()
 	glVertex3f(mouseX+editorFocus->getX(), mouseY-20+editorFocus->getY(), 0.0f);
 	glEnd();
 
+	TileSet *tileSet = EditorInterface::getTileSet();
+
+	std::vector<Tile*> curTiles;
+
 	switch (current_object) {
 		case 0:
 			// draw all tileset tiles in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneTiles.NumberOfTextures;tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::FLOOR );
 		break;
 
 		case 1:
 			// draw all environment objects in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneEnvironment.NumberOfTextures; tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::ENVIRONMENT );
 		break;
 
 		case 2:
 			// draw all available shadows in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneShadow.NumberOfTextures; tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::SHADOW );
 		break;
+	}
+	
+	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {
+		Tile *curTile = curTiles[ tilepos ];
+		DrawingHelpers::mapTextureToRect( curTile->texture->texture[0],
+		                                  editorFocus->getX()+(RES_X/2)+(tilepos*50)+(tilepos_offset*50), 40,
+		                                  editorFocus->getY()+RES_Y-60, 40 );
 	}
 }
 
@@ -677,7 +692,7 @@ void CEditor::LoadTextures()
 	interfacetexture.LoadIMG("data/edit_backdrop.tga",3);
 }
 
-void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id)
+void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 {
 	// draws a white quad as our editframe
 	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
@@ -690,9 +705,9 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int 
 	glScalef(editobject->x_scale,editobject->y_scale,1.0f);
 	glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
 
-	DrawingHelpers::mapTextureToRect( texture->texture[editobject->id],
-	                                  editorFocus->getX()+55, texture->texture[editobject->id].width,
-	                                  editorFocus->getY()+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
+	DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
+	                                  editorFocus->getX()+55, editobject->tile->texture->texture[0].width,
+	                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->texture[0].height-5, editobject->tile->texture->texture[0].height );
 
 	glPopMatrix();
 
