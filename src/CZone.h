@@ -66,9 +66,13 @@ struct sEnvironmentMap {
 	bool operator<(const sEnvironmentMap& environmentObject) const { // instead of using a predicate in our sort call.
 		if ( z_pos == environmentObject.z_pos )
 		{
-		    return y_pos > environmentObject.y_pos;
+			if ( y_pos == environmentObject.y_pos ) {
+				return x_pos > environmentObject.x_pos;
+			} else {
+			return y_pos > environmentObject.y_pos;
+			}
 		} else {
-		    return z_pos < environmentObject.z_pos;
+			return z_pos < environmentObject.z_pos;
 		}
 	};
 
