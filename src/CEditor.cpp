@@ -75,70 +75,75 @@ void CEditor::dec_tilepos()
 	}
 }
 
-int CEditor::SaveZone()
+std::string getID( std::string filename );
+
+void CEditor::SaveZone()
 {
-	FILE *fp;
-    // open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".tilemap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".tilemap" << std::endl;
-		return -1;
+	std::string zoneName = Globals::getCurrentZone()->getZoneName();
+
+	// save the ground
+	std::string groundTileFileName = zoneName;
+	groundTileFileName.append( ".ground.lua" );
+	
+	std::ofstream ofs ( groundTileFileName.c_str() );
+	for (size_t x=0; x<zoneToEdit->TileMap.size();x++) {
+		sTileMap &curTile = zoneToEdit->TileMap[x];
+		ofs << "EditorInterface.addGroundTile( " << curTile.x_pos << ", " << curTile.y_pos << ", "
+		                                         << getID( curTile.tile->filename ) << " );" << std::endl;
 	}
-	fprintf(fp,"#x-pos y-pos tile-id");
+	ofs.close();
 
-	for (unsigned int x=0; x<zoneToEdit->TileMap.size();x++) {
-		fprintf(fp,"\n%d %d %d",zoneToEdit->TileMap[x].x_pos,zoneToEdit->TileMap[x].y_pos,zoneToEdit->TileMap[x].tile->tileID);
-	}
-
-	fclose(fp);
-	/////////////////////////////////////////////////////////////////////////////////////
-
-    // sort the environmentmap based on the Y-axis. Quick-fix for height positions. Should have another workaround later.
+	// save the environment
+	// sort the environmentmap based on the Y-axis. Quick-fix for height positions. Should have another workaround later.
     std::sort(zoneToEdit->EnvironmentMap.begin(), zoneToEdit->EnvironmentMap.end());
+    std::string environmentTileFileName = zoneName;
+    environmentTileFileName.append( ".environment.lua" );
 
-	// open the environmentmap-file, so we can write our trees and stuff...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".environmentmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".environmentmap" <<
-		          std::endl << std::endl;
-		return -1;
+	ofs.open( environmentTileFileName.c_str() );
+	for (size_t x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
+		sEnvironmentMap &curEnv = zoneToEdit->EnvironmentMap[x];
+		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
+		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
+			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
+			                                          << curEnv.transparency << " );" << std::endl;
+		}
+		if ( curEnv.x_scale != 1 || curEnv.y_scale != 1 ) {
+			ofs << "EditorInterface.adjustLastScale( " << curEnv.x_scale << ", " << curEnv.y_scale << " );" << std::endl;
+		}
 	}
-	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale z-position");
+	ofs.close();
+	
+	// save the shadows
+	std::string shadowTileFileName = zoneName;
+	shadowTileFileName.append( ".shadow.lua" );
 
-
-	for (unsigned int x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].tile->tileID, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale, zoneToEdit->EnvironmentMap[x].z_pos);
+	ofs.open( shadowTileFileName.c_str() );
+	for (size_t x=0;x<zoneToEdit->ShadowMap.size();x++) {
+		sEnvironmentMap &curEnv = zoneToEdit->ShadowMap[x];
+		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
+		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
+			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
+			                                          << curEnv.transparency << " );" << std::endl;
+		}
+		if ( curEnv.x_scale != 1 || curEnv.y_scale != 1 ) {
+			ofs << "EditorInterface.adjustLastScale( " << curEnv.x_scale << ", " << curEnv.y_scale << " );" << std::endl;
+		}
 	}
-	fclose(fp);
-	////////////////////////////////////////////////////////////////////////
+	ofs.close();
+	
+	// save the collisions
+	std::string collisionTileFileName = zoneName;
+	collisionTileFileName.append( ".collision.lua" );
 
-
-	// open the shadowmap-file, so we can save our shadow...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".shadowmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".shadowmap" <<
-		          std::endl << std::endl;
-		return -1;
-	}
-	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
-
-	for (unsigned int x=0;x<zoneToEdit->ShadowMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->ShadowMap[x].x_pos,zoneToEdit->ShadowMap[x].y_pos, zoneToEdit->ShadowMap[x].tile->tileID, zoneToEdit->ShadowMap[x].transparency, zoneToEdit->ShadowMap[x].red, zoneToEdit->ShadowMap[x].green, zoneToEdit->ShadowMap[x].blue, zoneToEdit->ShadowMap[x].x_scale, zoneToEdit->ShadowMap[x].y_scale);
-	}
-	fclose(fp);
-	/////////////////////////////////////////////////////////
-
-	// open the collisionmap-file, so we can save our shadow...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".collisionmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".collisionmap" <<
-		          std::endl << std::endl;
-		return -1;
-	}
-	fprintf(fp,"#x y h w");
-
+	ofs.open( collisionTileFileName.c_str() );
 	for (unsigned int x=0;x<zoneToEdit->CollisionMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %d",zoneToEdit->CollisionMap[x].CR.x,zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h, zoneToEdit->CollisionMap[x].CR.w);
+		sCollisionMap &curCollision = zoneToEdit->CollisionMap[x];
+		ofs << "EditorInterface.addCollisionRect( " << curCollision.CR.x << ", " << curCollision.CR.y << ", "
+		                                            << curCollision.CR.w << ", " << curCollision.CR.h << " );" << std::endl;
 	}
-	fclose(fp);
-	/////////////////////////////////////////////////////////
-	return 0;
+	ofs.close();
 }
 
 void CEditor::setEditZone( CZone *zoneToEdit_ )

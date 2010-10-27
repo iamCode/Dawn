@@ -52,7 +52,7 @@ class CEditor
 
 		bool KP_toggle_editor;
 		void DrawEditor();
-		int SaveZone();
+		void SaveZone();
 		void HandleKeys();
 		void LoadTextures();
 		void initFocus( cameraFocusHandler *character);
