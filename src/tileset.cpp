@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <cassert>
 #include "CTexture.h"
 
 std::auto_ptr<TileSet> theTileSet;
@@ -134,6 +135,33 @@ std::vector<Tile*> TileSet::getAllTilesOfType( TileClassificationType::TileClass
 {
 	// NOTE: For optimization we could (and should) precache a vector for each type here
 	return preparedTiles[ static_cast<size_t>( tileType ) ];
+}
+
+std::vector< std::vector<Tile*> > TileSet::getAllAdjacentTiles( Tile *searchTile ) const
+{
+	std::vector< std::vector<Tile*> > result;
+	result.resize( 4 );
+	
+	for ( size_t curAdjacencyNr=0; curAdjacencyNr<adjacencyList.size(); ++curAdjacencyNr ) {
+		AdjacencyStruct *curAdjacency = adjacencyList[ curAdjacencyNr ];
+		if ( tiles[ curAdjacency->baseTile ] == searchTile ) {
+			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
+				result[ AdjacencyType::RIGHT ].push_back( tiles[ curAdjacency->adjacentTile ] );
+			} else {
+				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
+				result[ AdjacencyType::TOP ].push_back( tiles[ curAdjacency->adjacentTile ] );
+			}
+		} else if ( tiles[ curAdjacency->adjacentTile ] == searchTile ) {
+			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
+				result[ AdjacencyType::LEFT ].push_back( tiles[ curAdjacency->baseTile ] );
+			} else {
+				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
+				result[ AdjacencyType::BOTTOM ].push_back( tiles[ curAdjacency->baseTile ] );
+			}
+		}
+	}
+	
+	return result;
 }
 
 namespace EditorInterface

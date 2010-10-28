@@ -188,12 +188,17 @@ void CEditor::HandleKeys()
 					switch (current_object) {
 						case 1: // environment
 							objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+							curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile );
 						break;
 						case 2: // shadows
 							objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+							curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile );
 						break;
 						case 3: // collisionboxes
 							objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+						break;
+						default:
+							curAdjacentTiles.clear();
 						break;
 					}
 				break;
@@ -398,6 +403,15 @@ void CEditor::HandleKeys()
 
 	if (!keys[SDLK_l]) {
 		KP_toggle_editor = false;
+	}
+
+	if (keys[SDLK_m] && !KP_toggle_adjacencyMode) {
+		KP_toggle_adjacencyMode = true;
+		adjacencyModeEnabled = ! adjacencyModeEnabled;
+	}
+
+	if (!keys[SDLK_m]) {
+		KP_toggle_adjacencyMode = false;
 	}
 
 	if (keys['.']) {  // increase the amount of transparency of the object.
@@ -699,36 +713,88 @@ void CEditor::LoadTextures()
 
 void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 {
-	// draws a white quad as our editframe
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
-	                                  editorFocus->getX()+50, 350,
-	                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
-
-
-	// set the color, transparency, scale and then draws the object we are editing
+	//glScalef(editobject->x_scale,editobject->y_scale,1.0f);
+	//DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
+	//                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
+	//                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
+	
+	// Highlight the currently selected tile in red (which might well be bigger than it looks)
 	glPushMatrix();
-	glScalef(editobject->x_scale,editobject->y_scale,1.0f);
-	glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
-
-	DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
-	                                  editorFocus->getX()+55, editobject->tile->texture->texture[0].width,
-	                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->texture[0].height-5, editobject->tile->texture->texture[0].height );
-
+	glColor4f(1.0, 1.0, 1.0, 0.2);
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
+	                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
+	                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
 	glPopMatrix();
+	
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				// NOTE: Here we need to select the correct tile
+				Tile *adjacencyProposal = curDirectionAdjacencies[0];
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	int fontHeight = objectDescriptionFont->getHeight();
+				// draw the adjacent tile
+				int drawX = editobject->x_pos;
+				int drawY = editobject->y_pos;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
+	
+				glPushMatrix();
+				glColor4f(1.0, 1.0, 1.0, 0.5);
+				DrawingHelpers::mapTextureToRect( adjacencyProposal->texture->texture[0],
+				                                  drawX, adjacencyProposal->texture->texture[0].width,
+				                                  drawY,adjacencyProposal->texture->texture[0].height );
+				glPopMatrix();
+			}
+		}
+	}  // adjacencyModeEnabled
+	else {
+		// draw tile information in edit frame
 
-	objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
-	objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
-	objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
-	objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+		// draws a white quad as our editframe
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
+		                                  editorFocus->getX()+50, 350,
+		                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
 
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	glScalef(1.0f,1.0f,1.0f);
+
+		// set the color, transparency, scale and then draws the object we are editing
+		glPushMatrix();
+		glScalef(editobject->x_scale,editobject->y_scale,1.0f);
+		glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
+
+		DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
+		                                  editorFocus->getX()+55, editobject->tile->texture->texture[0].width,
+		                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->texture[0].height-5, editobject->tile->texture->texture[0].height );
+
+		glPopMatrix();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		int fontHeight = objectDescriptionFont->getHeight();
+
+		objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
+		objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
+		objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
+		objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		glScalef(1.0f,1.0f,1.0f);
+	} // ! adjacencyModeEnabled (else)
 }
 
 // Set up the focus to allow moving the camera and save

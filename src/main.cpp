@@ -1139,6 +1139,7 @@ void game_loop()
 
             if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
                 Editor.setEditZone( Globals::getCurrentZone() );
+                LuaFunctions::executeLuaFile( "data/tileAdjacency.lua" );
                 Editor.setEnabled( true );
                 Editor.initFocus( &focus );
                 Editor.KP_toggle_editor = true;

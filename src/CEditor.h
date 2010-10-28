@@ -27,6 +27,7 @@
 
 class CZone;
 class sEnvironmentMap;
+class Tile;
 
 extern int mouseX, mouseY, RES_X, RES_Y, done;
 
@@ -43,6 +44,7 @@ class CEditor
 			zoneToEdit = NULL;
 			objectDescriptionFont = NULL;
 			keybindingFont = NULL;
+			adjacencyModeEnabled = false;
 		};
 
 		~CEditor() {
@@ -69,7 +71,7 @@ class CEditor
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
+		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce, KP_toggle_adjacencyMode;
 		
 		// Keeps track of the camera positions saves the original camera
 		// to snap back to target after done editing
@@ -79,6 +81,9 @@ class CEditor
 		GLFT_Font *objectDescriptionFont;
 		GLFT_Font *keybindingFont;
 		CZone *zoneToEdit;
+		
+		bool adjacencyModeEnabled;
+		std::vector< std::vector<Tile*> > curAdjacentTiles;
 };
 
 #endif

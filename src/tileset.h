@@ -68,6 +68,7 @@ class TileSet
 	void clear();
 	std::vector<Tile*> getAllTiles() const;
 	std::vector<Tile*> getAllTilesOfType( TileClassificationType::TileClassificationType tileType );
+	std::vector< std::vector<Tile*> > getAllAdjacentTiles( Tile *searchTile ) const;
 };
 
 namespace EditorInterface
