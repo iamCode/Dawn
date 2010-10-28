@@ -18,6 +18,7 @@ addAdjacencyIfExists( houseinterior_insidewall1_tga, AdjacencyType.RIGHT, housei
 addAdjacencyIfExists( houseinterior_insidewall1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewall1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewall1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewall1_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewall2_tga );
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewall3_tga );
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
@@ -26,6 +27,7 @@ addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, house
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewall14_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewall2_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewall3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
@@ -34,6 +36,7 @@ addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT,
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewalldamaged1_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewall2_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewall3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
@@ -42,6 +45,7 @@ addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewalldamaged14_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewall2_tga );
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewall3_tga );
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
@@ -50,6 +54,7 @@ addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, housei
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewall2_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewall3_tga );
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewall13_tga );
@@ -57,17 +62,25 @@ addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, housei
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged14_tga );
+addAdjacencyIfExists( houseinterior_insidewall3_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewall13_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged2_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewalldamaged2_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewall14_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged3_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
 addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewalldamaged3_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
+addAdjacencyIfExists( houseinterior_insidewall_door_tga, AdjacencyType.RIGHT, houseinterior_insidewall4_tga );
+addAdjacencyIfExists( houseinterior_insidewall_door_tga, AdjacencyType.RIGHT, houseinterior_insidewall14_tga );
+addAdjacencyIfExists( houseinterior_insidewall_door_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged4_tga );
+addAdjacencyIfExists( houseinterior_insidewall_door_tga, AdjacencyType.RIGHT, houseinterior_insidewalldamaged13_tga );
+addAdjacencyIfExists( houseinterior_insidewall_door_tga, AdjacencyType.RIGHT, houseinterior_insidewall_door_tga );
 
 
 
