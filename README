@@ -1,5 +1,20 @@
 To compile Dawn: ./configure && make
 To run Dawn: ./dawn-rpg
 
-Visit us on the web for more information.
-http://dawn-rpg.sourceforge.net
+---------------------------------------
+
+Keybindings:
+
+[ ESC ]     -  Open the menu
+[ B ]       -  Open spellbook
+[ I ]       -  Open the Inventory
+[ C ]       -  Character info page
+[ L ]       -  Enter leveleditor
+[ Q ]       -  Open the quest log
+[ 1 - 9 ]   -  Hotkeys for skills/spells
+[ WSAD ]    -  Movement
+
+Left mouse  - Select objects, items.
+Right mouse - Interact with objects.
+
+Visit http://dawn-rpg.sourceforge.net/ for more information!
