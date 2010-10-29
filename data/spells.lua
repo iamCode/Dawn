@@ -68,7 +68,7 @@ curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["venomspiteffect1"] = curSpell;
 curSpell:setName("Venomspit");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
-curSpell:setContinuousDamage( 5, 7, 10000, ElementType.Earth );
+curSpell:setContinuousDamage( 4, 6, 10000, ElementType.Earth );
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["venomspit"] = curSpell;

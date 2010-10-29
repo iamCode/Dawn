@@ -166,3 +166,9 @@ curItem = itemDatabase["waterpouch"];
 curItem:setSpell( spellDatabase["drink"] );
 curItem:setSpellCharges( 5 );
 curItem:setValue( 40 );
+
+itemDatabase["weakenedbow"]=DawnInterface.createNewItem( "Weakened bow", 2, 3, "data/items/Bow1.tga", ItemQuality.POOR, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.BOW );
+curItem = itemDatabase["weakenedbow"];
+curItem:setMinDamage( 4 );
+curItem:setMaxDamage( 7 );
+curItem:setValue( 78 );
