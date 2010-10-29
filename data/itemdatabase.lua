@@ -160,3 +160,9 @@ curItem = itemDatabase["ajuicyapple"];
 curItem:setSpell( spellDatabase["food"] );
 curItem:setSpellCharges( 1 );
 curItem:setValue( 25 );
+
+itemDatabase["waterpouch"]=DawnInterface.createNewItem( "A waterpouch", 1, 1, "data/items/Food2.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.FOOD, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["waterpouch"];
+curItem:setSpell( spellDatabase["drink"] );
+curItem:setSpellCharges( 5 );
+curItem:setValue( 40 );
