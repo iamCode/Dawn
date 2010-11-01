@@ -38,6 +38,14 @@ AC_CHECK_LIB([glut], [glutSwapBuffers], [], [
         echo "Cannot locate glut library. You need this for Dawn to work."
         exit -1
 ])
+AC_CHECK_LIB([z], [gzsetparams], [], [
+        echo "Cannot locate zlib library. You need this for Dawn to work."
+        exit -1
+])
+AC_CHECK_LIB([pthread], [pthread_create], [], [
+        echo "Cannot locate pthread library. You need this for Dawn to work."
+        exit -1
+])
 AC_SEARCH_LIBS([luaL_newstate], [lua lua5.1], [], [
         echo "Cannot locate lua5.1 library. You need this for Dawn to work."
         exit -1
