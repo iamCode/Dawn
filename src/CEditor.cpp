@@ -185,30 +185,60 @@ void CEditor::HandleKeys()
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			switch (event.button.button) {
 				case 1: // mouse button 1, see if we can select an object being pointed at.
-					switch (current_object) {
-						case 1: // environment
-							objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-							curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile );
-						break;
-						case 2: // shadows
-							objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-							curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile );
-						break;
-						case 3: // collisionboxes
-							objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-						break;
-						default:
-							curAdjacentTiles.clear();
-						break;
+					{
+						bool handled = false;
+						// first check whether we are in adjacency mode and can place a tile. If not we select a tile
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndPlaceAdjacentTile();
+						}
+
+						if ( ! handled ) {
+							switch (current_object) {
+								case 1: // environment
+									objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+									curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile );
+								break;
+								case 2: // shadows
+									objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+									curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile );
+								break;
+								case 3: // collisionboxes
+									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+								break;
+								default:
+									curAdjacentTiles.clear();
+								break;
+							}
+						}
 					}
 				break;
 
-				case 4: // scroll up, increase our tileposition
-					inc_tilepos();
+				case 4: // scroll up
+					{
+						// if mouse is over a tile for adjacency selection, change to next tile in the selection
+						// else increase our tileposition
+						bool handled = false;
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndApplyAdjacencyModification( 1 );
+						}
+						if ( ! handled ) {
+							inc_tilepos();
+						}
+					}
 				break;
 
-				case 5: // scroll down, decrease our tileposition
-					dec_tilepos();
+				case 5: // scroll down
+					{
+						// if mouse is over a tile for adjacency selection, change to previous tile in the selection
+						// else decrease our tileposition
+						bool handled = false;
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndApplyAdjacencyModification( -1 );
+						}
+						if ( ! handled ) {
+							dec_tilepos();
+						}
+					}
 				break;
 			}
 		}
@@ -372,7 +402,7 @@ void CEditor::HandleKeys()
 			case 1: // environment
 			{
 				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::ENVIRONMENT )[ current_tilepos ];
-				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile);
+				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile, true /* centered on pos */ );
 			}
 			break;
 			case 2: // shadows
@@ -612,7 +642,7 @@ void CEditor::DrawEditor()
 	if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
 		switch (current_object) {
 			case 1:
-				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]) );
+				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]));
 			break;
 			case 2:
 				DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]));
@@ -711,6 +741,130 @@ void CEditor::LoadTextures()
 	interfacetexture.LoadIMG("data/edit_backdrop.tga",3);
 }
 
+bool CEditor::checkAndPlaceAdjacentTile()
+{
+	bool mouseWasInAnyDirectionsAdjacency = false;
+
+	sEnvironmentMap *editobject = NULL;
+	if ( objectedit_selected >= 0 ) {
+		switch ( current_object ) {
+			case 1: 
+				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
+			break;
+			case 2:
+				editobject = &(zoneToEdit->ShadowMap[objectedit_selected]);
+			break;
+		}
+	}
+	
+	if ( editobject == NULL ) {
+		return false;
+	}
+
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
+
+				// draw the adjacent tile
+				int drawX = editobject->x_pos;
+				int drawY = editobject->y_pos;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
+
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
+
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
+				if ( mouseInAdjacencyRect ) {
+					mouseWasInAnyDirectionsAdjacency = true;
+					zoneToEdit->AddEnvironment( drawX, drawY, adjacencyProposal, false /* not centered on pos */ );
+				}
+			}
+		}
+	}
+
+	return mouseWasInAnyDirectionsAdjacency;
+}
+
+bool CEditor::checkAndApplyAdjacencyModification( int modification )
+{
+	bool mouseWasInAnyDirectionsAdjacency = false;
+
+	sEnvironmentMap *editobject = NULL;
+	if ( objectedit_selected >= 0 ) {
+		switch ( current_object ) {
+			case 1: 
+				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
+			break;
+			case 2:
+				editobject = &(zoneToEdit->ShadowMap[objectedit_selected]);
+			break;
+		}
+	}
+	
+	if ( editobject == NULL ) {
+		return false;
+	}
+
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
+
+				// draw the adjacent tile
+				int drawX = editobject->x_pos;
+				int drawY = editobject->y_pos;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
+
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
+
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
+				if ( mouseInAdjacencyRect ) {
+					mouseWasInAnyDirectionsAdjacency = true;
+					if ( ( modification > 0 
+					     && curDirectionAdjacencies.size() > curDirectionAdjacencySelection[ curDirection ]+modification )
+					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
+						curDirectionAdjacencySelection[ curDirection ] += modification;
+					}
+				}
+			}
+		}
+	}
+
+	return mouseWasInAnyDirectionsAdjacency;
+}
+
 void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 {
 	//glScalef(editobject->x_scale,editobject->y_scale,1.0f);
@@ -731,7 +885,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
 			if ( curDirectionAdjacencies.size() > 0 ) {
 				// NOTE: Here we need to select the correct tile
-				Tile *adjacencyProposal = curDirectionAdjacencies[0];
+				Tile *adjacencyProposal = curDirectionAdjacencies[curDirectionAdjacencySelection[ curDirection ]];
 
 				// draw the adjacent tile
 				int drawX = editobject->x_pos;
@@ -750,12 +904,20 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 						drawY -= adjacencyProposal->texture->texture[0].height;
 					break;
 				}
-	
+
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
+
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
 				glPushMatrix();
-				glColor4f(1.0, 1.0, 1.0, 0.5);
+				if ( mouseInAdjacencyRect ) {
+					glColor4f( 1.0, 1.0, 1.0, 1.0 );
+				} else {
+					glColor4f(1.0, 1.0, 1.0, 0.5);
+				}
 				DrawingHelpers::mapTextureToRect( adjacencyProposal->texture->texture[0],
-				                                  drawX, adjacencyProposal->texture->texture[0].width,
-				                                  drawY,adjacencyProposal->texture->texture[0].height );
+				                                  drawX, drawW, drawY, drawH );
 				glPopMatrix();
 			}
 		}

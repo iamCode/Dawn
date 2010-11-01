@@ -72,6 +72,11 @@ namespace DrawingHelpers
 		}
 		return true;
 	}
+
+	inline bool checkPointInRect( int px, int py, int left, int width, int bottom, int height )
+	{
+		return ( left < px && left + width > px && bottom < py && bottom + height > py );
+	}
 }
 
 #endif // __DRAWING_HELPERS_H

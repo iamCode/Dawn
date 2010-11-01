@@ -337,21 +337,24 @@ void CZone::DeleteTile(int iId)
 	}
 }
 
-void CZone::AddEnvironment(int x_pos, int y_pos, Tile *tile)
+void CZone::AddEnvironment(int x_pos, int y_pos, Tile *tile, bool centeredOnPos)
 {
 	// add environment to our environmentvector.
 	// x and y cords and devide and substract the height and width of the image so we place the texture
 	// in the middle of the cursor.
 	// IF the environmenttexture has an collision_box we also push that info into the collisionvector.
-	EnvironmentMap.push_back(sEnvironmentMap(x_pos-(tile->texture->texture[0].width/2),
-	                         y_pos-(tile->texture->texture[0].height/2),tile,
+	int placePosX = x_pos;
+	int placePosY = y_pos;
+	if ( centeredOnPos ) {
+		placePosX -= tile->texture->texture[0].width/2;
+		placePosY -= tile->texture->texture[0].height/2;
+	}
+
+	EnvironmentMap.push_back(sEnvironmentMap(placePosX, placePosY, tile,
 	                         1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
 	if (tile->texture->texture[0].contains_collision_box == true) {
-		CollisionMap.push_back(sCollisionMap(x_pos-(
-		                                         tile->texture->texture[0].width/2)+
-		                                     tile->texture->texture[0].collision_box.x,
-		                                     y_pos-(tile->texture->texture[0].height/2)+
-		                                     tile->texture->texture[0].collision_box.y,
+		CollisionMap.push_back(sCollisionMap(placePosX + tile->texture->texture[0].collision_box.x,
+		                                     placePosY + tile->texture->texture[0].collision_box.y,
 		                                     tile->texture->texture[0].collision_box.h,
 		                                     tile->texture->texture[0].collision_box.w));
 	}

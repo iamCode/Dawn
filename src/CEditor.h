@@ -24,10 +24,10 @@
 #include <stdio.h>
 #include <iostream>
 #include "cameraFocusHandler.h"
+#include "tileset.h"
 
 class CZone;
 class sEnvironmentMap;
-class Tile;
 
 extern int mouseX, mouseY, RES_X, RES_Y, done;
 
@@ -45,6 +45,9 @@ class CEditor
 			objectDescriptionFont = NULL;
 			keybindingFont = NULL;
 			adjacencyModeEnabled = false;
+			for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+				curDirectionAdjacencySelection[ curDirection ] = 0;
+			}
 		};
 
 		~CEditor() {
@@ -68,6 +71,8 @@ class CEditor
 		void dec_tilepos();
 
 		void DrawEditFrame(sEnvironmentMap *editobject);
+		bool checkAndApplyAdjacencyModification( int modification );
+		bool checkAndPlaceAdjacentTile();
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
@@ -84,6 +89,7 @@ class CEditor
 		
 		bool adjacencyModeEnabled;
 		std::vector< std::vector<Tile*> > curAdjacentTiles;
+		int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
 };
 
 #endif

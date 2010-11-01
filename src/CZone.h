@@ -143,7 +143,7 @@ class CZone
 		int LocateCollisionbox(int x, int y);
 
 		void ChangeTile(int iId, Tile *tile);
-		void AddEnvironment(int x_pos, int y_pos, Tile *tile);
+		void AddEnvironment(int x_pos, int y_pos, Tile *tile, bool centeredOnPos);
 		void AddShadow(int x_pos, int y_pos, Tile *tile);
 		void AddCollisionbox(int x_pos, int y_pos);
 		int DeleteEnvironment(int x, int y);
