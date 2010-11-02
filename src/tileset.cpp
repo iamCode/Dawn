@@ -67,14 +67,12 @@ int TileSet::addTileWithCollisionBox( std::string filename, TileClassificationTy
 
 void TileSet::addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2, int offsetX, int offsetY )
 {
-	assert( ( adjacencyType == AdjacencyType::LEFT || adjacencyType == AdjacencyType::RIGHT || offsetY == 0 )
-	       && ( adjacencyType == AdjacencyType::TOP || adjacencyType == AdjacencyType::BOTTOM || offsetX == 0 ) );
 	if ( adjacencyType == AdjacencyType::LEFT ) {
-		addAdjacency( tile2, AdjacencyType::RIGHT, tile1, offsetX, -offsetY );
+		addAdjacency( tile2, AdjacencyType::RIGHT, tile1, -offsetX, -offsetY );
 		return;
 	}
 	if ( adjacencyType == AdjacencyType::BOTTOM ) {
-		addAdjacency( tile2, AdjacencyType::TOP, tile1, -offsetX, offsetY );
+		addAdjacency( tile2, AdjacencyType::TOP, tile1, -offsetX, -offsetY );
 		return;
 	}
 
@@ -177,20 +175,21 @@ void TileSet::getAllAdjacentTiles( Tile *searchTile, std::vector< std::vector<Ti
 		if ( tiles[ curAdjacency->baseTile ] == searchTile ) {
 			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
 				result[ AdjacencyType::RIGHT ].push_back( tiles[ curAdjacency->adjacentTile ] );
-				matchOffsets[ AdjacencyType::RIGHT ].push_back( Point( 0, curAdjacency->offset.y ) );
+				matchOffsets[ AdjacencyType::RIGHT ].push_back( Point( curAdjacency->offset.x, curAdjacency->offset.y ) );
 			} else {
 				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
 				result[ AdjacencyType::TOP ].push_back( tiles[ curAdjacency->adjacentTile ] );
-				matchOffsets[ AdjacencyType::TOP ].push_back( Point( curAdjacency->offset.x, 0 ) );
+				matchOffsets[ AdjacencyType::TOP ].push_back( Point( curAdjacency->offset.x, curAdjacency->offset.y ) );
 			}
-		} else if ( tiles[ curAdjacency->adjacentTile ] == searchTile ) {
+		}
+		if ( tiles[ curAdjacency->adjacentTile ] == searchTile ) {
 			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
 				result[ AdjacencyType::LEFT ].push_back( tiles[ curAdjacency->baseTile ] );
-				matchOffsets[ AdjacencyType::LEFT ].push_back( Point( 0, -curAdjacency->offset.y ) );
+				matchOffsets[ AdjacencyType::LEFT ].push_back( Point( -curAdjacency->offset.x, -curAdjacency->offset.y ) );
 			} else {
 				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
 				result[ AdjacencyType::BOTTOM ].push_back( tiles[ curAdjacency->baseTile ] );
-				matchOffsets[ AdjacencyType::BOTTOM ].push_back( Point( -curAdjacency->offset.x, 0 ) );
+				matchOffsets[ AdjacencyType::BOTTOM ].push_back( Point( -curAdjacency->offset.x, -curAdjacency->offset.y ) );
 			}
 		}
 	}

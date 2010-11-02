@@ -82,5 +82,18 @@ tileSet:addEquivalenceAdjacency( houseInteriorCentreTop, AdjacencyType.RIGHT, ho
 tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorCentreTop, 0, 0 );
 tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorRightTop, 0, 0 );
 
+-- top right tiles
+local houseInteriorTopRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( houseInteriorTopRight, houseinterior_insidewall4_tga, -40, -40 );
+addTileToEquivalenceClassIfExists( houseInteriorTopRight, houseinterior_insidewalldamaged4_tga, -40, -40 );
+
+-- centre right tiles
+local houseInteriorCentreRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( houseInteriorCentreRight, houseinterior_insidewall5_tga, 0, 0 );
+addTileToEquivalenceClassIfExists( houseInteriorCentreRight, houseinterior_insidewalldamaged5_tga, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( houseInteriorCentreRight, AdjacencyType.TOP, houseInteriorCentreRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( houseInteriorCentreRight, AdjacencyType.TOP, houseInteriorTopRight, 0, 0 );
+
 tileSet:printTileSet();
 
