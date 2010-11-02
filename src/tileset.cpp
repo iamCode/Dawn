@@ -5,6 +5,11 @@
 #include <cassert>
 #include "CTexture.h"
 
+void AdjacencyEquivalenceClass::addEquivalentTile( int tile )
+{
+	equivalentTiles.push_back( tile );
+}
+
 std::auto_ptr<TileSet> theTileSet;
 static TileSet* getTheTileSet()
 {
@@ -82,6 +87,23 @@ void TileSet::addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyTyp
 	newAdjacency->adjacentTile = tile2;
 	newAdjacency->adjacencyType = adjacencyType;
 	adjacencyList.push_back( newAdjacency.release() );
+}
+
+AdjacencyEquivalenceClass *TileSet::createAdjacencyEquivalenceClass()
+{
+	myEquivalenceClasses.push_back( new AdjacencyEquivalenceClass() );
+	return myEquivalenceClasses[ myEquivalenceClasses.size() - 1 ];
+}
+
+void TileSet::addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2 )
+{
+	std::vector<int> &firstTiles = class1->equivalentTiles;
+	std::vector<int> &secondTiles = class2->equivalentTiles;
+	for ( size_t curFirstTileIndex=0; curFirstTileIndex<firstTiles.size(); ++curFirstTileIndex ) {
+		for ( size_t curSecondTileIndex=0; curSecondTileIndex<secondTiles.size(); ++curSecondTileIndex ) {
+			addAdjacency( firstTiles[curFirstTileIndex], adjacencyType, secondTiles[curSecondTileIndex] );
+		}
+	}
 }
 
 void TileSet::printTileSet() const

@@ -45,12 +45,20 @@ class AdjacencyStruct
 		int adjacentTile;
 };
 
+class AdjacencyEquivalenceClass
+{
+  public:
+	std::vector<int> equivalentTiles;
+	void addEquivalentTile( int tile );
+};
+
 class TileSet
 {
   private:
 	std::vector<Tile*> tiles;
 	std::vector<AdjacencyStruct*> adjacencyList;
 	std::vector< std::vector<Tile*> > preparedTiles;
+	std::vector<AdjacencyEquivalenceClass*> myEquivalenceClasses;
 
   public:
 	TileSet();
@@ -59,6 +67,8 @@ class TileSet
 	int addTile( std::string filename, TileClassificationType::TileClassificationType tileType );
 	int addTileWithCollisionBox( std::string filename, TileClassificationType::TileClassificationType tileType, int cbx, int cby, int cbw, int cbh );
 	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2 );
+	AdjacencyEquivalenceClass *createAdjacencyEquivalenceClass();
+	void addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2 );
 	void printTileSet() const;
 	
 	// normal interface
