@@ -37,19 +37,33 @@ class Tile
 		CTexture *texture;
 };
 
+struct Point
+{
+	int x;
+	int y;
+
+	Point( int x_=0, int y_=0 )
+		: x( x_ ),
+		  y( y_ )
+	{
+	}
+};
+
 class AdjacencyStruct
 {
 	public:
 		AdjacencyType::AdjacencyType adjacencyType;
 		int baseTile;
 		int adjacentTile;
+		Point offset;
 };
 
 class AdjacencyEquivalenceClass
 {
   public:
 	std::vector<int> equivalentTiles;
-	void addEquivalentTile( int tile );
+	std::vector<Point> offsets;
+	void addEquivalentTile( int tile, int offsetX, int offsetY );
 };
 
 class TileSet
@@ -66,9 +80,9 @@ class TileSet
 	// The following functions are in the LUA EditorInterface
 	int addTile( std::string filename, TileClassificationType::TileClassificationType tileType );
 	int addTileWithCollisionBox( std::string filename, TileClassificationType::TileClassificationType tileType, int cbx, int cby, int cbw, int cbh );
-	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2 );
+	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2, int offsetX, int offsetY );
 	AdjacencyEquivalenceClass *createAdjacencyEquivalenceClass();
-	void addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2 );
+	void addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2, int allOffsetX, int allOffsetY );
 	void printTileSet() const;
 	
 	// normal interface
@@ -78,7 +92,7 @@ class TileSet
 	void clear();
 	std::vector<Tile*> getAllTiles() const;
 	std::vector<Tile*> getAllTilesOfType( TileClassificationType::TileClassificationType tileType );
-	std::vector< std::vector<Tile*> > getAllAdjacentTiles( Tile *searchTile ) const;
+	void getAllAdjacentTiles( Tile *searchTile, std::vector< std::vector<Tile*> > &matchingTiles, std::vector< std::vector<Point> > &matchOffsets ) const;
 };
 
 namespace EditorInterface

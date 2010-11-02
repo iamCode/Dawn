@@ -5,9 +5,10 @@
 #include <cassert>
 #include "CTexture.h"
 
-void AdjacencyEquivalenceClass::addEquivalentTile( int tile )
+void AdjacencyEquivalenceClass::addEquivalentTile( int tile, int offsetX, int offsetY )
 {
 	equivalentTiles.push_back( tile );
+	offsets.push_back( Point( offsetX, offsetY ) );
 }
 
 std::auto_ptr<TileSet> theTileSet;
@@ -64,14 +65,16 @@ int TileSet::addTileWithCollisionBox( std::string filename, TileClassificationTy
 	return newPos;
 }
 
-void TileSet::addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2 )
+void TileSet::addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2, int offsetX, int offsetY )
 {
+	assert( ( adjacencyType == AdjacencyType::LEFT || adjacencyType == AdjacencyType::RIGHT || offsetY == 0 )
+	       && ( adjacencyType == AdjacencyType::TOP || adjacencyType == AdjacencyType::BOTTOM || offsetX == 0 ) );
 	if ( adjacencyType == AdjacencyType::LEFT ) {
-		addAdjacency( tile2, AdjacencyType::RIGHT, tile1 );
+		addAdjacency( tile2, AdjacencyType::RIGHT, tile1, offsetX, -offsetY );
 		return;
 	}
 	if ( adjacencyType == AdjacencyType::BOTTOM ) {
-		addAdjacency( tile2, AdjacencyType::TOP, tile1 );
+		addAdjacency( tile2, AdjacencyType::TOP, tile1, -offsetX, offsetY );
 		return;
 	}
 
@@ -86,6 +89,7 @@ void TileSet::addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyTyp
 	newAdjacency->baseTile = tile1;
 	newAdjacency->adjacentTile = tile2;
 	newAdjacency->adjacencyType = adjacencyType;
+	newAdjacency->offset = Point( offsetX, offsetY );
 	adjacencyList.push_back( newAdjacency.release() );
 }
 
@@ -95,13 +99,15 @@ AdjacencyEquivalenceClass *TileSet::createAdjacencyEquivalenceClass()
 	return myEquivalenceClasses[ myEquivalenceClasses.size() - 1 ];
 }
 
-void TileSet::addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2 )
+void TileSet::addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2, int allOffsetX, int allOffsetY )
 {
 	std::vector<int> &firstTiles = class1->equivalentTiles;
 	std::vector<int> &secondTiles = class2->equivalentTiles;
 	for ( size_t curFirstTileIndex=0; curFirstTileIndex<firstTiles.size(); ++curFirstTileIndex ) {
 		for ( size_t curSecondTileIndex=0; curSecondTileIndex<secondTiles.size(); ++curSecondTileIndex ) {
-			addAdjacency( firstTiles[curFirstTileIndex], adjacencyType, secondTiles[curSecondTileIndex] );
+			addAdjacency( firstTiles[curFirstTileIndex], adjacencyType, secondTiles[curSecondTileIndex], 
+			              class2->offsets[curSecondTileIndex].x - class1->offsets[curFirstTileIndex].x + allOffsetX,
+			              class2->offsets[curSecondTileIndex].y - class1->offsets[curFirstTileIndex].y + allOffsetY );
 		}
 	}
 }
@@ -159,31 +165,35 @@ std::vector<Tile*> TileSet::getAllTilesOfType( TileClassificationType::TileClass
 	return preparedTiles[ static_cast<size_t>( tileType ) ];
 }
 
-std::vector< std::vector<Tile*> > TileSet::getAllAdjacentTiles( Tile *searchTile ) const
+void TileSet::getAllAdjacentTiles( Tile *searchTile, std::vector< std::vector<Tile*> > &result, std::vector< std::vector<Point> > &matchOffsets ) const
 {
-	std::vector< std::vector<Tile*> > result;
+	result.clear();
 	result.resize( 4 );
+	matchOffsets.clear();
+	matchOffsets.resize( 4 );
 	
 	for ( size_t curAdjacencyNr=0; curAdjacencyNr<adjacencyList.size(); ++curAdjacencyNr ) {
 		AdjacencyStruct *curAdjacency = adjacencyList[ curAdjacencyNr ];
 		if ( tiles[ curAdjacency->baseTile ] == searchTile ) {
 			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
 				result[ AdjacencyType::RIGHT ].push_back( tiles[ curAdjacency->adjacentTile ] );
+				matchOffsets[ AdjacencyType::RIGHT ].push_back( Point( 0, curAdjacency->offset.y ) );
 			} else {
 				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
 				result[ AdjacencyType::TOP ].push_back( tiles[ curAdjacency->adjacentTile ] );
+				matchOffsets[ AdjacencyType::TOP ].push_back( Point( curAdjacency->offset.x, 0 ) );
 			}
 		} else if ( tiles[ curAdjacency->adjacentTile ] == searchTile ) {
 			if ( curAdjacency->adjacencyType == AdjacencyType::RIGHT ) {
 				result[ AdjacencyType::LEFT ].push_back( tiles[ curAdjacency->baseTile ] );
+				matchOffsets[ AdjacencyType::LEFT ].push_back( Point( 0, -curAdjacency->offset.y ) );
 			} else {
 				assert( curAdjacency->adjacencyType == AdjacencyType::TOP );
 				result[ AdjacencyType::BOTTOM ].push_back( tiles[ curAdjacency->baseTile ] );
+				matchOffsets[ AdjacencyType::BOTTOM ].push_back( Point( -curAdjacency->offset.x, 0 ) );
 			}
 		}
 	}
-	
-	return result;
 }
 
 namespace EditorInterface

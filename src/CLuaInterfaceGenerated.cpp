@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Nov  2 19:51:33 2010.
+** Generated automatically by tolua++-1.0.92 on Tue Nov  2 22:26:10 2010.
 */
 
 #ifndef __cplusplus
@@ -5932,7 +5932,9 @@ static int tolua_CLuaInterface_AdjacencyEquivalenceClass_addEquivalentTile00(lua
  if (
      !tolua_isusertype(tolua_S,1,"AdjacencyEquivalenceClass",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -5940,11 +5942,13 @@ static int tolua_CLuaInterface_AdjacencyEquivalenceClass_addEquivalentTile00(lua
  {
   AdjacencyEquivalenceClass* self = (AdjacencyEquivalenceClass*)  tolua_tousertype(tolua_S,1,0);
   int tile = ((int)  tolua_tonumber(tolua_S,2,0));
+  int offsetX = ((int)  tolua_tonumber(tolua_S,3,0));
+  int offsetY = ((int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addEquivalentTile'", NULL);
 #endif
   {
-   self->addEquivalentTile(tile);
+   self->addEquivalentTile(tile,offsetX,offsetY);
   }
  }
  return 0;
@@ -6047,7 +6051,9 @@ static int tolua_CLuaInterface_TileSet_addAdjacency00(lua_State* tolua_S)
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -6057,11 +6063,13 @@ static int tolua_CLuaInterface_TileSet_addAdjacency00(lua_State* tolua_S)
   int tile1 = ((int)  tolua_tonumber(tolua_S,2,0));
   AdjacencyType::AdjacencyType adjacencyType = ((AdjacencyType::AdjacencyType) (int)  tolua_tonumber(tolua_S,3,0));
   int tile2 = ((int)  tolua_tonumber(tolua_S,4,0));
+  int offsetX = ((int)  tolua_tonumber(tolua_S,5,0));
+  int offsetY = ((int)  tolua_tonumber(tolua_S,6,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAdjacency'", NULL);
 #endif
   {
-   self->addAdjacency(tile1,adjacencyType,tile2);
+   self->addAdjacency(tile1,adjacencyType,tile2,offsetX,offsetY);
   }
  }
  return 0;
@@ -6116,7 +6124,9 @@ static int tolua_CLuaInterface_TileSet_addEquivalenceAdjacency00(lua_State* tolu
      !tolua_isusertype(tolua_S,2,"AdjacencyEquivalenceClass",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
      !tolua_isusertype(tolua_S,4,"AdjacencyEquivalenceClass",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -6126,11 +6136,13 @@ static int tolua_CLuaInterface_TileSet_addEquivalenceAdjacency00(lua_State* tolu
   AdjacencyEquivalenceClass* class1 = ((AdjacencyEquivalenceClass*)  tolua_tousertype(tolua_S,2,0));
   AdjacencyType::AdjacencyType adjacencyType = ((AdjacencyType::AdjacencyType) (int)  tolua_tonumber(tolua_S,3,0));
   AdjacencyEquivalenceClass* class2 = ((AdjacencyEquivalenceClass*)  tolua_tousertype(tolua_S,4,0));
+  int offsetX = ((int)  tolua_tonumber(tolua_S,5,0));
+  int offsetY = ((int)  tolua_tonumber(tolua_S,6,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addEquivalenceAdjacency'", NULL);
 #endif
   {
-   self->addEquivalenceAdjacency(class1,adjacencyType,class2);
+   self->addEquivalenceAdjacency(class1,adjacencyType,class2,offsetX,offsetY);
   }
  }
  return 0;

@@ -1,21 +1,37 @@
 local tileSet = EditorInterface.getTileSet();
 
 -- only add adjacency information if the tiles are currently defined which should mean they exist in the current tileset
-function addAdjacencyIfExists( tile1, adjacencyType, tile2 )
+function addAdjacencyIfExists( tile1, adjacencyType, tile2, offsetX, offsetY )
 	if ( tile1 == nil or tile2 == nil )
 	then
 		return;
 	else
-		tileSet:addAdjacency( tile1, adjacencyType, tile2 );
+		if ( offsetX == nil )
+		then
+			offsetX = 0;
+		end
+		if ( offsetY == nil )
+		then
+			offsetY = 0;
+		end
+		tileSet:addAdjacency( tile1, adjacencyType, tile2, offsetX, offsetY );
 	end
 end
 
-function addTileToEquivalenceClassIfExists( equivalenceClass, tile )
+function addTileToEquivalenceClassIfExists( equivalenceClass, tile, offsetX, offsetY )
 	if ( tile == nil )
 	then
 		return;
 	else
-		equivalenceClass:addEquivalentTile( tile );
+		if ( offsetX == nil )
+		then
+			offsetX = 0;
+		end
+		if ( offsetY == nil )
+		then
+			offsetY = 0;
+		end
+		equivalenceClass:addEquivalentTile( tile, offsetX, offsetY );
 	end
 end
 
@@ -61,10 +77,10 @@ addTileToEquivalenceClassIfExists( houseInteriorRightTop, houseinterior_insidewa
 addTileToEquivalenceClassIfExists( houseInteriorRightTop, houseinterior_insidewalldamaged13_tga );
 
 -- add equivalence rules for X top tiles
-tileSet:addEquivalenceAdjacency( houseInteriorCentreTop, AdjacencyType.RIGHT, houseInteriorCentreTop );
-tileSet:addEquivalenceAdjacency( houseInteriorCentreTop, AdjacencyType.RIGHT, houseInteriorRightTop );
-tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorCentreTop );
-tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorRightTop );
+tileSet:addEquivalenceAdjacency( houseInteriorCentreTop, AdjacencyType.RIGHT, houseInteriorCentreTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( houseInteriorCentreTop, AdjacencyType.RIGHT, houseInteriorRightTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorCentreTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( houseInteriorLeftTop, AdjacencyType.RIGHT, houseInteriorRightTop, 0, 0 );
 
 tileSet:printTileSet();
 

@@ -196,11 +196,11 @@ void CEditor::HandleKeys()
 							switch (current_object) {
 								case 1: // environment
 									objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile );
+									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
 								break;
 								case 2: // shadows
 									objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									curAdjacentTiles = EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile );
+									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
 								break;
 								case 3: // collisionboxes
 									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
@@ -764,12 +764,13 @@ bool CEditor::checkAndPlaceAdjacentTile()
 	if ( adjacencyModeEnabled ) {
 		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
 			if ( curDirectionAdjacencies.size() > 0 ) {
 				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
 
 				// draw the adjacent tile
-				int drawX = editobject->x_pos;
-				int drawY = editobject->y_pos;
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
 						drawX += editobject->tile->texture->texture[0].width;
@@ -824,12 +825,13 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 	if ( adjacencyModeEnabled ) {
 		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
 			if ( curDirectionAdjacencies.size() > 0 ) {
 				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
 
 				// draw the adjacent tile
-				int drawX = editobject->x_pos;
-				int drawY = editobject->y_pos;
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
 						drawX += editobject->tile->texture->texture[0].width;
@@ -883,13 +885,14 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 	if ( adjacencyModeEnabled ) {
 		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
 			if ( curDirectionAdjacencies.size() > 0 ) {
 				// NOTE: Here we need to select the correct tile
 				Tile *adjacencyProposal = curDirectionAdjacencies[curDirectionAdjacencySelection[ curDirection ]];
 
 				// draw the adjacent tile
-				int drawX = editobject->x_pos;
-				int drawY = editobject->y_pos;
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
 						drawX += editobject->tile->texture->texture[0].width;

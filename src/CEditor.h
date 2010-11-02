@@ -89,6 +89,7 @@ class CEditor
 		
 		bool adjacencyModeEnabled;
 		std::vector< std::vector<Tile*> > curAdjacentTiles;
+		std::vector< std::vector<Point> > curAdjacencyOffsets;
 		int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
 };
 
