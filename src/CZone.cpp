@@ -30,6 +30,7 @@
 #include "CLuaInterface.h"
 #include "globals.h"
 #include "tileset.h"
+#include "textureframe.h"
 
 #include "utils.h"
 
@@ -56,8 +57,16 @@ void CZone::DrawZone()
 //	DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
 }
 
+extern bool initPhase;
+extern TextureFrame *textureFrame;
+
 void CZone::LoadZone(std::string file)
 {
+	bool needOwnTextureFrame = ! initPhase;
+	if ( needOwnTextureFrame ) {
+		textureFrame = new TextureFrame();
+		initPhase = true;
+	}
 	zoneName = file;
 	Globals::allZones[ file ] = this;
 	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
@@ -121,6 +130,11 @@ void CZone::LoadZone(std::string file)
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
 	
 	mapLoaded = true;
+	
+	if ( needOwnTextureFrame ) {
+		delete textureFrame;
+		initPhase = false;
+	}
 }
 
 int CZone::LoadCollisions(std::string file)
