@@ -554,3 +554,51 @@ namespace DawnInterface
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );
 }
+
+// EDITOR Stuff
+namespace TileClassificationType
+{
+	enum TileClassificationType
+	{
+		FLOOR,
+		ENVIRONMENT,
+		SHADOW
+	};
+}
+
+namespace AdjacencyType
+{
+	enum AdjacencyType
+	{
+		RIGHT,
+		LEFT,
+		TOP,
+		BOTTOM
+	};
+}
+
+class AdjacencyEquivalenceClass
+{
+	void addEquivalentTile( int tile, int offsetX, int offsetY );
+};
+
+class TileSet
+{
+	int addTile( std::string filename, TileClassificationType::TileClassificationType tileType );
+	int addTileWithCollisionBox( std::string filename, TileClassificationType::TileClassificationType tileType, int cbx, int cby, int cbw, int cbh );
+	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2, int offsetX, int offsetY );
+	AdjacencyEquivalenceClass *createAdjacencyEquivalenceClass();
+	void addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2, int offsetX, int offsetY );
+	void printTileSet() const;
+};
+
+namespace EditorInterface
+{
+	TileSet *getTileSet();
+	void addGroundTile( int posX, int posY, int tile );
+	void addEnvironment( int posX, int posY, int posZ, int tile );
+	void adjustLastRGBA( double red, double green, double blue, double alpha );
+	void adjustLastScale( double scaleX, double scaleY );
+	void addCollisionRect( int lrx, int lry, int width, int height );
+}
+

@@ -29,9 +29,20 @@
 #include "textwindow.h"
 #include "CLuaInterface.h"
 #include "globals.h"
+#include "tileset.h"
+#include "textureframe.h"
+
+#include "utils.h"
 
 #include <cassert>
 #include <memory>
+
+bool sTileMap::operator<(const sTileMap& tile1) const
+{ // instead of using a predicate in our sort call.
+		return tile->tileID < tile1.tile->tileID;
+};
+
+std::string getID( std::string filename );
 
 CZone::CZone()
 	: groundLoot( Globals::getPlayer() ),
@@ -43,25 +54,87 @@ void CZone::DrawZone()
 {
 	DrawTiles(); // draw the tiles (ground) first.
 	DrawEnvironment(); // then the environment.. cliffs, trees, stones, water ... you name it.
-	DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
+//	DrawShadows(); // then draw the shadows (not shadows from environment objects but, cloudy areas, darker places etc).
 }
+
+extern bool initPhase;
+extern TextureFrame *textureFrame;
 
 void CZone::LoadZone(std::string file)
 {
+	bool needOwnTextureFrame = ! initPhase;
+	if ( needOwnTextureFrame ) {
+		textureFrame = new TextureFrame();
+		initPhase = true;
+	}
 	zoneName = file;
 	Globals::allZones[ file ] = this;
 	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
-	ZoneTiles.LoadTextureMap( std::string( file ).append ( ".textures" ) );
-	ZoneEnvironment.LoadTextureMap( std::string( file ).append ( ".textureenvironment" ) ,true);
-	ZoneShadow.LoadTextureMap( std::string( file ).append ( ".textureshadow" ) );
+	
+	bool oldFileExists = false;
+	if ( utils::file_exists( std::string( file ).append ( ".textures" ) ) ) {
+		oldFileExists = true;
+		CTexture myZoneTiles;
+		myZoneTiles.LoadTextureMap( std::string( file ).append ( ".textures" ) );
+	}
+	if ( utils::file_exists( std::string( file ).append ( ".textureenvironment" ) ) ) {
+		oldFileExists = true;
+		CTexture myZoneEnvironment;
+		myZoneEnvironment.LoadTextureMap( std::string( file ).append ( ".textureenvironment" ) ,true);
+	}
+	if ( utils::file_exists( std::string( file ).append ( ".textureshadow" ) ) ) {
+		oldFileExists = true;
+		CTexture myZoneShadow;
+		myZoneShadow.LoadTextureMap( std::string( file ).append ( ".textureshadow" ) );
+	}
+	
+	if ( oldFileExists ) {
+		dawn_debug_fatal( "At least one of the old files .textures, .textureenvironment or .textureshadow existed. Have created new replacement LUA files. Please use them instead and delete / move the old ones." );
+	}
+	
+	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_ground.lua" ) );
+	
+	size_t environmentOffset = EditorInterface::getTileSet()->getAllTiles().size();
+	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_environment.lua" ) );
+	size_t shadowOffset = EditorInterface::getTileSet()->getAllTiles().size();
+	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_shadow.lua" ) );
 
-	LoadMap( std::string( file ).append ( ".tilemap" ) );
-	LoadEnvironment( std::string( file ).append ( ".environmentmap" ) );
-	LoadShadow( std::string( file ).append ( ".shadowmap" ) );
-	LoadCollisions( std::string( file ).append ( ".collisionmap" ) );
+
+	oldFileExists = false;
+	if ( utils::file_exists( std::string( file ).append ( ".tilemap" ) ) ) {
+		oldFileExists = true;
+		LoadMap( std::string( file ).append ( ".tilemap" ) );
+	}
+	if ( utils::file_exists( std::string( file ).append ( ".environmentmap" ) ) ) {
+		oldFileExists = true;
+		LoadEnvironment( std::string( file ).append ( ".environmentmap" ), environmentOffset );
+	}
+	if ( utils::file_exists( std::string( file ).append( ".shadowmap" ) ) ) {
+		oldFileExists = true;
+		LoadShadow( std::string( file ).append ( ".shadowmap" ), shadowOffset );
+	}
+	if ( utils::file_exists( std::string( file ).append( ".collisionmap" ) ) ) {
+		oldFileExists = true;
+		LoadCollisions( std::string( file ).append ( ".collisionmap" ) );
+	}
+	
+	if ( oldFileExists ) {
+		dawn_debug_fatal( "At least one of the old files .tilemap, .environmentmap, .shadowmap or .collisionmap existed. Have created new replacement LUA files. Please use them instead and delete / move the old ones." );
+	}
+	
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".ground.lua" ) );
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".environment.lua" ) );
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".shadow.lua" ) );
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".collision.lua" ) );
+
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
 	
 	mapLoaded = true;
+	
+	if ( needOwnTextureFrame ) {
+		delete textureFrame;
+		initPhase = false;
+	}
 }
 
 int CZone::LoadCollisions(std::string file)
@@ -76,12 +149,16 @@ int CZone::LoadCollisions(std::string file)
 		std::cout << "ERROR opening file " << file << std::endl << std::endl;
 		return -1;
 	}
+	
+	std::string luaFile = file.append( std::string( ".lua" ) );
+	std::ofstream ofs( luaFile.c_str() );
 
 	while (input_file.getline (buf, 255)) {
 		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' &&
 		        buf[0] != '\n' && strlen(buf) != 0) {
 			sscanf(buf, "%d %d %d %d", &CR_x, &CR_y, &CR_h, &CR_w);
 			CollisionMap.push_back(sCollisionMap(CR_x,CR_y,CR_h,CR_w));
+			ofs << "EditorInterface.addCollisionRect( " << CR_x << ", " << CR_y << ", " << CR_w << ", " << CR_h << " );" << std::endl;
 		}
 	}
 	input_file.close();
@@ -89,11 +166,11 @@ int CZone::LoadCollisions(std::string file)
 	return 0;
 }
 
-int CZone::LoadEnvironment(std::string file)
+int CZone::LoadEnvironment(std::string file, size_t tileSetOffset)
 {
 	std::ifstream input_file(file.c_str());
 	char buf[255];
-	int texture_id = 0, x_pos = 0, y_pos = 0, z_pos = 0;
+	int tile_id = 0, x_pos = 0, y_pos = 0, z_pos = 0;
 	float transparency, red, green, blue, x_scale, y_scale;
 	int count = 0;
 
@@ -103,11 +180,29 @@ int CZone::LoadEnvironment(std::string file)
 		return -1;
 	}
 
+	TileSet *tileSet = EditorInterface::getTileSet();
+	
+	std::string luaFile = file.append( std::string( ".lua" ) );
+	std::ofstream ofs( luaFile.c_str() );
+
 	for (count = 0 ; input_file.getline (buf, 255) ; ++count) {
 		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' &&
 		        buf[0] != '\n' && strlen(buf) != 0) {
-			sscanf(buf,"%d %d %d %f %f %f %f %f %f %d", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale, &z_pos);
-			EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale, z_pos));
+			sscanf(buf,"%d %d %d %f %f %f %f %f %f %d", &x_pos, &y_pos, &tile_id, &transparency, &red, &green, &blue, &x_scale, &y_scale, &z_pos);
+			size_t nextPos = EnvironmentMap.size();
+			/// WARNING: In difference to the groundtextures file, tiles here are expected to start with ID 1.
+			///          this means we need to look for the tile with tile_id-1 (unless we have written the lua loading)
+			dawn_debug_warn( "current_pos: %d", tile_id );
+			dawn_debug_warn( "tileSetOffset: %d", tileSetOffset );
+			dawn_debug_warn( "loaded at position vector_pos %d, pos (%d,%d) tile with id %d and name %s", nextPos, x_pos, y_pos, tile_id, tileSet->getTile(tile_id-1+tileSetOffset)->filename.c_str() );
+			EnvironmentMap.push_back(sEnvironmentMap(x_pos,y_pos,tileSet->getTile(tile_id-1+tileSetOffset),transparency, red, green, blue, x_scale, y_scale, z_pos));
+			ofs << "EditorInterface.addEnvironment( " << x_pos << ", " << y_pos << ", " << z_pos << ", " << getID( tileSet->getTile(tile_id-1+tileSetOffset)->filename ) << " );" << std::endl;
+			if ( transparency != 1 || red != 1 || blue != 1 ) {
+				ofs << "EditorInterface.adjustLastRGBA( " << red << ", " << green << ", " << blue << ", " << transparency << " );" << std::endl;
+			}
+			if ( x_scale != 1 || y_scale != 1 ) {
+				ofs << "EditorInterface.adjustLastScale( " << x_scale << ", " << y_scale << " );" << std::endl;
+			}
 		}
 	}
 
@@ -118,11 +213,11 @@ int CZone::LoadEnvironment(std::string file)
 	return 0;
 }
 
-int CZone::LoadShadow(std::string file)
+int CZone::LoadShadow(std::string file, size_t tileSetOffset)
 {
 	std::ifstream input_file(file.c_str());
 	char buf[255];
-	int texture_id = 0, x_pos = 0, y_pos = 0;
+	int tile_id = 0, x_pos = 0, y_pos = 0;
 	float transparency, red, green, blue, x_scale, y_scale;
 	int count = 0;
 
@@ -132,13 +227,25 @@ int CZone::LoadShadow(std::string file)
 		return -1;
 	}
 
+	TileSet *tileSet = EditorInterface::getTileSet();
+
+	std::string luaFile = file.append( std::string( ".lua" ) );
+	std::ofstream ofs( luaFile.c_str() );
+
 	for (count = 0 ; input_file.getline (buf, 255) ; ++count) {
 		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' &&
 		        buf[0] != '\n' && strlen(buf) != 0) {
-			sscanf(buf, "%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &texture_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
+			sscanf(buf, "%d %d %d %f %f %f %f %f %f", &x_pos, &y_pos, &tile_id, &transparency, &red, &green, &blue, &x_scale, &y_scale);
 			// the old shadowmap here, keeping it a while. ShadowMap.push_back(sShadowMap(x_pos,y_pos,texture_id, transparency, red, green, blue));
-			ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,texture_id,transparency, red, green, blue, x_scale, y_scale, 0));
+			ShadowMap.push_back(sEnvironmentMap(x_pos,y_pos,tileSet->getTile(tile_id-1+tileSetOffset),transparency, red, green, blue, x_scale, y_scale, 0));
 			count++;
+			ofs << "EditorInterface.addEnvironment( " << x_pos << ", " << y_pos << ", " << 0 << ", " << getID( tileSet->getTile(tile_id-1+tileSetOffset)->filename ) << " );" << std::endl;
+			if ( transparency != 1 || red != 1 || blue != 1 ) {
+				ofs << "EditorInterface.adjustLastRGBA( " << red << ", " << green << ", " << blue << ", " << transparency << " );" << std::endl;
+			}
+			if ( x_scale != 1 || y_scale != 1 ) {
+				ofs << "EditorInterface.adjustLastScale( " << x_scale << ", " << y_scale << " );" << std::endl;
+			}
 		}
 	}
 
@@ -151,20 +258,26 @@ int CZone::LoadMap(std::string file)
 {
 	std::ifstream input_file(file.c_str());
 	char buf[255];
-	int texture_id = 0, x_pos = 0, y_pos = 0;
+	int tileID = 0, x_pos = 0, y_pos = 0;
 	int count = 0;
+
+	TileSet *tileSet = EditorInterface::getTileSet();
 
 	// open the texturemap-file, if not give us an error in stdout.txt.
 	if (!input_file) {
 		std::cout << "ERROR opening file " << file << std::endl << std::endl;
 		return -1;
 	}
-
+	
+	std::string luaFile = file.append( std::string(".lua") );
+	std::ofstream ofs( luaFile.c_str() );
+	
 	for (count = 0 ; input_file.getline (buf, 255) ; ++count) {
 		if (buf[0] != '#' && buf[0] != '\r' && buf[0] != '\0' &&
 		        buf[0] != '\n' && strlen(buf) != 0) {
-			sscanf(buf, "%d %d %d", &x_pos, &y_pos, &texture_id);
-			TileMap.push_back(sTileMap(x_pos,y_pos,texture_id));
+			sscanf(buf, "%d %d %d", &x_pos, &y_pos, &tileID);
+			TileMap.push_back(sTileMap(x_pos,y_pos,tileSet->getTile(tileID)));
+			ofs << "EditorInterface.addGroundTile( " << x_pos << ", " << y_pos << ", " << getID( tileSet->getTile(tileID-1)->filename ) << " );" << std::endl;
 			count++;
 		}
 	}
@@ -183,37 +296,38 @@ bool CZone::zoneDataLoaded() const
 void CZone::DrawTiles()
 {
 	for (unsigned int x=0 ; x < TileMap.size() ; x++) {
-		ZoneTiles.DrawTexture(TileMap[x].x_pos,TileMap[x].y_pos,TileMap[x].id);
+		TileMap[x].tile->texture->DrawTexture(TileMap[x].x_pos,TileMap[x].y_pos,0);
 	}
 }
 
 void CZone::DrawEnvironment()
 {
 	for (unsigned int x=0 ; x < EnvironmentMap.size() ; x++) {
-		ZoneEnvironment.DrawTexture(EnvironmentMap[x].x_pos,
-		                            EnvironmentMap[x].y_pos,EnvironmentMap[x].id,
-		                            EnvironmentMap[x].transparency, EnvironmentMap[x].red,
-		                            EnvironmentMap[x].green, EnvironmentMap[x].blue,
-		                            EnvironmentMap[x].x_scale, EnvironmentMap[x].y_scale);
+		EnvironmentMap[x].tile->texture->DrawTexture(EnvironmentMap[x].x_pos,
+		                                             EnvironmentMap[x].y_pos,0,
+		                                             EnvironmentMap[x].transparency, EnvironmentMap[x].red,
+		                                             EnvironmentMap[x].green, EnvironmentMap[x].blue,
+		                                             EnvironmentMap[x].x_scale, EnvironmentMap[x].y_scale);
 	}
 }
 
 void CZone::DrawShadows()
 {
 	for (unsigned int x=0 ; x < ShadowMap.size() ; x++) {
-		ZoneShadow.DrawTexture(ShadowMap[x].x_pos,ShadowMap[x].y_pos,ShadowMap[x].id,
-		                       ShadowMap[x].transparency, ShadowMap[x].red,
-		                       ShadowMap[x].green, ShadowMap[x].blue, ShadowMap[x].x_scale,
-		                       ShadowMap[x].y_scale);
+		ShadowMap[x].tile->texture->DrawTexture(ShadowMap[x].x_pos,
+		                                        ShadowMap[x].y_pos,0,
+		                                        ShadowMap[x].transparency, ShadowMap[x].red,
+		                                        ShadowMap[x].green, ShadowMap[x].blue,
+		                                        ShadowMap[x].x_scale, ShadowMap[x].y_scale);
 	}
 }
 
 int CZone::LocateTile(int x, int y)
 {
 	for (unsigned int t=0;t<TileMap.size();t++) {
-		if ((TileMap[t].x_pos+ZoneTiles.texture[TileMap[t].id].width > x) &&
+		if ((TileMap[t].x_pos+TileMap[t].tile->texture->texture[0].width > x) &&
 		        (TileMap[t].x_pos < x)) {
-			if ((TileMap[t].y_pos+ZoneTiles.texture[TileMap[t].id].height > y) &&
+			if ((TileMap[t].y_pos+TileMap[t].tile->texture->texture[0].height > y) &&
 			        (TileMap[t].y_pos < y)) {
 				return t;
 			}
@@ -222,10 +336,10 @@ int CZone::LocateTile(int x, int y)
 	return -1;
 }
 
-void CZone::ChangeTile(int iId, int texture)
+void CZone::ChangeTile(int iId, Tile *tile_)
 {
 	if (iId >= 0) {
-		TileMap[iId].id = texture;
+		TileMap[iId].tile = tile_;
 	}
 }
 
@@ -233,35 +347,38 @@ void CZone::DeleteTile(int iId)
 {
 	if (iId >= 0) {
 		// 1 is the empty tile... just to avoid having no tile if a tile is deleted
-		TileMap[iId].id = 1;
+		TileMap[iId].tile = EditorInterface::getTileSet()->getEmptyTile();
 	}
 }
 
-void CZone::AddEnvironment(int x_pos, int y_pos, int texture)
+void CZone::AddEnvironment(int x_pos, int y_pos, Tile *tile, bool centeredOnPos)
 {
 	// add environment to our environmentvector.
 	// x and y cords and devide and substract the height and width of the image so we place the texture
 	// in the middle of the cursor.
 	// IF the environmenttexture has an collision_box we also push that info into the collisionvector.
-	EnvironmentMap.push_back(sEnvironmentMap(x_pos-(ZoneEnvironment.texture[texture].width/2),
-	                         y_pos-(ZoneEnvironment.texture[texture].height/2),texture,
+	int placePosX = x_pos;
+	int placePosY = y_pos;
+	if ( centeredOnPos ) {
+		placePosX -= tile->texture->texture[0].width/2;
+		placePosY -= tile->texture->texture[0].height/2;
+	}
+
+	EnvironmentMap.push_back(sEnvironmentMap(placePosX, placePosY, tile,
 	                         1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
-	if (ZoneEnvironment.texture[texture].contains_collision_box == true) {
-		CollisionMap.push_back(sCollisionMap(x_pos-(
-		                                         ZoneEnvironment.texture[texture].width/2)+
-		                                     ZoneEnvironment.texture[texture].collision_box.x,
-		                                     y_pos-(ZoneEnvironment.texture[texture].height/2)+
-		                                     ZoneEnvironment.texture[texture].collision_box.y,
-		                                     ZoneEnvironment.texture[texture].collision_box.h,
-		                                     ZoneEnvironment.texture[texture].collision_box.w));
+	if (tile->texture->texture[0].contains_collision_box == true) {
+		CollisionMap.push_back(sCollisionMap(placePosX + tile->texture->texture[0].collision_box.x,
+		                                     placePosY + tile->texture->texture[0].collision_box.y,
+		                                     tile->texture->texture[0].collision_box.h,
+		                                     tile->texture->texture[0].collision_box.w));
 	}
 }
 
-void CZone::AddShadow(int x_pos, int y_pos, int texture)
+void CZone::AddShadow(int x_pos, int y_pos, Tile *tile)
 {
 	// the old shadowmap here, keeping it a while... ShadowMap.push_back(sShadowMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
-	ShadowMap.push_back(sEnvironmentMap(x_pos-(ZoneShadow.texture[texture].width/2),
-	                                    y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
+	ShadowMap.push_back(sEnvironmentMap(x_pos-(tile->texture->texture[0].width/2),
+	                                    y_pos-(tile->texture->texture[0].height/2),tile, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
 }
 
 void CZone::AddCollisionbox(int x_pos, int y_pos)
@@ -272,9 +389,9 @@ void CZone::AddCollisionbox(int x_pos, int y_pos)
 int CZone::DeleteEnvironment(int x, int y)
 {
 	for (unsigned int t=0;t<EnvironmentMap.size();t++) {
-		if ((EnvironmentMap[t].x_pos+ZoneEnvironment.texture[EnvironmentMap[t].id].width > x) &&
+		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->texture[0].width > x) &&
 		        (EnvironmentMap[t].x_pos < x)) {
-			if ((EnvironmentMap[t].y_pos+ZoneEnvironment.texture[EnvironmentMap[t].id].height > y) &&
+			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->texture[0].height > y) &&
 			        (EnvironmentMap[t].y_pos < y)) {
 				EnvironmentMap.erase(EnvironmentMap.begin()+t);
 				return 0;
@@ -287,9 +404,9 @@ int CZone::DeleteEnvironment(int x, int y)
 int CZone::LocateEnvironment(int x, int y)
 {
 	for (unsigned int t=0;t<EnvironmentMap.size();t++) {
-		if ((EnvironmentMap[t].x_pos+ZoneEnvironment.texture[EnvironmentMap[t].id].width > x) &&
+		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->texture[0].width > x) &&
 		        (EnvironmentMap[t].x_pos < x)) {
-			if ((EnvironmentMap[t].y_pos+ZoneEnvironment.texture[EnvironmentMap[t].id].height > y) &&
+			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->texture[0].height > y) &&
 			        (EnvironmentMap[t].y_pos < y)) {
 				return t;
 			}
@@ -301,9 +418,9 @@ int CZone::LocateEnvironment(int x, int y)
 int CZone::LocateShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
-		if ((ShadowMap[t].x_pos+ZoneShadow.texture[ShadowMap[t].id].width > x) &&
+		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->texture[0].width > x) &&
 		        (ShadowMap[t].x_pos < x)) {
-			if ((ShadowMap[t].y_pos+ZoneShadow.texture[ShadowMap[t].id].height > y) &&
+			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->texture[0].height > y) &&
 			        (ShadowMap[t].y_pos < y)) {
 				return t;
 			}
@@ -315,9 +432,9 @@ int CZone::LocateShadow(int x, int y)
 int CZone::DeleteShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
-		if ((ShadowMap[t].x_pos+ZoneShadow.texture[ShadowMap[t].id].width > x) &&
+		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->texture[0].width > x) &&
 		        (ShadowMap[t].x_pos < x)) {
-			if ((ShadowMap[t].y_pos+ZoneShadow.texture[ShadowMap[t].id].height > y) &&
+			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->texture[0].height > y) &&
 			        (ShadowMap[t].y_pos < y)) {
 				ShadowMap.erase(ShadowMap.begin()+t);
 				return 0;
@@ -783,6 +900,47 @@ namespace DawnInterface
 		CZone *correctZone = Globals::allZones[ zoneName ];
 		assert( correctZone != NULL );
 		return correctZone->getEventHandlerPointer( posInArray );
+	}
+}
+
+namespace EditorInterface
+{
+	void addGroundTile( int posX, int posY, int tile )
+	{
+		CZone *currentZone = Globals::getCurrentZone();
+		TileSet *tileSet = EditorInterface::getTileSet();
+		currentZone->TileMap.push_back(sTileMap(posX,posY,tileSet->getTile(tile)));
+	}
+
+	void addEnvironment( int posX, int posY, int posZ, int tile )
+	{
+		CZone *currentZone = Globals::getCurrentZone();
+		TileSet *tileSet = EditorInterface::getTileSet();
+		currentZone->EnvironmentMap.push_back(sEnvironmentMap(posX,posY,tileSet->getTile(tile),1, 1, 1, 1, 1, 1, posZ));
+	}
+
+	void adjustLastRGBA( double red, double green, double blue, double alpha )
+	{
+		CZone *currentZone = Globals::getCurrentZone();
+		sEnvironmentMap &lastEnv = currentZone->EnvironmentMap[ currentZone->EnvironmentMap.size() - 1 ];
+		lastEnv.red = red;
+		lastEnv.green = green;
+		lastEnv.blue = blue;
+		lastEnv.transparency = alpha;
+	}
+
+	void adjustLastScale( double scaleX, double scaleY )
+	{
+		CZone *currentZone = Globals::getCurrentZone();
+		sEnvironmentMap &lastEnv = currentZone->EnvironmentMap[ currentZone->EnvironmentMap.size() - 1 ];
+		lastEnv.x_scale = scaleX;
+		lastEnv.y_scale = scaleY;
+	}
+	
+	void addCollisionRect( int lrx, int lry, int width, int height )
+	{
+		CZone *currentZone = Globals::getCurrentZone();
+		currentZone->CollisionMap.push_back(sCollisionMap(lrx,lry,height,width));
 	}
 }
 

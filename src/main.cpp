@@ -721,7 +721,7 @@ bool dawn_init(int argc, char** argv)
 {
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
-
+			
 		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
 		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
 
@@ -1139,6 +1139,7 @@ void game_loop()
 
             if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
                 Editor.setEditZone( Globals::getCurrentZone() );
+                LuaFunctions::executeLuaFile( "data/tileAdjacency.lua" );
                 Editor.setEnabled( true );
                 Editor.initFocus( &focus );
                 Editor.KP_toggle_editor = true;

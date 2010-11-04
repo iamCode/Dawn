@@ -23,6 +23,7 @@
 #include "CDrawingHelpers.h"
 #include "fontcache.h"
 #include "globals.h"
+#include "tileset.h"
 
 extern CMessage message;
 
@@ -34,23 +35,31 @@ void CEditor::initFonts()
 
 void CEditor::inc_tilepos()
 {
+	TileSet *curTileSet = EditorInterface::getTileSet();
+
 	switch (current_object) {
 		case 0: // tiles
-			if (current_tilepos < zoneToEdit->ZoneTiles.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::FLOOR ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 1: // environment
-			if (current_tilepos < zoneToEdit->ZoneEnvironment.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::ENVIRONMENT ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 2: // shadows
-			if (current_tilepos < zoneToEdit->ZoneShadow.NumberOfTextures) {
-				current_tilepos++;
-				tilepos_offset--;
+			{
+				if ( current_tilepos+1 < curTileSet->getAllTilesOfType( TileClassificationType::SHADOW ).size() ) {
+					current_tilepos++;
+					tilepos_offset--;
+				}
 			}
 		break;
 		case 3: // collisionboxes
@@ -60,76 +69,81 @@ void CEditor::inc_tilepos()
 
 void CEditor::dec_tilepos()
 {
-	if (current_tilepos > 1) {
+	if (current_tilepos > 0) {
 		current_tilepos--;
 		tilepos_offset++;
 	}
 }
 
-int CEditor::SaveZone()
+std::string getID( std::string filename );
+
+void CEditor::SaveZone()
 {
-	FILE *fp;
-    // open the tilemap-file, so we can write our new mapfile ;D ///////////////////////////
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".tilemap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".tilemap" << std::endl;
-		return -1;
+	std::string zoneName = Globals::getCurrentZone()->getZoneName();
+
+	// save the ground
+	std::string groundTileFileName = zoneName;
+	groundTileFileName.append( ".ground.lua" );
+	
+	std::ofstream ofs ( groundTileFileName.c_str() );
+	for (size_t x=0; x<zoneToEdit->TileMap.size();x++) {
+		sTileMap &curTile = zoneToEdit->TileMap[x];
+		ofs << "EditorInterface.addGroundTile( " << curTile.x_pos << ", " << curTile.y_pos << ", "
+		                                         << getID( curTile.tile->filename ) << " );" << std::endl;
 	}
-	fprintf(fp,"#x-pos y-pos tile-id");
+	ofs.close();
 
-	for (unsigned int x=0; x<zoneToEdit->TileMap.size();x++) {
-		fprintf(fp,"\n%d %d %d",zoneToEdit->TileMap[x].x_pos,zoneToEdit->TileMap[x].y_pos,zoneToEdit->TileMap[x].id);
-	}
-
-	fclose(fp);
-	/////////////////////////////////////////////////////////////////////////////////////
-
-    // sort the environmentmap based on the Y-axis. Quick-fix for height positions. Should have another workaround later.
+	// save the environment
+	// sort the environmentmap based on the Y-axis. Quick-fix for height positions. Should have another workaround later.
     std::sort(zoneToEdit->EnvironmentMap.begin(), zoneToEdit->EnvironmentMap.end());
+    std::string environmentTileFileName = zoneName;
+    environmentTileFileName.append( ".environment.lua" );
 
-	// open the environmentmap-file, so we can write our trees and stuff...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".environmentmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".environmentmap" <<
-		          std::endl << std::endl;
-		return -1;
+	ofs.open( environmentTileFileName.c_str() );
+	for (size_t x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
+		sEnvironmentMap &curEnv = zoneToEdit->EnvironmentMap[x];
+		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
+		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
+			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
+			                                          << curEnv.transparency << " );" << std::endl;
+		}
+		if ( curEnv.x_scale != 1 || curEnv.y_scale != 1 ) {
+			ofs << "EditorInterface.adjustLastScale( " << curEnv.x_scale << ", " << curEnv.y_scale << " );" << std::endl;
+		}
 	}
-	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale z-position");
+	ofs.close();
+	
+	// save the shadows
+	std::string shadowTileFileName = zoneName;
+	shadowTileFileName.append( ".shadow.lua" );
 
-
-	for (unsigned int x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f %d",zoneToEdit->EnvironmentMap[x].x_pos,zoneToEdit->EnvironmentMap[x].y_pos, zoneToEdit->EnvironmentMap[x].id, zoneToEdit->EnvironmentMap[x].transparency,zoneToEdit->EnvironmentMap[x].red,zoneToEdit->EnvironmentMap[x].green,zoneToEdit->EnvironmentMap[x].blue, zoneToEdit->EnvironmentMap[x].x_scale, zoneToEdit->EnvironmentMap[x].y_scale, zoneToEdit->EnvironmentMap[x].z_pos);
+	ofs.open( shadowTileFileName.c_str() );
+	for (size_t x=0;x<zoneToEdit->ShadowMap.size();x++) {
+		sEnvironmentMap &curEnv = zoneToEdit->ShadowMap[x];
+		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
+		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
+			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
+			                                          << curEnv.transparency << " );" << std::endl;
+		}
+		if ( curEnv.x_scale != 1 || curEnv.y_scale != 1 ) {
+			ofs << "EditorInterface.adjustLastScale( " << curEnv.x_scale << ", " << curEnv.y_scale << " );" << std::endl;
+		}
 	}
-	fclose(fp);
-	////////////////////////////////////////////////////////////////////////
+	ofs.close();
+	
+	// save the collisions
+	std::string collisionTileFileName = zoneName;
+	collisionTileFileName.append( ".collision.lua" );
 
-
-	// open the shadowmap-file, so we can save our shadow...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".shadowmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".shadowmap" <<
-		          std::endl << std::endl;
-		return -1;
-	}
-	fprintf(fp,"#x-pos y-pos tile-id transparency red green blue x_scale y_scale");
-
-	for (unsigned int x=0;x<zoneToEdit->ShadowMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %.2f %.2f %.2f %.2f %.2f %.2f",zoneToEdit->ShadowMap[x].x_pos,zoneToEdit->ShadowMap[x].y_pos, zoneToEdit->ShadowMap[x].id, zoneToEdit->ShadowMap[x].transparency, zoneToEdit->ShadowMap[x].red, zoneToEdit->ShadowMap[x].green, zoneToEdit->ShadowMap[x].blue, zoneToEdit->ShadowMap[x].x_scale, zoneToEdit->ShadowMap[x].y_scale);
-	}
-	fclose(fp);
-	/////////////////////////////////////////////////////////
-
-	// open the collisionmap-file, so we can save our shadow...
-	if ((fp=fopen(std::string( Globals::getCurrentZone()->getZoneName()).append(".collisionmap").c_str(), "w")) == NULL) {
-		std::cout << "ERROR opening file " << std::string( Globals::getCurrentZone()->getZoneName()) << ".collisionmap" <<
-		          std::endl << std::endl;
-		return -1;
-	}
-	fprintf(fp,"#x y h w");
-
+	ofs.open( collisionTileFileName.c_str() );
 	for (unsigned int x=0;x<zoneToEdit->CollisionMap.size();x++) {
-		fprintf(fp,"\n%d %d %d %d",zoneToEdit->CollisionMap[x].CR.x,zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h, zoneToEdit->CollisionMap[x].CR.w);
+		sCollisionMap &curCollision = zoneToEdit->CollisionMap[x];
+		ofs << "EditorInterface.addCollisionRect( " << curCollision.CR.x << ", " << curCollision.CR.y << ", "
+		                                            << curCollision.CR.w << ", " << curCollision.CR.h << " );" << std::endl;
 	}
-	fclose(fp);
-	/////////////////////////////////////////////////////////
-	return 0;
+	ofs.close();
 }
 
 void CEditor::setEditZone( CZone *zoneToEdit_ )
@@ -171,25 +185,68 @@ void CEditor::HandleKeys()
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			switch (event.button.button) {
 				case 1: // mouse button 1, see if we can select an object being pointed at.
-					switch (current_object) {
-						case 1: // environment
-							objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-						break;
-						case 2: // shadows
-							objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-						break;
-						case 3: // collisionboxes
-							objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-						break;
+					{
+						bool handled = false;
+						// first check whether we are in adjacency mode and can place a tile. If not we select a tile
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndPlaceAdjacentTile();
+						}
+
+						if ( ! handled ) {
+							switch (current_object) {
+								case 1: // environment
+									objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+									for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
+										if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
+											curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
+										}
+										if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
+											curDirectionAdjacencySelection[ curDirection ] = 0;
+										}
+									}
+								break;
+								case 2: // shadows
+									objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+								break;
+								case 3: // collisionboxes
+									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+								break;
+								default:
+									curAdjacentTiles.clear();
+								break;
+							}
+						}
 					}
 				break;
 
-				case 4: // scroll up, increase our tileposition
-					inc_tilepos();
+				case 4: // scroll up
+					{
+						// if mouse is over a tile for adjacency selection, change to next tile in the selection
+						// else increase our tileposition
+						bool handled = false;
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndApplyAdjacencyModification( 1 );
+						}
+						if ( ! handled ) {
+							inc_tilepos();
+						}
+					}
 				break;
 
-				case 5: // scroll down, decrease our tileposition
-					dec_tilepos();
+				case 5: // scroll down
+					{
+						// if mouse is over a tile for adjacency selection, change to previous tile in the selection
+						// else decrease our tileposition
+						bool handled = false;
+						if ( adjacencyModeEnabled ) {
+							handled = checkAndApplyAdjacencyModification( -1 );
+						}
+						if ( ! handled ) {
+							dec_tilepos();
+						}
+					}
 				break;
 			}
 		}
@@ -342,15 +399,25 @@ void CEditor::HandleKeys()
 	if (keys[SDLK_RETURN] && !KP_add_environment) {
 		objectedit_selected = -1;
 		KP_add_environment = true;
+
 		switch (current_object) {
 			case 0: // tiles
-				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY),current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::FLOOR )[ current_tilepos ];
+				zoneToEdit->ChangeTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY),currentTile);
+			}
 			break;
 			case 1: // environment
-				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::ENVIRONMENT )[ current_tilepos ];
+				zoneToEdit->AddEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile, true /* centered on pos */ );
+			}
 			break;
 			case 2: // shadows
-				zoneToEdit->AddShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,current_tilepos);
+			{
+				Tile *currentTile = EditorInterface::getTileSet()->getAllTilesOfType( TileClassificationType::SHADOW )[ current_tilepos ];
+				zoneToEdit->AddShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY,currentTile);
+			}
 			break;
 			case 3: // collisionboxes
 				zoneToEdit->AddCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
@@ -363,7 +430,7 @@ void CEditor::HandleKeys()
 	}
 
 	if (keys[SDLK_l] && !KP_toggle_editor) {
-		current_tilepos = 1;
+		current_tilepos = 0;
 		tilepos_offset = 0;
 		objectedit_selected = -1;
 		enabled = false;
@@ -374,6 +441,15 @@ void CEditor::HandleKeys()
 
 	if (!keys[SDLK_l]) {
 		KP_toggle_editor = false;
+	}
+
+	if (keys[SDLK_m] && !KP_toggle_adjacencyMode) {
+		KP_toggle_adjacencyMode = true;
+		adjacencyModeEnabled = ! adjacencyModeEnabled;
+	}
+
+	if (!keys[SDLK_m]) {
+		KP_toggle_adjacencyMode = false;
 	}
 
 	if (keys['.']) {  // increase the amount of transparency of the object.
@@ -525,7 +601,7 @@ void CEditor::HandleKeys()
     }
 
 	if (keys[SDLK_F1] && !KP_toggle_tileset) {
-		current_tilepos = 1;
+		current_tilepos = 0;
 		tilepos_offset = 0;
 		objectedit_selected = -1;
 
@@ -574,10 +650,10 @@ void CEditor::DrawEditor()
 	if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
 		switch (current_object) {
 			case 1:
-				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]), &(zoneToEdit->ZoneEnvironment), objectedit_selected);
+				DrawEditFrame(&(zoneToEdit->EnvironmentMap[objectedit_selected]));
 			break;
 			case 2:
-				DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]), &(zoneToEdit->ZoneShadow), objectedit_selected);
+				DrawEditFrame(&(zoneToEdit->ShadowMap[objectedit_selected]));
 			break;
 			case 3:
 			break;
@@ -635,36 +711,32 @@ void CEditor::DrawEditor()
 	glVertex3f(mouseX+editorFocus->getX(), mouseY-20+editorFocus->getY(), 0.0f);
 	glEnd();
 
+	TileSet *tileSet = EditorInterface::getTileSet();
+
+	std::vector<Tile*> curTiles;
+
 	switch (current_object) {
 		case 0:
 			// draw all tileset tiles in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneTiles.NumberOfTextures;tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneTiles.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::FLOOR );
 		break;
 
 		case 1:
 			// draw all environment objects in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneEnvironment.NumberOfTextures; tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneEnvironment.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::ENVIRONMENT );
 		break;
 
 		case 2:
 			// draw all available shadows in edit frame
-			for (tilepos=1;tilepos<=zoneToEdit->ZoneShadow.NumberOfTextures; tilepos++) {
-
-				DrawingHelpers::mapTextureToRect( zoneToEdit->ZoneShadow.texture[tilepos],
-				                                  editorFocus->getX()+(RES_X/2)-50+(tilepos*50)+(tilepos_offset*50), 40,
-				                                  editorFocus->getY()+RES_Y-60, 40 );
-			}
+			curTiles = tileSet->getAllTilesOfType( TileClassificationType::SHADOW );
 		break;
+	}
+	
+	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {
+		Tile *curTile = curTiles[ tilepos ];
+		DrawingHelpers::mapTextureToRect( curTile->texture->texture[0],
+		                                  editorFocus->getX()+(RES_X/2)+(tilepos*50)+(tilepos_offset*50), 40,
+		                                  editorFocus->getY()+RES_Y-60, 40 );
 	}
 }
 
@@ -677,38 +749,225 @@ void CEditor::LoadTextures()
 	interfacetexture.LoadIMG("data/edit_backdrop.tga",3);
 }
 
-void CEditor::DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id)
+bool CEditor::checkAndPlaceAdjacentTile()
 {
-	// draws a white quad as our editframe
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
-	                                  editorFocus->getX()+50, 350,
-	                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
+	bool mouseWasInAnyDirectionsAdjacency = false;
 
+	sEnvironmentMap *editobject = NULL;
+	if ( objectedit_selected >= 0 ) {
+		switch ( current_object ) {
+			case 1: 
+				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
+			break;
+			case 2:
+				editobject = &(zoneToEdit->ShadowMap[objectedit_selected]);
+			break;
+		}
+	}
+	
+	if ( editobject == NULL ) {
+		return false;
+	}
 
-	// set the color, transparency, scale and then draws the object we are editing
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
+
+				// draw the adjacent tile
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
+
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
+
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
+				if ( mouseInAdjacencyRect ) {
+					mouseWasInAnyDirectionsAdjacency = true;
+					zoneToEdit->AddEnvironment( drawX, drawY, adjacencyProposal, false /* not centered on pos */ );
+				}
+			}
+		}
+	}
+
+	return mouseWasInAnyDirectionsAdjacency;
+}
+
+bool CEditor::checkAndApplyAdjacencyModification( int modification )
+{
+	bool mouseWasInAnyDirectionsAdjacency = false;
+
+	sEnvironmentMap *editobject = NULL;
+	if ( objectedit_selected >= 0 ) {
+		switch ( current_object ) {
+			case 1: 
+				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
+			break;
+			case 2:
+				editobject = &(zoneToEdit->ShadowMap[objectedit_selected]);
+			break;
+		}
+	}
+	
+	if ( editobject == NULL ) {
+		return false;
+	}
+
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				Tile *adjacencyProposal = curDirectionAdjacencies[ curDirectionAdjacencySelection[ curDirection ] ];
+
+				// draw the adjacent tile
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
+
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
+
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
+				if ( mouseInAdjacencyRect ) {
+					mouseWasInAnyDirectionsAdjacency = true;
+					if ( ( modification > 0 
+					     && curDirectionAdjacencies.size() > curDirectionAdjacencySelection[ curDirection ]+modification )
+					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
+						curDirectionAdjacencySelection[ curDirection ] += modification;
+					}
+				}
+			}
+		}
+	}
+
+	return mouseWasInAnyDirectionsAdjacency;
+}
+
+void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
+{
+	//glScalef(editobject->x_scale,editobject->y_scale,1.0f);
+	//DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
+	//                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
+	//                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
+	
+	// Highlight the currently selected tile in red (which might well be bigger than it looks)
 	glPushMatrix();
-	glScalef(editobject->x_scale,editobject->y_scale,1.0f);
-	glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
-
-	DrawingHelpers::mapTextureToRect( texture->texture[editobject->id],
-	                                  editorFocus->getX()+55, texture->texture[editobject->id].width,
-	                                  editorFocus->getY()+(RES_Y/2)-texture->texture[editobject->id].height-5, texture->texture[editobject->id].height );
-
+	glColor4f(1.0, 1.0, 1.0, 0.2);
+	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
+	                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
+	                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
 	glPopMatrix();
+	
+	if ( adjacencyModeEnabled ) {
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
+			std::vector<Point> &curDirectionAdjacencyOffsets = curAdjacencyOffsets[ curDirection ];
+			if ( curDirectionAdjacencies.size() > 0 ) {
+				// NOTE: Here we need to select the correct tile
+				Tile *adjacencyProposal = curDirectionAdjacencies[curDirectionAdjacencySelection[ curDirection ]];
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	int fontHeight = objectDescriptionFont->getHeight();
+				// draw the adjacent tile
+				int drawX = editobject->x_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].x;
+				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
+				switch (curDirection) {
+					case AdjacencyType::RIGHT:
+						drawX += editobject->tile->texture->texture[0].width;
+					break;
+					case AdjacencyType::LEFT:
+						drawX -= adjacencyProposal->texture->texture[0].width;
+					break;
+					case AdjacencyType::TOP:
+						drawY += editobject->tile->texture->texture[0].height;
+					break;
+					case AdjacencyType::BOTTOM:
+						drawY -= adjacencyProposal->texture->texture[0].height;
+					break;
+				}
 
-	objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
-	objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
-	objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
-	objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
-	objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+				int drawW = adjacencyProposal->texture->texture[0].width;
+				int drawH = adjacencyProposal->texture->texture[0].height;
 
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	glScalef(1.0f,1.0f,1.0f);
+				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
+				
+				glPushMatrix();
+				if ( mouseInAdjacencyRect ) {
+					glColor4f( 1.0, 1.0, 1.0, 1.0 );
+				} else {
+					glColor4f(1.0, 1.0, 1.0, 0.5);
+				}
+				DrawingHelpers::mapTextureToRect( adjacencyProposal->texture->texture[0],
+				                                  drawX, drawW, drawY, drawH );
+				glPopMatrix();
+			}
+		}
+	}  // adjacencyModeEnabled
+	else {
+		// draw tile information in edit frame
+
+		// draws a white quad as our editframe
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
+		                                  editorFocus->getX()+50, 350,
+		                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
+
+
+		// set the color, transparency, scale and then draws the object we are editing
+		glPushMatrix();
+		glScalef(editobject->x_scale,editobject->y_scale,1.0f);
+		glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
+
+		DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
+		                                  editorFocus->getX()+55, editobject->tile->texture->texture[0].width,
+		                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->texture[0].height-5, editobject->tile->texture->texture[0].height );
+
+		glPopMatrix();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		int fontHeight = objectDescriptionFont->getHeight();
+
+		objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
+		objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
+		objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
+		objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		glScalef(1.0f,1.0f,1.0f);
+	} // ! adjacencyModeEnabled (else)
 }
 
 // Set up the focus to allow moving the camera and save

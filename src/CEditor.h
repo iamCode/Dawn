@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "cameraFocusHandler.h"
+#include "tileset.h"
 
 class CZone;
 class sEnvironmentMap;
@@ -36,13 +37,17 @@ class CEditor
 		CEditor() {
 			enabled = false;
 			tilepos_offset = 0;
-			tilepos = 1;
-			current_tilepos = 1;
+			tilepos = 0;
+			current_tilepos = 0;
 			current_object = 0;
 			objectedit_selected = -1;
 			zoneToEdit = NULL;
 			objectDescriptionFont = NULL;
 			keybindingFont = NULL;
+			adjacencyModeEnabled = false;
+			for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+				curDirectionAdjacencySelection[ curDirection ] = 0;
+			}
 		};
 
 		~CEditor() {
@@ -52,7 +57,7 @@ class CEditor
 
 		bool KP_toggle_editor;
 		void DrawEditor();
-		int SaveZone();
+		void SaveZone();
 		void HandleKeys();
 		void LoadTextures();
 		void initFocus( cameraFocusHandler *character);
@@ -65,11 +70,13 @@ class CEditor
 		void inc_tilepos();
 		void dec_tilepos();
 
-		void DrawEditFrame(sEnvironmentMap *editobject, CTexture *texture, int object_id);
+		void DrawEditFrame(sEnvironmentMap *editobject);
+		bool checkAndApplyAdjacencyModification( int modification );
+		bool checkAndPlaceAdjacentTile();
 
 		bool enabled;
 		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
-		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce;
+		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce, KP_toggle_adjacencyMode;
 		
 		// Keeps track of the camera positions saves the original camera
 		// to snap back to target after done editing
@@ -79,6 +86,11 @@ class CEditor
 		GLFT_Font *objectDescriptionFont;
 		GLFT_Font *keybindingFont;
 		CZone *zoneToEdit;
+		
+		bool adjacencyModeEnabled;
+		std::vector< std::vector<Tile*> > curAdjacentTiles;
+		std::vector< std::vector<Point> > curAdjacencyOffsets;
+		int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
 };
 
 #endif
