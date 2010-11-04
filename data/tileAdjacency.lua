@@ -143,8 +143,8 @@ tileSet:addEquivalenceAdjacency( houseInteriorBottomRight, AdjacencyType.TOP, ho
 local houseInteriorLeftBottom = tileSet:createAdjacencyEquivalenceClass();
 addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewall9_tga, 0, 0 );
 addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewalldamaged9_tga, 0, 0 );
-addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewall16_tga, 0, 0 );
-addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewalldamaged16_tga, 0, 0 );
+addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewall16_tga, 0, -6 );
+addTileToEquivalenceClassIfExists( houseInteriorLeftBottom, houseinterior_insidewalldamaged16_tga, 0, -6 );
 
 -- centre bottom tiles
 local houseInteriorCentreBottom = tileSet:createAdjacencyEquivalenceClass();
