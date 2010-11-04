@@ -252,21 +252,21 @@ spiderbase:setDexterity( 30 )
 spiderbase:setVitality( 20 )
 spiderbase:setIntellect( 15 )
 spiderbase:setWisdom( 15 )
-spiderbase:setMaxHealth( 450 )
+spiderbase:setMaxHealth( 300 )
 spiderbase:setMaxMana( 500 )
 spiderbase:setMaxFatigue( 100 )
 spiderbase:setHealthRegen( 0 )
 spiderbase:setManaRegen( 50 )
 spiderbase:setFatigueRegen( 25 )
-spiderbase:setMinDamage( 15 )
-spiderbase:setMaxDamage( 25 )
-spiderbase:setArmor( 150 )
+spiderbase:setMinDamage( 8 )
+spiderbase:setMaxDamage( 12 )
+spiderbase:setArmor( 120 )
 spiderbase:setDamageModifierPoints( 10 )
 spiderbase:setHitModifierPoints( 10 )
 spiderbase:setEvadeModifierPoints( 10 )
 spiderbase:setName("Spider")
 spiderbase:setWanderRadius( 250 )
-spiderbase:setLevel( 4 )
+spiderbase:setLevel( 2 )
 spiderbase:setCoinDrop( 0, 0, 0.00 );
 spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["melee"] );
@@ -429,3 +429,4 @@ skeletonarcherbase:setLevel( 3 )
 skeletonarcherbase:setCoinDrop( 25, 75, 0.75 );
 skeletonarcherbase:setClass( CharacterClass.Ranger );
 skeletonarcherbase:inscribeSpellInSpellbook( spellDatabase["shoot"] );
+skeletonarcherbase:addItemToLootTable( itemDatabase["weakenedbow"], 0.25 );

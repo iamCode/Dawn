@@ -68,7 +68,7 @@ curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["venomspiteffect1"] = curSpell;
 curSpell:setName("Venomspit");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
-curSpell:setContinuousDamage( 5, 7, 10000, ElementType.Earth );
+curSpell:setContinuousDamage( 4, 6, 10000, ElementType.Earth );
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["venomspit"] = curSpell;
@@ -498,3 +498,14 @@ curSpell:setRank( 2 );
 curSpell:setStats( StatsType.HealthRegen, 15 );
 curSpell:setInfo("Increases health regeneration by 15 while eating.");
 curSpell:setRequiredLevel( 3 );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["drink"] = curSpell;
+curSpell:setName("Drink");
+curSpell:setStats( StatsType.ManaRegen, 15 );
+curSpell:setDuration( 18 );
+curSpell:setInfo("Increases mana regeneration by 15 while drinking.");
+curSpell:setSpellSymbol( "data/spells/food/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setCharacterState( CharacterStates.Channeling );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );

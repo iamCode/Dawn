@@ -31,6 +31,7 @@ DawnInterface.giveItemToPlayer( itemDatabase["daggerofflowingthought"] );
 DawnInterface.giveItemToPlayer( itemDatabase["fungalboots"] );
 
 DawnInterface.giveItemToPlayer( itemDatabase["ajuicyapple"] );
+DawnInterface.giveItemToPlayer( itemDatabase["waterpouch"] );
 --note: this is just for debug the items need to be copied not accessed directly else the same reference is used!!!
 
 DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
