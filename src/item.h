@@ -21,9 +21,10 @@
 
 #include <string>
 #include "CTexture.h"
-#include "CSpell.h"
 #include "elements.h"
 #include "stats.h"
+
+class CSpell;
 
 namespace ItemSlot
 {
@@ -64,6 +65,54 @@ namespace EquipPosition
         SHOULDER,
         NONE
     };
+
+    inline std::string getEquipPositionText( EquipPosition::EquipPosition equipPosition )
+    {
+        switch ( equipPosition )
+        {
+            case EquipPosition::MAIN_HAND:
+                return "Main hand";
+            break;
+            case EquipPosition::OFF_HAND:
+                return "Off hand";
+            break;
+            case EquipPosition::CHEST:
+                return "Chest";
+            break;
+            case EquipPosition::LEGS:
+                return "Legs";
+            break;
+            case EquipPosition::BELT:
+                return "Belt";
+            break;
+            case EquipPosition::BOOTS:
+                return "Boots";
+            break;
+            case EquipPosition::RING:
+                return "Ring";
+            break;
+            case EquipPosition::GLOVES:
+                return "Gloves";
+            break;
+            case EquipPosition::HEAD:
+                return "Head";
+            break;
+            case EquipPosition::CLOAK:
+                return "Cloak";
+            break;
+            case EquipPosition::AMULET:
+                return "Amulet";
+            break;
+            case EquipPosition::SHOULDER:
+                return "Shoulder";
+            break;
+            case EquipPosition::NONE:
+                return "Unequippable";
+            break;
+        }
+        dawn_debug_fatal("Reached end of EquipPosition::getEquipPositionText without finding a suitable position. This should not be");
+        abort();
+    }
 }
 
 namespace ItemType
@@ -94,30 +143,122 @@ namespace ArmorType
         MAIL,
         PLATE
     };
+
+    inline std::string getArmorTypeText( ArmorType::ArmorType armorType )
+    {
+        switch ( armorType )
+        {
+            case ArmorType::CLOTH:
+                return "Cloth";
+            break;
+            case ArmorType::LEATHER:
+                return "Leather";
+            break;
+            case ArmorType::MAIL:
+                return "Mail";
+            break;
+            case ArmorType::PLATE:
+                return "Plate";
+            break;
+            case ArmorType::NO_ARMOR:
+                dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
+                abort();
+            break;
+        }
+        dawn_debug_fatal("Reached end of ArmorType::getArmorTypeText() without finding a suitable armor type. This should not be." );
+        abort();
+
+    }
 }
 
 namespace WeaponType
 {
     enum WeaponType
     {
-        NO_WEAPON,
-        ONEHAND_SWORD,
-        TWOHAND_SWORD,
-        DAGGER,
-        STAFF,
-        ONEHAND_CLUB,
-        TWOHAND_CLUB,
-        WAND,
-        SPELLBOOK, // offhand spellbooks for caster classes.
-        ONEHAND_MACE,
-        TWOHAND_MACE,
-        ONEHAND_AXE,
-        TWOHAND_AXE,
-        BOW,
-        SLINGSHOT,
-        CROSSBOW,
-        SHIELD
+        NO_WEAPON       = 0x01,
+        ONEHAND_SWORD   = 0x02,
+        TWOHAND_SWORD   = 0x04,
+        DAGGER          = 0x08,
+        STAFF           = 0x10,
+        ONEHAND_CLUB    = 0x20,
+        TWOHAND_CLUB    = 0x40,
+        WAND            = 0x80,
+        SPELLBOOK       = 0x100, // offhand spellbooks for caster classes.
+        ONEHAND_MACE    = 0x200,
+        TWOHAND_MACE    = 0x400,
+        ONEHAND_AXE     = 0x800,
+        TWOHAND_AXE     = 0x1000,
+        BOW             = 0x2000,
+        SLINGSHOT       = 0x4000,
+        CROSSBOW        = 0x8000,
+        SHIELD          = 0x10000,
+        COUNT           = 0x20000
     };
+
+    inline std::string getWeaponTypeText ( WeaponType::WeaponType weaponType )
+    {
+        switch ( weaponType )
+        {
+            case WeaponType::ONEHAND_SWORD:
+                return "One handed sword";
+            break;
+            case WeaponType::TWOHAND_SWORD:
+                return "Two handed sword";
+            break;
+            case WeaponType::DAGGER:
+                return "Dagger";
+            break;
+            case WeaponType::STAFF:
+                return "Staff";
+            break;
+            case WeaponType::ONEHAND_CLUB:
+                return "One handed club";
+            break;
+            case WeaponType::TWOHAND_CLUB:
+                return "Two handed club";
+            break;
+            case WeaponType::WAND:
+                return "Wand";
+            break;
+            case WeaponType::SPELLBOOK:
+                return "Spellbook";
+            break;
+            case WeaponType::ONEHAND_MACE:
+                return "One handed mace";
+            break;
+            case WeaponType::TWOHAND_MACE:
+                return "Two handed mace";
+            break;
+            case WeaponType::ONEHAND_AXE:
+                return "One handed axe";
+            break;
+            case WeaponType::TWOHAND_AXE:
+                return "Two handed axe";
+            break;
+            case WeaponType::BOW:
+                return "Bow";
+            break;
+            case WeaponType::SLINGSHOT:
+                return "Slingshot";
+            break;
+            case WeaponType::CROSSBOW:
+                return "Crossbow";
+            break;
+            case WeaponType::SHIELD:
+                return "Shield";
+            break;
+            case WeaponType::NO_WEAPON:
+                dawn_debug_fatal( "Weapon item of type NO_WEAPON found. This should not be." );
+                abort();
+            break;
+            case WeaponType::COUNT:
+                dawn_debug_fatal( "Weapon item of type COUNT found. This should not be." );
+                abort();
+            break;
+        }
+        dawn_debug_fatal( "Reached end of WeaponType::getWeaponTypeText() without finding a suitable weapon type. This should not be." );
+        abort();
+    }
 }
 
 namespace ItemQuality

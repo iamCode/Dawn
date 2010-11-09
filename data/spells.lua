@@ -385,6 +385,7 @@ curSpell:setSpellCost( 30 );
 curSpell:setInfo("Tactical strike, causing %minWeaponDamage% to %maxWeaponDamage% and increasing your parry chance the next 6 seconds.");
 curSpell:addAdditionalSpellOnCreator( spellDatabase["lungeeffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
+curSpell:addRequiredWeapon( WeaponType.ONEHAND_SWORD );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -406,6 +407,7 @@ curSpell:setSpellCost( 40 );
 curSpell:setInfo("Bash with your shield, causing %minWeaponDamage% to %maxWeaponDamage% and stunning your enemy for 3 seconds.");
 curSpell:addAdditionalSpellOnTarget( spellDatabase["shieldbasheffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
+curSpell:addRequiredWeapon( WeaponType.SHIELD );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -422,6 +424,9 @@ curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
 curSpell:setMoveSpeed( 1000 );
 curSpell:setRequiredClass( CharacterClass.Ranger );
+curSpell:addRequiredWeapon( WeaponType.BOW );
+curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
+curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["invisibility"] = curSpell;

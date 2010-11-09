@@ -167,7 +167,7 @@ class CCharacter
 
 		// casting spells and executing actions
         void executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target );
-        void castSpell(CSpellActionBase *spell );
+        bool castSpell(CSpellActionBase *spell );
 		void giveToPreparation( CSpellActionBase *toPrepare );
 		bool continuePreparing();
 		void startSpellAction();

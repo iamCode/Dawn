@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Tue Nov  2 22:26:10 2010.
+** Generated automatically by tolua++-1.0.93 on Tue Nov  9 07:20:32 2010.
 */
 
 #ifndef __cplusplus
@@ -3049,6 +3049,39 @@ static int tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setRequiredLevel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addRequiredWeapon of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_addRequiredWeapon00
+static int tolua_CLuaInterface_CSpellActionBase_addRequiredWeapon00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  WeaponType::WeaponType weaponType = ((WeaponType::WeaponType) (int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addRequiredWeapon'", NULL);
+#endif
+  {
+   self->addRequiredWeapon(weaponType);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addRequiredWeapon'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6688,6 +6721,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"addAdditionalSpellOnCreator",tolua_CLuaInterface_CSpellActionBase_addAdditionalSpellOnCreator00);
    tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
    tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
+   tolua_function(tolua_S,"addRequiredWeapon",tolua_CLuaInterface_CSpellActionBase_addRequiredWeapon00);
    tolua_function(tolua_S,"setRank",tolua_CLuaInterface_CSpellActionBase_setRank00);
    tolua_function(tolua_S,"setCharacterState",tolua_CLuaInterface_CSpellActionBase_setCharacterState00);
   tolua_endmodule(tolua_S);

@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "item.h"
+#include "CSpell.h"
 #include <memory>
 
 std::vector<Item*> allItems;
@@ -294,136 +295,17 @@ bool Item::isTwoHandedWeapon() const
 
 std::string Item::getArmorTypeText() const
 {
-    switch ( armorType )
-    {
-        case ArmorType::CLOTH:
-            return "Cloth";
-        break;
-        case ArmorType::LEATHER:
-            return "Leather";
-        break;
-        case ArmorType::MAIL:
-            return "Mail";
-        break;
-        case ArmorType::PLATE:
-            return "Plate";
-        break;
-        case ArmorType::NO_ARMOR:
-            dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
-            abort();
-        break;
-    }
-    dawn_debug_fatal("Reached end of Item::getArmorTypeText without finding a suitable armor type. This should not be." );
-	abort();
+    return ArmorType::getArmorTypeText( armorType );
 }
 
 std::string Item::getWeaponTypeText() const
 {
-    switch ( weaponType )
-    {
-        case WeaponType::ONEHAND_SWORD:
-            return "One handed sword";
-        break;
-        case WeaponType::TWOHAND_SWORD:
-            return "Two handed sword";
-        break;
-        case WeaponType::DAGGER:
-            return "Dagger";
-        break;
-        case WeaponType::STAFF:
-            return "Staff";
-        break;
-        case WeaponType::ONEHAND_CLUB:
-            return "One handed club";
-        break;
-        case WeaponType::TWOHAND_CLUB:
-            return "Two handed club";
-        break;
-        case WeaponType::WAND:
-            return "Wand";
-        break;
-        case WeaponType::SPELLBOOK:
-            return "Spellbook";
-        break;
-        case WeaponType::ONEHAND_MACE:
-            return "One handed mace";
-        break;
-        case WeaponType::TWOHAND_MACE:
-            return "Two handed mace";
-        break;
-        case WeaponType::ONEHAND_AXE:
-            return "One handed axe";
-        break;
-        case WeaponType::TWOHAND_AXE:
-            return "Two handed axe";
-        break;
-        case WeaponType::BOW:
-            return "Bow";
-        break;
-        case WeaponType::SLINGSHOT:
-            return "Slingshot";
-        break;
-        case WeaponType::CROSSBOW:
-            return "Crossbow";
-        break;
-        case WeaponType::SHIELD:
-            return "Shield";
-        break;
-		case WeaponType::NO_WEAPON:
-			dawn_debug_fatal( "Armor item of type NO_ARMOR found. This should not be." );
-			abort();
-		break;
-    }
-	dawn_debug_fatal( "Reached end of getWeaponTypeText without finding a suitable weapon type. This should not be." );
-	abort();
+    return WeaponType::getWeaponTypeText( weaponType );
 }
 
 std::string Item::getEquipPositionText() const
 {
-    switch ( equipPosition )
-    {
-        case EquipPosition::MAIN_HAND:
-            return "Main hand";
-        break;
-        case EquipPosition::OFF_HAND:
-            return "Off hand";
-        break;
-        case EquipPosition::CHEST:
-            return "Chest";
-        break;
-        case EquipPosition::LEGS:
-            return "Legs";
-        break;
-        case EquipPosition::BELT:
-            return "Belt";
-        break;
-        case EquipPosition::BOOTS:
-            return "Boots";
-        break;
-        case EquipPosition::RING:
-            return "Ring";
-        break;
-        case EquipPosition::GLOVES:
-            return "Gloves";
-        break;
-        case EquipPosition::HEAD:
-            return "Head";
-        break;
-        case EquipPosition::CLOAK:
-            return "Cloak";
-        break;
-        case EquipPosition::AMULET:
-            return "Amulet";
-        break;
-        case EquipPosition::SHOULDER:
-            return "Shoulder";
-        break;
-        case EquipPosition::NONE:
-            return "Unequippable";
-        break;
-    }
-	dawn_debug_fatal("Reached end of Item::getEquipPositionText without finding a suitable position. This should not be");
-    abort();
+    return EquipPosition::getEquipPositionText( equipPosition );
 }
 
 std::string Item::getUseableDescription() const

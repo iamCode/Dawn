@@ -298,23 +298,23 @@ namespace WeaponType
 {
 	enum WeaponType
 	{
-		NO_WEAPON,
-		ONEHAND_SWORD,
-		TWOHAND_SWORD,
-		DAGGER,
-		STAFF,
-		ONEHAND_CLUB,
-		TWOHAND_CLUB,
-		WAND,
-		SPELLBOOK, // offhand spellbooks for caster classes.
-		ONEHAND_MACE,
-		TWOHAND_MACE,
-		ONEHAND_AXE,
-		TWOHAND_AXE,
-		BOW,
-		SLINGSHOT,
-		CROSSBOW,
-		SHIELD
+        NO_WEAPON       = 0x01,
+        ONEHAND_SWORD   = 0x02,
+        TWOHAND_SWORD   = 0x04,
+        DAGGER          = 0x08,
+        STAFF           = 0x10,
+        ONEHAND_CLUB    = 0x20,
+        TWOHAND_CLUB    = 0x40,
+        WAND            = 0x80,
+        SPELLBOOK       = 0x100, // offhand spellbooks for caster classes.
+        ONEHAND_MACE    = 0x200,
+        TWOHAND_MACE    = 0x400,
+        ONEHAND_AXE     = 0x800,
+        TWOHAND_AXE     = 0x1000,
+        BOW             = 0x2000,
+        SLINGSHOT       = 0x4000,
+        CROSSBOW        = 0x8000,
+        SHIELD          = 0x10000
 	};
 }
 
@@ -397,6 +397,7 @@ class CSpellActionBase
 	void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 	void setRequiredLevel( int requiredLevel );
+	void addRequiredWeapon( WeaponType::WeaponType weaponType );	
 	void setRank( int rank );
 	void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0 );
 };

@@ -112,7 +112,8 @@ void ActionBar::draw()
                     * not enough mana
                     * out of range
                     * it's on cooldown
-                    * we are stunned        **/
+                    * we are stunned
+                    * spell has a weapon requirement not met  **/
             bool isSpellUseable = true;
 
             if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
@@ -144,6 +145,11 @@ void ActionBar::draw()
 
             if ( player->isStunned() == true || player->isFeared() == true || player->isMesmerized() == true || player->isCharmed() == true ) {
                 isSpellUseable = false;
+            }
+            if ( button[buttonId].action->getRequiredWeapons() != 0 ) {
+                if ( ( button[buttonId].action->getRequiredWeapons() & ( player->getInventory()->getWeaponTypeBySlot( ItemSlot::MAIN_HAND ) | player->getInventory()->getWeaponTypeBySlot( ItemSlot::OFF_HAND ) ) ) == 0 ) {
+                    isSpellUseable = false;
+                }
             }
 
             if ( isSpellUseable == false ) {

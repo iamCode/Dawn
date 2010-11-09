@@ -26,6 +26,7 @@
 #include "CTexture.h"
 #include "StatsSystem.h"
 #include "CDrawingHelpers.h"
+#include "item.h"
 #include "soundengine.h"
 #include "globals.h"
 
@@ -48,6 +49,7 @@ CSpellActionBase::CSpellActionBase()
 		  finished( false ),
 		  requiredClass( CharacterClass::NOCLASS ),
 		  requiredLevel( 1 ),
+		  requiredWeapons( 0 ),
           rank( 1 )
 {
     characterStateEffects.first = CharacterStates::NOEFFECT;
@@ -147,6 +149,16 @@ void CSpellActionBase::setRequiredClass( CharacterClass::CharacterClass required
     this->requiredClass = requiredClass;
 }
 
+void CSpellActionBase::addRequiredWeapon( WeaponType::WeaponType weaponType )
+{
+    requiredWeapons |= weaponType;
+}
+
+uint32_t CSpellActionBase::getRequiredWeapons() const
+{
+    return requiredWeapons;
+}
+
 CharacterClass::CharacterClass CSpellActionBase::getRequiredClass() const
 {
     return requiredClass;
@@ -220,6 +232,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 
     requiredClass = other->requiredClass;
     requiredLevel = other->requiredLevel;
+    requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;
@@ -357,6 +370,7 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 
     requiredClass = other->requiredClass;
     requiredLevel = other->requiredLevel;
+    requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;

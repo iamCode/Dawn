@@ -283,12 +283,13 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                     inventory->removeItem( useItem );
                 } else {
                     // item is potion or scroll, use it.
-                    player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) );
-                    useItem->getItem()->reduceSpellCharges();
-                    useItem->getTooltip()->reloadTooltip();
-                    if ( useItem->getItem()->getSpellCharges() == 0 )
-                    {
-                        inventory->removeItem( useItem );
+                    if ( player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) ) == true ) {
+                        useItem->getItem()->reduceSpellCharges();
+                        useItem->getTooltip()->reloadTooltip();
+                        if ( useItem->getItem()->getSpellCharges() == 0 )
+                        {
+                            inventory->removeItem( useItem );
+                        }
                     }
                 }
             } else if ( floatingSelection == NULL && useItem->isLevelReqMet() ) {

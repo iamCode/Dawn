@@ -172,3 +172,9 @@ curItem = itemDatabase["weakenedbow"];
 curItem:setMinDamage( 4 );
 curItem:setMaxDamage( 7 );
 curItem:setValue( 78 );
+
+itemDatabase["moldytome"]=DawnInterface.createNewItem( "Moldy tome", 2, 2, "data/items/Spellbook2.tga", ItemQuality.ENHANCED, EquipPosition.OFF_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.SPELLBOOK );
+curItem = itemDatabase["moldytome"];
+curItem:setSpellEffectElementModifierPoints( ElementType.Dark, 6 );
+curItem:setStats( StatsType.Wisdom, 2 );
+curItem:setStats( StatsType.ManaRegen, 1 );

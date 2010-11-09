@@ -71,6 +71,7 @@ class Inventory
 		InventoryItem* getItemAt( size_t invPosX, size_t invPosY );
 
 		bool isWieldingTwoHandedWeapon() const;
+		WeaponType::WeaponType getWeaponTypeBySlot( ItemSlot::ItemSlot itemSlot) const;
 
 		InventoryItem* insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		bool containsItem( InventoryItem *inventoryItem ) const;

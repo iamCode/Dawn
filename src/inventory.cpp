@@ -294,6 +294,14 @@ bool Inventory::isWieldingTwoHandedWeapon() const
     return false;
 }
 
+WeaponType::WeaponType Inventory::getWeaponTypeBySlot( ItemSlot::ItemSlot itemSlot ) const
+{
+    if ( equippedItems[ static_cast<size_t>( itemSlot ) ] == NULL ) {
+        return WeaponType::NO_WEAPON;
+    }
+    return equippedItems[ static_cast<size_t>( itemSlot ) ]->getItem()->getWeaponType();
+}
+
 bool Inventory::containsItem( InventoryItem *inventoryItem ) const
 {
 	for ( size_t curBackpackItemNr=0; curBackpackItemNr<backpackItems.size(); ++curBackpackItemNr ) {

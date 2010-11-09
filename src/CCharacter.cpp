@@ -1302,22 +1302,22 @@ void CCharacter::executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter
 }
 
 // use this function to cast spells with rules (mana requirement, range etc...
-void CCharacter::castSpell( CSpellActionBase *spell )
+bool CCharacter::castSpell( CSpellActionBase *spell )
 {
     if ( isStunned() == true || isFeared() == true || isMesmerized() == true || isCharmed() == true ) {
         /// can't cast, we're stunned, feared, mesmerized or charmed. Should perhaps display message about it.
-        return;
+        return false;
     }
 
     if ( dynamic_cast<CAction*>( spell ) != NULL ) {
         if ( spell->getSpellCost() > getCurrentFatigue() ) {
             /// can't cast. cost more fatigue than we can afford. Display message here about it.
-            return;
+            return false;
         }
 	} else if ( dynamic_cast<CSpell*>( spell) != NULL ) {
 	    if ( spell->getSpellCost() > getCurrentMana() )	{
 	        /// can't cast. not enough mana. Display message here about it.
-            return;
+            return false;
 	    }
 	}
 
@@ -1325,9 +1325,17 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	    uint16_t distance = sqrt( pow( ( getXPos() + getWidth() / 2 ) - ( getTarget()->getXPos() + getTarget()->getWidth() / 2 ),2) + pow( ( getYPos() + getHeight() / 2 ) - ( getTarget()->getYPos() + getTarget()->getHeight() / 2 ),2) );
         if ( spell->isInRange( distance ) == false ) {
             /// can't cast, not in range. Display message here about it...
-            return;
+            return false;
         }
 	}
+    if ( isPlayer() == true ) {
+        if ( spell->getRequiredWeapons() != 0 ) {
+            if ( ( spell->getRequiredWeapons() & ( dynamic_cast<Player*>( this )->getInventory()->getWeaponTypeBySlot( ItemSlot::MAIN_HAND ) | dynamic_cast<Player*>( this )->getInventory()->getWeaponTypeBySlot( ItemSlot::OFF_HAND ) ) ) == 0 ) {
+            /// can't cast spell, not wielding required weapon. Display message here about it...
+            return false;
+            }
+        }
+    }
 
 	for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
 	{
@@ -1336,7 +1344,7 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	        if ( SDL_GetTicks() < cooldownSpells[curSpell].second + spell->getCooldown() * 1000 )
             {
                 /// can't cast, spell has a cooldown on it. Display message about it.
-                return;
+                return false;
             }
 	    }
 	}
@@ -1351,6 +1359,7 @@ void CCharacter::castSpell( CSpellActionBase *spell )
 	}
 
     giveToPreparation( spell );
+    return true;
 }
 
 void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )

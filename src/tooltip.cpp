@@ -30,6 +30,11 @@
 
 extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
+size_t getNumBitsToUse( size_t maxBitValue )
+{
+    return log(maxBitValue) / log(2);
+}
+
 itemTooltip::itemTooltip( Item *parent_, Player *player_ )
             :   parent( parent_ )
 {
@@ -439,7 +444,7 @@ void itemTooltip::getParentText()
     }
 
     // displaying damage if it's a weapon.
-    if ( parent->getItemType() == ItemType::WEAPON && parent->getWeaponType() != WeaponType::SHIELD )
+    if ( parent->getItemType() == ItemType::WEAPON && parent->getWeaponType() != WeaponType::SHIELD && parent->getWeaponType() != WeaponType::SPELLBOOK )
     {
         addTooltipText( white, 12, "Damage: %d-%d", parent->getMinDamage(),parent->getMaxDamage() );
     }
@@ -627,6 +632,24 @@ void spellTooltip::getParentText()
         } else if ( player->getArchType() == CharacterArchType::Fighter ) {
             addTooltipText( yellow, 12, "Fatigue: %d", parent->getSpellCost() );
         }
+    }
+
+    /// display required weapons
+    if ( parent->getRequiredWeapons() != 0 ) {
+        int numberOfRequiredWeapons = 0;
+        std::string reqWeaponString = "Requires: ";
+
+        for ( size_t curWeaponType = 0; curWeaponType < getNumBitsToUse( WeaponType::COUNT ); curWeaponType++ ) {
+            if ( parent->getRequiredWeapons() & static_cast<WeaponType::WeaponType>( 1 << curWeaponType ) ) {
+                if ( numberOfRequiredWeapons > 0 ) { reqWeaponString.append( ", " ); }
+                reqWeaponString.append( WeaponType::getWeaponTypeText( static_cast<WeaponType::WeaponType>( 1 << curWeaponType ) ) );
+                numberOfRequiredWeapons++;
+            }
+         }
+        if ( numberOfRequiredWeapons > 1 ) {
+            reqWeaponString.replace( reqWeaponString.find_last_of( "," ), 1, " or" );
+        }
+        addTooltipText(blue, 12, reqWeaponString );
     }
 
     // display duration if we have any

@@ -25,6 +25,8 @@
 
 #include "elements.h"
 #include "stats.h"
+#include "CCharacter.h"
+#include "item.h"
 
 class CCharacter;
 class CTexture;
@@ -64,7 +66,6 @@ namespace EffectType
 // custom spells. Need to think on this.
 
 // NOTE: Not used yet, deactivate this comment once that changes ;)
-#include "CCharacter.h"
 
 class GeneralRayDamageSpell;
 class GeneralBoltDamageSpell;
@@ -127,6 +128,10 @@ class CSpellActionBase
         void setRequiredClass( CharacterClass::CharacterClass requiredClass );
         CharacterClass::CharacterClass getRequiredClass() const;
 
+        /// which equipment (weapon) is required to cast the spell.
+        void addRequiredWeapon( WeaponType::WeaponType weaponType );
+        uint32_t getRequiredWeapons() const;
+
         /// what level we can use the spell
         void setRequiredLevel( uint8_t requiredLevel );
         uint8_t getRequiredLevel() const;
@@ -147,6 +152,7 @@ class CSpellActionBase
         bool finished;
         CharacterClass::CharacterClass requiredClass;
         uint8_t requiredLevel;
+        uint32_t requiredWeapons;
         uint8_t rank;
         std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnTarget;
         std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnCreator;
