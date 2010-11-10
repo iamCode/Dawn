@@ -30,6 +30,8 @@
 
 extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
+/// calculates how many bits that is being used in a bit field enumerator.
+/// WeaponType::WeaponType for example.
 size_t getNumBitsToUse( size_t maxBitValue )
 {
     return log(maxBitValue) / log(2);
