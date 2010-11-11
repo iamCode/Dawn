@@ -1,3 +1,5 @@
+local tileSet = EditorInterface.getTileSet();
+
 houseinterior_armor1_tga = tileSet:addTile( "data/houseinterior/armor1.tga", TileClassificationType.ENVIRONMENT );
 houseinterior_candle1_tga = tileSet:addTile( "data/houseinterior/candle1.tga", TileClassificationType.ENVIRONMENT );
 houseinterior_chair1_tga = tileSet:addTile( "data/houseinterior/chair1.tga", TileClassificationType.ENVIRONMENT );

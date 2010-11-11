@@ -1,4 +1,4 @@
-tileSet = EditorInterface.getTileSet();
+local tileSet = EditorInterface.getTileSet();
 
 tiles_black_tga = tileSet:addTile( "data/tiles/black.tga", TileClassificationType.FLOOR );
 tiles_pavement_pavement1_tga = tileSet:addTile( "data/tiles/pavement/pavement1.tga", TileClassificationType.FLOOR );

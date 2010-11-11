@@ -1,4 +1,4 @@
-tileSet = EditorInterface.getTileSet();
+local tileSet = EditorInterface.getTileSet();
 
 tiles_black_tga = tileSet:addTile( "data/tiles/black.tga", TileClassificationType.FLOOR );
 tiles_johnbayly_snow_tile_64x64_tga = tileSet:addTile( "data/tiles/johnbayly/snow_tile-64x64.tga", TileClassificationType.FLOOR );
