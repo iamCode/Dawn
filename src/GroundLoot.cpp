@@ -95,6 +95,55 @@ void GroundLoot::disableTooltips()
     drawTooltips = false;
 }
 
+void GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t curItem )
+{
+    //##########################################################################
+    //  additional variables for making the code more readable
+    //##########################################################################
+    int item_width  = groundItem.item->getSizeX()*32;
+    int item_height = groundItem.item->getSizeY()*32;
+    int item_x      = groundItem.xpos;
+    int item_y      = groundItem.ypos;
+    int p_xsize     = player_->getWidth()/2;
+    int p_ysize     = player_->getHeight()-50;
+    int w_grade     = item_width/32;
+    int h_grade     = item_height/32;
+    int wdiff       = 0;
+    int hdiff       = 0;
+
+    //##########################################################################
+    //  this is the range value the players horizontal centerpoint must be in
+    //##########################################################################
+    switch( w_grade )
+    {
+        case 1: wdiff = item_width*2;   break; //32px
+        case 2: wdiff = item_width;     break; //64px
+        case 3: wdiff = item_width;     break; //96px
+        default:                        break; //??px
+    }
+
+    switch( h_grade )
+    {
+        case 1: hdiff = item_height*2;  break; //32px
+        case 2: hdiff = item_height;    break; //64px
+        case 3: hdiff = item_height;    break; //96px
+        default:                        break; //??px
+    }
+
+    //##########################################################################
+    //  if the difference between these two points are in range you can loot
+    //##########################################################################
+    //  horizontal centerpoint     horizontal centerpoint    difference range
+    //##########################################################################
+    if( ((player_->getXPos()+p_xsize) - item_x+item_width/2) < item_width+wdiff      &&
+        ((player_->getXPos()+p_xsize) - item_x+item_width/2) > item_width-wdiff      &&
+        ((player_->getYPos()+p_ysize) - item_y+item_height/2) < item_height+hdiff    &&
+        ((player_->getYPos()+p_ysize) - item_y+item_height/2) > item_height-hdiff )
+    {
+        lootItem( groundItems[curItem].item, curItem );
+    }
+}
+
 void GroundLoot::searchForItems( int x, int y )
 {
     for ( size_t curItem = 0; curItem < groundItems.size(); curItem++ )
@@ -105,20 +154,18 @@ void GroundLoot::searchForItems( int x, int y )
             if ( x >= groundItems[curItem].tooltipXpos
             && x <= static_cast<int>( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth + 16)
             && y >= groundItems[curItem].tooltipYpos
-            && y <= static_cast<int>( groundItems[curItem].tooltipYpos + 16 ) )
+            && y <= static_cast<int>( groundItems[curItem].tooltipYpos + 16 ))
             {
-                lootItem( groundItems[curItem].item, curItem );
-                return;
+                PickUpLoot( player, groundItems[curItem], curItem );
             }
         } else {
 
             if ( x >= groundItems[curItem].xpos
-            && x <= static_cast<int>( groundItems[curItem].xpos + groundItems[curItem].item->getSizeX() * 32)
+            && x <= static_cast<int>(groundItems[curItem].xpos  + groundItems[curItem].item->getSizeX() * 32)
             && y >= groundItems[curItem].ypos
-            && y <= static_cast<int>( groundItems[curItem].ypos + groundItems[curItem].item->getSizeY() * 32) )
+            && y <= static_cast<int>( groundItems[curItem].ypos + groundItems[curItem].item->getSizeY() * 32))
             {
-                lootItem( groundItems[curItem].item, curItem );
-                return;
+                PickUpLoot( player, groundItems[curItem], curItem );
             }
         }
     }
