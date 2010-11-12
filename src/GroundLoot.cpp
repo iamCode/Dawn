@@ -95,7 +95,7 @@ void GroundLoot::disableTooltips()
     drawTooltips = false;
 }
 
-void GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t curItem )
+bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t curItem )
 {
     //##########################################################################
     //  additional variables for making the code more readable
@@ -140,8 +140,11 @@ void GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t cu
         ((player_->getYPos()+p_ysize) - item_y+item_height/2) < item_height+hdiff    &&
         ((player_->getYPos()+p_ysize) - item_y+item_height/2) > item_height-hdiff )
     {
-        lootItem( groundItems[curItem].item, curItem );
+        return true;
+        //lootItem( groundItems[curItem].item, curItem );
     }
+
+    return false;
 }
 
 void GroundLoot::searchForItems( int x, int y )
@@ -156,7 +159,8 @@ void GroundLoot::searchForItems( int x, int y )
             && y >= groundItems[curItem].tooltipYpos
             && y <= static_cast<int>( groundItems[curItem].tooltipYpos + 16 ))
             {
-                PickUpLoot( player, groundItems[curItem], curItem );
+                if( PickUpLoot( player, groundItems[curItem], curItem ) )
+                  lootItem( groundItems[curItem].item, curItem );
             }
         } else {
 
@@ -165,7 +169,8 @@ void GroundLoot::searchForItems( int x, int y )
             && y >= groundItems[curItem].ypos
             && y <= static_cast<int>( groundItems[curItem].ypos + groundItems[curItem].item->getSizeY() * 32))
             {
-                PickUpLoot( player, groundItems[curItem], curItem );
+                if( PickUpLoot( player, groundItems[curItem], curItem ) )
+                  lootItem( groundItems[curItem].item, curItem );
             }
         }
     }
@@ -197,14 +202,17 @@ InventoryItem *GroundLoot::getFloatingSelection( int x, int y )
     for ( size_t curItem = 0; curItem < groundItems.size(); curItem++ )
     {
         if ( x >= groundItems[curItem].xpos
-        && x <= static_cast<int>( groundItems[curItem].xpos + groundItems[curItem].item->getSizeX() * 32)
-        && y >= groundItems[curItem].ypos
-        && y <= static_cast<int>( groundItems[curItem].ypos + groundItems[curItem].item->getSizeY() * 32) )
+          && x <= static_cast<int>( groundItems[curItem].xpos + groundItems[curItem].item->getSizeX() * 32)
+          && y >= groundItems[curItem].ypos
+          && y <= static_cast<int>( groundItems[curItem].ypos + groundItems[curItem].item->getSizeY() * 32) )
         {
+          if( PickUpLoot( player, groundItems[curItem], curItem) )
+          {
             InventoryItem *returnItem = new InventoryItem( groundItems[curItem].item, 0, 0, player );
             removeItem( curItem );
             return returnItem;
-		}
+          }
+        }
     }
     return NULL;
 }
