@@ -100,33 +100,33 @@ bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t cu
     //##########################################################################
     //  additional variables for making the code more readable
     //##########################################################################
-    int item_width  = groundItem.item->getSizeX()*32;
-    int item_height = groundItem.item->getSizeY()*32;
-    int item_x      = groundItem.xpos;
-    int item_y      = groundItem.ypos;
-    int p_xsize     = player_->getWidth()/2;
-    int p_ysize     = player_->getHeight()-50;
-    int w_grade     = item_width/32;
-    int h_grade     = item_height/32;
-    int wdiff       = 0;
-    int hdiff       = 0;
+    int itemWidth   = groundItem.item->getSizeX()*32;
+    int itemHeight  = groundItem.item->getSizeY()*32;
+    int itemX       = groundItem.xpos;
+    int itemY       = groundItem.ypos;
+    int playerXSize = player_->getWidth()/2;
+    int playerYSize = player_->getHeight()-50;
+    int wGrade     = itemWidth/32;
+    int hGrade     = itemHeight/32;
+    int wDiff       = 0;
+    int hDiff       = 0;
 
     //##########################################################################
     //  this is the range value the players horizontal centerpoint must be in
     //##########################################################################
-    switch( w_grade )
+    switch( wGrade )
     {
-        case 1: wdiff = item_width*2;   break; //32px
-        case 2: wdiff = item_width;     break; //64px
-        case 3: wdiff = item_width;     break; //96px
+        case 1: wDiff = itemWidth*2;   break; //32px
+        case 2: wDiff = itemWidth;     break; //64px
+        case 3: wDiff = itemWidth;     break; //96px
         default:                        break; //??px
     }
 
-    switch( h_grade )
+    switch( hGrade )
     {
-        case 1: hdiff = item_height*2;  break; //32px
-        case 2: hdiff = item_height;    break; //64px
-        case 3: hdiff = item_height;    break; //96px
+        case 1: hDiff = itemHeight*2;  break; //32px
+        case 2: hDiff = itemHeight;    break; //64px
+        case 3: hDiff = itemHeight;    break; //96px
         default:                        break; //??px
     }
 
@@ -135,13 +135,12 @@ bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t cu
     //##########################################################################
     //  horizontal centerpoint     horizontal centerpoint    difference range
     //##########################################################################
-    if( ((player_->getXPos()+p_xsize) - item_x+item_width/2) < item_width+wdiff      &&
-        ((player_->getXPos()+p_xsize) - item_x+item_width/2) > item_width-wdiff      &&
-        ((player_->getYPos()+p_ysize) - item_y+item_height/2) < item_height+hdiff    &&
-        ((player_->getYPos()+p_ysize) - item_y+item_height/2) > item_height-hdiff )
+    if( ((player_->getXPos()+playerXSize) - itemX+itemWidth/2) < itemWidth+wDiff      &&
+        ((player_->getXPos()+playerXSize) - itemX+itemWidth/2) > itemWidth-wDiff      &&
+        ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) < itemHeight+hDiff    &&
+        ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) > itemHeight-hDiff )
     {
         return true;
-        //lootItem( groundItems[curItem].item, curItem );
     }
 
     return false;
