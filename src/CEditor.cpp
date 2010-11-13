@@ -25,6 +25,8 @@
 #include "globals.h"
 #include "tileset.h"
 
+#include <iostream>
+
 extern CMessage message;
 
 void CEditor::initFonts()
@@ -84,7 +86,7 @@ void CEditor::SaveZone()
 	// save the ground
 	std::string groundTileFileName = zoneName;
 	groundTileFileName.append( ".ground.lua" );
-	
+
 	std::ofstream ofs ( groundTileFileName.c_str() );
 	for (size_t x=0; x<zoneToEdit->TileMap.size();x++) {
 		sTileMap &curTile = zoneToEdit->TileMap[x];
@@ -113,7 +115,7 @@ void CEditor::SaveZone()
 		}
 	}
 	ofs.close();
-	
+
 	// save the shadows
 	std::string shadowTileFileName = zoneName;
 	shadowTileFileName.append( ".shadow.lua" );
@@ -132,7 +134,7 @@ void CEditor::SaveZone()
 		}
 	}
 	ofs.close();
-	
+
 	// save the collisions
 	std::string collisionTileFileName = zoneName;
 	collisionTileFileName.append( ".collision.lua" );
@@ -172,6 +174,9 @@ void CEditor::HandleKeys()
 	Uint8 *keys;
 	keys = SDL_GetKeyState(NULL);
 	SDL_Event event;
+
+	//the hot spot for mouse scrolling, you need to press the left mouse key within this area on whatever side
+	int scrollHotSpot = 30;
 
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT)  {
@@ -355,6 +360,25 @@ void CEditor::HandleKeys()
 			break;
 		}
 	} else if ( objectedit_selected < 0 ) { // Not editting an object, use arrows to move screen
+
+
+	  if(SDL_GetMouseState(NULL, NULL) &SDL_BUTTON(1))
+	  {
+      //corners
+      if(mouseX < scrollHotSpot && mouseY < scrollHotSpot)                    editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()-1);  //bottom-left
+      else if(mouseX < scrollHotSpot && mouseY > RES_Y-scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()+1);  //top-left
+      else if(mouseX > RES_X-scrollHotSpot && mouseY < scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()-1);  //bottom-right
+      else if(mouseX > RES_X-scrollHotSpot && mouseY > RES_Y-scrollHotSpot)   editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()+1);  //top-right
+      else
+      {
+        //sides
+        if(mouseX < scrollHotSpot)        editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()); //left
+        if(mouseX > RES_X-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()); //right
+        if(mouseY < scrollHotSpot)        editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()-1); //bottom
+        if(mouseY > RES_Y-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()+1); //top
+      }
+	  }
+
 		if (keys[SDLK_DOWN]) {
 			editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()-2);
 		}
@@ -681,6 +705,7 @@ void CEditor::DrawEditor()
 	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+50 - fontHeight, "[ S ]  Saves the changes into zone1-files");
 	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+40 - fontHeight, "[ O ]  Load a different zone (not yet implemented)");
 	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+30 - fontHeight, "[ L ]  Exit the editor");
+	keybindingFont->drawText(editorFocus->getX()+10, editorFocus->getY()+20 - fontHeight, "//Press the left mouse button near the sides to scroll around ;-)");
 
 	// if we have a selected object, display specific help text for it
 	if (objectedit_selected >= 0) {
@@ -731,7 +756,7 @@ void CEditor::DrawEditor()
 			curTiles = tileSet->getAllTilesOfType( TileClassificationType::SHADOW );
 		break;
 	}
-	
+
 	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {
 		Tile *curTile = curTiles[ tilepos ];
 		DrawingHelpers::mapTextureToRect( curTile->texture->texture[0],
@@ -756,7 +781,7 @@ bool CEditor::checkAndPlaceAdjacentTile()
 	sEnvironmentMap *editobject = NULL;
 	if ( objectedit_selected >= 0 ) {
 		switch ( current_object ) {
-			case 1: 
+			case 1:
 				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
 			break;
 			case 2:
@@ -764,7 +789,7 @@ bool CEditor::checkAndPlaceAdjacentTile()
 			break;
 		}
 	}
-	
+
 	if ( editobject == NULL ) {
 		return false;
 	}
@@ -798,7 +823,7 @@ bool CEditor::checkAndPlaceAdjacentTile()
 				int drawH = adjacencyProposal->texture->texture[0].height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
-				
+
 				if ( mouseInAdjacencyRect ) {
 					mouseWasInAnyDirectionsAdjacency = true;
 					zoneToEdit->AddEnvironment( drawX, drawY, adjacencyProposal, false /* not centered on pos */ );
@@ -817,7 +842,7 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 	sEnvironmentMap *editobject = NULL;
 	if ( objectedit_selected >= 0 ) {
 		switch ( current_object ) {
-			case 1: 
+			case 1:
 				editobject = &(zoneToEdit->EnvironmentMap[objectedit_selected]);
 			break;
 			case 2:
@@ -825,7 +850,7 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 			break;
 		}
 	}
-	
+
 	if ( editobject == NULL ) {
 		return false;
 	}
@@ -859,10 +884,10 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 				int drawH = adjacencyProposal->texture->texture[0].height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
-				
+
 				if ( mouseInAdjacencyRect ) {
 					mouseWasInAnyDirectionsAdjacency = true;
-					if ( ( modification > 0 
+					if ( ( modification > 0
 					     && curDirectionAdjacencies.size() > curDirectionAdjacencySelection[ curDirection ]+modification )
 					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
 						curDirectionAdjacencySelection[ curDirection ] += modification;
@@ -881,7 +906,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 	//DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
 	//                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
 	//                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
-	
+
 	// Highlight the currently selected tile in red (which might well be bigger than it looks)
 	glPushMatrix();
 	glColor4f(1.0, 1.0, 1.0, 0.2);
@@ -889,7 +914,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 	                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
 	                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
 	glPopMatrix();
-	
+
 	if ( adjacencyModeEnabled ) {
 		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 			std::vector<Tile*> &curDirectionAdjacencies = curAdjacentTiles[ curDirection ];
@@ -920,7 +945,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 				int drawH = adjacencyProposal->texture->texture[0].height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
-				
+
 				glPushMatrix();
 				if ( mouseInAdjacencyRect ) {
 					glColor4f( 1.0, 1.0, 1.0, 1.0 );

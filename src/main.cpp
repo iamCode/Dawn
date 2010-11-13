@@ -327,7 +327,7 @@ void DrawScene()
 	    activeFrames[ curFrame ]->draw( mouseX, mouseY );
 	}
 
-	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() )
+	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() && Editor.isEnabled() == false)
 	{
 	    actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
@@ -662,7 +662,7 @@ public:
 		player->setManaRegen(2);
 		player->setFatigueRegen( 5 );
 		player->giveCoins( 576 );
-		
+
 		// setting initial actions in the action bar
 		const std::vector<CSpellActionBase*> inscribedSpells = player->getSpellbook();
 		for ( size_t curEntry=0; curEntry<=9 && curEntry < inscribedSpells.size(); ++curEntry ) {
@@ -721,7 +721,7 @@ bool dawn_init(int argc, char** argv)
 {
 		if(!HandleCommandLineAurguments(argc, argv))
 			return false;
-			
+
 		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
 		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
 
