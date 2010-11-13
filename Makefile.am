@@ -95,6 +95,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
+	src/tileset.cpp \
+	src/tileset.h \
 	src/TimeConverterHelper.h \
 	src/tooltip.cpp \
 	src/tooltip.h \
@@ -109,8 +111,6 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/threadObject/MutexClass.cpp \
 	src/threadObject/MutexClass.h \
 	src/threadObject/Thread.cpp \
-	src/threadObject/Thread.h \
-  src/tileset.cpp \
-  src/tileset.h
+	src/threadObject/Thread.h
 
 dawndata_DATA = data/spells.lua

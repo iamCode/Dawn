@@ -65,9 +65,9 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
 	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
 	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
-	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
-	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
-	Thread.$(OBJEXT)
+	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
+	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
+	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -303,6 +303,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
+	src/tileset.cpp \
+	src/tileset.h \
 	src/TimeConverterHelper.h \
 	src/tooltip.cpp \
 	src/tooltip.h \
@@ -317,9 +319,7 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/threadObject/MutexClass.cpp \
 	src/threadObject/MutexClass.h \
 	src/threadObject/Thread.cpp \
-	src/threadObject/Thread.h \
-  src/tileset.cpp \
-  src/tileset.h
+	src/threadObject/Thread.h
 
 dawndata_DATA = data/spells.lua
 all: all-am
@@ -453,6 +453,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tileset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tooltip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
 
@@ -1071,6 +1072,20 @@ textwindow.obj: src/textwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/textwindow.cpp' object='textwindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o textwindow.obj `if test -f 'src/textwindow.cpp'; then $(CYGPATH_W) 'src/textwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/textwindow.cpp'; fi`
+
+tileset.o: src/tileset.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tileset.o -MD -MP -MF $(DEPDIR)/tileset.Tpo -c -o tileset.o `test -f 'src/tileset.cpp' || echo '$(srcdir)/'`src/tileset.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/tileset.Tpo $(DEPDIR)/tileset.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/tileset.cpp' object='tileset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tileset.o `test -f 'src/tileset.cpp' || echo '$(srcdir)/'`src/tileset.cpp
+
+tileset.obj: src/tileset.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tileset.obj -MD -MP -MF $(DEPDIR)/tileset.Tpo -c -o tileset.obj `if test -f 'src/tileset.cpp'; then $(CYGPATH_W) 'src/tileset.cpp'; else $(CYGPATH_W) '$(srcdir)/src/tileset.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/tileset.Tpo $(DEPDIR)/tileset.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/tileset.cpp' object='tileset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tileset.obj `if test -f 'src/tileset.cpp'; then $(CYGPATH_W) 'src/tileset.cpp'; else $(CYGPATH_W) '$(srcdir)/src/tileset.cpp'; fi`
 
 tooltip.o: src/tooltip.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tooltip.o -MD -MP -MF $(DEPDIR)/tooltip.Tpo -c -o tooltip.o `test -f 'src/tooltip.cpp' || echo '$(srcdir)/'`src/tooltip.cpp
