@@ -293,21 +293,6 @@ bool Item::isTwoHandedWeapon() const
     return false;
 }
 
-std::string Item::getArmorTypeText() const
-{
-    return ArmorType::getArmorTypeText( armorType );
-}
-
-std::string Item::getWeaponTypeText() const
-{
-    return WeaponType::getWeaponTypeText( weaponType );
-}
-
-std::string Item::getEquipPositionText() const
-{
-    return EquipPosition::getEquipPositionText( equipPosition );
-}
-
 std::string Item::getUseableDescription() const
 {
     switch ( itemType )

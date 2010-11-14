@@ -325,10 +325,6 @@ class Item
 		WeaponType::WeaponType getWeaponType() const;
 		EquipPosition::EquipPosition getEquipPosition() const;
 
-		std::string getArmorTypeText() const;
-		std::string getWeaponTypeText() const;
-		std::string getEquipPositionText() const;
-
 		virtual CTexture* getSymbolTexture();
 
 	private:

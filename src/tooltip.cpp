@@ -410,10 +410,10 @@ void itemTooltip::getParentText()
             // nothing here so far...
         break;
         case ItemType::ARMOR:
-            addTooltipText( white, 12, parent->getArmorTypeText() );
+            addTooltipText( white, 12, ArmorType::getArmorTypeText( parent->getArmorType() ) );
         break;
         case ItemType::WEAPON:
-            addTooltipText( white, 12, parent->getWeaponTypeText() );
+            addTooltipText( white, 12, WeaponType::getWeaponTypeText( parent->getWeaponType() ) );
         break;
         case ItemType::JEWELRY:
             // nothing here so far...
@@ -442,7 +442,7 @@ void itemTooltip::getParentText()
     // displaying where the item fits.
     if ( parent->getEquipPosition() != EquipPosition::NONE )
     {
-        addTooltipText( white, 12, parent->getEquipPositionText() );
+        addTooltipText( white, 12, EquipPosition::getEquipPositionText( parent->getEquipPosition() ) );
     }
 
     // displaying damage if it's a weapon.
