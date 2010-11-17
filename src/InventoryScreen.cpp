@@ -182,14 +182,16 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	Inventory *inventory = player->getInventory();
 
 	// check if we're holding an item from the shop window and clicked on the backpackscreen. (ie buying it).
-	if ( isOnBackpackScreen( mouseX, mouseY ) && shopWindow->hasFloatingSelection() )
-	{
-        bool purchased = inventory->insertItem( shopWindow->getFloatingSelection()->getItem() );
-        if ( purchased )
-        {
-            shopWindow->buyFromShop();
-            return;
-        }
+	if ( shopWindow->hasFloatingSelection() ) {
+		if ( isOnBackpackScreen( mouseX, mouseY ) && shopWindow->hasFloatingSelection() ) {
+			bool purchased = inventory->insertItem( shopWindow->getFloatingSelection()->getItem() );
+			if ( purchased ) {
+				shopWindow->buyFromShop();
+			}
+		}
+		// if there is/was a floating selection from the shop window we may not continue with the normal
+		// inventory options
+		return;
 	}
 
 	if ( !isMouseOnFrame( mouseX, mouseY ) && !shopWindow->isMouseOnFrame( mouseX, mouseY ) ) {
