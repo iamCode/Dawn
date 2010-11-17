@@ -41,8 +41,6 @@ itemTooltip::itemTooltip( Item *parent_, Player *player_ )
             :   parent( parent_ )
 {
     player = player_;
-    height = 0;
-    width = 0;
     blockWidth = 32;
     blockHeight = 32;
     blockNumberWidth = 1;
@@ -57,8 +55,6 @@ spellTooltip::spellTooltip(CSpellActionBase *parent_, Player *player_ )
             :   parent( parent_ )
 {
     player = player_;
-    height = 0;
-    width = 0;
     blockWidth = 32;
     blockHeight = 32;
     smallTooltip = false;
@@ -70,14 +66,27 @@ Tooltip::~Tooltip()
 {
 }
 
+void Tooltip::updateBlockNumbers()
+{
+	if ( smallTooltip ) {
+		curBlockNumberWidth = blockNumberWidthSmall;
+		curBlockNumberHeight = blockNumberHeightSmall;
+	} else {
+		curBlockNumberWidth = blockNumberWidth;
+		curBlockNumberHeight = blockNumberHeight;
+	}
+}
+
 void Tooltip::enableSmallTooltip()
 {
     smallTooltip = true;
+    updateBlockNumbers();
 }
 
 void Tooltip::disableSmallTooltip()
 {
     smallTooltip = false;
+    updateBlockNumbers();
 }
 
 bool Tooltip::isTooltipSmall()
@@ -109,12 +118,12 @@ void itemTooltip::setShopItem( bool isShopItem_ )
 
 int Tooltip::getTooltipWidth() const
 {
-    return blockWidth * blockNumberWidth + blockWidth;
+    return blockWidth * curBlockNumberWidth + blockWidth;
 }
 
 int Tooltip::getTooltipHeight() const
 {
-    return blockHeight * blockNumberHeight + blockHeight;
+    return blockHeight * curBlockNumberHeight + blockHeight;
 }
 
 void itemTooltip::getTicketFromPlayer()
@@ -154,14 +163,14 @@ void itemTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (blockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
+    if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = Configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
+        x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
     }
 
-    if ( y + (blockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
+    if ( y + (curBlockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
     {
-        y = Configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
+        y = Configuration::screenHeight - (curBlockNumberHeight + 2) * blockHeight;
     }
 
     // set the correct position based on where we are
@@ -170,9 +179,9 @@ void itemTooltip::draw( int x, int y )
 
 	// set the first font Y-position on the top of the first tooltip block excluding topborder
     // (we could also center the text in the tooltip, but topaligned is probably bestlooking
-    int font_y = y + blockHeight + (blockNumberHeight) * blockHeight - toplineHeight;
+    int font_y = y + blockHeight + (curBlockNumberHeight) * blockHeight - toplineHeight;
 
-    Frames::drawFrame( x, y, blockNumberWidth, blockNumberHeight, blockWidth, blockHeight );
+    Frames::drawFrame( x, y, curBlockNumberWidth, curBlockNumberHeight, blockWidth, blockHeight );
 
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
@@ -180,13 +189,16 @@ void itemTooltip::draw( int x, int y )
 
         if ( tooltipText[i].text.find("price:") != tooltipText[i].text.npos )
         {
-            drawCoinsLine( x+blockWidth, blockWidth*blockNumberWidth-10, font_y, &tooltipText[i] );
+            drawCoinsLine( x+blockWidth, blockWidth*curBlockNumberWidth-10, font_y, &tooltipText[i] );
         } else {
             glColor4fv(tooltipText[i].color);
             tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
             glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
         font_y -= tooltipText[i].font->getHeight()+11;
+        if ( smallTooltip ) {
+            break;
+        }
     }
 }
 
@@ -224,14 +236,14 @@ void spellTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (blockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
+    if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = Configuration::screenWidth - (blockNumberWidth + 2) * blockWidth;
+        x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
     }
 
-    if ( y + (blockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
+    if ( y + (curBlockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
     {
-        y = Configuration::screenHeight - (blockNumberHeight + 2) * blockHeight;
+        y = Configuration::screenHeight - (curBlockNumberHeight + 2) * blockHeight;
     }
 
     // set the correct position based on where we are
@@ -240,9 +252,9 @@ void spellTooltip::draw( int x, int y )
 
 	// set the first font Y-position on the top of the first tooltip block excluding topborder
     // (we could also center the text in the tooltip, but topaligned is probably bestlooking
-    int font_y = y + blockHeight + (blockNumberHeight) * blockHeight - toplineHeight;
+    int font_y = y + blockHeight + (curBlockNumberHeight) * blockHeight - toplineHeight;
 
-    Frames::drawFrame( x, y, blockNumberWidth, blockNumberHeight, blockWidth, blockHeight );
+    Frames::drawFrame( x, y, curBlockNumberWidth, curBlockNumberHeight, blockWidth, blockHeight );
 
     // loop through the text vector and print all the text.
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
@@ -251,51 +263,10 @@ void spellTooltip::draw( int x, int y )
         tooltipText[i].font->drawText(x+blockWidth,font_y,tooltipText[i].text);
         glColor4f(1.0f,1.0f,1.0f,1.0f);
         font_y -= tooltipText[i].font->getHeight()+11;
+        if ( smallTooltip ) {
+            break;
+        }
     }
-}
-
-void Tooltip::drawSmallTooltip( int x, int y )
-{
-    if ( tooltipText.empty() )
-    {
-        return;
-    }
-
-    height = tooltipText[0].font->getHeight()+9;
-    width = tooltipText[0].font->calcStringWidth( tooltipText[0].text );
-
-    // make sure the tooltip doesnt go "off screen"
-    if ( width + x + 32 > Configuration::screenWidth )
-    {
-        x = Configuration::screenWidth - width - 32;
-    }
-
-    if ( height + y + 32 > Configuration::screenHeight )
-    {
-        y = Configuration::screenHeight - height - 32;
-    }
-
-    // set the first font Y-position on the top of the tooltip.
-    int font_y = y + world_y + height - 16;
-
-    // set the correct position based on where we are
-    x += world_x;
-    y += world_y;
-
-    // draw the corners
-    DrawingHelpers::mapTextureToRect( textures.texture[0], x, 16, y, 16); // lower left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[1], x+width+16, 16, y, 16); // lower right corner
-    DrawingHelpers::mapTextureToRect( textures.texture[2], x, 16, y+16, 16); // upper left corner
-    DrawingHelpers::mapTextureToRect( textures.texture[3], x+width+16, 16, y+16, 16); // upper right corner
-
-    // draw the borders
-    DrawingHelpers::mapTextureToRect( textures.texture[4], x+16,width,y,16); // bottom border
-    DrawingHelpers::mapTextureToRect( textures.texture[4], x+16,width,y+16,16); // top border
-
-    // draw the name of the tooltip, since it's a small tooltip.
-    glColor4fv(tooltipText[ 0].color);
-    tooltipText[0].font->drawText(x+15,font_y,tooltipText[0].text);
-    glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
 void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...)
@@ -325,8 +296,10 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     }
 
     // adjust width and height depending on the content of the tooltip.
-    width = 0;
-    int newHeight = 0;
+    int width = 0;
+    int height = 0;
+    int widthSmall = 0;
+    int heightSmall = 0;
     toplineHeight = 0;
 	if ( tooltipText.size() > 0 ) {
 		toplineHeight = tooltipText[0].font->getHeight();
@@ -339,15 +312,22 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
             width = neededWidth;
         }
         // add line and line distance
-        newHeight += tooltipText[i].font->getHeight();
+        height += tooltipText[i].font->getHeight();
         if ( i+1 < tooltipText.size() ) {
-        	newHeight += 11;
+        	height += 11;
+        }
+        if ( i==0 ) {
+            widthSmall = width;
+            heightSmall = height;
         }
     }
-    height = newHeight;
 
     blockNumberHeight = ceil( static_cast<double>(height) / blockHeight );
     blockNumberWidth = ceil( static_cast<double>(width) / blockWidth );
+    blockNumberHeightSmall = ceil( static_cast<double>(heightSmall) / blockHeight );
+    blockNumberWidthSmall = ceil( static_cast<double>(widthSmall) / blockWidth );
+
+    updateBlockNumbers();
 }
 
 void itemTooltip::addTooltipTextForPercentageAttribute( std::string attributeName, double attributePercentage )

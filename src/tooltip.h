@@ -64,16 +64,20 @@ class Tooltip
         std::string getDynamicValues( CSpellActionBase *spell, size_t val ) const;
 
     private:
+        /** \brief adjusts curBlockNumberWidth and curBlockNumberHeight according to current tooltip size */
+        void updateBlockNumbers();
+
         bool smallTooltip; // with this true, tooltip will merely display the name of things.
-        int width;
-        int height;
         int toplineHeight;
         int blockWidth;
         int blockHeight;
         int blockNumberWidth;
         int blockNumberHeight;
+        int blockNumberWidthSmall;
+        int blockNumberHeightSmall;
+        int curBlockNumberWidth;
+        int curBlockNumberHeight;
         bool shoppingState;
-        CTexture textures;
         Player *player;
         std::vector<sTooltipText> tooltipText;
 
@@ -81,7 +85,6 @@ class Tooltip
 
         void loadTextures();
         void addTooltipText(GLfloat color[], uint8_t fontSize, std::string str, ...);
-        void drawSmallTooltip( int x, int y );
 };
 
 class spellTooltip : public Tooltip
