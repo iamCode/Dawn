@@ -188,6 +188,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
         if ( purchased )
         {
             shopWindow->buyFromShop();
+            return;
         }
 	}
 
