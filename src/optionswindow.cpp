@@ -134,17 +134,7 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	}
 }
 
-/**bool OptionsWindow::isMouseOnFrame( int posX, int posY ) const
-{
-	if ( posX < this->posX + 64 || posX > this->posX + frameWidth  - 64
-	     || posY > this->posY + frameHeight - 64 || posY < this->posY + 64 ) {
-	     return false;
-	}
-	return true;
-}**/
-
 void setQuitGame();
-
 
 extern std::auto_ptr<Shop> shopWindow;
 extern std::auto_ptr<Spellbook> spellbook;
@@ -213,17 +203,31 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	}
 }
 
-
-
-
-ChooseClassScreen::ChooseClassScreen() : OptionsWindow()
+ChooseClassScreen::ChooseClassScreen() : FramesBase( 0, 0, 279, 313, 20, 19 )
 {
-    visible = true;
-	done = false;
+	visible = true;
+    done = false;
+	font = NULL;
+	backgroundTexture = NULL;
+
+	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
+	backgroundTexture = new CTexture();
+	backgroundTexture->texture.resize(1);
+	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/classScreen.tga", 0 );
 }
 
 ChooseClassScreen::~ChooseClassScreen()
 {
+}
+
+void ChooseClassScreen::setTextureDependentPositions()
+{
+	// at this point the background texture has been loaded
+	frameWidth = backgroundTexture->texture[0].width;
+	frameHeight = backgroundTexture->texture[0].height;
+	// center on screen
+	posX = (Configuration::screenWidth - frameWidth) / 2;
+	posY = (Configuration::screenHeight - frameHeight) / 2;
 }
 
 bool ChooseClassScreen::isDone() const
@@ -249,7 +253,7 @@ void ChooseClassScreen::draw( int mouseX, int mouseY )
 
 	std::string curText = "Choose class";
 	int selectedEntry = -1;
-	if ( mouseX < posX + 64 || mouseX > posX + frameWidth  - 64 || posY + frameHeight - 128 < mouseY) {
+	if ( mouseX < posX + 64 || mouseX > posX + frameWidth - 64 || posY + frameHeight - 128 < mouseY) {
 		selectedEntry = -1;
 	} else {
 		selectedEntry = (posY + frameHeight - 128 - mouseY) / static_cast<int>(font->getHeight()*1.5);
@@ -270,8 +274,16 @@ void ChooseClassScreen::draw( int mouseX, int mouseY )
 	if ( selectedEntry == 1 ) {
 		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 	}
-	font->drawText( textX, textY, "Warrior" );
+	font->drawText( textX, textY, "Ranger" );
 	if ( selectedEntry == 1 ) {
+		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+	textY -= font->getHeight() * 1.5;
+	if ( selectedEntry == 2 ) {
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+	}
+	font->drawText( textX, textY, "Warrior" );
+	if ( selectedEntry == 2 ) {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 }
@@ -296,7 +308,10 @@ void ChooseClassScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	if ( selectedEntry == 0 ) { // we choose liche
 		Globals::getPlayer()->setClass( CharacterClass::Liche );
 		done = true;
-	} else if ( selectedEntry == 1 ) { // we choose warrior
+	} else if ( selectedEntry == 1 ) { // we choose ranger
+	    Globals::getPlayer()->setClass( CharacterClass::Ranger );
+		done = true;
+    } else { // we choose warrior
         Globals::getPlayer()->setClass( CharacterClass::Warrior );
 		done = true;
 	}

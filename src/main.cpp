@@ -555,6 +555,8 @@ public:
 		    characterDataString.append( "wizard/" );
 		} else if ( player->getClass() == CharacterClass::Warrior ) {
 		    characterDataString.append( "swordsman/" );
+		} else if ( player->getClass() == CharacterClass::Ranger ) {
+            characterDataString.append( "ranger/" );
 		}
 
 		ActivityType::ActivityType activity = ActivityType::Walking;
@@ -626,6 +628,8 @@ public:
         int numOfMoves = 0;
         if ( player->getClass() == CharacterClass::Warrior ) {
             numOfMoves = 9;
+        } else if ( player->getClass() == CharacterClass::Ranger ) {
+            numOfMoves = 11;
         } else if ( player->getClass() == CharacterClass::Liche ) {
             numOfMoves = 13;
         }

@@ -32,7 +32,6 @@ class OptionsWindow : public FramesBase
 		~OptionsWindow();
 		void draw( int mouseX, int mouseY );
 		void setTextureDependentPositions();
-		//bool isMouseOnFrame( int posX, int posY ) const;
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 	private:
@@ -40,16 +39,19 @@ class OptionsWindow : public FramesBase
 		GLFT_Font *font;
 };
 
-class ChooseClassScreen : public OptionsWindow
+class ChooseClassScreen : public FramesBase
 {
     public:
         ChooseClassScreen();
         ~ChooseClassScreen();
         bool isDone() const;
+        void setTextureDependentPositions();
 		void draw( int mouseX, int mouseY );
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
     private:
+        CTexture *backgroundTexture;
+        GLFT_Font *font;
         bool done;
 };
 
