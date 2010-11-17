@@ -189,14 +189,10 @@ void CEditor::HandleKeys()
 
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			switch (event.button.button) {
-				case 1: // mouse button 1, see if we can select an object being pointed at.
+				case SDL_BUTTON_LEFT: // mouse button 1
 					{
 						bool handled = false;
-						// first check whether we are in adjacency mode and can place a tile. If not we select a tile
-						if ( adjacencyModeEnabled ) {
-							handled = checkAndPlaceAdjacentTile();
-						}
-
+						// see if we can select an object being pointed at.
 						if ( ! handled ) {
 							switch (current_object) {
 								case 1: // environment
@@ -225,8 +221,18 @@ void CEditor::HandleKeys()
 						}
 					}
 				break;
+				
+				case SDL_BUTTON_RIGHT: // right mouse button.
+					{
+						bool handled = false;
+						// first check whether we are in adjacency mode and can place a tile. If not we select a tile
+						if ( ! handled && adjacencyModeEnabled ) {
+							handled = checkAndPlaceAdjacentTile();
+						}
+					}
+				break;
 
-				case 4: // scroll up
+				case SDL_BUTTON_WHEELUP: // scroll up
 					{
 						// if mouse is over a tile for adjacency selection, change to next tile in the selection
 						// else increase our tileposition
@@ -240,7 +246,7 @@ void CEditor::HandleKeys()
 					}
 				break;
 
-				case 5: // scroll down
+				case SDL_BUTTON_WHEELDOWN: // scroll down
 					{
 						// if mouse is over a tile for adjacency selection, change to previous tile in the selection
 						// else decrease our tileposition
@@ -888,7 +894,7 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 				if ( mouseInAdjacencyRect ) {
 					mouseWasInAnyDirectionsAdjacency = true;
 					if ( ( modification > 0
-					     && curDirectionAdjacencies.size() > curDirectionAdjacencySelection[ curDirection ]+modification )
+					     && static_cast<int>(curDirectionAdjacencies.size()) > curDirectionAdjacencySelection[ curDirection ]+modification )
 					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
 						curDirectionAdjacencySelection[ curDirection ] += modification;
 					}
