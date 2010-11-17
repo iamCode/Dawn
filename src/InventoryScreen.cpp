@@ -183,12 +183,18 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 
 	// check if we're holding an item from the shop window and clicked on the backpackscreen. (ie buying it).
 	if ( shopWindow->hasFloatingSelection() ) {
-		if ( isOnBackpackScreen( mouseX, mouseY ) && shopWindow->hasFloatingSelection() ) {
-			bool purchased = inventory->insertItem( shopWindow->getFloatingSelection()->getItem() );
-			if ( purchased ) {
+		if ( isOnBackpackScreen( mouseX, mouseY ) ) {
+			InventoryItem *shopFloatingSelection = shopWindow->getFloatingSelection();
+			// calculate field index under mouse
+			int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
+			int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
+			if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, shopFloatingSelection->getSizeX(), shopFloatingSelection->getSizeY() ) ) {
+				InventoryItem *newInvItem = new InventoryItem( shopFloatingSelection->getItem(), fieldIndexX, fieldIndexY, player );
+				floatingSelection = inventory->insertItemWithExchangeAt( newInvItem, fieldIndexX, fieldIndexY );
 				shopWindow->buyFromShop();
 			}
 		}
+
 		// if there is/was a floating selection from the shop window we may not continue with the normal
 		// inventory options
 		return;
@@ -437,12 +443,25 @@ void InventoryScreen::drawCoins()
 
 void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 {
-	if ( ! isVisible() || floatingSelection == NULL ) {
+	if ( ! isVisible() ) {
 		return;
 	}
+
+	bool floatingSelectionFromShop = false;
+
+	InventoryItem *floatingSelectionToDraw = floatingSelection;
+	if ( floatingSelectionToDraw == NULL && shopWindow->hasFloatingSelection() ) {
+		floatingSelectionToDraw = shopWindow->getFloatingSelection();
+		floatingSelectionFromShop = true;
+	}
+
+	if ( floatingSelectionToDraw == NULL ) {
+		return;
+	}
+	
 	if ( isOnBackpackScreen( mouseX, mouseY ) )
 	{
-	    Item *floatingItem = floatingSelection->getItem();
+	    Item *floatingItem = floatingSelectionToDraw->getItem();
 	    Inventory *inventory = player->getInventory();
 	    GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 	    size_t sizeX = floatingItem->getSizeX();
@@ -455,7 +474,13 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
         // set the shade-color depending on if the item fits or not.
         if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, sizeX, sizeY ) )
         {
-            shade[1] = 1.0f; // green color
+            if ( floatingSelectionFromShop ) {
+                // yellow color (item needs to be paid)
+                shade[0] = 1.0f;
+                shade[1] = 1.0f;
+            } else {
+                shade[1] = 1.0f; // green color
+            }
         } else {
             shade[0] = 1.0f; // red color
         }
@@ -499,8 +524,8 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
-			if ( floatingSelection->isLevelReqMet()
-			     && floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
+			if ( floatingSelectionToDraw->isLevelReqMet()
+			     && floatingSelectionToDraw->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
 				shade[1] = 1.0f; // green color
 			} else {
