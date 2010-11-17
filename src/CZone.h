@@ -131,10 +131,6 @@ class CZone
 		void DrawZone();
 
 		void LoadZone(std::string file);
-		int LoadMap(std::string file);
-		int LoadEnvironment(std::string file, size_t tileSetOffset);
-		int LoadShadow(std::string file, size_t tileSetOffset);
-		int LoadCollisions(std::string file);
 		bool zoneDataLoaded() const;
 
 		int LocateTile(int x, int y);
