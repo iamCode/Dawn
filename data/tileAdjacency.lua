@@ -165,5 +165,70 @@ tileSet:addEquivalenceAdjacency( houseInteriorCentreBottom, AdjacencyType.RIGHT,
 tileSet:addEquivalenceAdjacency( houseInteriorLeftBottom, AdjacencyType.RIGHT, houseInteriorCentreBottom, 0, 0 );
 tileSet:addEquivalenceAdjacency( houseInteriorLeftBottom, AdjacencyType.RIGHT, houseInteriorRightBottom, 0, 0 );
 
+
+-- village houses
+
+local villageHouseTopLeft = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseTopLeft, village_village1_tga );
+
+local villageHouseLeft = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseLeft, village_village2_tga );
+
+local villageHouseBottomLeft = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseBottomLeft, village_village3_tga );
+
+local villageHouseTop = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseTop, village_village4_tga );
+
+local villageHouseCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseCentre, village_village5_tga );
+
+local villageHouseBottom = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseBottom, village_village6_tga );
+addTileToEquivalenceClassIfExists( villageHouseBottom, village_village10_tga, 0, 11 );
+addTileToEquivalenceClassIfExists( villageHouseBottom, village_village11_tga );
+addTileToEquivalenceClassIfExists( villageHouseBottom, village_village12_tga );
+
+local villageHouseTopRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseTopRight, village_village7_tga );
+
+local villageHouseRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseRight, village_village8_tga );
+
+local villageHouseBottomRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageHouseBottomRight, village_village9_tga );
+
+-- adjacency of village house tiles
+tileSet:addEquivalenceAdjacency( villageHouseTop, AdjacencyType.RIGHT, villageHouseTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseTop, AdjacencyType.RIGHT, villageHouseTopRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseTopLeft, AdjacencyType.RIGHT, villageHouseTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseTopLeft, AdjacencyType.RIGHT, villageHouseTopRight, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.RIGHT, villageHouseCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.RIGHT, villageHouseRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.RIGHT, villageHouseCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.RIGHT, villageHouseRight, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.RIGHT, villageHouseBottom, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.RIGHT, villageHouseBottomRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottom, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottomRight, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.TOP, villageHouseLeft, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.TOP, villageHouseTopLeft, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.TOP, villageHouseLeft, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.TOP, villageHouseTopLeft, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.TOP, villageHouseCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.TOP, villageHouseTop, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.TOP, villageHouseCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.TOP, villageHouseTop, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( villageHouseRight, AdjacencyType.TOP, villageHouseRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseRight, AdjacencyType.TOP, villageHouseTopRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomRight, AdjacencyType.TOP, villageHouseRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomRight, AdjacencyType.TOP, villageHouseTopRight, 0, 0 );
+
+
 tileSet:printTileSet();
 
