@@ -174,30 +174,32 @@ void InventoryScreen::dropItemOnGround( InventoryItem *inventoryItem )
 	Globals::getCurrentZone()->getGroundLoot()->addItem( player->getXPos(), player->getYPos(), inventoryItem->getItem() );
 }
 
+void InventoryScreen::equipOnSlotOriginDependingAndPlaySound( ItemSlot::ItemSlot slotToUse, InventoryItem *wieldItem, bool fromShop, InventoryItem *newFloatingSelection ) {
+	Inventory *inventory = player->getInventory();
+	if ( fromShop ) {
+		// shop self-destroys its inventory items. Copy to new inventory item.
+		wieldItem = new InventoryItem( wieldItem->getItem(), 0, 0, player );
+	}
+	inventory->wieldItemAtSlot( slotToUse, wieldItem );
+	floatingSelection = newFloatingSelection;
+	if ( fromShop ) {
+		shopWindow->buyFromShop();
+	} else {
+		CommonSounds::playClickSound();
+	}
+}
+
 void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
 	// Put Floating selection out of inventory.
-	// Check several positions here for equipping, for now weapon hand and shield hand
-
+	// Check several positions here for equipping
 	Inventory *inventory = player->getInventory();
 
-	// check if we're holding an item from the shop window and clicked on the backpackscreen. (ie buying it).
-	if ( shopWindow->hasFloatingSelection() ) {
-		if ( isOnBackpackScreen( mouseX, mouseY ) ) {
-			InventoryItem *shopFloatingSelection = shopWindow->getFloatingSelection();
-			// calculate field index under mouse
-			int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
-			int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
-			if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, shopFloatingSelection->getSizeX(), shopFloatingSelection->getSizeY() ) ) {
-				InventoryItem *newInvItem = new InventoryItem( shopFloatingSelection->getItem(), fieldIndexX, fieldIndexY, player );
-				floatingSelection = inventory->insertItemWithExchangeAt( newInvItem, fieldIndexX, fieldIndexY );
-				shopWindow->buyFromShop();
-			}
-		}
-
-		// if there is/was a floating selection from the shop window we may not continue with the normal
-		// inventory options
-		return;
+	InventoryItem *floatingSelectionToHandle = floatingSelection;
+	bool shopFloatingSelection = false;
+	if ( floatingSelectionToHandle == NULL && shopWindow->hasFloatingSelection() ) {
+		floatingSelectionToHandle = shopWindow->getFloatingSelection();
+		shopFloatingSelection = true;
 	}
 
 	if ( !isMouseOnFrame( mouseX, mouseY ) && !shopWindow->isMouseOnFrame( mouseX, mouseY ) ) {
@@ -218,40 +220,27 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, mouseX, mouseY ) ) {
-			if ( floatingSelection != NULL && floatingSelection->isLevelReqMet() ) {
-				if ( floatingSelection->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
+			if ( floatingSelectionToHandle != NULL && floatingSelectionToHandle->isLevelReqMet() ) {
+				if ( floatingSelectionToHandle->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
-                    // special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
-                    if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
-                        if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
-                            // successfully put the offhand in the inventory. now we just swap the floatingselection with the equipped item.
-                            InventoryItem *tmp = floatingSelection;
-                            floatingSelection = inventory->getItemAtSlot( curSlotEnum );
-                            inventory->wieldItemAtSlot( curSlotEnum, tmp);
-                            CommonSounds::playClickSound();
-                        }
-                    } else if ( floatingSelection->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
-                        // special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
-                        InventoryItem *tmp = floatingSelection;
-						floatingSelection = inventory->getItemAtSlot( ItemSlot::OFF_HAND );
-						inventory->wieldItemAtSlot( curSlotEnum, tmp);
-						CommonSounds::playClickSound();
-                    } else if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
-						inventory->wieldItemAtSlot( curSlotEnum, floatingSelection );
-						floatingSelection = NULL;
-						CommonSounds::playClickSound();
+					// special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
+					if ( floatingSelectionToHandle->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::MAIN_HAND ) != NULL && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+						if ( inventory->insertItem( inventory->getItemAtSlot( ItemSlot::OFF_HAND )->getItem() ) == true ) {
+							// successfully put the offhand in the inventory. now we just swap the floatingselection with the equipped item.
+							equipOnSlotOriginDependingAndPlaySound( curSlotEnum, floatingSelectionToHandle, shopFloatingSelection, inventory->getItemAtSlot( curSlotEnum ) );
+						}
+					} else if ( floatingSelectionToHandle->getItem()->isTwoHandedWeapon() == true && inventory->isWieldingTwoHandedWeapon() == false && inventory->getItemAtSlot( ItemSlot::OFF_HAND ) != NULL ) {
+						// special handler for when we are trying to wield a two-handed weapon and having ONLY an item in offhand-slot equipped.
+						equipOnSlotOriginDependingAndPlaySound( curSlotEnum, floatingSelectionToHandle, shopFloatingSelection, inventory->getItemAtSlot( ItemSlot::OFF_HAND ) );
+					} else if ( inventory->getItemAtSlot( curSlotEnum ) == NULL ) {
+						equipOnSlotOriginDependingAndPlaySound( curSlotEnum, floatingSelectionToHandle, shopFloatingSelection, NULL );
 					} else {
-						InventoryItem *tmp = floatingSelection;
-						floatingSelection = inventory->getItemAtSlot( curSlotEnum );
-						inventory->wieldItemAtSlot( curSlotEnum, tmp);
-						CommonSounds::playClickSound();
+						equipOnSlotOriginDependingAndPlaySound( curSlotEnum, floatingSelectionToHandle, shopFloatingSelection, inventory->getItemAtSlot( curSlotEnum ) );
 					}
 				}
 			}
-			else if ( floatingSelection == NULL && inventory->getItemAtSlot( curSlotEnum ) != NULL ) {
-				floatingSelection = inventory->getItemAtSlot( curSlotEnum );
-				inventory->wieldItemAtSlot( curSlotEnum, NULL );
-				CommonSounds::playClickSound();
+			else if ( floatingSelectionToHandle == NULL && inventory->getItemAtSlot( curSlotEnum ) != NULL ) {
+				equipOnSlotOriginDependingAndPlaySound( curSlotEnum, NULL, false, inventory->getItemAtSlot( curSlotEnum ) );
 			}
 			return;
 		}
@@ -262,7 +251,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		return;
 	}
 
-    // calculate field index under mouse
+	// calculate field index under mouse
 	int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
 	int fieldIndexY = ( mouseY - (posY + backpackOffsetY) ) / (backpackFieldHeight+backpackSeparatorHeight);
 
@@ -301,7 +290,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                         }
                     }
                 }
-            } else if ( floatingSelection == NULL && useItem->isLevelReqMet() ) {
+            } else if ( floatingSelectionToHandle == NULL && useItem->isLevelReqMet() ) {
                 // try to equip the item
                 std::vector<size_t> possibleSlots;
                 for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
@@ -365,10 +354,17 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	    return;
 	}
 
-	if ( floatingSelection != NULL ) {
-		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelection->getSizeX(), floatingSelection->getSizeY() ) ) {
-			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelection, fieldIndexX, fieldIndexY );
-			CommonSounds::playClickSound();
+	if ( floatingSelectionToHandle != NULL ) {
+		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelectionToHandle->getSizeX(), floatingSelectionToHandle->getSizeY() ) ) {
+			if ( shopFloatingSelection ) {
+				floatingSelectionToHandle = new InventoryItem( floatingSelectionToHandle->getItem(), 0, 0, player );
+			}
+			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelectionToHandle, fieldIndexX, fieldIndexY );
+			if ( shopFloatingSelection ) {
+				shopWindow->buyFromShop();
+			} else {
+				CommonSounds::playClickSound();
+			}
 		}
 	} else if ( ! inventory->isPositionFree( fieldIndexX, fieldIndexY ) ) {
 		floatingSelection = inventory->getItemAt( fieldIndexX, fieldIndexY );
@@ -527,7 +523,13 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 			if ( floatingSelectionToDraw->isLevelReqMet()
 			     && floatingSelectionToDraw->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
-				shade[1] = 1.0f; // green color
+				if ( floatingSelectionFromShop ) {
+					// yellow color (item needs to be paid)
+					shade[0] = 1.0f;
+					shade[1] = 1.0f;
+				} else {
+					shade[1] = 1.0f; // green color
+				}
 			} else {
 				shade[0] = 1.0f; // red color
 			}
@@ -652,7 +654,12 @@ InventoryItem *InventoryScreen::getFloatingSelection() const
 void InventoryScreen::drawItemTooltip( int mouseX, int mouseY )
 {
     // draws tooltip over item in the backpack
-    if ( isOnBackpackScreen( mouseX, mouseY ) && isVisible() && floatingSelection == NULL ) {
+    InventoryItem *floatingSelectionToHandle = floatingSelection;
+    if ( floatingSelectionToHandle == NULL && shopWindow->hasFloatingSelection() ) {
+        floatingSelectionToHandle = shopWindow->getFloatingSelection();
+    }
+
+    if ( isOnBackpackScreen( mouseX, mouseY ) && isVisible() && floatingSelectionToHandle == NULL ) {
         Inventory *inventory = player->getInventory();
         InventoryItem *tooltipItem;
         int fieldIndexX = ( mouseX - (posX + backpackOffsetX) ) / (backpackFieldWidth+backpackSeparatorWidth);
@@ -703,7 +710,7 @@ void InventoryScreen::drawItemTooltip( int mouseX, int mouseY )
     }
 
     // draws tooltip over equipped item
-    if ( isVisible() && floatingSelection == NULL && !isOnBackpackScreen( mouseX, mouseY ) )
+    if ( isVisible() && floatingSelectionToHandle == NULL && !isOnBackpackScreen( mouseX, mouseY ) )
     {
         ItemSlot::ItemSlot tooltipslot = getMouseOverSlot( mouseX, mouseY );
 

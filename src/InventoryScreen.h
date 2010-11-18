@@ -71,6 +71,8 @@ class InventoryScreen : public FramesBase
 		size_t backpackOffsetY;
 		size_t numSlotsX;
 		size_t numSlotsY;
+		
+		void equipOnSlotOriginDependingAndPlaySound( ItemSlot::ItemSlot slotToUse, InventoryItem *wieldItem, bool fromShop , InventoryItem *newFloatingSelection );
 
 	public:
 		InventoryScreen( Player *player_ );
