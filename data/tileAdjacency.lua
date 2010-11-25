@@ -229,6 +229,47 @@ tileSet:addEquivalenceAdjacency( villageHouseRight, AdjacencyType.TOP, villageHo
 tileSet:addEquivalenceAdjacency( villageHouseBottomRight, AdjacencyType.TOP, villageHouseRight, 0, 0 );
 tileSet:addEquivalenceAdjacency( villageHouseBottomRight, AdjacencyType.TOP, villageHouseTopRight, 0, 0 );
 
+-- village fence
+local villageFenceHorizontalCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageFenceHorizontalCentre, village_fence2_tga );
+addTileToEquivalenceClassIfExists( villageFenceHorizontalCentre, village_fence6_tga );
+addTileToEquivalenceClassIfExists( villageFenceHorizontalCentre, village_fence7_tga );
+
+local villageFenceLeft = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageFenceLeft, village_fence1_tga, 0, 15 );
+addTileToEquivalenceClassIfExists( villageFenceLeft, village_fence9_tga );
+
+local villageFenceRight = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( villageFenceRight, village_fence3_tga );
+addTileToEquivalenceClassIfExists( villageFenceRight, village_fence8_tga );
+addTileToEquivalenceClassIfExists( villageFenceRight, village_fence10_tga, 0, 15 );
+
+-- adjacency of village fence
+tileSet:addEquivalenceAdjacency( villageFenceHorizontalCentre, AdjacencyType.RIGHT, villageFenceHorizontalCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageFenceHorizontalCentre, AdjacencyType.RIGHT, villageFenceRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageFenceLeft, AdjacencyType.RIGHT, villageFenceHorizontalCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageFenceLeft, AdjacencyType.RIGHT, villageFenceRight, 0, 0 );
+
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.TOP, village_fence4_tga, 0, -16 )
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.TOP, village_fence5_tga, 0, -16 )
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.TOP, village_fence9_tga, -7, -16 )
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.TOP, village_fence10_tga, -7, -40 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.TOP, village_fence4_tga, 0, -21 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.TOP, village_fence5_tga, 0, -21 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.TOP, village_fence9_tga, -7, -21 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.TOP, village_fence10_tga, -7, -45 )
+
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.BOTTOM, village_fence1_tga, -6, 32 )
+addAdjacencyIfExists( village_fence4_tga, AdjacencyType.BOTTOM, village_fence3_tga, -6, 17 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.BOTTOM, village_fence1_tga, -6, 32 )
+addAdjacencyIfExists( village_fence5_tga, AdjacencyType.BOTTOM, village_fence3_tga, -6, 17 )
+
+addAdjacencyIfExists( village_fence9_tga, AdjacencyType.BOTTOM, village_fence1_tga, 0, 32 )
+addAdjacencyIfExists( village_fence9_tga, AdjacencyType.BOTTOM, village_fence3_tga, 0, 17 )
+addAdjacencyIfExists( village_fence10_tga, AdjacencyType.BOTTOM, village_fence1_tga, 0, 56 )
+addAdjacencyIfExists( village_fence10_tga, AdjacencyType.BOTTOM, village_fence3_tga, 0, 41 )
+
+
 
 tileSet:printTileSet();
 
