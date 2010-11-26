@@ -210,14 +210,14 @@ tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.RIGHT, villageH
 tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.RIGHT, villageHouseRight, 0, 0 );
 
 tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.RIGHT, villageHouseBottom, 0, 0 );
-tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.RIGHT, villageHouseBottomRight, 0, 0 );
-tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottom, 0, 0 );
-tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottomRight, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottom, AdjacencyType.RIGHT, villageHouseBottomRight, 0, 1 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottom, 0, -3 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.RIGHT, villageHouseBottomRight, 0, -2 );
 
 tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.TOP, villageHouseLeft, 0, 0 );
-tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.TOP, villageHouseTopLeft, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseLeft, AdjacencyType.TOP, villageHouseTopLeft, 1, 0 );
 tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.TOP, villageHouseLeft, 0, 0 );
-tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.TOP, villageHouseTopLeft, 0, 0 );
+tileSet:addEquivalenceAdjacency( villageHouseBottomLeft, AdjacencyType.TOP, villageHouseTopLeft, 1, 0 );
 
 tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.TOP, villageHouseCentre, 0, 0 );
 tileSet:addEquivalenceAdjacency( villageHouseCentre, AdjacencyType.TOP, villageHouseTop, 0, 0 );
