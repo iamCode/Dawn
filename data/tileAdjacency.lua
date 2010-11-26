@@ -269,7 +269,76 @@ addAdjacencyIfExists( village_fence9_tga, AdjacencyType.BOTTOM, village_fence3_t
 addAdjacencyIfExists( village_fence10_tga, AdjacencyType.BOTTOM, village_fence1_tga, 0, 56 )
 addAdjacencyIfExists( village_fence10_tga, AdjacencyType.BOTTOM, village_fence3_tga, 0, 41 )
 
+-- cliffs
+local cliffsTopLeftCorner = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsTopLeftCorner, cliffs_cliff9_tga );
 
+local cliffsTopCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsTopCentre, cliffs_cliff10_tga );
+
+local cliffsTopRightCorner = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsTopRightCorner, cliffs_cliff12_tga );
+
+local cliffsRightBeforeTopCorner = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsRightBeforeTopCorner, cliffs_cliff6_tga );
+
+local cliffsRightCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsRightCentre, cliffs_cliff5_tga );
+
+local cliffsBottomRightCorner = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsBottomRightCorner, cliffs_cliff3_tga );
+
+local cliffsBottomCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsBottomCentre, cliffs_cliff2_tga );
+addTileToEquivalenceClassIfExists( cliffsBottomCentre, cliffs_cliff4_tga, 0, 1 );
+
+local cliffsBottomLeftCorner = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsBottomLeftCorner, cliffs_cliff1_tga );
+
+local cliffsLeftCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsLeftCentre, cliffs_cliff7_tga );
+addTileToEquivalenceClassIfExists( cliffsLeftCentre, cliffs_cliff8_tga );
+
+local cliffsCentre = tileSet:createAdjacencyEquivalenceClass();
+addTileToEquivalenceClassIfExists( cliffsCentre, cliffs_cliff13_tga );
+addTileToEquivalenceClassIfExists( cliffsCentre, cliffs_cliff14_tga );
+addTileToEquivalenceClassIfExists( cliffsCentre, cliffs_cliff15_tga );
+addTileToEquivalenceClassIfExists( cliffsCentre, cliffs_cliff16_tga );
+addTileToEquivalenceClassIfExists( cliffsCentre, cliffs_cliff17_tga );
+
+-- cliffs adjacency information
+tileSet:addEquivalenceAdjacency( cliffsTopCentre, AdjacencyType.RIGHT, cliffsTopCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsTopCentre, AdjacencyType.RIGHT, cliffsTopRightCorner, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsTopLeftCorner, AdjacencyType.RIGHT, cliffsTopCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsTopLeftCorner, AdjacencyType.RIGHT, cliffsTopRightCorner, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( cliffsBottomCentre, AdjacencyType.RIGHT, cliffsBottomCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomCentre, AdjacencyType.RIGHT, cliffsBottomRightCorner, 0, -1 );
+tileSet:addEquivalenceAdjacency( cliffsBottomLeftCorner, AdjacencyType.RIGHT, cliffsBottomCentre, 0, -1 );
+tileSet:addEquivalenceAdjacency( cliffsBottomLeftCorner, AdjacencyType.RIGHT, cliffsBottomRightCorner, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( cliffsCentre, AdjacencyType.RIGHT, cliffsCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsCentre, AdjacencyType.RIGHT, cliffsRightCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsCentre, AdjacencyType.RIGHT, cliffsRightBeforeTopCorner, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsLeftCentre, AdjacencyType.RIGHT, cliffsCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsLeftCentre, AdjacencyType.RIGHT, cliffsRightCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsLeftCentre, AdjacencyType.RIGHT, cliffsRightBeforeTopCorner, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( cliffsRightCentre, AdjacencyType.TOP, cliffsRightCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsRightCentre, AdjacencyType.TOP, cliffsRightBeforeTopCorner, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsRightBeforeTopCorner, AdjacencyType.TOP, cliffsTopRightCorner, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomRightCorner, AdjacencyType.TOP, cliffsRightCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomRightCorner, AdjacencyType.TOP, cliffsRightBeforeTopCorner, 0, 0 );
+
+tileSet:addEquivalenceAdjacency( cliffsLeftCentre, AdjacencyType.TOP, cliffsLeftCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsLeftCentre, AdjacencyType.TOP, cliffsTopLeftCorner, 8, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomLeftCorner, AdjacencyType.TOP, cliffsLeftCentre, 8, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomLeftCorner, AdjacencyType.TOP, cliffsTopLeftCorner, 16, 0 );
+
+tileSet:addEquivalenceAdjacency( cliffsCentre, AdjacencyType.TOP, cliffsCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsCentre, AdjacencyType.TOP, cliffsTopCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomCentre, AdjacencyType.TOP, cliffsCentre, 0, 0 );
+tileSet:addEquivalenceAdjacency( cliffsBottomCentre, AdjacencyType.TOP, cliffsTopCentre, 0, 0 );
 
 tileSet:printTileSet();
 
