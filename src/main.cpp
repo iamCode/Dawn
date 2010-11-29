@@ -250,8 +250,8 @@ void DrawScene()
 	// draw items on the ground
     curZone->getGroundLoot()->draw();
 
-    // draw the interactions on screen
-    std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	// draw the interactions on screen
+	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
 	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
 		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
 		curInteraction->draw();
@@ -268,8 +268,7 @@ void DrawScene()
 	Player *player = Globals::getPlayer();
 	player->Draw();
 
-    // draw tooltips if we're holding left ALT key.
-	curZone->getGroundLoot()->drawTooltip();
+
 
 	// draw NPC's name and lifebar if it's in target
 	for (unsigned int x=0; x<zoneNPCs.size(); x++)
@@ -287,13 +286,6 @@ void DrawScene()
                 activeSpellActions[ curActiveSpellNr ].first->drawEffect();
             }
         }
-	}
-
-	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-		if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
-			curInteraction->drawInteractionSymbol( mouseX, mouseY, player->getXPos(), player->getYPos() );
-		}
 	}
 
     // draw the spell effects for our player.
@@ -316,6 +308,17 @@ void DrawScene()
 	if (Editor.isEnabled() ) {
 		Editor.DrawEditor();
 	} else {
+
+	  // draw tooltips if we're holding left ALT key.
+    curZone->getGroundLoot()->drawTooltip();
+
+    for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+      InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+      if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
+        curInteraction->drawInteractionSymbol( mouseX, mouseY, player->getXPos(), player->getYPos() );
+      }
+    }
+
 		actionBar->draw();
 		logWindow->draw();
 		GUI.DrawInterface();

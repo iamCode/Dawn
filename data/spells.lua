@@ -104,6 +104,25 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+-------------------------------------------------------------------------------
+curSpell = DawnInterface.createGeneralAreaDamageSpell();
+spellDatabase["inferno"] = curSpell;
+curSpell:setName("Inferno");
+curSpell:setInfo("Burns the target with %minSpellDirectDamage%-%maxSpellDirectDamage% point of fire damage + %minSpellContinuousDamage%-%maxSpellContinuousDamage% fire damage over 15 seconds.");
+curSpell:setCastTime( 2000 );
+curSpell:setCooldown( 5 );
+curSpell:setSpellCost( 10 );
+curSpell:setDirectDamage(  15, 30, ElementType.Fire );
+curSpell:setContinuousDamage( 4, 7, 15000, ElementType.Fire );
+curSpell:setSpellSymbol( "data/spells/inferno/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/inferno/inferno.tga" );
+curSpell:setRequiredClass( CharacterClass.Liche );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+-------------------------------------------------------------------------------
+
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["lightningbolt"] = curSpell;
 curSpell:setName("Lightning Bolt");

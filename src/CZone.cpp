@@ -70,7 +70,7 @@ void CZone::LoadZone(std::string file)
 	zoneName = file;
 	Globals::allZones[ file ] = this;
 	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
-	
+
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_ground.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_environment.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_shadow.lua" ) );
@@ -81,9 +81,9 @@ void CZone::LoadZone(std::string file)
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".collision.lua" ) );
 
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
-	
+
 	mapLoaded = true;
-	
+
 	if ( needOwnTextureFrame ) {
 		delete textureFrame;
 		initPhase = false;
@@ -100,6 +100,11 @@ void CZone::DrawTiles()
 	for (unsigned int x=0 ; x < TileMap.size() ; x++) {
 		TileMap[x].tile->texture->DrawTexture(TileMap[x].x_pos,TileMap[x].y_pos,0);
 	}
+}
+
+void CZone::DrawMagic()
+{
+
 }
 
 void CZone::DrawEnvironment()
@@ -397,7 +402,7 @@ std::string CZone::getLuaSaveText() const
 		std::string eventHandlerSaveText = curEventHandler->getLuaSaveText();
 		oss << eventHandlerSaveText;
 	}
-	
+
 	// save all spawnpoints
 	oss << "-- spawnpoints" << std::endl;
 	for ( size_t curNpcNr=0; curNpcNr < npcs.size(); ++curNpcNr ) {
@@ -406,7 +411,7 @@ std::string CZone::getLuaSaveText() const
 		std::string npcSaveText = curNPC->getLuaSaveText();
 		oss << npcSaveText;
 	}
-	
+
 	// save shop data (this ought to be put into the shop somehow as soon as shops are customizable)
 	oss << "-- shops" << std::endl;
 	oss << "local curShop = DawnInterface.addShop();" << std::endl;
@@ -431,7 +436,7 @@ std::string CZone::getLuaSaveText() const
 		std::string interactionSaveText = curInteractionRegion->getLuaSaveText();
 		oss << interactionSaveText;
 	}
-	
+
 	// save ground loot
 	oss << "-- ground loot" << std::endl;
 	for ( size_t curGroundItemNr=0; curGroundItemNr < groundLoot.groundItems.size(); ++curGroundItemNr ) {
@@ -450,7 +455,7 @@ std::string CZone::getLuaSaveText() const
 			             << curGroundItem.ypos << " );" << std::endl;
 		}
 	}
-	
+
 	return oss.str();
 }
 
@@ -547,7 +552,7 @@ namespace DawnInterface
 
 		return oss.str();
 	}
-	
+
 	std::string getReenterCurrentZoneText()
 	{
 		std::ostringstream oss;
@@ -555,7 +560,7 @@ namespace DawnInterface
 
 		return oss.str();
 	}
-	
+
 	void enterZone( std::string zoneName, int enterX, int enterY )
 	{
 		CZone *newZone = Globals::allZones[ zoneName ];
@@ -569,12 +574,12 @@ namespace DawnInterface
 		Globals::setCurrentZone( newZone );
 		getPlayer()->setPosition( enterX, enterY );
 	}
-	
+
 	void restoreGroundLootItem( Item *item, int xPos, int yPos )
 	{
 		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, item );
 	}
-	
+
 	void restoreGroundGold( int amount, int xPos, int yPos )
 	{
 		Globals::getCurrentZone()->getGroundLoot()->addItem( xPos, yPos, new GoldHeap( amount ) );
@@ -601,7 +606,7 @@ namespace DawnInterface
 		dawn_debug_fatal( "could not find character in any of the zones" );
 		abort();
 	}
-	
+
 	std::string getItemReferenceRestore( InteractionPoint *interactionPoint )
 	{
 		if ( interactionPoint == NULL ) {
@@ -622,7 +627,7 @@ namespace DawnInterface
 		dawn_debug_fatal( "could not find interaction point in any of the zones" );
 		abort();
 	}
-	
+
 	std::string getItemReferenceRestore( InteractionRegion *interactionRegion )
 	{
 		if ( interactionRegion == NULL ) {
@@ -643,7 +648,7 @@ namespace DawnInterface
 		dawn_debug_fatal( "could not find interaction region in any of the zones" );
 		abort();
 	}
-	
+
 	std::string getItemReferenceRestore( CallIndirection *eventHandler )
 	{
 		if ( eventHandler == NULL ) {
@@ -664,12 +669,12 @@ namespace DawnInterface
 		dawn_debug_fatal( "could not find event handler in any of the zones" );
 		abort();
 	}
-	
+
 	std::string getItemReferenceRestore( Shop *shop )
 	{
 		return "DawnInterface.addShop(); -- shops not really searchable, yet";
 	}
-	
+
 	std::string getItemReferenceRestore( TextWindow *textWindow )
 	{
 		return "DawnInterface.createTextWindow(); -- text windows are not restored";
@@ -738,7 +743,7 @@ namespace EditorInterface
 		lastEnv.x_scale = scaleX;
 		lastEnv.y_scale = scaleY;
 	}
-	
+
 	void addCollisionRect( int lrx, int lry, int width, int height )
 	{
 		CZone *currentZone = Globals::getCurrentZone();

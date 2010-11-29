@@ -27,6 +27,7 @@
 #include <fstream>
 #include "CDrawingHelpers.h"
 #include "GroundLoot.h"
+#include "CMagic.h"
 
 class CNPC;
 class InteractionPoint;
@@ -44,6 +45,16 @@ struct sTileMap {
 	};
 
 	bool operator<(const sTileMap& tile1) const;
+};
+
+struct sMagicMap {
+  int x_pos, y_pos;
+  CMagic *magic;
+  sMagicMap(int _x, int _y, CMagic *_magic) {
+    x_pos = _x;
+    y_pos = _y;
+    magic = _magic;
+  };
 };
 
 struct sEnvironmentMap {
@@ -113,9 +124,10 @@ class CZone
 {
 	private:
 		void DrawTiles();
+		void DrawMagic();
 		void DrawEnvironment();
 		void DrawShadows();
-		
+
 		std::string zoneName;
 		std::vector <CNPC*> npcs;
 		std::vector<InteractionPoint*> interactionPoints;
@@ -147,12 +159,12 @@ class CZone
 		int DeleteCollisionbox(int x, int y);
 
 		void DeleteTile(int iId);
-		
+
 		std::vector<CNPC*> getNPCs();
 		void addNPC( CNPC *npcToAdd );
 		void removeNPC( CNPC *npcToDelete );
 		void cleanupNPCList();
-		
+
 		std::vector<InteractionPoint*> getInteractionPoints();
 		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
 		void cleanupInteractionList();
@@ -162,9 +174,9 @@ class CZone
 		void addInteractionRegion( InteractionRegion *interactionRegionToAdd );
 		void cleanupInteractionRegionList();
 		void purgeInteractionRegionList();
-		
+
 		GroundLoot* getGroundLoot();
-		
+
 		std::string getZoneName() const;
 		std::string getLuaSaveText() const;
 		void addEventHandler( CallIndirection *newEventHandler );
@@ -177,8 +189,9 @@ class CZone
 		InteractionPoint* getInteractionPointPointer( size_t posInArray ) const;
 		InteractionRegion* getInteractionRegionPointer( size_t posInArray ) const;
 		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
-		
+
 		std::vector<sTileMap> TileMap;
+		std::vector<sMagicMap> MagicMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;

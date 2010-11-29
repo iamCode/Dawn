@@ -40,7 +40,7 @@ namespace CharacterClass
 {
 	enum CharacterClass
 	{
-		NOCLASS,		
+		NOCLASS,
 		ANYCLASS,
 		Liche,
 		Ranger,
@@ -68,67 +68,67 @@ namespace CharacterStates
 }
 
 class CCharacter {
-    void baseOnType( std::string otherType );
+  void baseOnType( std::string otherType );
 
-    void setStrength( int newStrength );
-    int getStrength() const;
-    void modifyStrength( int strengthModifier );
+  void setStrength( int newStrength );
+  int getStrength() const;
+  void modifyStrength( int strengthModifier );
 
-    void setDexterity( int newDexterity );
-    int getDexterity() const;
-    void modifyDexterity( int dexterityModifier );
+  void setDexterity( int newDexterity );
+  int getDexterity() const;
+  void modifyDexterity( int dexterityModifier );
 
-    void setVitality( int newVitality );
-    int getVitality() const;
-    void modifyVitality( int vitalityModifier );
+  void setVitality( int newVitality );
+  int getVitality() const;
+  void modifyVitality( int vitalityModifier );
 
-    void setIntellect( int newIntellect );
-    int getIntellect() const;
-    void modifyIntellect( int intellectModifier );
+  void setIntellect( int newIntellect );
+  int getIntellect() const;
+  void modifyIntellect( int intellectModifier );
 
-    void setWisdom( int newWisdom );
-    int getWisdom() const;
-    void modifyWisdom( int wisdomModifier );
+  void setWisdom( int newWisdom );
+  int getWisdom() const;
+  void modifyWisdom( int wisdomModifier );
 
-    void setMaxHealth( int newMaxHealth );
-    int getMaxHealth() const;
-    void modifyMaxHealth( int maxHealthModifier );
+  void setMaxHealth( int newMaxHealth );
+  int getMaxHealth() const;
+  void modifyMaxHealth( int maxHealthModifier );
 
-    void setMaxMana( int newMaxMana );
-    int getMaxMana() const;
-    void modifyMaxMana( int maxManaModifier );
+  void setMaxMana( int newMaxMana );
+  int getMaxMana() const;
+  void modifyMaxMana( int maxManaModifier );
 
-    void setMaxFatigue( int newMaxFatigue );
-    int getMaxFatigue() const;
-    void modifyMaxFatigue( int maxFatigueModifier );
+  void setMaxFatigue( int newMaxFatigue );
+  int getMaxFatigue() const;
+  void modifyMaxFatigue( int maxFatigueModifier );
 
 
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
-    void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
+  void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
 
-    void setClass( CharacterClass::CharacterClass characterClass );    
+  void setClass( CharacterClass::CharacterClass characterClass );
 
-    void setWanderRadius( int newWanderRadius );
-    int getWanderRadius() const;
+  void setWanderRadius( int newWanderRadius );
+  int getWanderRadius() const;
 
-    void setName( std::string newName );
-    std::string getName() const;
+  void setName( std::string newName );
+  std::string getName() const;
 
-    void setLevel( int newLevel );
-    int getLevel() const;
+  void setLevel( int newLevel );
+  int getLevel() const;
 
-    void setMinDamage( int newMinDamage );
-    int getMinDamage();
+  void setMinDamage( int newMinDamage );
+  int getMinDamage();
 
-    void setMaxDamage( int newMaxDamage );
-    int getMaxDamage();
+  void setMaxDamage( int newMaxDamage );
+  int getMaxDamage();
 
-    void setArmor( int newArmor );
-    void setDamageModifierPoints( int newDamageModifierPoints );
-    void setHitModifierPoints( int newHitModifierPoints );
-    void setEvadeModifierPoints( int newEvadeModifierPoints );
-    void setParryModifierPoints( int newParryModifierPoitns );
-    void setBlockModifierPoints( int newBlockModifierPoints );
+  void setArmor( int newArmor );
+  void setDamageModifierPoints( int newDamageModifierPoints );
+  void setHitModifierPoints( int newHitModifierPoints );
+  void setEvadeModifierPoints( int newEvadeModifierPoints );
+  void setParryModifierPoints( int newParryModifierPoitns );
+  void setBlockModifierPoints( int newBlockModifierPoints );
 	void setMeleeCriticalModifierPoints( int newMeleeCriticalModifierPoints );
 	void setResistElementModifierPoints( ElementType::ElementType elementType, int newResistElementModifierPoints );
 	void setResistAllModifierPoints( int newResistAllModifierPoints );
@@ -139,11 +139,11 @@ class CCharacter {
 	void setManaRegen( int newManaRegen );
 	void setFatigueRegen( int newFatigueRegen );
 
-    void setBoundingBox( int bbx, int bby, int bbw, int bbh );
-    void setUseBoundingBox( bool use );
+  void setBoundingBox( int bbx, int bby, int bbw, int bbh );
+  void setUseBoundingBox( bool use );
 
-    void addItemToLootTable( Item *item, double dropChance );
-    void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
+  void addItemToLootTable( Item *item, double dropChance );
+  void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
 
 	void setPosition( int xpos, int ypos );
 	void inscribeSpellInSpellbook( CSpellActionBase *spell );
@@ -151,31 +151,31 @@ class CCharacter {
 
 namespace StatsType
 {
-    enum StatsType
-    {
-        Dexterity,
-        Intellect,
-        Strength,
-        Vitality,
-        Wisdom,
-        Health,
-        Mana,
-		Fatigue,
-        Armor,
-        DamageModifier,
-        HitModifier,
-        EvadeModifier,
-		ParryModifier,
-        BlockModifier,
-        MeleeCritical,
-        SpellCritical,
-        ResistAll,
-        SpellEffectAll,
-        HealthRegen,
-        ManaRegen,
-		FatigueRegen,
-        Count
-    };
+  enum StatsType
+  {
+      Dexterity,
+      Intellect,
+      Strength,
+      Vitality,
+      Wisdom,
+      Health,
+      Mana,
+  Fatigue,
+      Armor,
+      DamageModifier,
+      HitModifier,
+      EvadeModifier,
+  ParryModifier,
+      BlockModifier,
+      MeleeCritical,
+      SpellCritical,
+      ResistAll,
+      SpellEffectAll,
+      HealthRegen,
+      ManaRegen,
+  FatigueRegen,
+      Count
+  };
 }
 
 namespace ElementType
@@ -225,23 +225,23 @@ namespace ItemQuality
 
 namespace ItemSlot
 {
-    enum ItemSlot
-    {
-        HEAD,
-        AMULET,
-        MAIN_HAND,
-        OFF_HAND,
-        BELT,
-        LEGS,
-        SHOULDER,
-        CHEST,
-        GLOVES,
-        CLOAK,
-        BOOTS,
-        RING_ONE,
-        RING_TWO,
-        COUNT // this is always the last and gives the size of the enum
-    };
+  enum ItemSlot
+  {
+      HEAD,
+      AMULET,
+      MAIN_HAND,
+      OFF_HAND,
+      BELT,
+      LEGS,
+      SHOULDER,
+      CHEST,
+      GLOVES,
+      CLOAK,
+      BOOTS,
+      RING_ONE,
+      RING_TWO,
+      COUNT // this is always the last and gives the size of the enum
+  };
 }
 
 namespace EquipPosition
@@ -298,23 +298,23 @@ namespace WeaponType
 {
 	enum WeaponType
 	{
-        NO_WEAPON       = 0x01,
-        ONEHAND_SWORD   = 0x02,
-        TWOHAND_SWORD   = 0x04,
-        DAGGER          = 0x08,
-        STAFF           = 0x10,
-        ONEHAND_CLUB    = 0x20,
-        TWOHAND_CLUB    = 0x40,
-        WAND            = 0x80,
-        SPELLBOOK       = 0x100, // offhand spellbooks for caster classes.
-        ONEHAND_MACE    = 0x200,
-        TWOHAND_MACE    = 0x400,
-        ONEHAND_AXE     = 0x800,
-        TWOHAND_AXE     = 0x1000,
-        BOW             = 0x2000,
-        SLINGSHOT       = 0x4000,
-        CROSSBOW        = 0x8000,
-        SHIELD          = 0x10000
+    NO_WEAPON       = 0x01,
+    ONEHAND_SWORD   = 0x02,
+    TWOHAND_SWORD   = 0x04,
+    DAGGER          = 0x08,
+    STAFF           = 0x10,
+    ONEHAND_CLUB    = 0x20,
+    TWOHAND_CLUB    = 0x40,
+    WAND            = 0x80,
+    SPELLBOOK       = 0x100, // offhand spellbooks for caster classes.
+    ONEHAND_MACE    = 0x200,
+    TWOHAND_MACE    = 0x400,
+    ONEHAND_AXE     = 0x800,
+    TWOHAND_AXE     = 0x1000,
+    BOW             = 0x2000,
+    SLINGSHOT       = 0x4000,
+    CROSSBOW        = 0x8000,
+    SHIELD          = 0x10000
 	};
 }
 
@@ -397,7 +397,7 @@ class CSpellActionBase
 	void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 	void setRequiredLevel( int requiredLevel );
-	void addRequiredWeapon( WeaponType::WeaponType weaponType );	
+	void addRequiredWeapon( WeaponType::WeaponType weaponType );
 	void setRank( int rank );
 	void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0 );
 };
@@ -445,6 +445,12 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 	void setAnimationTexture( int num, std::string filename );
 };
 
+class GeneralAreaDamageSpell : public GeneralDamageSpell
+{
+  void setNumAnimations( int count );
+  void setAnimationTexture( int num, std::string filename );
+}
+
 class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
 	void setMoveSpeed( int newMoveSpeed );
@@ -487,7 +493,7 @@ class RangedDamageAction : public ConfigurableAction
 
 namespace DawnInterface
 {
-    CCharacter* createNewMobType( std::string typeID );
+  CCharacter* createNewMobType( std::string typeID );
 	Item* createNewItem(std::string name,
 		                int sizeX,
 		                int sizeY,
@@ -501,12 +507,14 @@ namespace DawnInterface
 	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
+	GeneralAreaDamageSpell* createGeneralAreaDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
 	MeleeDamageAction* createMeleeDamageAction();
-	RangedDamageAction* createRangedDamageAction();		
+	RangedDamageAction* createRangedDamageAction();
 	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
+	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other );
 	GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
 	GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
 	GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
@@ -602,4 +610,3 @@ namespace EditorInterface
 	void adjustLastScale( double scaleX, double scaleY );
 	void addCollisionRect( int lrx, int lry, int width, int height );
 }
-

@@ -39,7 +39,7 @@ bool utils::file_exists(const std::string& file)
 
 void utils::takeScreenshot()
 {
-    int w = Configuration::screenWidth;
+  int w = Configuration::screenWidth;
 	int h = Configuration::screenHeight;
 
 	png_t pngOutput;

@@ -26,65 +26,65 @@ class Player;
 
 struct sButton
 {
-    CSpellActionBase *action;
-    spellTooltip *tooltip;
-    std::string number;
-    int posX;
-    int posY;
-    uint8_t height;
-    uint8_t width;
-    bool wasPressed;
-    SDLKey key;
+	CSpellActionBase *action;
+	spellTooltip *tooltip;
+	std::string number;
+	int posX;
+	int posY;
+	uint8_t height;
+	uint8_t width;
+	bool wasPressed;
+	SDLKey key;
 
-    sButton( int posX_, int posY_, int width_, int height_, std::string number_, SDLKey key_)
-    {
-        posX = posX_;
-        posY = posY_;
-        height = height_;
-        width = width_;
-        number = number_;
-        key = key_;
-        tooltip = NULL;
-        action = NULL;
-        wasPressed = false;
-    };
+	sButton( int posX_, int posY_, int width_, int height_, std::string number_, SDLKey key_)
+	{
+		posX				= posX_;
+		posY				= posY_;
+		height			= height_;
+		width				= width_;
+		number			= number_;
+		key					= key_;
+		tooltip			= NULL;
+		action			= NULL;
+		wasPressed	= false;
+	};
 };
 
 class ActionBar
 {
-    public:
-        ActionBar( Player *player_ );
-        ~ActionBar();
+	public:
+		ActionBar( Player *player_ );
+		~ActionBar();
 
-        bool isMouseOver( int x, int y );
-        bool isButtonUsed( sButton *button ) const;
-        void draw();
-        void drawSpellTooltip( int x, int y );
-        void clicked( int clickX, int clickY );
-        void executeSpellQueue();
-        void handleKeys();
-        void dragSpell();
-        int8_t getMouseOverButtonId( int x, int y );
-        void bindAction ( sButton *button, CSpellActionBase* action );
-        void unbindAction ( sButton *button );
-        void loadTextures();
-        void initFonts();
-        std::string getLuaSaveText();
-        void bindActionToButtonNr( int buttonNr, CSpellActionBase *action );
-        void clear();
+		bool isMouseOver( int x, int y );
+		bool isButtonUsed( sButton *button ) const;
+		void draw();
+		void drawSpellTooltip( int x, int y );
+		void clicked( int clickX, int clickY );
+		void executeSpellQueue();
+		void handleKeys();
+		void dragSpell();
+		int8_t getMouseOverButtonId( int x, int y );
+		void bindAction ( sButton *button, CSpellActionBase* action );
+		void unbindAction ( sButton *button );
+		void loadTextures();
+		void initFonts();
+		std::string getLuaSaveText();
+		void bindActionToButtonNr( int buttonNr, CSpellActionBase *action );
+		void clear();
 
-    private:
-        Player *player;
-        int posX;
-        int posY;
-        int width;
-        int height;
-        std::vector <sButton> button;
-        CTexture textures;
-        GLFT_Font *shortcutFont;
-        GLFT_Font *cooldownFont;
-        sButton *spellQueue;
-        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+	private:
+		Player *player;
+		int posX;
+		int posY;
+		int width;
+		int height;
+		std::vector <sButton> button;
+		CTexture textures;
+		GLFT_Font *shortcutFont;
+		GLFT_Font *cooldownFont;
+		sButton *spellQueue;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 };
 
 #endif

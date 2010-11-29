@@ -196,34 +196,43 @@ void ActionBar::clicked( int clickX, int clickY )
 
 void ActionBar::handleKeys()
 {
-    Uint8 *keys = SDL_GetKeyState(NULL);
+	Uint8 *keys = SDL_GetKeyState(NULL);
 
-    for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
-        // TODO: use a conversion table here from quickslot nr to keycode
-        if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
-            button[buttonId].wasPressed = true;
-            if ( button[buttonId].action != NULL ) {
-                CSpellActionBase *curAction = NULL;
+	for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
+			// TODO: use a conversion table here from quickslot nr to keycode
+			if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
+					button[buttonId].wasPressed = true;
+					if ( button[buttonId].action != NULL ) {
+						CSpellActionBase *curAction = NULL;
 
-                EffectType::EffectType effectType = button[buttonId].action->getEffectType();
+						EffectType::EffectType effectType = button[buttonId].action->getEffectType();
 
-                if ( effectType == EffectType::SingleTargetSpell
-                         && player->getTarget() != NULL ) {
-                    curAction = button[buttonId].action->cast( player, player->getTarget() );
-                } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                    curAction = button[buttonId].action->cast( player, player );
-                }
+						if ( effectType == EffectType::SingleTargetSpell && player->getTarget() != NULL )
+						{
+							curAction = button[buttonId].action->cast( player, player->getTarget() );
+						}
+						else if ( effectType == EffectType::SelfAffectingSpell )
+						{
+							curAction = button[buttonId].action->cast( player, player );
+						}
+						else if ( effectType == EffectType::AreaTargetSpell ) // AoE spell
+						{
+							if( player->getTarget() != NULL ) // Is there a target?
+								curAction = button[buttonId].action->cast( player, player->getTarget() );
+							else															// O.K., let's select a position then ( 0 0 for now )
+								curAction = button[buttonId].action->cast( player, 0, 0 );
+						}
 
-                if ( curAction != NULL ) {
-                    player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
-                }
-            }
-        }
+						if ( curAction != NULL ) {
+								player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+						}
+				}
+			}
 
-        if ( ! keys[ button[buttonId].key ] ) {
-            button[buttonId].wasPressed = false;
-        }
-    }
+			if ( ! keys[ button[buttonId].key ] ) {
+					button[buttonId].wasPressed = false;
+			}
+	}
 }
 
 int8_t ActionBar::getMouseOverButtonId( int x, int y )

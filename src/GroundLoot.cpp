@@ -97,51 +97,51 @@ void GroundLoot::disableTooltips()
 
 bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t curItem )
 {
-    //##########################################################################
-    //  additional variables for making the code more readable
-    //##########################################################################
-    int itemWidth   = groundItem.item->getSizeX()*32;
-    int itemHeight  = groundItem.item->getSizeY()*32;
-    int itemX       = groundItem.xpos;
-    int itemY       = groundItem.ypos;
-    int playerXSize = player_->getWidth()/2;
-    int playerYSize = player_->getHeight()-50;
-    int wGrade     = itemWidth/32;
-    int hGrade     = itemHeight/32;
-    int wDiff       = 0;
-    int hDiff       = 0;
+	//##########################################################################
+	//  additional variables for making the code more readable
+	//##########################################################################
+	int itemWidth		= groundItem.item->getSizeX()*32;
+	int itemHeight	= groundItem.item->getSizeY()*32;
+	int itemX				= groundItem.xpos;
+	int itemY				= groundItem.ypos;
+	int playerXSize	= player_->getWidth()/2;
+	int playerYSize	= player_->getHeight()-50;
+	int wGrade			= itemWidth/32;
+	int hGrade			= itemHeight/32;
+	int wDiff				= 0;
+	int hDiff				= 0;
 
-    //##########################################################################
-    //  this is the range value the players horizontal centerpoint must be in
-    //##########################################################################
-    switch( wGrade )
-    {
-        case 1: wDiff = itemWidth*2;   break; //32px
-        case 2: wDiff = itemWidth;     break; //64px
-        case 3: wDiff = itemWidth;     break; //96px
-        default:                        break; //??px
-    }
+	//##########################################################################
+	//  this is the range value the players horizontal centerpoint must be in
+	//##########################################################################
+	switch( wGrade )
+	{
+		case 1: wDiff = itemWidth*2;		break;		//32px
+		case 2: wDiff = itemWidth;			break;		//64px
+		case 3: wDiff = itemWidth;			break;		//96px
+		default:												break;		//??px
+	}
 
-    switch( hGrade )
-    {
-        case 1: hDiff = itemHeight*2;  break; //32px
-        case 2: hDiff = itemHeight;    break; //64px
-        case 3: hDiff = itemHeight;    break; //96px
-        default:                        break; //??px
-    }
+	switch( hGrade )
+	{
+			case 1: hDiff = itemHeight*2;		break;	//32px
+			case 2: hDiff = itemHeight;			break;	//64px
+			case 3: hDiff = itemHeight;			break;	//96px
+			default:												break;	//??px
+	}
 
-    //##########################################################################
-    //  if the difference between these two points are in range you can loot
-    //##########################################################################
-    //  horizontal centerpoint     horizontal centerpoint    difference range
-    //##########################################################################
-    if( ((player_->getXPos()+playerXSize) - itemX+itemWidth/2) < itemWidth+wDiff      &&
-        ((player_->getXPos()+playerXSize) - itemX+itemWidth/2) > itemWidth-wDiff      &&
-        ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) < itemHeight+hDiff    &&
-        ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) > itemHeight-hDiff )
-    {
-        return true;
-    }
+		//##########################################################################
+		//  if the difference between these two points are in range you can loot
+		//##########################################################################
+		//  horizontal centerpoint     horizontal centerpoint    difference range
+		//##########################################################################
+		if( ((player_->getXPos()+playerXSize) - itemX+itemWidth/2) < itemWidth+wDiff		&&
+				((player_->getXPos()+playerXSize) - itemX+itemWidth/2) > itemWidth-wDiff		&&
+				((player_->getYPos()+playerYSize) - itemY+itemHeight/2) < itemHeight+hDiff	&&
+				((player_->getYPos()+playerYSize) - itemY+itemHeight/2) > itemHeight-hDiff )
+		{
+				return true;
+		}
 
     return false;
 }

@@ -35,7 +35,8 @@ namespace EffectType
 {
 	enum EffectType {
 		SingleTargetSpell,
-		SelfAffectingSpell
+		SelfAffectingSpell,
+		AreaTargetSpell
 	};
 }
 
@@ -68,6 +69,7 @@ namespace EffectType
 // NOTE: Not used yet, deactivate this comment once that changes ;)
 
 class GeneralRayDamageSpell;
+class GeneralAreaDamageSpell;
 class GeneralBoltDamageSpell;
 class GeneralHealingSpell;
 class GeneralBuffSpell;
@@ -82,6 +84,7 @@ class CSpellActionBase
 		// Question: What about different target types, such as position (for region damage spells)
 		/// \brief Creates a spell to really cast as a copy from this one with a fixed target and creator.
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target ) = 0;
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y ) = 0;
 		virtual ~CSpellActionBase();
 
 		/// Info about the spell, both for the game (mana cost, etc) and for the player (name, info, etc)
@@ -120,43 +123,43 @@ class CSpellActionBase
 		void beginPreparationOfSpellAction();
 		void markSpellActionAsFinished();
 
-		/// add additional spells to this spell, to be executed based on chance when the spell is finished.
-        void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
-        void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
+			/// add additional spells to this spell, to be executed based on chance when the spell is finished.
+		void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
+		void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 
-        /// which class can use the spell
-        void setRequiredClass( CharacterClass::CharacterClass requiredClass );
-        CharacterClass::CharacterClass getRequiredClass() const;
+		/// which class can use the spell
+		void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+		CharacterClass::CharacterClass getRequiredClass() const;
 
-        /// which equipment (weapon) is required to cast the spell.
-        void addRequiredWeapon( WeaponType::WeaponType weaponType );
-        uint32_t getRequiredWeapons() const;
+		/// which equipment (weapon) is required to cast the spell.
+		void addRequiredWeapon( WeaponType::WeaponType weaponType );
+		uint32_t getRequiredWeapons() const;
 
-        /// what level we can use the spell
-        void setRequiredLevel( uint8_t requiredLevel );
-        uint8_t getRequiredLevel() const;
+		/// what level we can use the spell
+		void setRequiredLevel( uint8_t requiredLevel );
+		uint8_t getRequiredLevel() const;
 
-        /// rank of the spell
-        void setRank( uint8_t rank );
-        uint8_t getRank() const;
+		/// rank of the spell
+		void setRank( uint8_t rank );
+		uint8_t getRank() const;
 
-        /// characterStates which affects the target. Stunned, charmed etc...
-        void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
-        std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
+		/// characterStates which affects the target. Stunned, charmed etc...
+		void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
+		std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
 
 		void drawSymbol( int left, int width, int bottom, int height ) const;
-    protected:
-        CCharacter *creator;
-        CCharacter *target;
-        bool boundToCreator;
-        bool finished;
-        CharacterClass::CharacterClass requiredClass;
-        uint8_t requiredLevel;
-        uint32_t requiredWeapons;
-        uint8_t rank;
-        std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnTarget;
-        std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnCreator;
-        std::pair<CharacterStates::CharacterStates,float> characterStateEffects;
+	protected:
+		CCharacter *creator;
+		CCharacter *target;
+		bool boundToCreator;
+		bool finished;
+		CharacterClass::CharacterClass requiredClass;
+		uint8_t requiredLevel;
+		uint32_t requiredWeapons;
+		uint8_t rank;
+		std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnTarget;
+		std::vector< std::pair<CSpellActionBase*,double> > additionalSpellsOnCreator;
+		std::pair<CharacterStates::CharacterStates,float> characterStateEffects;
 };
 
 class CSpell : public CSpellActionBase
@@ -178,6 +181,8 @@ namespace SpellCreation
 {
 	CSpellActionBase* getGeneralRayDamageSpell();
 	CSpellActionBase* getGeneralRayDamageSpell( GeneralRayDamageSpell *other );
+	CSpellActionBase* getGeneralAreaDamageSpell();
+	CSpellActionBase* getGeneralAreaDamageSpell( GeneralAreaDamageSpell *other );
 	CSpellActionBase* getGeneralBoltDamageSpell();
 	CSpellActionBase* getGeneralBoltDamageSpell( GeneralBoltDamageSpell *other );
 	CSpellActionBase* getGeneralHealingSpell();
@@ -220,9 +225,9 @@ class ConfigurableSpell : public CSpell
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
-        uint16_t minRange;
-        uint16_t maxRange;
-        bool hostileSpell;
+    uint16_t minRange;
+    uint16_t maxRange;
+    bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -260,9 +265,9 @@ class ConfigurableAction : public CAction
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
-        uint16_t minRange;
-        uint16_t maxRange;
-        bool hostileSpell;
+    uint16_t minRange;
+    uint16_t maxRange;
+    bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -276,14 +281,13 @@ class GeneralDamageSpell : public ConfigurableSpell
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 
-        uint16_t getDirectDamageMin() const;
-        uint16_t getDirectDamageMax() const;
-        ElementType::ElementType getDirectDamageElement() const;
+    uint16_t getDirectDamageMin() const;
+    uint16_t getDirectDamageMax() const;
+    ElementType::ElementType getDirectDamageElement() const;
 
-        uint16_t getContinuousDamageMin() const;
-        uint16_t getContinuousDamageMax() const;
-        ElementType::ElementType getContinuousDamageElement() const;
-
+    uint16_t getContinuousDamageMin() const;
+    uint16_t getContinuousDamageMax() const;
+    ElementType::ElementType getContinuousDamageElement() const;
 
 		virtual EffectType::EffectType getEffectType() const;
 
@@ -308,6 +312,8 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
+
 		void setNumAnimations( int count );
 		void setAnimationTexture( int num, std::string filename );
 
@@ -336,10 +342,53 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 		CTexture *spellTexture;
 };
 
+class GeneralAreaDamageSpell : public GeneralDamageSpell
+{
+  public:
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
+
+		void setNumAnimations( int count );
+		void setAnimationTexture( int num, std::string filename );
+
+		virtual void startEffect();
+		virtual void inEffect();
+		void finishEffect();
+
+		virtual void drawEffect();
+
+		EffectType::EffectType getEffectType() const;
+
+	protected:
+		GeneralAreaDamageSpell();
+		GeneralAreaDamageSpell( GeneralAreaDamageSpell *other );
+
+	private:
+		friend CSpellActionBase* SpellCreation::getGeneralAreaDamageSpell();
+		friend CSpellActionBase* SpellCreation::getGeneralAreaDamageSpell( GeneralAreaDamageSpell *other );
+
+		uint8_t frameCount;
+		uint32_t effectStart;
+		uint32_t lastEffect;
+		uint32_t animationTimerStart;
+		uint32_t animationTimerStop;
+		double remainingEffect;
+
+		int numTextures;
+		CTexture *spellTexture;
+
+		int centerX;
+		int centerY;
+		int radius;
+		EffectType::EffectType effectType;
+};
+
 class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
+
 		void setMoveSpeed( int newMoveSpeed );
 		void setExpireTime( int newExpireTime );
 		void setNumAnimations( int count );
@@ -378,6 +427,7 @@ class GeneralHealingSpell : public ConfigurableSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setEffectType( EffectType::EffectType newEffectType );
 		EffectType::EffectType getEffectType() const;
@@ -423,6 +473,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setEffectType( EffectType::EffectType newEffectType );
 		EffectType::EffectType getEffectType() const;
@@ -457,6 +508,7 @@ class MeleeDamageAction : public ConfigurableAction
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		virtual EffectType::EffectType getEffectType() const;
 
@@ -487,6 +539,7 @@ class RangedDamageAction : public ConfigurableAction
 {
 	public:
 		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		virtual EffectType::EffectType getEffectType() const;
 

@@ -42,18 +42,20 @@ namespace DawnInterface
 	                    WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
+	GeneralAreaDamageSpell* createGeneralAreaDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
 	GeneralHealingSpell* createGeneralHealingSpell();
 	GeneralBuffSpell* createGeneralBuffSpell();
 	MeleeDamageAction* createMeleeDamageAction();
 	RangedDamageAction* createRangedDamageAction();
 	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
-    GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
-    GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
-    GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
-    MeleeDamageAction* copySpell( MeleeDamageAction *other );
-    RangedDamageAction* copySpell( RangedDamageAction *other );
-    void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other );
+  GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+  GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+  GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+  MeleeDamageAction* copySpell( MeleeDamageAction *other );
+  RangedDamageAction* copySpell( RangedDamageAction *other );
+  void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
@@ -87,7 +89,7 @@ namespace DawnInterface
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );
-    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+  void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
 #include "tileset.h"
