@@ -34,6 +34,8 @@ namespace Globals
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
 	Player *getPlayer();
+	bool displayCursor();
+	void setDisplayCursor( bool flag );
 }
 
 #endif // GLOBALS_H

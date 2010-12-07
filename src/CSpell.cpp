@@ -115,6 +115,12 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	}
 }
 
+//namespace DawnInterface {
+//    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+//}
+//GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
+//DawnInterface::addTextToLogWindow( blue, "%s.", name);
+
 std::string CSpellActionBase::getID() const
 {
 	std::string name = getName();
@@ -221,9 +227,10 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	cooldown = other->cooldown;
 	spellCost = other->spellCost;
 	duration = other->duration;
-  minRange = other->minRange;
-  maxRange = other->maxRange;
-  hostileSpell = other->hostileSpell;
+	minRange = other->minRange;
+	maxRange = other->maxRange;
+	hostileSpell = other->hostileSpell;
+	radius = other->radius;
 
   additionalSpellsOnCreator = other->additionalSpellsOnCreator;
   additionalSpellsOnTarget = other->additionalSpellsOnTarget;
@@ -266,6 +273,11 @@ void ConfigurableSpell::setSpellCost( uint16_t spellCost )
 uint16_t ConfigurableSpell::getSpellCost() const
 {
 	return spellCost;
+}
+
+uint16_t ConfigurableSpell::getRadius() const
+{
+	return radius;
 }
 
 void ConfigurableSpell::setRange( uint16_t minRange, uint16_t maxRange )
@@ -394,6 +406,11 @@ void ConfigurableAction::setCooldown( uint16_t newCooldown )
 uint16_t ConfigurableAction::getCooldown() const
 {
     return cooldown;
+}
+
+uint16_t ConfigurableAction::getRadius() const
+{
+	return 0;
 }
 
 void ConfigurableAction::setSpellCost( uint16_t spellCost )
@@ -751,6 +768,11 @@ void GeneralRayDamageSpell::drawEffect()
 
 /// class GeneralAreaDamageSpell
 
+uint16_t GeneralAreaDamageSpell::getRadius()
+{
+	return radius;
+}
+
 GeneralAreaDamageSpell::GeneralAreaDamageSpell()
 {
 	remainingEffect = 0;
@@ -788,8 +810,8 @@ CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, int x, int 
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
 	newSpell->creator = creator;
-	newSpell->centerX = x;
-	newSpell->centerY = y;
+	newSpell->centerX = centerX;
+	newSpell->centerY = centerY;
 
 	return newSpell;
 }
@@ -897,7 +919,6 @@ void GeneralAreaDamageSpell::drawEffect()
     glPushMatrix();
     glTranslatef(centerX, centerY, 0.0f);
 
-    radius = spellTexture->texture[frameCount].width/2;
     DrawingHelpers::mapTextureToRect( spellTexture->texture[frameCount], centerX-radius, radius*2, centerY+radius, radius*2 );
     glPopMatrix();
 	}
@@ -906,6 +927,11 @@ void GeneralAreaDamageSpell::drawEffect()
 EffectType::EffectType GeneralAreaDamageSpell::getEffectType() const
 {
 	return effectType;
+}
+
+void GeneralAreaDamageSpell::setRadius( uint16_t newRadius )
+{
+	radius = newRadius;
 }
 
 /// class GeneralBoltDamageSpell

@@ -25,8 +25,10 @@
 #include <memory>
 #include <cassert>
 #include "fontcache.h"
+#include "globals.h"
 
 extern std::auto_ptr<Spellbook> spellbook;
+extern int mouseX, mouseY, world_x, world_y;
 
 ActionBar::ActionBar( Player *player_ )
 	:	player( player_ ),
@@ -48,6 +50,8 @@ ActionBar::ActionBar( Player *player_ )
     button.push_back( sButton(420, 0, 50, 50, "8", SDLK_8) );
     button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
     button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
+    castingAoESpell = false;
+    cursorRadius = 0;
 }
 
 ActionBar::~ActionBar()
@@ -58,6 +62,11 @@ void ActionBar::initFonts()
 {
 	shortcutFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
 	cooldownFont = FontCache::getFontFromCache( "data/verdana.ttf", 11 );
+}
+
+bool ActionBar::isCastingAoESpell()
+{
+	return castingAoESpell;
 }
 
 bool ActionBar::isMouseOver( int x, int y )
@@ -74,11 +83,12 @@ bool ActionBar::isMouseOver( int x, int y )
 
 void ActionBar::draw()
 {
-    bool drawCooldownText;
-    std::string cooldownText;
-    cooldownSpells = player->getCooldownSpells();
 
-    // background at bottom of screen, black and nicely blended.
+	bool drawCooldownText;
+	std::string cooldownText;
+	cooldownSpells = player->getCooldownSpells();
+
+	// background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.texture[0],
 	                                  world_x + posX - 20, RES_X - posX + 20,
 	                                  world_y, 80 );
@@ -94,6 +104,7 @@ void ActionBar::draw()
 	        if ( player->getCurrentSpellActionName() == button[buttonId].action->getName() )
             {
                 // current spell / action we're drawing is being cast. color it.
+
                 glColor3f( 0.8f, 0.8f, 0.8f );
             }
 	    }
@@ -113,8 +124,12 @@ void ActionBar::draw()
                     * out of range
                     * it's on cooldown
                     * we are stunned
-                    * spell has a weapon requirement not met  **/
+                    * spell has a weapon requirement not met
+                    * the player is casting an AoE spell **/
             bool isSpellUseable = true;
+
+						if ( castingAoESpell )
+							isSpellUseable = false;
 
             if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
                 if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
@@ -168,36 +183,66 @@ void ActionBar::draw()
             glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
 	}
+
+//for ( size_t curSpell = 0; curSpell < player->getActiveSpells().size(); curSpell++ )
+//{
+//	if ( player->getActiveSpells()[curSpell].first->getID() == "venomspit" )
+//	{
+//	}
+//}
+
+	// draw the cursor if it's supposed to be drawn
+	if( Globals::displayCursor() )
+	{
+		DrawingHelpers::mapTextureToRect(textures.texture[2], mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
+	}
 }
 
 void ActionBar::clicked( int clickX, int clickY )
 {
-    int buttonId = getMouseOverButtonId( clickX, clickY );
-    if ( buttonId >= 0 )
-    {
-        // we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
-        if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
-        {
-            spellQueue = &button[buttonId];
-        }
+	int buttonId = getMouseOverButtonId( clickX, clickY );
+	if ( buttonId >= 0 )
+	{
+		EffectType::EffectType effectType = button[buttonId].action->getEffectType();
+		// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
+		if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
+		{
+			if ( effectType == EffectType::AreaTargetSpell ) // AoE spell
+			{
+				if ( player->getTarget() != NULL ) // is there a target?
+				{
+					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->target );
+					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+				}
+				else															// O.K., let's select a position then ( 0 0 for now )
+				{
+					// we are going to display the cursor
+					Globals::setDisplayCursor(true);
+					cursorRadius = button[buttonId].action->getRadius();
+					castingAoESpell = true;
+				}
+			}
+			else
+				spellQueue = &button[buttonId];
+		}
 
-        // check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
-        if ( spellbook->hasFloatingSpell() )
-        {
-
-            if ( isButtonUsed( &button[buttonId] ) )
-            {
-                unbindAction( &button[buttonId] );
-            }
-            bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
-        }
-    }
+		// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
+		if ( spellbook->hasFloatingSpell() )
+		{
+			if ( isButtonUsed( &button[buttonId] ) )
+			{
+				unbindAction( &button[buttonId] );
+			}
+			bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
+		}
+	}
 }
 
 void ActionBar::handleKeys()
 {
 	Uint8 *keys = SDL_GetKeyState(NULL);
 
+	if ( !castingAoESpell )
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
 			// TODO: use a conversion table here from quickslot nr to keycode
 			if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
@@ -217,10 +262,17 @@ void ActionBar::handleKeys()
 						}
 						else if ( effectType == EffectType::AreaTargetSpell ) // AoE spell
 						{
-							if( player->getTarget() != NULL ) // Is there a target?
-								curAction = button[buttonId].action->cast( player, player->getTarget() );
+							if ( player->getTarget() != NULL ) // is there a target?
+							{
+								curAction = button[buttonId].action->cast( player, player->target );
+							}
 							else															// O.K., let's select a position then ( 0 0 for now )
-								curAction = button[buttonId].action->cast( player, 0, 0 );
+							{
+								// we are going to display the cursor
+								Globals::setDisplayCursor(true);
+								cursorRadius = button[buttonId].action->getRadius();
+								castingAoESpell = true;
+							}
 						}
 
 						if ( curAction != NULL ) {
@@ -232,6 +284,13 @@ void ActionBar::handleKeys()
 			if ( ! keys[ button[buttonId].key ] ) {
 					button[buttonId].wasPressed = false;
 			}
+	}
+
+	// if the right mouse button is pressed you exit "disabled" mood and remove the cursor
+	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
+	{
+		castingAoESpell = false;
+		Globals::setDisplayCursor(false);
 	}
 }
 
@@ -280,7 +339,7 @@ bool ActionBar::isButtonUsed( sButton *button ) const
 void ActionBar::drawSpellTooltip( int x, int y )
 {
     int buttonId = getMouseOverButtonId( x, y );
-    if ( buttonId >= 0 && button[buttonId].tooltip != NULL )
+    if ( buttonId >= 0 && button[buttonId].tooltip != NULL && !castingAoESpell)
     {
         button[buttonId].tooltip->draw( x, y );
     }
@@ -288,9 +347,10 @@ void ActionBar::drawSpellTooltip( int x, int y )
 
 void ActionBar::loadTextures()
 {
-    textures.texture.resize(2);
-	textures.LoadIMG("data/interface/blended_bg.tga",0);
-	textures.LoadIMG("data/border.tga",1);
+		textures.texture.resize(3);
+		textures.LoadIMG("data/interface/blended_bg.tga",0);
+		textures.LoadIMG("data/border.tga",1);
+		textures.LoadIMG("data/cursors/circle7.png",2);
 }
 
 void ActionBar::executeSpellQueue()

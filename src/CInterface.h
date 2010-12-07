@@ -42,7 +42,6 @@ struct sDamageDisplay {
         x_pos = x_pos_;
         y_pos = y_pos_;
         transparency = 1.0f;
-
     }
 };
 
@@ -54,7 +53,7 @@ class CInterface
 		void initFonts();
 		bool enabled;
 		void DrawInterface();
-        void drawTargetedNPCText();
+		void drawTargetedNPCText();
 		void drawCombatText();
 		void drawCharacterStates();
 		void SetPlayer(CCharacter *player_);

@@ -447,8 +447,9 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 
 class GeneralAreaDamageSpell : public GeneralDamageSpell
 {
-  void setNumAnimations( int count );
-  void setAnimationTexture( int num, std::string filename );
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+	void setRadius( int newRadius );
 }
 
 class GeneralBoltDamageSpell : public GeneralDamageSpell

@@ -96,21 +96,21 @@ namespace ActivityType
 
 namespace CharacterStates
 {
-    enum CharacterStates
-    {
-        Channeling,
-        Charmed,
-        Confused,
-        Feared,
-        Invisible,
+	enum CharacterStates
+	{
+		Channeling,
+		Charmed,
+		Confused,
+		Feared,
+		Invisible,
 		Mesmerized,
-        Movementspeed,
+		Movementspeed,
 		SeeInvisible,
 		SeeSneaking,
-        Sneaking,
-        Stunned,
+		Sneaking,
+		Stunned,
 		NOEFFECT
-    };
+	};
 }
 
 struct sLootTable
@@ -136,7 +136,7 @@ class CCharacter
 		virtual ~CCharacter();
 
 		GLuint frame;
-		int x_pos,y_pos;
+		int x_pos, y_pos;
 
 		virtual void Draw() = 0;
 		virtual void Move() = 0;
@@ -251,7 +251,7 @@ class CCharacter
 		uint16_t getEvadeModifierPoints() const;
 		void modifyEvadeModifierPoints( int16_t evadeModifierModifierPoints );
 
-        void setParryModifierPoints( uint16_t newParryModifierPoints );
+		void setParryModifierPoints( uint16_t newParryModifierPoints );
 		virtual uint16_t getModifiedParryModifierPoints() const;
 		uint16_t getParryModifierPoints() const;
 		void modifyParryModifierPoints( int16_t parryModifierModifierPoints );
@@ -337,7 +337,7 @@ class CCharacter
 		void setCurrentMana( uint16_t newCurrentMana );
 		void modifyCurrentMana( int16_t currentManaModifier);
 
-        uint16_t getCurrentFatigue() const;
+		uint16_t getCurrentFatigue() const;
 		void setCurrentFatigue( uint16_t newCurrentFatigue );
 		void modifyCurrentFatigue( int16_t currentFatigueModifier);
 
@@ -351,7 +351,7 @@ class CCharacter
 		uint16_t getHealthRegen() const;
 		void modifyHealthRegen( int16_t healthRegenModifier );
 
-        void setFatigueRegen( uint16_t newFatigueRegen );
+		void setFatigueRegen( uint16_t newFatigueRegen );
 		virtual uint16_t getModifiedFatigueRegen() const;
 		uint16_t getFatigueRegen() const;
 		void modifyFatigueRegen( int16_t fatigueRegenModifier );
@@ -375,8 +375,8 @@ class CCharacter
 		void setLevel ( uint8_t newLevel );
 		uint8_t getLevel() const;
 
-        std::vector<sLootTable> getLootTable() const;
-        void setLootTable( std::vector<sLootTable> newLootTable );
+		std::vector<sLootTable> getLootTable() const;
+		void setLootTable( std::vector<sLootTable> newLootTable );
 
 		bool isAlive() const {
 			return alive;
@@ -397,8 +397,8 @@ class CCharacter
 		void dropItems();
 
 		void startShopping();
-        void stopShopping();
-        bool isShopping() const;
+		void stopShopping();
+		bool isShopping() const;
 
 		void giveCoins( uint32_t amountOfCoins );
 		void reduceCoins( uint32_t amountOfCoins );
@@ -431,20 +431,20 @@ class CCharacter
 		bool wandering, moving, in_combat;
 		bool isStunned() const;
 		bool isCharmed() const;
-        bool isFeared() const;
-        bool isInvisible() const;
-        bool isSneaking() const;
-        bool isConfused() const;
-        bool isChanneling() const;
-        bool isMesmerized() const;
-        bool canSeeInvisible() const;
-        bool canSeeSneaking() const;
-        float getMovementSpeed() const;
+		bool isFeared() const;
+		bool isInvisible() const;
+		bool isSneaking() const;
+		bool isConfused() const;
+		bool isChanneling() const;
+		bool isMesmerized() const;
+		bool canSeeInvisible() const;
+		bool canSeeSneaking() const;
+		float getMovementSpeed() const;
 
 		// timers
 		float wander_thisframe, wander_lastframe;
 		float respawn_thisframe, respawn_lastframe;
-        float dyingStartFrame, reduceDyingTranspFrame;
+		float dyingStartFrame, reduceDyingTranspFrame;
 
 		// stats
 		float life_percentage, mana_percentage, fatigue_percentage;
@@ -456,12 +456,12 @@ class CCharacter
 		int NPC_id;
 		int seconds_to_respawn;
 
-        float dyingTransparency;
+		float dyingTransparency;
 
 	protected:
-        std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 
-        bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
+		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
@@ -483,7 +483,7 @@ class CCharacter
 		uint16_t current_fatigue;
 		uint16_t healthRegen;
 		uint16_t manaRegen;
-        uint16_t fatigueRegen;
+		uint16_t fatigueRegen;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;
@@ -498,8 +498,8 @@ class CCharacter
 		uint16_t spellEffectAllModifierPoints;
 		uint16_t spellCriticalModifierPoints;
 
-        CharacterClass::CharacterClass characterClass;
-        CharacterArchType::CharacterArchType characterArchType;
+		CharacterClass::CharacterClass characterClass;
+		CharacterArchType::CharacterArchType characterArchType;
 
 		uint16_t wander_radius;
 		uint16_t min_damage, max_damage;
@@ -513,9 +513,9 @@ class CCharacter
 		CSpellActionBase *curSpellAction;
 		uint32_t preparationStartTime, preparationCurrentTime;
 		float preparationPercentage;
-        CInterface *activeGUI;
+		CInterface *activeGUI;
 
-        std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 
 		std::vector<CSpellActionBase*> spellbook;
 
@@ -527,16 +527,16 @@ class CCharacter
 
 		int *numMoveTexturesPerDirection;
 		int activeDirection;
-        bool hasChoosenFearDirection;
-        bool hasChoosenDyingDirection;
+		bool hasChoosenFearDirection;
+		bool hasChoosenDyingDirection;
 
-        std::vector<sLootTable> lootTable;
-        uint32_t coins;
-        uint32_t minCoinDrop;
-        uint32_t maxCoinDrop;
-        double coinDropChance;
+		std::vector<sLootTable> lootTable;
+		uint32_t coins;
+		uint32_t minCoinDrop;
+		uint32_t maxCoinDrop;
+		double coinDropChance;
 
-        bool isCurrentlyShopping;
+		bool isCurrentlyShopping;
 };
 
 #endif

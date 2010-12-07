@@ -23,35 +23,44 @@ Player thePlayer;
 
 namespace Globals
 {
+	CZone *currentZone;
+	bool savingAllowed = false;
+	bool showCursor = false;
 
-CZone *currentZone;
-bool savingAllowed = false;
+	CZone *getCurrentZone()
+	{
+		return currentZone;
+	}
 
-CZone *getCurrentZone()
-{
-	return currentZone;
-}
+	void setCurrentZone( CZone *newCurZone )
+	{
+		currentZone = newCurZone;
+	}
 
-void setCurrentZone( CZone *newCurZone )
-{
-	currentZone = newCurZone;
-}
+	bool isSavingAllowed()
+	{
+		return savingAllowed;
+	}
 
-bool isSavingAllowed()
-{
-	return savingAllowed;
-}
+	void setSavingAllowed( bool savingAllowed_ )
+	{
+		savingAllowed = savingAllowed_;
+	}
 
-void setSavingAllowed( bool savingAllowed_ )
-{
-	savingAllowed = savingAllowed_;
-}
+	Player* getPlayer()
+	{
+		return &thePlayer;
+	}
 
-Player* getPlayer()
-{
-	return &thePlayer;
-}
+	bool displayCursor()
+	{
+		return showCursor;
+	}
 
+	void setDisplayCursor( bool flag )
+	{
+		showCursor = flag;
+	}
 } // namespace Globals
 
 namespace DawnInterface
@@ -65,7 +74,7 @@ namespace DawnInterface
 	{
 		Globals::setSavingAllowed( savingAllowed );
 	}
-	
+
 	Player* getPlayer()
 	{
 		return &thePlayer;

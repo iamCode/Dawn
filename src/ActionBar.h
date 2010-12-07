@@ -56,6 +56,7 @@ class ActionBar
 		ActionBar( Player *player_ );
 		~ActionBar();
 
+		bool isCastingAoESpell();
 		bool isMouseOver( int x, int y );
 		bool isButtonUsed( sButton *button ) const;
 		void draw();
@@ -85,6 +86,8 @@ class ActionBar
 		GLFT_Font *cooldownFont;
 		sButton *spellQueue;
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+		bool castingAoESpell;
+		int cursorRadius;
 };
 
 #endif

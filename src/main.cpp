@@ -890,15 +890,15 @@ void game_loop()
 	Uint32 ticksDiff = 0;
 	Uint8 *keys;
 	std::pair<int,int> mouseDownXY;
-    done = 0;
+	done = 0;
 
 	Player *player = Globals::getPlayer();
 
-    focus.setFocus(player);
+	focus.setFocus(player);
 
-    GLfloat white[] = { 1.0f, 1.0f, 1.0f };
+	GLfloat white[] = { 1.0f, 1.0f, 1.0f };
 
-    DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );
+	DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );
 
 	while (!done) {
 

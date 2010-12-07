@@ -95,6 +95,7 @@ class CSpellActionBase
 		virtual uint16_t getCooldown() const = 0;
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
+		virtual uint16_t getRadius() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
 		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
@@ -204,6 +205,7 @@ class ConfigurableSpell : public CSpell
 		virtual uint16_t getCooldown() const;
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
+		virtual uint16_t getRadius() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -225,9 +227,10 @@ class ConfigurableSpell : public CSpell
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
-    uint16_t minRange;
-    uint16_t maxRange;
-    bool hostileSpell;
+		uint16_t minRange;
+		uint16_t maxRange;
+		bool hostileSpell;
+		uint16_t radius;
 
 		std::string name;
 		std::string info;
@@ -244,6 +247,7 @@ class ConfigurableAction : public CAction
 		virtual uint16_t getCooldown() const;
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
+		virtual uint16_t getRadius() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -265,9 +269,9 @@ class ConfigurableAction : public CAction
 		uint16_t spellCost;
 		uint16_t cooldown;
 		uint16_t duration;
-    uint16_t minRange;
-    uint16_t maxRange;
-    bool hostileSpell;
+		uint16_t minRange;
+		uint16_t maxRange;
+		bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -359,6 +363,9 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 
 		EffectType::EffectType getEffectType() const;
 
+		void setRadius( uint16_t newRadius );
+		virtual uint16_t getRadius();
+
 	protected:
 		GeneralAreaDamageSpell();
 		GeneralAreaDamageSpell( GeneralAreaDamageSpell *other );
@@ -379,7 +386,6 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 
 		int centerX;
 		int centerY;
-		int radius;
 		EffectType::EffectType effectType;
 };
 
@@ -434,12 +440,12 @@ class GeneralHealingSpell : public ConfigurableSpell
 		void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
 		void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, uint16_t continuousHealingTime, ElementType::ElementType elementContinuous );
 		ElementType::ElementType getDirectElementType() const;
-        uint16_t getDirectHealingMin() const;
-        uint16_t getDirectHealingMax() const;
+		uint16_t getDirectHealingMin() const;
+		uint16_t getDirectHealingMax() const;
 
-        ElementType::ElementType getContinuousElementType() const;
-        uint16_t getContinuousHealingMin() const;
-        uint16_t getContinuousHealingMax() const;
+		ElementType::ElementType getContinuousElementType() const;
+		uint16_t getContinuousHealingMin() const;
+		uint16_t getContinuousHealingMax() const;
 
 		virtual void drawEffect();
 		virtual void startEffect();
@@ -458,12 +464,12 @@ class GeneralHealingSpell : public ConfigurableSpell
 		EffectType::EffectType effectType;
 		uint32_t effectStart;
 		uint32_t lastEffect;
-        double remainingEffect;
+		double remainingEffect;
 		int healEffectMin;
 		int healEffectMax;
-        double minContinuousHealingPerSecond;
-        double maxContinuousHealingPerSecond;
-        uint16_t continuousHealingTime;
+		double minContinuousHealingPerSecond;
+		double maxContinuousHealingPerSecond;
+		uint16_t continuousHealingTime;
 
         ElementType::ElementType elementContinuous;
 		ElementType::ElementType healEffectElement;
