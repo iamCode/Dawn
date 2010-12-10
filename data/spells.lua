@@ -121,7 +121,6 @@ curSpell:setRadius( 120 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
-DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 -------------------------------------------------------------------------------
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
@@ -427,7 +426,7 @@ curSpell:setSpellCost( 40 );
 curSpell:setInfo("Bash with your shield, causing %minWeaponDamage% to %maxWeaponDamage% and stunning your enemy for 3 seconds.");
 curSpell:addAdditionalSpellOnTarget( spellDatabase["shieldbasheffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
-curSpell:addRequiredWeapon( WeaponType.SHIELD );
+curSpell:addRequiredWeapon( WeaponType.SHIELD ); 
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -439,7 +438,7 @@ curSpell:setInfo("Shoot with your ranged weapon, causing %minWeaponDamage%-%maxW
 curSpell:setDamageBonus( 1.0 );
 curSpell:setCastTime( 2000 );
 curSpell:setSpellCost( 0 );
-curSpell:setSpellSymbol( "data/spells/magicmissile/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/shoot/symbol.tga" );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
 curSpell:setMoveSpeed( 1000 );
@@ -447,6 +446,9 @@ curSpell:setRequiredClass( CharacterClass.Ranger );
 curSpell:addRequiredWeapon( WeaponType.BOW );
 curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
 curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
+
+-- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["invisibility"] = curSpell;
@@ -534,3 +536,119 @@ curSpell:setSpellSymbol( "data/spells/food/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setCharacterState( CharacterStates.Channeling );
 curSpell:setRequiredClass( CharacterClass.ANYCLASS );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["frozenshoteffect1"] = curSpell;
+curSpell:setName("Frozen shot ef");
+curSpell:setDuration( 12 );
+curSpell:setSpellSymbol( "data/spells/frozenshot/symbol.tga" );
+curSpell:setCharacterState( CharacterStates.Movementspeed, 0.5 );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["frozenshot"] = curSpell;
+curSpell:setName("Frozen shot");
+curSpell:setInfo("Launches a frozen projectile, causing %minWeaponDamage%-%maxWeaponDamage% damage and slowing the target's movementspeed by 50% for 12 seconds.");
+curSpell:setDamageBonus( 2.0 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 25 );
+curSpell:setSpellSymbol( "data/spells/frozenshot/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setCooldown( 18 );
+curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
+curSpell:setMoveSpeed( 1000 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
+curSpell:addRequiredWeapon( WeaponType.BOW );
+curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
+curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["frozenshoteffect1"], 1.0 );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["pindowneffect1"] = curSpell;
+curSpell:setName("Pin down ef");
+curSpell:setDuration( 5 );
+curSpell:setSpellSymbol( "data/spells/pindown/symbol.tga" );
+curSpell:setCharacterState( CharacterStates.Movementspeed, 0.0 );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["pindown"] = curSpell;
+curSpell:setName("Pin down");
+curSpell:setInfo("Skillfully pins down your target with your missile causing them to be immobilized for 5 seconds and causing %minWeaponDamage%-%maxWeaponDamage% damage.");
+curSpell:setDamageBonus( 0.5 );
+curSpell:setCastTime( 500 );
+curSpell:setSpellCost( 10 );
+curSpell:setCooldown( 14 );
+curSpell:setSpellSymbol( "data/spells/pindown/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
+curSpell:setMoveSpeed( 1000 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
+curSpell:addRequiredWeapon( WeaponType.BOW );
+curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
+curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["pindowneffect1"], 1.0 );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBoltDamageSpell();
+spellDatabase["flamingarroweffect1"] = curSpell;
+curSpell:setName("Flaming arrow ef");
+curSpell:setSpellSymbol( "data/spells/frozenshot/symbol.tga" );
+curSpell:setNumAnimations( 0 );
+curSpell:setInstant( true );
+curSpell:setDirectDamage( 15, 30, ElementType.Earth );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["flamingarrow"] = curSpell;
+curSpell:setName("Flaming arrow");
+curSpell:setInfo("Launching a projectile imbued with the fire of Angyr. Causing %minWeaponDamage%-%maxWeaponDamage% + 15-30 earth magic damage.");
+curSpell:setDamageBonus( 1 );
+curSpell:setCastTime( 1500 );
+curSpell:setSpellCost( 20 );
+curSpell:setCooldown( 5 );
+curSpell:setSpellSymbol( "data/spells/flamingarrow/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
+curSpell:setMoveSpeed( 1000 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
+curSpell:addRequiredWeapon( WeaponType.BOW );
+curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
+curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["flamingarroweffect1"], 1.0 );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["landyrsforce"] = curSpell;
+curSpell:setName("Landyr's force");
+curSpell:setInfo("Carefully aiming and striking with Landyr's force causing %minWeaponDamage%-%maxWeaponDamage% damage.");
+curSpell:setDamageBonus( 4.0 );
+curSpell:setCastTime( 4000 );
+curSpell:setSpellCost( 35 );
+curSpell:setSpellSymbol( "data/spells/landyrsforce/symbol.tga" );
+curSpell:setNumAnimations( 1 );
+curSpell:setCooldown( 24 );
+curSpell:setAnimationTexture( 0, "data/spells/shoot/0.tga" );
+curSpell:setMoveSpeed( 1200 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
+curSpell:addRequiredWeapon( WeaponType.BOW );
+curSpell:addRequiredWeapon( WeaponType.CROSSBOW );
+curSpell:addRequiredWeapon( WeaponType.SLINGSHOT );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["voiceoftheforest"] = curSpell;
+curSpell:setName("Voice of the forest");
+curSpell:setStats( StatsType.MeleeCritical, 5 );
+curSpell:setStats( StatsType.Dexterity, 15 );
+curSpell:setDuration( 180 );
+curSpell:setInfo("The spirits of the forest imbues your body, increasing your melee critical strike chance and dexterity.");
+curSpell:setCastTime( 2000 );
+curSpell:setSpellSymbol( "data/spells/voiceoftheforest/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.Ranger );
+
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+

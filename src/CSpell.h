@@ -144,6 +144,10 @@ class CSpellActionBase
 		void setRank( uint8_t rank );
 		uint8_t getRank() const;
 
+		/// instant spells, doesn't require spell to "hit" the target to do damge (ranged + bolt spells)
+        void setInstant( bool instant );
+        bool getInstant( ) const;
+
 		/// characterStates which affects the target. Stunned, charmed etc...
 		void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
 		std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
@@ -154,6 +158,7 @@ class CSpellActionBase
 		CCharacter *target;
 		bool boundToCreator;
 		bool finished;
+		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
 		CharacterClass::CharacterClass requiredClass;
 		uint8_t requiredLevel;
 		uint32_t requiredWeapons;

@@ -2230,3 +2230,11 @@ data/sound/arrowHit06.ogg
 data/music/loading.ogg									CC-BY 3.0			http://opengameart.org/content/cave-theme
 data/music/mika_FallToPieces_Silence.ogg
 data/music/Early_Dawn_Simple.ogg							GPLv3				Created by Dawn members
+data/spells/frozenshot/symbol.tga							GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
+data/spells/landyrsforce/symbol.tga							CC0				http://opengameart.org/content/skill-magic-spell-icons
+data/spells/inferno/symbol.tga
+data/spells/inferno/inferno.tga
+data/spells/voiceoftheforest/symbol.tga							CC0				http://opengameart.org/content/skill-magic-spell-icons
+data/spells/flamingarrow/symbol.tga							GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
+data/spells/shoot/symbol.tga								CC0				http://opengameart.org/content/osare-weapon-icons
+data/spells/pindown/symbol.tga								GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg

@@ -35,7 +35,8 @@ DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
 DawnInterface.giveItemToPlayer( itemDatabase["moldytome"] );
 --note: this is just for debug the items need to be copied not accessed directly else the same reference is used!!!
 
-DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
+--DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
+DawnInterface.giveItemToPlayer(itemDatabase["weakenedbow"] );
 
 dofile( "data/quests_wood.lua" );
 

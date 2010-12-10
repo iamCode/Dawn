@@ -47,6 +47,7 @@ double randomDouble( double min, double max )
 CSpellActionBase::CSpellActionBase()
 		: boundToCreator( false ),
 		  finished( false ),
+		  instant( false ),
 		  requiredClass( CharacterClass::NOCLASS ),
 		  requiredLevel( 1 ),
 		  requiredWeapons( 0 ),
@@ -190,6 +191,16 @@ uint8_t CSpellActionBase::getRank() const
     return rank;
 }
 
+void CSpellActionBase::setInstant( bool instant )
+{
+    this->instant = instant;
+}
+
+bool CSpellActionBase::getInstant( ) const
+{
+    return instant;
+}
+
 void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
     characterStateEffects.first = characterState;
@@ -231,6 +242,7 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	maxRange = other->maxRange;
 	hostileSpell = other->hostileSpell;
 	radius = other->radius;
+    instant = other->instant;
 
   additionalSpellsOnCreator = other->additionalSpellsOnCreator;
   additionalSpellsOnTarget = other->additionalSpellsOnTarget;
@@ -371,18 +383,19 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 	cooldown = other->cooldown;
 	spellCost = other->spellCost;
 	duration = other->duration;
-  minRange = other->minRange;
-  maxRange = other->maxRange;
-  hostileSpell = other->hostileSpell;
+    minRange = other->minRange;
+    maxRange = other->maxRange;
+    hostileSpell = other->hostileSpell;
+    instant = other->instant;
 
-  additionalSpellsOnCreator = other->additionalSpellsOnCreator;
-  additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
 
-  characterStateEffects = other->characterStateEffects;
+    characterStateEffects = other->characterStateEffects;
 
-  requiredClass = other->requiredClass;
-  requiredLevel = other->requiredLevel;
-  requiredWeapons = other->requiredWeapons;
+    requiredClass = other->requiredClass;
+    requiredLevel = other->requiredLevel;
+    requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;
@@ -1046,7 +1059,7 @@ void GeneralBoltDamageSpell::inEffect()
 	posx += movex;
 	posy += movey;
 
-	if ( (posx == targetx && posy == targety) ) {
+	if ( (posx == targetx && posy == targety) || getInstant() == true ) {
 		finishEffect();
 	} else if ( (curTicks - effectStart) > expireTime ) {
 		markSpellActionAsFinished();
@@ -1736,7 +1749,7 @@ void RangedDamageAction::inEffect()
 	posx += movex;
 	posy += movey;
 
-	if ( (posx == targetx && posy == targety) ) {
+	if ( (posx == targetx && posy == targety) || getInstant() == true ) {
 		finishEffect();
 	} else if ( (curTicks - effectStart) > expireTime ) {
 		markSpellActionAsFinished();
@@ -1985,6 +1998,12 @@ namespace DawnInterface
     GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell( other ) ) );
+		 return newSpell.release();
+	}
+
+	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other )
+	{
+		 std::auto_ptr<GeneralAreaDamageSpell> newSpell( dynamic_cast<GeneralAreaDamageSpell*>( SpellCreation::getGeneralAreaDamageSpell( other ) ) );
 		 return newSpell.release();
 	}
 
