@@ -40,6 +40,8 @@
 --	Sneaking
 --	Stunned
 
+=== Other notes ===
+% needs to be written with %%. So 50%% will be displayed in the tooltips as: "50%" 
 
 spellDatabase = {};
 
@@ -547,7 +549,7 @@ curSpell:setCharacterState( CharacterStates.Movementspeed, 0.5 );
 curSpell = DawnInterface.createRangedDamageAction();
 spellDatabase["frozenshot"] = curSpell;
 curSpell:setName("Frozen shot");
-curSpell:setInfo("Launches a frozen projectile, causing %minWeaponDamage%-%maxWeaponDamage% damage and slowing the target's movementspeed by 50% for 12 seconds.");
+curSpell:setInfo("Launches a frozen projectile, causing %minWeaponDamage%-%maxWeaponDamage% damage and slowing the target's movementspeed by 50%% for 12 seconds.");
 curSpell:setDamageBonus( 2.0 );
 curSpell:setCastTime( 2000 );
 curSpell:setSpellCost( 25 );

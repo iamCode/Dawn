@@ -669,11 +669,19 @@ std::string Tooltip::getDynamicValues( CSpellActionBase *spell, size_t val ) con
                 MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( spell );
                 ss << static_cast<int16_t>( player->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
                 return ss.str();
+            } else if ( dynamic_cast<RangedDamageAction*>( spell ) != NULL ) {
+                RangedDamageAction *curSpell = dynamic_cast<RangedDamageAction*>( spell );
+                ss << static_cast<int16_t>( player->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
+                return ss.str();
             }
         break;
         case 1: // maxWeaponDamage
             if ( dynamic_cast<MeleeDamageAction*>( spell ) != NULL ) {
                 MeleeDamageAction *curSpell = dynamic_cast<MeleeDamageAction*>( spell );
+                ss << static_cast<int16_t>( player->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
+                return ss.str();
+            } else if ( dynamic_cast<RangedDamageAction*>( spell ) != NULL ) {
+                RangedDamageAction *curSpell = dynamic_cast<RangedDamageAction*>( spell );
                 ss << static_cast<int16_t>( player->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( player->getLevel(), player->getModifiedDamageModifierPoints(), player->getLevel() ) * curSpell->getDamageBonus() );
                 return ss.str();
             }
