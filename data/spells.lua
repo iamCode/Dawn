@@ -40,8 +40,8 @@
 --	Sneaking
 --	Stunned
 
-=== Other notes ===
-% needs to be written with %%. So 50%% will be displayed in the tooltips as: "50%" 
+-- === Other notes ===
+-- % needs to be written with %%. So 50%% will be displayed in the tooltips as: "50%" 
 
 spellDatabase = {};
 
