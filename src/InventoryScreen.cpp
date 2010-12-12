@@ -418,9 +418,9 @@ void InventoryScreen::drawCoins()
     std::string silver = currency::convertCoinsToString(currency::SILVER, player->getCoins());
     std::string copper = currency::convertCoinsToString(currency::COPPER, player->getCoins());
 
-    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(gold),world_y+posY+307, gold );
-    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(silver),world_y+posY+285, silver );
-    coinsFont->drawText( world_x+posX+160-coinsFont->calcStringWidth(copper),world_y+posY+263, copper );
+    coinsFont->drawText( float(world_x)+posX+160-coinsFont->calcStringWidth(gold),world_y+posY+307, gold );
+    coinsFont->drawText( float(world_x)+posX+160-coinsFont->calcStringWidth(silver),world_y+posY+285, silver );
+    coinsFont->drawText( float(world_x)+posX+160-coinsFont->calcStringWidth(copper),world_y+posY+263, copper );
 
     // gold coin
     DrawingHelpers::mapTextureToRect( textures.texture[2],
@@ -454,7 +454,7 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 	if ( floatingSelectionToDraw == NULL ) {
 		return;
 	}
-	
+
 	if ( isOnBackpackScreen( mouseX, mouseY ) )
 	{
 	    Item *floatingItem = floatingSelectionToDraw->getItem();
