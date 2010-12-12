@@ -40,6 +40,7 @@ extern std::auto_ptr<QuestWindow> questWindow;
 namespace DawnInterface
 {
     void clearLogWindow();
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
 OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
@@ -197,6 +198,8 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		if ( Globals::isSavingAllowed() ) {
 			// Save Game
 			LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
+			GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+            DawnInterface::addTextToLogWindow( yellow, "Game saved.");
 		}
 	} else if ( selectedEntry == 3 ) {
 		toggle(); // close the window
