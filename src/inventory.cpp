@@ -236,7 +236,7 @@ void Inventory::wieldItemAtSlot( ItemSlot::ItemSlot slotToUse, InventoryItem *it
         }
     } else {
         // if we're removing a two-handed weapon, we also need to set the off-hand slot to NULL.
-        if ( isWieldingTwoHandedWeapon() == true ) {
+        if ( ( slotToUse == ItemSlot::MAIN_HAND || slotToUse == ItemSlot::OFF_HAND ) && isWieldingTwoHandedWeapon() == true ) {
             equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ] = NULL;
             equippedItems[ static_cast<size_t>( ItemSlot::OFF_HAND ) ] = NULL;
         }
