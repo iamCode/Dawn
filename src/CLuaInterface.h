@@ -41,6 +41,7 @@ namespace DawnInterface
 	                    ArmorType::ArmorType armorType,
 	                    WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
+	void giveExpToPlayer( uint16_t experience );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
 	GeneralAreaDamageSpell* createGeneralAreaDamageSpell();
 	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();

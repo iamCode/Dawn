@@ -48,6 +48,12 @@ namespace DawnInterface
             DawnInterface::addTextToLogWindow( blue, "You receive %s.",item->getName().c_str() );
 		}
 	}
+
+	void giveExpToPlayer( uint16_t experience )
+	{
+	    Player *player = Globals::getPlayer();
+	    player->gainExperience( experience );
+	}
 }
 
 Player::Player()

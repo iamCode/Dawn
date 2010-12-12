@@ -95,6 +95,7 @@ function quest_playHideAndSeek.onActivateJohn()
 		textWindow:setText( "Thank you for looking after my brother. We will leave for home now. Take this ring for your effords." );
 		textWindow:setAutocloseTime( 5000 );
 		DawnInterface.giveItemToPlayer( itemDatabase["ringofdefense"] );
+		DawnInterface.giveExpToPlayer( 150 );
 		quest_playHideAndSeek.rewardGot = true;
 		DawnInterface.removeInteractionPoint( john );
 		DawnInterface.removeInteractionPoint( james );

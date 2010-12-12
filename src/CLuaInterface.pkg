@@ -506,6 +506,7 @@ namespace DawnInterface
 		                ArmorType::ArmorType armorType,
 		                WeaponType::WeaponType weaponType );
 	void giveItemToPlayer( Item* item );
+	void giveExpToPlayer( int experience );
 	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 	void removeMobSpawnPoint( CNPC *mobSpawnPoint );
 	GeneralRayDamageSpell* createGeneralRayDamageSpell();
