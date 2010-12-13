@@ -75,7 +75,7 @@ data/items/Axe1.tga										GPLv3				Created by Dawn members
 data/items/Spellbook1.tga								GPLv3				Created by Dawn members
 data/items/Ring1.tga									GPLv3				Created by Dawn members
 data/items/Belt1.tga									GPLv3				Created by Dawn members
-data/items/Food1.tga									GPLv3				Created by Dawn members
+data/items/Food1.tga									GPLv3				http://opengameart.org/content/studded-belt	
 data/items/Ring2.tga									GPLv3				Created by Dawn members
 data/items/Axe2.tga										GPLv3				Created by Dawn members
 data/items/Potion2.tga									GPLv3				Created by Dawn members
