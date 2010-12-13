@@ -390,7 +390,11 @@ void itemTooltip::getParentText()
             // nothing here so far...
         break;
         case ItemType::ARMOR:
-            addTooltipText( white, 12, ArmorType::getArmorTypeText( parent->getArmorType() ) );
+            if ( player->canWearArmorType( parent ) == true ) {
+                addTooltipText( white, 12, ArmorType::getArmorTypeText( parent->getArmorType() ) );
+            } else {
+                addTooltipText( red, 12, ArmorType::getArmorTypeText( parent->getArmorType() ) );
+            }
         break;
         case ItemType::WEAPON:
             addTooltipText( white, 12, WeaponType::getWeaponTypeText( parent->getWeaponType() ) );

@@ -40,7 +40,7 @@ class InventoryItem
 
         Item* getItem() const;
 
-		bool isLevelReqMet() const;
+		bool canPlayerUseItem() const;
 
 
 	private:

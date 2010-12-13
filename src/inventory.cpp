@@ -478,12 +478,16 @@ EquipPosition::EquipPosition Inventory::getEquipType( ItemSlot::ItemSlot itemSlo
 	abort();
 }
 
-bool InventoryItem::isLevelReqMet() const
+bool InventoryItem::canPlayerUseItem() const
 {
     bool useableItem = true;
 
     if ( player->getLevel() < item->getRequiredLevel() ) {
         useableItem = false;
+    }
+
+    if ( item->getArmorType() != ArmorType::NO_ARMOR ) {
+        useableItem = player->canWearArmorType( item );
     }
 
     if ( item->isUseable() ) {

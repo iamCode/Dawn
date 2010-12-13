@@ -220,7 +220,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
 		ItemSlot::ItemSlot curSlotEnum = static_cast<ItemSlot::ItemSlot>( curSlotNr );
 		if ( isOverSlot( curSlotEnum, mouseX, mouseY ) ) {
-			if ( floatingSelectionToHandle != NULL && floatingSelectionToHandle->isLevelReqMet() ) {
+			if ( floatingSelectionToHandle != NULL && floatingSelectionToHandle->canPlayerUseItem() == true ) {
 				if ( floatingSelectionToHandle->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 				{
 					// special handler for when we are trying to wield a two-handed weapon and having items in BOTH mainhand and offhand-slot equipped.
@@ -290,7 +290,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                         }
                     }
                 }
-            } else if ( floatingSelectionToHandle == NULL && useItem->isLevelReqMet() ) {
+            } else if ( floatingSelectionToHandle == NULL && useItem->canPlayerUseItem() == true ) {
                 // try to equip the item
                 std::vector<size_t> possibleSlots;
                 for ( size_t curSlotNr=0; curSlotNr < static_cast<size_t>( ItemSlot::COUNT ); ++curSlotNr ) {
@@ -520,7 +520,7 @@ void InventoryScreen::drawItemPlacement( int mouseX, int mouseY )
 			GLfloat shade[4] = { 0.0f, 0.0f, 0.0f, 0.3f };
 
 			// set the shade-color depending on if the item fits or not.
-			if ( floatingSelectionToDraw->isLevelReqMet()
+			if ( floatingSelectionToDraw->canPlayerUseItem() == true
 			     && floatingSelectionToDraw->getItem()->getEquipPosition() == Inventory::getEquipType( curSlotEnum ) )
 			{
 				if ( floatingSelectionFromShop ) {

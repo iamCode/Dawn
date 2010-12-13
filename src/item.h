@@ -23,6 +23,7 @@
 #include "CTexture.h"
 #include "elements.h"
 #include "stats.h"
+#include "CCharacter.h"
 
 class CSpell;
 
@@ -144,6 +145,32 @@ namespace ArmorType
         PLATE
     };
 
+    inline ArmorType::ArmorType getHighestArmorTypeByClass( CharacterClass::CharacterClass characterClass )
+    {
+        switch ( characterClass )
+        {
+            case CharacterClass::Liche:
+                return ArmorType::CLOTH;
+            break;
+            case CharacterClass::Ranger:
+                return ArmorType::LEATHER;
+            break;
+            case CharacterClass::Warrior:
+                return ArmorType::PLATE;
+            break;
+            case CharacterClass::NOCLASS:
+                dawn_debug_fatal( "getHighestArmorTypeByClass caught NOCLASS. This shouldn't be." );
+                abort();
+            break;
+            case CharacterClass::ANYCLASS:
+                dawn_debug_fatal( "getHighestArmorTypeByClass caught ANYCLASS. This shouldn't be." );
+                abort();
+            break;
+        }
+        dawn_debug_fatal( "getHighestArmorTypeByClass caught an unknown class. This *REALLY* shouldn't be." );
+        abort();
+    }
+
     inline std::string getArmorTypeText( ArmorType::ArmorType armorType )
     {
         switch ( armorType )
@@ -167,7 +194,6 @@ namespace ArmorType
         }
         dawn_debug_fatal("Reached end of ArmorType::getArmorTypeText() without finding a suitable armor type. This should not be." );
         abort();
-
     }
 }
 

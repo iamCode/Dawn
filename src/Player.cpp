@@ -162,6 +162,14 @@ bool Player::isPlayer() const
 	return true;
 }
 
+bool Player::canWearArmorType( Item *item ) const
+{
+    if ( ArmorType::getHighestArmorTypeByClass( getClass() ) < item->getArmorType() ) {
+        return false;
+    }
+    return true;
+}
+
 /// helperfunctions for items.
 static int16_t getItemStrengthHelper( Item * item ) { return item->getStats( StatsType::Strength ); }
 static int16_t getItemDexterityHelper( Item * item ) { return item->getStats( StatsType::Dexterity ); }

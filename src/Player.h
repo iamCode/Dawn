@@ -74,6 +74,7 @@ class Player : public CCharacter
 		void clearInventory();
 
 		bool isSpellInscribedInSpellbook( CSpellActionBase *spell ) const;
+		bool canWearArmorType( Item *item ) const;
 
 		std::string getSaveText() const;
 };

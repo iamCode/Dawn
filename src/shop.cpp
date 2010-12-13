@@ -151,7 +151,7 @@ void Shop::drawItems()
 
 		// if the item is equippable for the player and if we can afford it,
 		// we draw a green backdrop. If not, a red backdrop.
-		if ( curInvItem->isLevelReqMet() && ( player->getCoins() >= curItem->getValue() ) )
+		if ( curInvItem->canPlayerUseItem() == true && ( player->getCoins() >= curItem->getValue() ) )
 		{
 		    shade[1] = 1.0f; // green color
         } else {
