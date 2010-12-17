@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sun Dec 12 19:17:07 2010.
+** Generated automatically by tolua++-1.0.93 on Fri Dec 17 11:24:03 2010.
 */
 
 #ifndef __cplusplus
@@ -2004,6 +2004,38 @@ static int tolua_CLuaInterface_CCharacter_inscribeSpellInSpellbook00(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'inscribeSpellInSpellbook'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getClass of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_getClass00
+static int tolua_CLuaInterface_CCharacter_getClass00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getClass'", NULL);
+#endif
+  {
+   CharacterClass::CharacterClass tolua_ret = (CharacterClass::CharacterClass)  self->getClass();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getClass'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6738,6 +6770,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setCoinDrop",tolua_CLuaInterface_CCharacter_setCoinDrop00);
    tolua_function(tolua_S,"setPosition",tolua_CLuaInterface_CCharacter_setPosition00);
    tolua_function(tolua_S,"inscribeSpellInSpellbook",tolua_CLuaInterface_CCharacter_inscribeSpellInSpellbook00);
+   tolua_function(tolua_S,"getClass",tolua_CLuaInterface_CCharacter_getClass00);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"StatsType",0);
   tolua_beginmodule(tolua_S,"StatsType");

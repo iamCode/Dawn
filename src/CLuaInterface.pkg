@@ -366,6 +366,11 @@ class LuaCallIndirection : public CallIndirection
 	void setExecuteText( std::string text );
 };
 
+class CCharacter
+{
+	CharacterClass::CharacterClass getClass();
+};
+
 class CNPC : public CCharacter
 {
 	void addOnDieEventHandler( CallIndirection *eventHandler );
