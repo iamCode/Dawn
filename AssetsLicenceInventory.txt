@@ -2238,3 +2238,5 @@ data/spells/voiceoftheforest/symbol.tga							CC0				http://opengameart.org/cont
 data/spells/flamingarrow/symbol.tga							GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
 data/spells/shoot/symbol.tga								CC0				http://opengameart.org/content/osare-weapon-icons
 data/spells/pindown/symbol.tga								GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
+data/cursors/circle1_disabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
+data/cursors/circle1_enabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles

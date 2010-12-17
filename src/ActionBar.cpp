@@ -350,7 +350,8 @@ void ActionBar::loadTextures()
 		textures.texture.resize(3);
 		textures.LoadIMG("data/interface/blended_bg.tga",0);
 		textures.LoadIMG("data/border.tga",1);
-		textures.LoadIMG("data/cursors/circle7.png",2);
+		textures.LoadIMG("data/cursors/circle1_enabled.tga",2);
+		textures.LoadIMG("data/cursors/circle1_disabled.tga",3);
 }
 
 void ActionBar::executeSpellQueue()
