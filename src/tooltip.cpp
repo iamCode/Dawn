@@ -80,12 +80,14 @@ void Tooltip::updateBlockNumbers()
 void Tooltip::enableSmallTooltip()
 {
     smallTooltip = true;
+    reloadTooltip();
     updateBlockNumbers();
 }
 
 void Tooltip::disableSmallTooltip()
 {
     smallTooltip = false;
+    reloadTooltip();
     updateBlockNumbers();
 }
 
@@ -303,6 +305,11 @@ void Tooltip::addTooltipText(GLfloat color[], uint8_t fontSize, std::string str,
     toplineHeight = 0;
 	if ( tooltipText.size() > 0 ) {
 		toplineHeight = tooltipText[0].font->getHeight();
+
+		// adjusting position for the font when using a small tooltip here. so it get's more centered.. maybe a bit too static, not sure.
+		if ( smallTooltip == true ) {
+            toplineHeight += 10;
+		}
 	}
 
     for ( unsigned int i = 0; i < tooltipText.size(); i++ )
