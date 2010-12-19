@@ -489,6 +489,9 @@ std::string Player::getSaveText() const
 	oss << objectName << ":setLevel( " << static_cast<size_t>(getLevel()) << " );" << std::endl;
 	oss << objectName << ":setClass( CharacterClass." << getClassName() << " );" << std::endl;
 
+	oss << "-- coins" << std::endl;
+	oss << objectName << ":setCoins( " << getCoins() << " );" << std::endl;
+
 	oss << "-- position" << std::endl;
 	oss << objectName << ":setPosition( " << getXPos() << ", " << getYPos() << " );" << std::endl;
 

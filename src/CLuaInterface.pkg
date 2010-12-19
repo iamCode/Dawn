@@ -108,6 +108,7 @@ class CCharacter {
 
   void setClass( CharacterClass::CharacterClass characterClass );
 
+  void setCoins( int amountOfCoins );
   void setWanderRadius( int newWanderRadius );
   int getWanderRadius() const;
 

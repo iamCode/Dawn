@@ -1961,6 +1961,10 @@ bool CCharacter::isSpellOnCooldown( std::string spellName ) const
     return false;
 }
 
+void CCharacter::setCoins( uint32_t amountOfCoins )
+{
+    coins = amountOfCoins;
+}
 
 void CCharacter::giveCoins( uint32_t amountOfCoins )
 {

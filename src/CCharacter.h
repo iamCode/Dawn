@@ -404,6 +404,7 @@ class CCharacter
 		void giveCoins( uint32_t amountOfCoins );
 		void reduceCoins( uint32_t amountOfCoins );
 		uint32_t getCoins() const;
+        void setCoins( uint32_t amountOfCoins );
 		void setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance );
 
 		void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );

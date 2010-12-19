@@ -2094,7 +2094,7 @@ data/spells/leatherskin/symbol.tga						GPLv3				Created by Dawn members
 data/spells/magicmissile/magicmissile.tga				GPLv3				Created by Dawn members
 data/spells/magicmissile/symbol.tga						GPLv3				Created by Dawn members
 data/spells/food/symbol.tga								GPLv3				Created by Dawn members
-data/spells/healother/symbol.tga						GPLv3				Created by Dawn members
+data/spells/healother/symbol.tga						GPLv3				http://opengameart.org/content/painterly-spell-icons-part-1
 data/spells/earthenseeds/symbol.tga						GPLv3				Created by Dawn members
 data/spells/shieldbash/symbol.tga						CC0					http://opengameart.org/content/osare-weapon-icons
 data/spells/layingofhands/symbol.tga					GPLv3				Created by Dawn members
@@ -2109,7 +2109,7 @@ data/spells/lightning/symbol.tga						GPLv3				Created by Dawn members
 data/spells/lightning/1_small.tga						GPLv3				Created by Dawn members
 data/spells/lightning/3_small.tga						GPLv3				Created by Dawn members
 data/spells/lightning/5_small.tga						GPLv3				Created by Dawn members
-data/spells/healing/symbol.tga							GPLv3				Created by Dawn members
+data/spells/healing/symbol.tga							GPLv3				http://opengameart.org/content/painterly-spell-icons-part-1
 data/spells/venomspit/0.tga								ryzom, need link + licence
 data/spells/venomspit/symbol.tga						ryzom, need link + licence
 data/spells/terrify/0.tga								GPLv3				Created by Dawn members
@@ -2240,3 +2240,4 @@ data/spells/shoot/symbol.tga								CC0				http://opengameart.org/content/osare-
 data/spells/pindown/symbol.tga								GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
 data/cursors/circle1_disabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
 data/cursors/circle1_enabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
+data/spells/phantomstrike/symbol.tga							GPLv3				http://opengameart.org/content/painterly-spell-icons-part-1
