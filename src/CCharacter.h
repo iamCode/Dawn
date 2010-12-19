@@ -224,6 +224,7 @@ class CCharacter
 		uint32_t remainingMovePoints;
 
 		CCharacter *target;
+		bool hasTarget( CCharacter *target );
 
 		void baseOnType( std::string otherType );
 		std::string getClassID() const;

@@ -52,6 +52,14 @@ namespace DawnInterface
 	void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
+bool CCharacter::hasTarget( CCharacter *target )
+{
+	if ( this->target == target )
+		return true;
+
+	return false;
+}
+
 void CCharacter::baseOnType( std::string otherName )
 {
 	CCharacter *other;
@@ -1399,9 +1407,8 @@ bool CCharacter::continuePreparing()
 			preparationPercentage = (static_cast<float>(preparationCurrentTime-preparationStartTime)) / spellCastTime;
 			preparationFinished = ( preparationPercentage >= 1.0f );
 		}
-		if ( preparationFinished ) {
+		if ( preparationFinished )
 			startSpellAction();
-		}
 	}
 
 	return isPreparing;
@@ -1413,7 +1420,17 @@ void CCharacter::startSpellAction()
 	preparationCurrentTime = 0;
 	preparationStartTime = 0;
 
-	curSpellAction->startEffect();
+	// are we casting an AoE spell?
+	if ( curSpellAction->getRadius() > 0 ) {
+		CMagic magic(curSpellAction);
+		Globals::getCurrentZone()->MagicMap.push_back(magic);
+		isPreparing = false;
+		preparationCurrentTime = 0;
+		preparationStartTime = 0;
+		Globals::getCurrentZone()->MagicMap.back().getSpell()->startEffect();
+	}
+	else
+		curSpellAction->startEffect();
 }
 
 void CCharacter::abortCurrentSpellAction()
@@ -1553,11 +1570,11 @@ void CCharacter::dropItems()
 
 void CCharacter::Die()
 {
-    if ( hasChoosenDyingDirection == false ) {
-        dyingDirection = static_cast<Direction>( activeDirection );
-        dyingStartFrame = SDL_GetTicks();
-        reduceDyingTranspFrame = SDL_GetTicks() + 7000;
-    }
+	if ( hasChoosenDyingDirection == false ) {
+			dyingDirection = static_cast<Direction>( activeDirection );
+			dyingStartFrame = SDL_GetTicks();
+			reduceDyingTranspFrame = SDL_GetTicks() + 7000;
+	}
 }
 
 void CCharacter::Heal(int amount)

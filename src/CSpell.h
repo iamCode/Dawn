@@ -83,7 +83,7 @@ class CSpellActionBase
 	public:
 		// Question: What about different target types, such as position (for region damage spells)
 		/// \brief Creates a spell to really cast as a copy from this one with a fixed target and creator.
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target ) = 0;
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child=false ) = 0;
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y ) = 0;
 		virtual ~CSpellActionBase();
 
@@ -96,6 +96,8 @@ class CSpellActionBase
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
 		virtual uint16_t getRadius() const = 0;
+		virtual uint16_t getX() const = 0;
+		virtual uint16_t getY() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
 		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
@@ -145,8 +147,8 @@ class CSpellActionBase
 		uint8_t getRank() const;
 
 		/// instant spells, doesn't require spell to "hit" the target to do damge (ranged + bolt spells)
-        void setInstant( bool instant );
-        bool getInstant( ) const;
+		void setInstant( bool instant );
+		bool getInstant( ) const;
 
 		/// characterStates which affects the target. Stunned, charmed etc...
 		void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
@@ -211,6 +213,8 @@ class ConfigurableSpell : public CSpell
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
+		virtual uint16_t getX() const;
+		virtual uint16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -253,6 +257,8 @@ class ConfigurableAction : public CAction
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
+		virtual uint16_t getX() const;
+		virtual uint16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -320,7 +326,7 @@ class GeneralDamageSpell : public ConfigurableSpell
 class GeneralRayDamageSpell : public GeneralDamageSpell
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setNumAnimations( int count );
@@ -354,7 +360,7 @@ class GeneralRayDamageSpell : public GeneralDamageSpell
 class GeneralAreaDamageSpell : public GeneralDamageSpell
 {
   public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setNumAnimations( int count );
@@ -370,6 +376,8 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 
 		void setRadius( uint16_t newRadius );
 		virtual uint16_t getRadius();
+		virtual uint16_t getX();
+		virtual uint16_t getY();
 
 	protected:
 		GeneralAreaDamageSpell();
@@ -392,12 +400,13 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 		int centerX;
 		int centerY;
 		EffectType::EffectType effectType;
+		bool child;
 };
 
 class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setMoveSpeed( int newMoveSpeed );
@@ -437,7 +446,7 @@ class GeneralBoltDamageSpell : public GeneralDamageSpell
 class GeneralHealingSpell : public ConfigurableSpell
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setEffectType( EffectType::EffectType newEffectType );
@@ -483,7 +492,7 @@ class GeneralHealingSpell : public ConfigurableSpell
 class GeneralBuffSpell : public ConfigurableSpell
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		void setEffectType( EffectType::EffectType newEffectType );
@@ -518,7 +527,7 @@ class GeneralBuffSpell : public ConfigurableSpell
 class MeleeDamageAction : public ConfigurableAction
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		virtual EffectType::EffectType getEffectType() const;
@@ -549,7 +558,7 @@ class MeleeDamageAction : public ConfigurableAction
 class RangedDamageAction : public ConfigurableAction
 {
 	public:
-		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target );
+		virtual CSpellActionBase* cast( CCharacter *creator, CCharacter *target, bool child );
 		virtual CSpellActionBase* cast( CCharacter *creator, int x, int y );
 
 		virtual EffectType::EffectType getEffectType() const;

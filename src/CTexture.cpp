@@ -169,6 +169,11 @@ sTexture& CTexture::getTexture( int index )
     return texture[ index ];
 }
 
+std::vector<sTexture>& CTexture::getTexture()
+{
+	return texture;
+}
+
 void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode, int textureOffsetX, int textureOffsetY )
 {
 	// we we load a texture where the index is larger than our current texture array, we need to increase it.

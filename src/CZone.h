@@ -47,16 +47,6 @@ struct sTileMap {
 	bool operator<(const sTileMap& tile1) const;
 };
 
-struct sMagicMap {
-  int x_pos, y_pos;
-  CMagic *magic;
-  sMagicMap(int _x, int _y, CMagic *_magic) {
-    x_pos = _x;
-    y_pos = _y;
-    magic = _magic;
-  };
-};
-
 struct sEnvironmentMap {
 	int x_pos, y_pos, z_pos;
 	Tile *tile;
@@ -124,7 +114,6 @@ class CZone
 {
 	private:
 		void DrawTiles();
-		void DrawMagic();
 		void DrawEnvironment();
 		void DrawShadows();
 
@@ -191,7 +180,7 @@ class CZone
 		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
 
 		std::vector<sTileMap> TileMap;
-		std::vector<sMagicMap> MagicMap;
+		std::vector<CMagic> MagicMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;

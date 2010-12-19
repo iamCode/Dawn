@@ -51,7 +51,8 @@ ActionBar::ActionBar( Player *player_ )
     button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
     button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
     castingAoESpell = false;
-    cursorRadius = 0;
+    cursorRadius	= 0;
+    curAoESpell		= 0;
 }
 
 ActionBar::~ActionBar()
@@ -67,6 +68,16 @@ void ActionBar::initFonts()
 bool ActionBar::isCastingAoESpell()
 {
 	return castingAoESpell;
+}
+
+void ActionBar::setCastingAoESpell( bool flag )
+{
+	castingAoESpell = flag;
+}
+
+CSpellActionBase *ActionBar::getAoESpell()
+{
+	return button[curAoESpell].action;
 }
 
 bool ActionBar::isMouseOver( int x, int y )
@@ -90,7 +101,7 @@ void ActionBar::draw()
 
 	// background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
-                                      world_x + posX - 20, RES_X - posX + 20,
+	                                  world_x + posX - 20, RES_X - posX + 20,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
@@ -184,13 +195,6 @@ void ActionBar::draw()
 	    }
 	}
 
-//for ( size_t curSpell = 0; curSpell < player->getActiveSpells().size(); curSpell++ )
-//{
-//	if ( player->getActiveSpells()[curSpell].first->getID() == "venomspit" )
-//	{
-//	}
-//}
-
 	// draw the cursor if it's supposed to be drawn
 	if( Globals::displayCursor() )
 	{
@@ -217,13 +221,16 @@ void ActionBar::clicked( int clickX, int clickY )
 				else															// O.K., let's select a position then ( 0 0 for now )
 				{
 					// we are going to display the cursor
-					Globals::setDisplayCursor(true);
+					Globals::setDisplayCursor( true );
 					cursorRadius = button[buttonId].action->getRadius();
+					curAoESpell = buttonId;
 					castingAoESpell = true;
 				}
 			}
 			else
+			{
 				spellQueue = &button[buttonId];
+			}
 		}
 
 		// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
@@ -264,13 +271,14 @@ void ActionBar::handleKeys()
 						{
 							if ( player->getTarget() != NULL ) // is there a target?
 							{
-								curAction = button[buttonId].action->cast( player, player->target );
+								curAction = button[buttonId].action->cast( player, player->getTarget() );
 							}
 							else															// O.K., let's select a position then ( 0 0 for now )
 							{
 								// we are going to display the cursor
-								Globals::setDisplayCursor(true);
+								Globals::setDisplayCursor( true );
 								cursorRadius = button[buttonId].action->getRadius();
+								curAoESpell = buttonId;
 								castingAoESpell = true;
 							}
 						}
@@ -290,7 +298,7 @@ void ActionBar::handleKeys()
 	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
 	{
 		castingAoESpell = false;
-		Globals::setDisplayCursor(false);
+		Globals::setDisplayCursor( false );
 	}
 }
 
@@ -347,6 +355,7 @@ void ActionBar::drawSpellTooltip( int x, int y )
 
 void ActionBar::loadTextures()
 {
+		textures.getTexture().resize(4);
 		textures.LoadIMG("data/interface/blended_bg.tga",0);
 		textures.LoadIMG("data/border.tga",1);
 		textures.LoadIMG("data/cursors/circle1_enabled.tga",2);
@@ -433,4 +442,3 @@ namespace DawnInterface
 		actionBar->bindActionToButtonNr( buttonNr, action );
 	}
 }
-

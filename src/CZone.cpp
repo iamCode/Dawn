@@ -102,11 +102,6 @@ void CZone::DrawTiles()
 	}
 }
 
-void CZone::DrawMagic()
-{
-
-}
-
 void CZone::DrawEnvironment()
 {
 	for (unsigned int x=0 ; x < EnvironmentMap.size() ; x++) {

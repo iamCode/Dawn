@@ -87,8 +87,8 @@ void CNPC::Damage(int amount, bool criticalHit)
 void CNPC::Die()
 {
 	CCharacter::Die();
-    dropItems();
-    alive = false;
+	dropItems();
+	alive = false;
 	respawn_lastframe = SDL_GetTicks();
 	onDie();
 }

@@ -66,9 +66,9 @@ class Player : public CCharacter
 		uint16_t getModifiedMaxDamage() const;
 
 		void setTicketForItemTooltip ();
-        void setTicketForSpellTooltip ();
-        uint32_t getTicketForItemTooltip() const;
-        uint32_t getTicketForSpellTooltip() const;
+		void setTicketForSpellTooltip ();
+		uint32_t getTicketForItemTooltip() const;
+		uint32_t getTicketForSpellTooltip() const;
 
 		Inventory* getInventory();
 		void clearInventory();
