@@ -327,7 +327,7 @@ curSpell:setName("Phantom strike");
 curSpell:setDamageBonus( 4.0 );
 curSpell:setCooldown( 12 );
 curSpell:setInfo("Devastating strike, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
-curSpell:setSpellSymbol( "data/spells/earthenseeds/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/phantomstrike/symbol.tga" );
 curSpell:setSpellCost( 50 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
 
