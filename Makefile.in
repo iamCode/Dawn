@@ -54,13 +54,14 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CCharacter.$(OBJEXT) CEditor.$(OBJEXT) \
 	CharacterInfoScreen.$(OBJEXT) CInterface.$(OBJEXT) \
 	CLuaFunctions.$(OBJEXT) CLuaInterfaceGenerated.$(OBJEXT) \
-	CMessage.$(OBJEXT) CNPC.$(OBJEXT) commonsounds.$(OBJEXT) \
-	configuration.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
-	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) \
-	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
-	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
-	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
+	CMagic.$(OBJEXT) CMessage.$(OBJEXT) CNPC.$(OBJEXT) \
+	commonsounds.$(OBJEXT) configuration.$(OBJEXT) \
+	CSpell.$(OBJEXT) CTexture.$(OBJEXT) CZone.$(OBJEXT) \
+	debug.$(OBJEXT) elements.$(OBJEXT) FramesBase.$(OBJEXT) \
+	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) globals.$(OBJEXT) \
+	GroundLoot.$(OBJEXT) interactionpoint.$(OBJEXT) \
+	interactionregion.$(OBJEXT) inventory.$(OBJEXT) \
+	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
 	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
@@ -239,6 +240,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CLuaInterfaceGenerated.cpp \
 	src/CLuaInterfaceGenerated.h \
 	src/CLuaInterface.h \
+	src/CMagic.h \
+	src/CMagic.cpp \
 	src/CMessage.cpp \
 	src/CMessage.h \
 	src/CNPC.cpp \
@@ -414,6 +417,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CInterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CLuaFunctions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CLuaInterfaceGenerated.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CMagic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CNPC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CSpell.Po@am__quote@
@@ -638,6 +642,20 @@ CLuaInterfaceGenerated.obj: src/CLuaInterfaceGenerated.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CLuaInterfaceGenerated.cpp' object='CLuaInterfaceGenerated.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CLuaInterfaceGenerated.obj `if test -f 'src/CLuaInterfaceGenerated.cpp'; then $(CYGPATH_W) 'src/CLuaInterfaceGenerated.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CLuaInterfaceGenerated.cpp'; fi`
+
+CMagic.o: src/CMagic.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CMagic.o -MD -MP -MF $(DEPDIR)/CMagic.Tpo -c -o CMagic.o `test -f 'src/CMagic.cpp' || echo '$(srcdir)/'`src/CMagic.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CMagic.Tpo $(DEPDIR)/CMagic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CMagic.cpp' object='CMagic.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CMagic.o `test -f 'src/CMagic.cpp' || echo '$(srcdir)/'`src/CMagic.cpp
+
+CMagic.obj: src/CMagic.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CMagic.obj -MD -MP -MF $(DEPDIR)/CMagic.Tpo -c -o CMagic.obj `if test -f 'src/CMagic.cpp'; then $(CYGPATH_W) 'src/CMagic.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CMagic.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CMagic.Tpo $(DEPDIR)/CMagic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CMagic.cpp' object='CMagic.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CMagic.obj `if test -f 'src/CMagic.cpp'; then $(CYGPATH_W) 'src/CMagic.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CMagic.cpp'; fi`
 
 CMessage.o: src/CMessage.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CMessage.o -MD -MP -MF $(DEPDIR)/CMessage.Tpo -c -o CMessage.o `test -f 'src/CMessage.cpp' || echo '$(srcdir)/'`src/CMessage.cpp

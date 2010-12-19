@@ -31,6 +31,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CLuaInterfaceGenerated.cpp \
 	src/CLuaInterfaceGenerated.h \
 	src/CLuaInterface.h \
+	src/CMagic.h \
+	src/CMagic.cpp \
 	src/CMessage.cpp \
 	src/CMessage.h \
 	src/CNPC.cpp \
