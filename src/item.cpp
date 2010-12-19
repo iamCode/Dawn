@@ -358,7 +358,7 @@ GoldHeap::GoldHeap( size_t coins_ )
 		      false ),
 		coins( coins_ )
 {
-	symbolTexture.getTexture(0) = getGoldHeapTexture();
+	symbolTexture.LoadIMG( "data/items/coins.tga", 0 );
 }
 
 size_t GoldHeap::numCoins() const
