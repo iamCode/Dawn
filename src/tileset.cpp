@@ -37,31 +37,30 @@ int TileSet::addTile( std::string filename, TileClassificationType::TileClassifi
 			return curTileNr;
 		}
 	}
-	
+
 	int position = tiles.size();
 	std::auto_ptr<Tile> newTile = std::auto_ptr<Tile>( new Tile() );
 	newTile->filename = filename;
 	newTile->tileType = tileType;
 	newTile->tileID = position;
 	newTile->texture = new CTexture();
-	newTile->texture->texture.resize( 1 );
 	newTile->texture->LoadIMG( filename, 0 );
 	Tile *tilePtr = newTile.release();
 	tiles.push_back( tilePtr );
 	preparedTiles[ static_cast<size_t>(tileType) ].push_back( tilePtr );
-	
+
 	return position;
 }
 
 int TileSet::addTileWithCollisionBox( std::string filename, TileClassificationType::TileClassificationType tileType, int cbx, int cby, int cbw, int cbh ) {
 	int newPos = addTile( filename, tileType );
 	Tile *newTile = tiles[ newPos ];
-	newTile->texture->texture[0].contains_collision_box = true;
-	newTile->texture->texture[0].collision_box.x = cbx;
-	newTile->texture->texture[0].collision_box.y = cby;
-	newTile->texture->texture[0].collision_box.w = cbw;
-	newTile->texture->texture[0].collision_box.h = cbh;
-	
+	newTile->texture->getTexture(0).contains_collision_box = true;
+	newTile->texture->getTexture(0).collision_box.x = cbx;
+	newTile->texture->getTexture(0).collision_box.y = cby;
+	newTile->texture->getTexture(0).collision_box.w = cbw;
+	newTile->texture->getTexture(0).collision_box.h = cbh;
+
 	return newPos;
 }
 
@@ -103,7 +102,7 @@ void TileSet::addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, Adjace
 	std::vector<int> &secondTiles = class2->equivalentTiles;
 	for ( size_t curFirstTileIndex=0; curFirstTileIndex<firstTiles.size(); ++curFirstTileIndex ) {
 		for ( size_t curSecondTileIndex=0; curSecondTileIndex<secondTiles.size(); ++curSecondTileIndex ) {
-			addAdjacency( firstTiles[curFirstTileIndex], adjacencyType, secondTiles[curSecondTileIndex], 
+			addAdjacency( firstTiles[curFirstTileIndex], adjacencyType, secondTiles[curSecondTileIndex],
 			              class2->offsets[curSecondTileIndex].x - class1->offsets[curFirstTileIndex].x + allOffsetX,
 			              class2->offsets[curSecondTileIndex].y - class1->offsets[curFirstTileIndex].y + allOffsetY );
 		}
@@ -169,7 +168,7 @@ void TileSet::getAllAdjacentTiles( Tile *searchTile, std::vector< std::vector<Ti
 	result.resize( 4 );
 	matchOffsets.clear();
 	matchOffsets.resize( 4 );
-	
+
 	for ( size_t curAdjacencyNr=0; curAdjacencyNr<adjacencyList.size(); ++curAdjacencyNr ) {
 		AdjacencyStruct *curAdjacency = adjacencyList[ curAdjacencyNr ];
 		if ( tiles[ curAdjacency->baseTile ] == searchTile ) {

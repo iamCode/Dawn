@@ -46,7 +46,6 @@ void BuffWindow::initFonts()
 
 void BuffWindow::loadTextures()
 {
-    textures.texture.resize(2);
 	textures.LoadIMG("data/interface/BuffWindow/frame.tga",0);
 	textures.LoadIMG("data/interface/BuffWindow/background.tga",1);
 }
@@ -68,12 +67,12 @@ void BuffWindow::draw( int mouseX, int mouseY )
                 glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
             }
 
-            DrawingHelpers::mapTextureToRect( textures.texture[0],
+            DrawingHelpers::mapTextureToRect( textures.getTexture(0),
                                             world_x+posX, 36,
                                             world_y+posY-40*curSpell, 36 );
 
             // background
-            DrawingHelpers::mapTextureToRect( textures.texture[1],
+            DrawingHelpers::mapTextureToRect( textures.getTexture(1),
                                             world_x+posX+36, 168,
                                             world_y+posY-40*curSpell, 36 );
 

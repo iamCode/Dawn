@@ -49,13 +49,12 @@ void LogWindow::addTextToLog( std::string text, GLfloat color[] )
 
 void LogWindow::loadTextures()
 {
-    textures.texture.resize(1);
 	textures.LoadIMG("data/interface/blended_bg.tga",0);
 }
 
 void LogWindow::draw()
 {
-    DrawingHelpers::mapTextureToRect(   textures.texture[0],
+    DrawingHelpers::mapTextureToRect(   textures.getTexture(0),
                                         world_x + posX, width,
                                         world_y + posY, height
                                     );

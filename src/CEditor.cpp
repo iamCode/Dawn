@@ -221,7 +221,7 @@ void CEditor::HandleKeys()
 						}
 					}
 				break;
-				
+
 				case SDL_BUTTON_RIGHT: // right mouse button.
 					{
 						bool handled = false;
@@ -670,7 +670,7 @@ void CEditor::DrawEditor()
 				glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
 			}
 
-			DrawingHelpers::mapTextureToRect( interfacetexture.texture[1],
+			DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(1),
 			                                  zoneToEdit->CollisionMap[x].CR.x, zoneToEdit->CollisionMap[x].CR.w,
 			                                  zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h );
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -691,12 +691,12 @@ void CEditor::DrawEditor()
 	}
 
 	// quad on the top, baseframe for the object-selection.
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0],
+	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(0),
 	                                  editorFocus->getX(), RES_X,
 	                                  editorFocus->getY()+RES_Y-100, 100 );
 
 	// quad on bottom, baseframe for our helptext.
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[0],
+	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(0),
 	                                  editorFocus->getX(), RES_X,
 	                                  editorFocus->getY(), 100 );
 
@@ -727,7 +727,7 @@ void CEditor::DrawEditor()
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
 
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[1],
+	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(1),
 	                                  editorFocus->getX()+(RES_X/2)-5, 50,
 	                                  editorFocus->getY()+RES_Y-65, 50 );
 
@@ -765,7 +765,7 @@ void CEditor::DrawEditor()
 
 	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {
 		Tile *curTile = curTiles[ tilepos ];
-		DrawingHelpers::mapTextureToRect( curTile->texture->texture[0],
+		DrawingHelpers::mapTextureToRect( curTile->texture->getTexture(0),
 		                                  editorFocus->getX()+(RES_X/2)+(tilepos*50)+(tilepos_offset*50), 40,
 		                                  editorFocus->getY()+RES_Y-60, 40 );
 	}
@@ -773,7 +773,6 @@ void CEditor::DrawEditor()
 
 void CEditor::LoadTextures()
 {
-	interfacetexture.texture.resize(4);
 	interfacetexture.LoadIMG("data/background_editor.tga",0);
 	interfacetexture.LoadIMG("data/current_tile_backdrop.tga",1);
 	interfacetexture.LoadIMG("data/tile.tga",2);
@@ -812,21 +811,21 @@ bool CEditor::checkAndPlaceAdjacentTile()
 				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
-						drawX += editobject->tile->texture->texture[0].width;
+						drawX += editobject->tile->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::LEFT:
-						drawX -= adjacencyProposal->texture->texture[0].width;
+						drawX -= adjacencyProposal->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::TOP:
-						drawY += editobject->tile->texture->texture[0].height;
+						drawY += editobject->tile->texture->getTexture(0).height;
 					break;
 					case AdjacencyType::BOTTOM:
-						drawY -= adjacencyProposal->texture->texture[0].height;
+						drawY -= adjacencyProposal->texture->getTexture(0).height;
 					break;
 				}
 
-				int drawW = adjacencyProposal->texture->texture[0].width;
-				int drawH = adjacencyProposal->texture->texture[0].height;
+				int drawW = adjacencyProposal->texture->getTexture(0).width;
+				int drawH = adjacencyProposal->texture->getTexture(0).height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
 
@@ -873,21 +872,21 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
-						drawX += editobject->tile->texture->texture[0].width;
+						drawX += editobject->tile->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::LEFT:
-						drawX -= adjacencyProposal->texture->texture[0].width;
+						drawX -= adjacencyProposal->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::TOP:
-						drawY += editobject->tile->texture->texture[0].height;
+						drawY += editobject->tile->texture->getTexture(0).height;
 					break;
 					case AdjacencyType::BOTTOM:
-						drawY -= adjacencyProposal->texture->texture[0].height;
+						drawY -= adjacencyProposal->texture->getTexture(0).height;
 					break;
 				}
 
-				int drawW = adjacencyProposal->texture->texture[0].width;
-				int drawH = adjacencyProposal->texture->texture[0].height;
+				int drawW = adjacencyProposal->texture->getTexture(0).width;
+				int drawH = adjacencyProposal->texture->getTexture(0).height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
 
@@ -909,16 +908,16 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 {
 	//glScalef(editobject->x_scale,editobject->y_scale,1.0f);
-	//DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
-	//                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
-	//                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
+	//DrawingHelpers::mapTextureToRect( editobject->tile->texture->getTexture(0),
+	//                                  editobject->x_pos, editobject->tile->texture->getTexture(0).width,
+	//                                  editobject->y_pos, editobject->tile->texture->getTexture(0).height );
 
 	// Highlight the currently selected tile in red (which might well be bigger than it looks)
 	glPushMatrix();
 	glColor4f(1.0, 1.0, 1.0, 0.2);
-	DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
-	                                  editobject->x_pos, editobject->tile->texture->texture[0].width,
-	                                  editobject->y_pos, editobject->tile->texture->texture[0].height );
+	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(3),
+	                                  editobject->x_pos, editobject->tile->texture->getTexture(0).width,
+	                                  editobject->y_pos, editobject->tile->texture->getTexture(0).height );
 	glPopMatrix();
 
 	if ( adjacencyModeEnabled ) {
@@ -934,21 +933,21 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 				int drawY = editobject->y_pos + curDirectionAdjacencyOffsets[ curDirectionAdjacencySelection[ curDirection ] ].y;
 				switch (curDirection) {
 					case AdjacencyType::RIGHT:
-						drawX += editobject->tile->texture->texture[0].width;
+						drawX += editobject->tile->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::LEFT:
-						drawX -= adjacencyProposal->texture->texture[0].width;
+						drawX -= adjacencyProposal->texture->getTexture(0).width;
 					break;
 					case AdjacencyType::TOP:
-						drawY += editobject->tile->texture->texture[0].height;
+						drawY += editobject->tile->texture->getTexture(0).height;
 					break;
 					case AdjacencyType::BOTTOM:
-						drawY -= adjacencyProposal->texture->texture[0].height;
+						drawY -= adjacencyProposal->texture->getTexture(0).height;
 					break;
 				}
 
-				int drawW = adjacencyProposal->texture->texture[0].width;
-				int drawH = adjacencyProposal->texture->texture[0].height;
+				int drawW = adjacencyProposal->texture->getTexture(0).width;
+				int drawH = adjacencyProposal->texture->getTexture(0).height;
 
 				bool mouseInAdjacencyRect = DrawingHelpers::checkPointInRect( mouseX+world_x, mouseY+world_y, drawX, drawW, drawY, drawH );
 
@@ -958,7 +957,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 				} else {
 					glColor4f(1.0, 1.0, 1.0, 0.5);
 				}
-				DrawingHelpers::mapTextureToRect( adjacencyProposal->texture->texture[0],
+				DrawingHelpers::mapTextureToRect( adjacencyProposal->texture->getTexture(0),
 				                                  drawX, drawW, drawY, drawH );
 				glPopMatrix();
 			}
@@ -969,7 +968,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 
 		// draws a white quad as our editframe
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
-		DrawingHelpers::mapTextureToRect( interfacetexture.texture[3],
+		DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(3),
 		                                  editorFocus->getX()+50, 350,
 		                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
 
@@ -979,9 +978,9 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 		glScalef(editobject->x_scale,editobject->y_scale,1.0f);
 		glColor4f(editobject->red, editobject->green, editobject->blue, editobject->transparency);
 
-		DrawingHelpers::mapTextureToRect( editobject->tile->texture->texture[0],
-		                                  editorFocus->getX()+55, editobject->tile->texture->texture[0].width,
-		                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->texture[0].height-5, editobject->tile->texture->texture[0].height );
+		DrawingHelpers::mapTextureToRect( editobject->tile->texture->getTexture(0),
+		                                  editorFocus->getX()+55, editobject->tile->texture->getTexture(0).width,
+		                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->getTexture(0).height-5, editobject->tile->texture->getTexture(0).height );
 
 		glPopMatrix();
 

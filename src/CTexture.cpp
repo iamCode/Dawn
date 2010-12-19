@@ -160,8 +160,23 @@ TextureCache::~TextureCache()
 {
 }
 
+sTexture& CTexture::getTexture( int index )
+{
+    if ( index >= texture.size() )
+    {
+        dawn_debug_fatal( "Trying to get an unknown / unloaded texture: %d in CTexture::getTexture().", index );
+    }
+    return texture[ index ];
+}
+
 void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode, int textureOffsetX, int textureOffsetY )
 {
+	// we we load a texture where the index is larger than our current texture array, we need to increase it.
+	if ( texture_index >= texture.size() )
+	{
+	    texture.resize( texture_index + 1 );
+	}
+
 	if ( threadedMode && ! isOpenGLThreadInThreadedMode ) {
 		processTextureInOpenGLThread( this, file, texture_index, textureOffsetX, textureOffsetY );
 		return;
@@ -216,6 +231,6 @@ std::string getID( std::string filename )
 			idstream << '_';
 		}
 	}
-	
+
 	return idstream.str();
 }

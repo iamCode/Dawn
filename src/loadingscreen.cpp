@@ -32,14 +32,12 @@ LoadingScreen::LoadingScreen()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/loadingScreen.tga", 0 );
 	progressTexture = new CTexture();
-	progressTexture->texture.resize(1);
 	progressTexture->LoadIMG( "data/interface/lifebar.tga", 0 );
 
-	width = backgroundTexture->texture[0].width;
-	height = backgroundTexture->texture[0].height;
+	width = backgroundTexture->getTexture(0).width;
+	height = backgroundTexture->getTexture(0).height;
 	// center on screen
 	posX = (Configuration::screenWidth - width) / 2;
 	posY = (Configuration::screenHeight - height) / 2;
@@ -60,10 +58,10 @@ LoadingScreen::~LoadingScreen()
 void LoadingScreen::draw()
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0),
 	                                  posX, width,
 	                                  posY, height );
-	DrawingHelpers::mapTextureToRect( progressTexture->texture[0],
+	DrawingHelpers::mapTextureToRect( progressTexture->getTexture(0),
 	                                  posX+92, progress * (width-184),
 	                                  posY+92, 32 );
 

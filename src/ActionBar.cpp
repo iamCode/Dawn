@@ -89,8 +89,8 @@ void ActionBar::draw()
 	cooldownSpells = player->getCooldownSpells();
 
 	// background at bottom of screen, black and nicely blended.
-	DrawingHelpers::mapTextureToRect( textures.texture[0],
-	                                  world_x + posX - 20, RES_X - posX + 20,
+	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
+                                      world_x + posX - 20, RES_X - posX + 20,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
@@ -109,7 +109,7 @@ void ActionBar::draw()
             }
 	    }
 
-	    DrawingHelpers::mapTextureToRect( textures.texture[1],
+	    DrawingHelpers::mapTextureToRect( textures.getTexture(1),
 		                                  world_x+ 420 + buttonId * 60, 50,
 		                                  world_y+ 8, 50 );
 
@@ -194,7 +194,7 @@ void ActionBar::draw()
 	// draw the cursor if it's supposed to be drawn
 	if( Globals::displayCursor() )
 	{
-		DrawingHelpers::mapTextureToRect(textures.texture[2], mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
+		DrawingHelpers::mapTextureToRect(textures.getTexture(2), mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
 	}
 }
 
@@ -347,7 +347,6 @@ void ActionBar::drawSpellTooltip( int x, int y )
 
 void ActionBar::loadTextures()
 {
-		textures.texture.resize(4);
 		textures.LoadIMG("data/interface/blended_bg.tga",0);
 		textures.LoadIMG("data/border.tga",1);
 		textures.LoadIMG("data/cursors/circle1_enabled.tga",2);

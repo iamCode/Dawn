@@ -36,21 +36,18 @@ CharacterInfoScreen::CharacterInfoScreen( Player *player )
 	this->player = player;
 	infoFont = NULL;
 	currentTab = 0;
-	tabs[0].tabimage.texture.resize(1);
 	tabs[0].tabimage.LoadIMG("data/interface/CharacterInfoScreen/meleeSelected.tga",0);
 	tabs[0].height = 32;
 	tabs[0].width = 58;
 	tabs[0].posX = 61;
 	tabs[0].posY = 242;
 
-	tabs[1].tabimage.texture.resize(1);
 	tabs[1].tabimage.LoadIMG("data/interface/CharacterInfoScreen/defenseSelected.tga",0);
 	tabs[1].height = 32;
 	tabs[1].width = 72;
 	tabs[1].posX = 196;
 	tabs[1].posY = 242;
 
-	tabs[2].tabimage.texture.resize(1);
 	tabs[2].tabimage.LoadIMG("data/interface/CharacterInfoScreen/spellsSelected.tga",0);
 	tabs[2].height = 32;
 	tabs[2].width = 59;
@@ -64,7 +61,6 @@ CharacterInfoScreen::~CharacterInfoScreen()
 
 void CharacterInfoScreen::LoadTextures()
 {
-	textures.texture.resize(2);
 	textures.LoadIMG("data/interface/CharacterInfoScreen/background.tga",0);
 	textures.LoadIMG("data/white2x2pixel.tga",1);
 }
@@ -76,8 +72,8 @@ void CharacterInfoScreen::initFonts()
 
 void CharacterInfoScreen::draw( int mouseX, int mouseY )
 {
-	DrawingHelpers::mapTextureToRect( textures.texture[0],
-	                                  world_x + posX, textures.texture[0].width, world_y + posY, textures.texture[0].height );
+	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
+	                                  world_x + posX, textures.getTexture(0).width, world_y + posY, textures.getTexture(0).height );
 
 	size_t descriptionTextStart = 60;
 	size_t valueFieldStart = 280;
@@ -188,18 +184,18 @@ void CharacterInfoScreen::drawExpBar()
     int expBarWidth = static_cast<float>(currentXP) / neededXP * 100;
 
     glColor3f( 0.7f, 0.73f, 0.29f );
-    DrawingHelpers::mapTextureToRect( textures.texture[1],
+    DrawingHelpers::mapTextureToRect( textures.getTexture(1),
                                     world_x + posX + 280, 100, world_y + posY + 433, 10 );
     glColor3f( 0.9f, 0.93f, 0.29f );
-    DrawingHelpers::mapTextureToRect( textures.texture[1],
+    DrawingHelpers::mapTextureToRect( textures.getTexture(1),
                                     world_x + posX + 280, expBarWidth, world_y + posY + 433, 10 );
     glColor3f( 1.0f, 1.0f, 1.0f );
 }
 
 void CharacterInfoScreen::drawTabs()
 {
-    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.texture[0],
-                                      world_x + tabs[currentTab].posX + posX, tabs[currentTab].tabimage.texture[0].width, world_y + tabs[currentTab].posY + posY, tabs[currentTab].tabimage.texture[0].height );
+    DrawingHelpers::mapTextureToRect( tabs[currentTab].tabimage.getTexture(0),
+                                      world_x + tabs[currentTab].posX + posX, tabs[currentTab].tabimage.getTexture(0).width, world_y + tabs[currentTab].posY + posY, tabs[currentTab].tabimage.getTexture(0).height );
 
 	const StatsSystem *statsSystem = StatsSystem::getStatsSystem();
 

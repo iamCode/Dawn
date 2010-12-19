@@ -75,7 +75,6 @@ GroundLoot::GroundLoot( Player *player_)
              drawTooltips( false )
 {
     font = FontCache::getFontFromCache("data/verdana.ttf", 11);
-    textures.texture.resize(3);
     textures.LoadIMG("data/interface/tooltip/groundloot_background.tga",0);
     textures.LoadIMG("data/interface/tooltip/groundloot_left.tga",1);
     textures.LoadIMG("data/interface/tooltip/groundloot_right.tga",2);
@@ -271,8 +270,8 @@ void GroundLoot::sortItems()
     std::sort(groundItems.begin(), groundItems.end(), groundItemYPosCompareFunction);
 
     // this needs to be added because drawing tooltipWidth isn't exact and height not set
-    size_t tooltipAddSpaceX = textures.texture[0].width + textures.texture[2].width - 16;
-    size_t tooltipAddSpaceY = textures.texture[1].height;
+    size_t tooltipAddSpaceX = textures.getTexture(0).width + textures.getTexture(2).width - 16;
+    size_t tooltipAddSpaceY = textures.getTexture(1).height;
 
     // Check each item for collision against already placed items and move up until it no longer collides
     for ( size_t curItemNr = 1; curItemNr < groundItems.size(); ++curItemNr ) {
@@ -308,7 +307,7 @@ void GroundLoot::draw()
 {
 	for ( size_t curItem = 0; curItem < groundItems.size(); curItem++ )
 	{
-		DrawingHelpers::mapTextureToRect( groundItems[ curItem ].item->getSymbolTexture()->texture[0],
+		DrawingHelpers::mapTextureToRect( groundItems[ curItem ].item->getSymbolTexture()->getTexture(0),
 		                                  groundItems[ curItem ].xpos,
 		                                  groundItems[ curItem ].item->getSizeX() * 32,
 		                                  groundItems[ curItem ].ypos,
@@ -333,23 +332,23 @@ void GroundLoot::drawTooltip()
             }
 
             // left border
-            DrawingHelpers::mapTextureToRect( textures.texture[1],
+            DrawingHelpers::mapTextureToRect( textures.getTexture(1),
                                               groundItems[curItem].tooltipXpos,
-                                              textures.texture[1].width,
+                                              textures.getTexture(1).width,
                                               groundItems[curItem].tooltipYpos,
-                                              textures.texture[1].height );
+                                              textures.getTexture(1).height );
             // background
-            DrawingHelpers::mapTextureToRect( textures.texture[0],
+            DrawingHelpers::mapTextureToRect( textures.getTexture(0),
                                               groundItems[curItem].tooltipXpos+16,
                                               groundItems[curItem].tooltipWidth-16,
                                               groundItems[curItem].tooltipYpos,
-                                              textures.texture[0].height );
+                                              textures.getTexture(0).height );
             // right border
-            DrawingHelpers::mapTextureToRect( textures.texture[2],
+            DrawingHelpers::mapTextureToRect( textures.getTexture(2),
                                               groundItems[curItem].tooltipXpos+groundItems[curItem].tooltipWidth,
-                                              textures.texture[2].width,
+                                              textures.getTexture(2).width,
                                               groundItems[curItem].tooltipYpos,
-                                              textures.texture[2].height );
+                                              textures.getTexture(2).height );
 
             glColor4fv( groundItems[curItem].color );
             if ( dynamic_cast<GoldHeap*>( groundItems[curItem].item ) == NULL )

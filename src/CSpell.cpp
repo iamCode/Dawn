@@ -111,7 +111,7 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 {
 	CTexture *texture = getSymbol();
 	if ( texture != NULL ) {
-	    DrawingHelpers::mapTextureToRect( texture->texture[0],
+	    DrawingHelpers::mapTextureToRect( texture->getTexture(0),
                                         left, width, bottom, height );
 	}
 }
@@ -348,7 +348,6 @@ void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
     delete spellSymbol;
   }
 	spellSymbol = new CTexture();
-	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
 
@@ -492,7 +491,6 @@ void ConfigurableAction::setSpellSymbol( std::string symbolFile )
 	    delete spellSymbol;
     }
     spellSymbol = new CTexture();
-	spellSymbol->texture.resize(1);
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
 
@@ -667,7 +665,6 @@ void GeneralRayDamageSpell::setNumAnimations( int count )
     }
 	spellTexture = new CTexture();
 	numTextures = count;
-	spellTexture->texture.resize( count );
 }
 
 void GeneralRayDamageSpell::setAnimationTexture( int num, std::string filename )
@@ -774,7 +771,7 @@ void GeneralRayDamageSpell::drawEffect()
         glRotatef(degrees,0.0f,0.0f,1.0f);
         glTranslatef(-160-creator->getXPos(),-creator->getYPos()-32,0.0);
 
-        DrawingHelpers::mapTextureToRect( spellTexture->texture[frameCount], creator->getXPos()+32, 256, creator->getYPos()+64, 400 );
+        DrawingHelpers::mapTextureToRect( spellTexture->getTexture(frameCount), creator->getXPos()+32, 256, creator->getYPos()+64, 400 );
         glPopMatrix();
 	}
 }
@@ -836,7 +833,6 @@ void GeneralAreaDamageSpell::setNumAnimations( int count )
     }
 	spellTexture = new CTexture();
 	numTextures = count;
-	spellTexture->texture.resize( count );
 }
 
 void GeneralAreaDamageSpell::setAnimationTexture( int num, std::string filename )
@@ -932,7 +928,7 @@ void GeneralAreaDamageSpell::drawEffect()
     glPushMatrix();
     glTranslatef(centerX, centerY, 0.0f);
 
-    DrawingHelpers::mapTextureToRect( spellTexture->texture[frameCount], centerX-radius, radius*2, centerY+radius, radius*2 );
+    DrawingHelpers::mapTextureToRect( spellTexture->getTexture(frameCount), centerX-radius, radius*2, centerY+radius, radius*2 );
     glPopMatrix();
 	}
 }
@@ -1000,7 +996,6 @@ void GeneralBoltDamageSpell::setNumAnimations( int count )
     }
     boltTexture = new CTexture();
 	numBoltTextures = count;
-	boltTexture->texture.resize( count );
 }
 
 void GeneralBoltDamageSpell::setAnimationTexture( int num, std::string filename )
@@ -1102,15 +1097,15 @@ void GeneralBoltDamageSpell::drawEffect()
             degrees = -degrees;
         }
 
-        int textureWidth = boltTexture->texture[frameCount].width;
-        int textureHeight = boltTexture->texture[frameCount].height;
+        int textureWidth = boltTexture->getTexture(frameCount).width;
+        int textureHeight = boltTexture->getTexture(frameCount).height;
         glPushMatrix();
         glTranslatef(posx, posy, 0.0f);
         glRotatef(degrees,0.0f,0.0f,1.0f);
         glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
 
         DrawingHelpers::mapTextureToRect(
-                    boltTexture->texture[frameCount],
+                    boltTexture->getTexture(frameCount),
                     0, textureWidth,
                     0, textureHeight );
         glPopMatrix();
@@ -1689,7 +1684,6 @@ void RangedDamageAction::setNumAnimations( int count )
     }
     projectileTexture = new CTexture();
 	numProjectileTextures = count;
-	projectileTexture->texture.resize( count );
 }
 
 void RangedDamageAction::setAnimationTexture( int num, std::string filename )
@@ -1799,15 +1793,15 @@ void RangedDamageAction::drawEffect()
             degrees = -degrees;
         }
 
-        int textureWidth = projectileTexture->texture[frameCount].width;
-        int textureHeight = projectileTexture->texture[frameCount].height;
+        int textureWidth = projectileTexture->getTexture(frameCount).width;
+        int textureHeight = projectileTexture->getTexture(frameCount).height;
         glPushMatrix();
         glTranslatef(posx, posy, 0.0f);
         glRotatef(degrees,0.0f,0.0f,1.0f);
         glTranslatef(-textureWidth/2, -textureHeight/2, 0.0f);
 
         DrawingHelpers::mapTextureToRect(
-                    projectileTexture->texture[frameCount],
+                    projectileTexture->getTexture(frameCount),
                     0, textureWidth,
                     0, textureHeight );
         glPopMatrix();

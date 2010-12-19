@@ -805,7 +805,6 @@ namespace Frames
 		}
 
 		frameTextures = std::auto_ptr<CTexture>(new CTexture());
-		frameTextures->texture.resize( 12 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
 		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
 		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
@@ -824,23 +823,23 @@ namespace Frames
 	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
 	{
 		// draw the corners
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[0], leftX, blockWidth, bottomY, blockHeight); // lower left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[1], leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[2], leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->texture[3], leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(0), leftX, blockWidth, bottomY, blockHeight); // lower left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(1), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(2), leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(3), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
 
 		// draw the top and bottom borders
 		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
 		{
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[5], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[6], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(5), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(6), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
 		}
 
 		// draw the right and left borders
 		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
 		{
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[7], leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
-			DrawingHelpers::mapTextureToRect( frameTextures->texture[8], leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(7), leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(8), leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
 		}
 
 		// draw the background
@@ -848,7 +847,7 @@ namespace Frames
 		{
 			for ( int blockX = 0; blockX < numBlocksX; blockX++ )
 			{
-				DrawingHelpers::mapTextureToRect( frameTextures->texture[4], leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
+				DrawingHelpers::mapTextureToRect( frameTextures->getTexture(4), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
 			}
 		}
 	}
@@ -857,15 +856,15 @@ namespace Frames
 	{
 	    if ( coin == currency::GOLD )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[9], x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(9), x, 16, y, 16 );
 	    }
 	    if ( coin == currency::SILVER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[10], x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(0), x, 16, y, 16 );
 	    }
 	    if ( coin == currency::COPPER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->texture[11], x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(1), x, 16, y, 16 );
 	    }
 	}
 } // namespace Frames

@@ -65,7 +65,6 @@ QuestWindow::QuestWindow() : FramesBase( 20, 100, 375, 376, 20, 20 )
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 14);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/QuestScreen/questscreen.tga", 0 );
 }
 
@@ -78,9 +77,9 @@ QuestWindow::~QuestWindow()
 
 void QuestWindow::draw( int mouseX, int mouseY )
 {
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
-	                                  posX + world_x, backgroundTexture->texture[0].width,
-	                                  posY + world_y, backgroundTexture->texture[0].height );
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0),
+	                                  posX + world_x, backgroundTexture->getTexture(0).width,
+	                                  posY + world_y, backgroundTexture->getTexture(0).height );
 
 	int textX = world_x + posX + 64;
 	int textY = world_y + posY + frameHeight - 24 - font->getHeight();

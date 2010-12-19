@@ -66,7 +66,6 @@ void InteractionPoint::setInteractionType( InteractionType::InteractionType inte
 	}
 	this->interactionType = interactionType;
 	interactionTexture = new CTexture();
-	interactionTexture->texture.resize(2);
 	switch ( interactionType )
 	{
 	    case InteractionType::Quest:
@@ -91,8 +90,7 @@ void InteractionPoint::setBackgroundTexture( std::string texturename )
 		delete backgroundTexture;
 	}
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.resize(1);
-	backgroundTexture->LoadIMG( texturename, 0 );
+		backgroundTexture->LoadIMG( texturename, 0 );
 }
 
 void InteractionPoint::setInteractionCode( std::string interactionCode )
@@ -127,7 +125,7 @@ void InteractionPoint::draw()
 		return;
 	}
 
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0], posX, width, posY, height );
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0), posX, width, posY, height );
 }
 
 void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY, int characterXpos, int characterYpos )
@@ -149,11 +147,11 @@ void InteractionPoint::drawInteractionSymbol( int mouseX, int mouseY, int charac
 	    available_symbol = 1;
 	}
 
-	DrawingHelpers::mapTextureToRect( interactionTexture->texture[available_symbol],
+	DrawingHelpers::mapTextureToRect( interactionTexture->getTexture(available_symbol),
 	                                  mouseX+world_x,
-	                                  interactionTexture->texture[available_symbol].width,
+	                                  interactionTexture->getTexture(available_symbol).width,
 	                                  mouseY+world_y,
-	                                  interactionTexture->texture[available_symbol].height );
+	                                  interactionTexture->getTexture(available_symbol).height );
 }
 
 void InteractionPoint::startInteraction( int characterXpos, int characterYpos )
@@ -198,17 +196,17 @@ std::string InteractionPoint::getLuaSaveText() const
 {
 	std::ostringstream oss;
 	std::string objectName = "curInteractionPoint";
-	
+
 	oss << "local " << objectName << " = DawnInterface.addInteractionPoint();" << std::endl;
 	oss << objectName << ":setPosition( " << posX << ", " << posY << ", " << width << ", " << height << " );" << std::endl;
 	if ( backgroundTexture != NULL ) {
-		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->getTexture(0).textureFile << "\" );" << std::endl;
 	}
 	if ( interactionTexture != NULL ) {
 		oss << objectName << ":setInteractionType( " << toStringForLua( interactionType ) << " );" << std::endl;
 	}
 	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
-	
+
 	return oss.str();
 }
 
@@ -257,13 +255,13 @@ std::string CharacterInteractionPoint::getLuaSaveText() const
 	std::string characterReference = DawnInterface::getItemReferenceRestore( interactionCharacter );
 	oss << "local " << objectName << " = DawnInterface.addCharacterInteractionPoint( " << characterReference << " );" << std::endl;
 	if ( backgroundTexture != NULL ) {
-		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->texture[0].textureFile << "\" );" << std::endl;
+		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->getTexture(0).textureFile << "\" );" << std::endl;
 	}
 	if ( interactionTexture != NULL ) {
 		oss << objectName << ":setInteractionType( " << toStringForLua( interactionType ) << " );" << std::endl;
 	}
 	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;
-	
+
 	return oss.str();
 }
 

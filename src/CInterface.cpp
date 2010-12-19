@@ -37,7 +37,6 @@ void CInterface::initFonts()
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.texture.resize(15);
 	interfacetextures.LoadIMG("data/lifebar.tga",0);
 	interfacetextures.LoadIMG("data/interface/lifemana_bottom.tga",1);
 	interfacetextures.LoadIMG("data/interface/lifemana_top.tga",2);
@@ -54,7 +53,6 @@ void CInterface::LoadTextures()
 	interfacetextures.LoadIMG("data/confused.tga",13);
 	interfacetextures.LoadIMG("data/mesmerized.tga",14);
 
-    damageDisplayTexturesSmall.texture.resize(10);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/1small.tga",1);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/2small.tga",2);
@@ -66,7 +64,6 @@ void CInterface::LoadTextures()
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/8small.tga",8);
 	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/9small.tga",9);
 
-	damageDisplayTexturesBig.texture.resize(10);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/0big.tga",0);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/1big.tga",1);
 	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/2big.tga",2);
@@ -82,9 +79,9 @@ void CInterface::LoadTextures()
 void CInterface::DrawInterface()
 {
 	// drawing the base of the life and mana bar.
-	DrawingHelpers::mapTextureToRect( interfacetextures.texture[1],
-	                                  world_x, interfacetextures.texture[1].width,
-	                                  world_y+RES_Y-interfacetextures.texture[1].height, interfacetextures.texture[1].height );
+	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(1),
+	                                  world_x, interfacetextures.getTexture(1).width,
+	                                  world_y+RES_Y-interfacetextures.getTexture(1).height, interfacetextures.getTexture(1).height );
 
     /** drawing the procentual display of characters life and mana.
     starts of at an Y-offset of 31, this is where the transparent part of the lifebar starts.
@@ -97,13 +94,13 @@ void CInterface::DrawInterface()
     // draw the backdrop with transparency.
     /// health bar
     glColor4f( 0.815f, 0.16f, 0.16f, 0.4f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
 	                                  world_x+31, 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 0.4f );
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
+        DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
                                         world_x+31, 91,
                                         world_y+RES_Y-64, 32 );
     }
@@ -111,13 +108,13 @@ void CInterface::DrawInterface()
     // draw the barwidth with no transparency.
     /// health bar
     glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
 	                                  world_x+31, lifeBarPercentage * 91,
 	                                  world_y+RES_Y-32, 32 );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
+        DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
                                         world_x+31, manaBarPercentage * 91,
                                         world_y+RES_Y-64, 32 );
     }
@@ -131,25 +128,25 @@ void CInterface::DrawInterface()
         } else {
             glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
         }
-        DrawingHelpers::mapTextureToRect( interfacetextures.texture[8],
+        DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
                                           world_x+31, fatigueBarPercentage * 91,
                                           world_y+RES_Y-64, 32 );
     }
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     // drawing the top part of the life and mana bar
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[2],
-	                                  world_x, interfacetextures.texture[2].width,
-	                                  world_y+RES_Y-interfacetextures.texture[2].height, interfacetextures.texture[2].height );
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(2),
+	                                  world_x, interfacetextures.getTexture(2).width,
+	                                  world_y+RES_Y-interfacetextures.getTexture(2).height, interfacetextures.getTexture(2).height );
 
 
 	if (player->continuePreparing()) {
 		// draw backdrop first.
         glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0],world_x+512,100,world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+512,100,world_y+100,20);
 		// then the actual castbar
         glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.texture[0],world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
 
@@ -227,9 +224,9 @@ void CInterface::drawCombatText()
 
         //sets the color of the text we're drawing based on what type of damage type we're displaying.
         glColor4f(damageType[damageDisplay[currentDamageDisplay].damageType][0],damageType[damageDisplay[currentDamageDisplay].damageType][1],damageType[damageDisplay[currentDamageDisplay].damageType][2],damageDisplay[currentDamageDisplay].transparency);
-        DrawingHelpers::mapTextureToRect( fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay],
-                                        damageDisplay[currentDamageDisplay].x_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].width,
-                                        damageDisplay[currentDamageDisplay].y_pos, fontTextures->texture[damageDisplay[currentDamageDisplay].digitToDisplay].height );
+        DrawingHelpers::mapTextureToRect( fontTextures->getTexture(damageDisplay[currentDamageDisplay].digitToDisplay),
+                                        damageDisplay[currentDamageDisplay].x_pos, fontTextures->getTexture(damageDisplay[currentDamageDisplay].digitToDisplay).width,
+                                        damageDisplay[currentDamageDisplay].y_pos, fontTextures->getTexture(damageDisplay[currentDamageDisplay].digitToDisplay).height );
 
         //reset color back to default.
         glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -253,19 +250,19 @@ void CInterface::drawTargetedNPCText()
     int fontStart = npc->x_pos+npc->getWidth()/2-stringWidth/2;
     int tooltipStart = npc->x_pos+npc->getWidth()/2-(width+64)/2;
 
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[6],
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(6),
                                       tooltipStart, 32,
                                       npc->y_pos+npc->getHeight()-3, 32 );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[5],
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(5),
                                       tooltipStart+32, width,
                                       npc->y_pos+npc->getHeight()-3, 32 );
-    DrawingHelpers::mapTextureToRect( interfacetextures.texture[7],
+    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(7),
                                       tooltipStart+32+width, 32,
                                       npc->y_pos+npc->getHeight()-3, 32 );
 
     float life_percentage = static_cast<float>(npc->getCurrentHealth()) / static_cast<float>(npc->getModifiedMaxHealth());
     glColor4f(1.0f-life_percentage,life_percentage,0.0f,1.0f);
-	DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
+	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(0),
 	                                  npc->getXPos(), npc->getWidth()*life_percentage,
 	                                  npc->getYPos()+npc->getHeight(), 8 );
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -301,12 +298,12 @@ void CInterface::drawTargetedNPCText()
             } else {
                 glColor4f( 0.0f, 0.7f, 0.0f, 1.0f );
             }
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[9],
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(9),
                                             npc->getXPos()+(19*curSpell)+2, 18,
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
             // background
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[10],
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(0),
                                             npc->getXPos()+(19*curSpell)+2, 18,
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
@@ -318,12 +315,12 @@ void CInterface::drawTargetedNPCText()
     if (npc->continuePreparing()) {
         // draw backdrop first.
         glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
+		DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(0),
 	                                  npc->getXPos(), npc->getWidth(),
 	                                  npc->getYPos()+npc->getHeight()-12, 8 );
         // then the actual castbar
 		glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect( interfacetextures.texture[0],
+		DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(0),
 	                                  npc->getXPos(), npc->getWidth()*npc->getPreparationPercentage(),
 	                                  npc->getYPos()+npc->getHeight()-12, 8 );
         glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -346,27 +343,27 @@ void CInterface::drawCharacterStates()
     for ( size_t curCharacter = 0; curCharacter < allCharacters.size(); curCharacter++ ) {
         /// draws fear symbol
         if ( allCharacters[ curCharacter  ]->isFeared() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[11],
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[11].width / 2, interfacetextures.texture[11].width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[11].height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(1),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(1).width / 2, interfacetextures.getTexture(1).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(1).height );
         }
         /// draws stun symbol
         if ( allCharacters[ curCharacter ]->isStunned() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[12],
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[12].width / 2, interfacetextures.texture[12].width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[12].height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(2),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(2).width / 2, interfacetextures.getTexture(2).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(2).height );
         }
         /// draws confused symbol
         if ( allCharacters[ curCharacter ]->isConfused() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[13],
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[13].width / 2, interfacetextures.texture[13].width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[13].height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(3),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(3).width / 2, interfacetextures.getTexture(3).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(3).height );
         }
         /// draws mesmerized symbol
         if ( allCharacters[ curCharacter ]->isMesmerized() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.texture[14],
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.texture[14].width / 2, interfacetextures.texture[14].width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.texture[14].height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(4),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(4).width / 2, interfacetextures.getTexture(4).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(4).height );
         }
     }
 }

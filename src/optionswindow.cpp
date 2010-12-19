@@ -51,15 +51,14 @@ OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/optionsScreen.tga", 0 );
 }
 
 void OptionsWindow::setTextureDependentPositions()
 {
 	// at this point the background texture has been loaded
-	frameWidth = backgroundTexture->texture[0].width;
-	frameHeight = backgroundTexture->texture[0].height;
+	frameWidth = backgroundTexture->getTexture(0).width;
+	frameHeight = backgroundTexture->getTexture(0).height;
 	// center on screen
 	posX = (Configuration::screenWidth - frameWidth) / 2;
 	posY = (Configuration::screenHeight - frameHeight) / 2;
@@ -78,7 +77,7 @@ extern int mouseY;
 void OptionsWindow::draw( int mouseX, int mouseY )
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0),
 	                                  posX + world_x, frameWidth,
 	                                  posY + world_y, frameHeight );
 
@@ -215,7 +214,6 @@ ChooseClassScreen::ChooseClassScreen() : FramesBase( 0, 0, 279, 313, 20, 19 )
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->texture.resize(1);
 	backgroundTexture->LoadIMG( "data/interface/OptionsScreen/classScreen.tga", 0 );
 }
 
@@ -226,8 +224,8 @@ ChooseClassScreen::~ChooseClassScreen()
 void ChooseClassScreen::setTextureDependentPositions()
 {
 	// at this point the background texture has been loaded
-	frameWidth = backgroundTexture->texture[0].width;
-	frameHeight = backgroundTexture->texture[0].height;
+	frameWidth = backgroundTexture->getTexture(0).width;
+	frameHeight = backgroundTexture->getTexture(0).height;
 	// center on screen
 	posX = (Configuration::screenWidth - frameWidth) / 2;
 	posY = (Configuration::screenHeight - frameHeight) / 2;
@@ -241,7 +239,7 @@ bool ChooseClassScreen::isDone() const
 void ChooseClassScreen::draw( int mouseX, int mouseY )
 {
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->texture[0],
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0),
 	                                  posX + world_x, frameWidth,
 	                                  posY + world_y, frameHeight );
 

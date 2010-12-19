@@ -66,12 +66,13 @@ public:
 
 class CTexture
 {
-	public:
-		std::vector<sTexture> texture;
+	private:
+        std::vector<sTexture> texture;
 
+	public:
+		sTexture& getTexture( int index );
 		void LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode=false, int textureOffsetX = 0, int textureOffsetY = 0 );
 		void DrawTexture(int x, int y, int draw_id, float transparency = 1.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float x_scale = 1.0f, float y_scale = 1.0f);
-		int NumberOfTextures;
 };
 
 #endif

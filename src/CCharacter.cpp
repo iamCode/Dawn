@@ -852,7 +852,6 @@ void CCharacter::setNumMoveTexturesPerDirection( ActivityType::ActivityType acti
 	assert( texture[ activityNr ] == NULL );
 
 	texture[ activityNr ] = new CTexture();
-	texture[ activityNr ]->texture.resize( 8 * numTextures + 1 );
 }
 
 void CCharacter::setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX, int textureOffsetY )
@@ -945,12 +944,12 @@ int CCharacter::getYPos() const
 
 int CCharacter::getWidth() const
 {
-	return useBoundingBox ? boundingBoxW : texture[0]->texture[1].width;
+	return useBoundingBox ? boundingBoxW : texture[0]->getTexture( 1 ).width;
 }
 
 int CCharacter::getHeight() const
 {
-	return useBoundingBox ? boundingBoxH : texture[0]->texture[1].height;
+    return useBoundingBox ? boundingBoxH : texture[0]->getTexture( 1 ).height;
 }
 
 void CCharacter::setPosition( int xpos, int ypos )

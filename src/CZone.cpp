@@ -132,9 +132,9 @@ void CZone::DrawShadows()
 int CZone::LocateTile(int x, int y)
 {
 	for (unsigned int t=0;t<TileMap.size();t++) {
-		if ((TileMap[t].x_pos+TileMap[t].tile->texture->texture[0].width > x) &&
+		if ((TileMap[t].x_pos+TileMap[t].tile->texture->getTexture(0).width > x) &&
 		        (TileMap[t].x_pos < x)) {
-			if ((TileMap[t].y_pos+TileMap[t].tile->texture->texture[0].height > y) &&
+			if ((TileMap[t].y_pos+TileMap[t].tile->texture->getTexture(0).height > y) &&
 			        (TileMap[t].y_pos < y)) {
 				return t;
 			}
@@ -167,25 +167,25 @@ void CZone::AddEnvironment(int x_pos, int y_pos, Tile *tile, bool centeredOnPos)
 	int placePosX = x_pos;
 	int placePosY = y_pos;
 	if ( centeredOnPos ) {
-		placePosX -= tile->texture->texture[0].width/2;
-		placePosY -= tile->texture->texture[0].height/2;
+		placePosX -= tile->texture->getTexture(0).width/2;
+		placePosY -= tile->texture->getTexture(0).height/2;
 	}
 
 	EnvironmentMap.push_back(sEnvironmentMap(placePosX, placePosY, tile,
 	                         1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
-	if (tile->texture->texture[0].contains_collision_box == true) {
-		CollisionMap.push_back(sCollisionMap(placePosX + tile->texture->texture[0].collision_box.x,
-		                                     placePosY + tile->texture->texture[0].collision_box.y,
-		                                     tile->texture->texture[0].collision_box.h,
-		                                     tile->texture->texture[0].collision_box.w));
+	if (tile->texture->getTexture(0).contains_collision_box == true) {
+		CollisionMap.push_back(sCollisionMap(placePosX + tile->texture->getTexture(0).collision_box.x,
+		                                     placePosY + tile->texture->getTexture(0).collision_box.y,
+		                                     tile->texture->getTexture(0).collision_box.h,
+		                                     tile->texture->getTexture(0).collision_box.w));
 	}
 }
 
 void CZone::AddShadow(int x_pos, int y_pos, Tile *tile)
 {
 	// the old shadowmap here, keeping it a while... ShadowMap.push_back(sShadowMap(x_pos-(ZoneShadow.texture[texture].width/2),y_pos-(ZoneShadow.texture[texture].height/2),texture, 1.0f, 1.0f, 1.0f, 1.0f));
-	ShadowMap.push_back(sEnvironmentMap(x_pos-(tile->texture->texture[0].width/2),
-	                                    y_pos-(tile->texture->texture[0].height/2),tile, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
+	ShadowMap.push_back(sEnvironmentMap(x_pos-(tile->texture->getTexture(0).width/2),
+	                                    y_pos-(tile->texture->getTexture(0).height/2),tile, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0));
 }
 
 void CZone::AddCollisionbox(int x_pos, int y_pos)
@@ -196,9 +196,9 @@ void CZone::AddCollisionbox(int x_pos, int y_pos)
 int CZone::DeleteEnvironment(int x, int y)
 {
 	for (unsigned int t=0;t<EnvironmentMap.size();t++) {
-		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->texture[0].width > x) &&
+		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->getTexture(0).width > x) &&
 		        (EnvironmentMap[t].x_pos < x)) {
-			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->texture[0].height > y) &&
+			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->getTexture(0).height > y) &&
 			        (EnvironmentMap[t].y_pos < y)) {
 				EnvironmentMap.erase(EnvironmentMap.begin()+t);
 				return 0;
@@ -211,9 +211,9 @@ int CZone::DeleteEnvironment(int x, int y)
 int CZone::LocateEnvironment(int x, int y)
 {
 	for (unsigned int t=0;t<EnvironmentMap.size();t++) {
-		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->texture[0].width > x) &&
+		if ((EnvironmentMap[t].x_pos+EnvironmentMap[t].tile->texture->getTexture(0).width > x) &&
 		        (EnvironmentMap[t].x_pos < x)) {
-			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->texture[0].height > y) &&
+			if ((EnvironmentMap[t].y_pos+EnvironmentMap[t].tile->texture->getTexture(0).height > y) &&
 			        (EnvironmentMap[t].y_pos < y)) {
 				return t;
 			}
@@ -225,9 +225,9 @@ int CZone::LocateEnvironment(int x, int y)
 int CZone::LocateShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
-		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->texture[0].width > x) &&
+		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->getTexture(0).width > x) &&
 		        (ShadowMap[t].x_pos < x)) {
-			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->texture[0].height > y) &&
+			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->getTexture(0).height > y) &&
 			        (ShadowMap[t].y_pos < y)) {
 				return t;
 			}
@@ -239,9 +239,9 @@ int CZone::LocateShadow(int x, int y)
 int CZone::DeleteShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
-		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->texture[0].width > x) &&
+		if ((ShadowMap[t].x_pos+ShadowMap[t].tile->texture->getTexture(0).width > x) &&
 		        (ShadowMap[t].x_pos < x)) {
-			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->texture[0].height > y) &&
+			if ((ShadowMap[t].y_pos+ShadowMap[t].tile->texture->getTexture(0).height > y) &&
 			        (ShadowMap[t].y_pos < y)) {
 				ShadowMap.erase(ShadowMap.begin()+t);
 				return 0;

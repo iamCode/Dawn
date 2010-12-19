@@ -77,7 +77,6 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	    statsModifier[ curStat ] = 0;
 	}
 
-	symbolTexture.texture.resize(1);
 	// note: This is for use in derived classes that set their own texture ID only
 	if ( loadSymbol ) {
 		symbolTexture.LoadIMG( symbolFile, 0 );
@@ -344,10 +343,9 @@ sTexture getGoldHeapTexture()
 {
 	if ( goldHeapTexture.get() == NULL ) {
 		goldHeapTexture = std::auto_ptr<CTexture>(new CTexture());
-		goldHeapTexture->texture.resize( 1 );
 		goldHeapTexture->LoadIMG( "data/items/coins.tga", 0 );
 	}
-	return goldHeapTexture->texture[0];
+	return goldHeapTexture->getTexture(0);
 }
 
 GoldHeap::GoldHeap( size_t coins_ )
@@ -360,7 +358,7 @@ GoldHeap::GoldHeap( size_t coins_ )
 		      false ),
 		coins( coins_ )
 {
-	symbolTexture.texture[0] = getGoldHeapTexture();
+	symbolTexture.getTexture(0) = getGoldHeapTexture();
 }
 
 size_t GoldHeap::numCoins() const
