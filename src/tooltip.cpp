@@ -860,11 +860,11 @@ namespace Frames
 	    }
 	    if ( coin == currency::SILVER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(0), x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(10), x, 16, y, 16 );
 	    }
 	    if ( coin == currency::COPPER )
 	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(1), x, 16, y, 16 );
+	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(11), x, 16, y, 16 );
 	    }
 	}
 } // namespace Frames

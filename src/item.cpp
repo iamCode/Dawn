@@ -337,17 +337,6 @@ bool Item::isUseable() const
     return useableItem;
 }
 
-static std::auto_ptr<CTexture> goldHeapTexture( NULL );
-
-sTexture getGoldHeapTexture()
-{
-	if ( goldHeapTexture.get() == NULL ) {
-		goldHeapTexture = std::auto_ptr<CTexture>(new CTexture());
-		goldHeapTexture->LoadIMG( "data/items/coins.tga", 0 );
-	}
-	return goldHeapTexture->getTexture(0);
-}
-
 GoldHeap::GoldHeap( size_t coins_ )
 	:	Item( "Coins", 1, 1, "data/items/coins.tga",
 		      ItemQuality::NORMAL,
