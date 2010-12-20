@@ -303,7 +303,7 @@ void CInterface::drawTargetedNPCText()
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
             // background
-            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(0),
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(10),
                                             npc->getXPos()+(19*curSpell)+2, 18,
                                             npc->getYPos()+npc->getHeight() + 30, 18 );
 
@@ -343,27 +343,27 @@ void CInterface::drawCharacterStates()
     for ( size_t curCharacter = 0; curCharacter < allCharacters.size(); curCharacter++ ) {
         /// draws fear symbol
         if ( allCharacters[ curCharacter  ]->isFeared() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(1),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(1).width / 2, interfacetextures.getTexture(1).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(1).height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(11),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(11).width / 2, interfacetextures.getTexture(11).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(11).height );
         }
         /// draws stun symbol
         if ( allCharacters[ curCharacter ]->isStunned() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(2),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(2).width / 2, interfacetextures.getTexture(2).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(2).height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(12).width / 2, interfacetextures.getTexture(12).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(12).height );
         }
         /// draws confused symbol
         if ( allCharacters[ curCharacter ]->isConfused() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(3),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(3).width / 2, interfacetextures.getTexture(3).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(3).height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(13),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(13).width / 2, interfacetextures.getTexture(13).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(13).height );
         }
         /// draws mesmerized symbol
         if ( allCharacters[ curCharacter ]->isMesmerized() == true ) {
-            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(4),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(4).width / 2, interfacetextures.getTexture(4).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(4).height );
+            DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(14),
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(14).width / 2, interfacetextures.getTexture(14).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(14).height );
         }
     }
 }
