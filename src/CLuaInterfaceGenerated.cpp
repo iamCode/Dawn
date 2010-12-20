@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sun Dec 19 20:44:56 2010.
+** Generated automatically by tolua++-1.0.93 on Mon Dec 20 17:43:49 2010.
 */
 
 #ifndef __cplusplus
@@ -1196,6 +1196,39 @@ static int tolua_CLuaInterface_CCharacter_getLevel00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getLevel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setExperience of class  CCharacter */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_setExperience00
+static int tolua_CLuaInterface_CCharacter_setExperience00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CCharacter",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CCharacter* self = (CCharacter*)  tolua_tousertype(tolua_S,1,0);
+  int experience = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExperience'", NULL);
+#endif
+  {
+   self->setExperience(experience);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setExperience'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6779,6 +6812,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getName",tolua_CLuaInterface_CCharacter_getName00);
    tolua_function(tolua_S,"setLevel",tolua_CLuaInterface_CCharacter_setLevel00);
    tolua_function(tolua_S,"getLevel",tolua_CLuaInterface_CCharacter_getLevel00);
+   tolua_function(tolua_S,"setExperience",tolua_CLuaInterface_CCharacter_setExperience00);
    tolua_function(tolua_S,"setMinDamage",tolua_CLuaInterface_CCharacter_setMinDamage00);
    tolua_function(tolua_S,"getMinDamage",tolua_CLuaInterface_CCharacter_getMinDamage00);
    tolua_function(tolua_S,"setMaxDamage",tolua_CLuaInterface_CCharacter_setMaxDamage00);

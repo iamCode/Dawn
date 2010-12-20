@@ -725,6 +725,11 @@ void CCharacter::addItemToLootTable(Item *item, double dropChance )
     lootTable.push_back( sLootTable( item, dropChance ) );
 }
 
+void CCharacter::setExperience( uint64_t experience )
+{
+    this->experience = experience;
+}
+
 uint64_t CCharacter::getExperience() const
 {
 	return experience;

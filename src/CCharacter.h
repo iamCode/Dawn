@@ -364,6 +364,7 @@ class CCharacter
 
 		void addItemToLootTable( Item *item, double dropChance );
 
+		void setExperience( uint64_t experience );
 		uint64_t getExperience() const;
 		void gainExperience( uint64_t addExp );
 		uint64_t getExpNeededForLevel( uint8_t level ) const;

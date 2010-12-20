@@ -118,6 +118,8 @@ class CCharacter {
   void setLevel( int newLevel );
   int getLevel() const;
 
+  void setExperience( int experience );
+
   void setMinDamage( int newMinDamage );
   int getMinDamage();
 
