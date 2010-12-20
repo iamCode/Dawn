@@ -117,18 +117,12 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 	}
 }
 
-//namespace DawnInterface {
-//    void addTextToLogWindow( GLfloat color[], const char *text, ... );
-//}
-//GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
-//DawnInterface::addTextToLogWindow( blue, "%s.", name);
-
 std::string CSpellActionBase::getID() const
 {
 	std::string name = getName();
 	std::ostringstream idstream;
 	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
-		if ( isspace( name[curChar] ) ) {
+		if ( !isalpha( name[curChar] ) ) {
 			// ignore
 		} else if ( isupper( name[curChar] ) ) {
 			idstream << char( tolower( name[curChar] ) );

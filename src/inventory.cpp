@@ -386,9 +386,12 @@ std::string Inventory::getReloadText()
 	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
 		if ( equippedItems[ curEquippable ] != NULL ) {
 			Item *curItem = equippedItems[ curEquippable ]->getItem();
-			oss << "DawnInterface.restoreWieldItem( " << curEquippable << ", "
-			    << "itemDatabase[\"" << curItem->getID() << "\"] " << ");"
-			    << std::endl;
+			// if the item is two-handed and we're inspecting the off-hand slot, don't output it.
+			if ( !( curItem->isTwoHandedWeapon() == true && curEquippable == static_cast<size_t>( ItemSlot::OFF_HAND ) ) ) {
+                oss << "DawnInterface.restoreWieldItem( " << curEquippable << ", "
+                    << "itemDatabase[\"" << curItem->getID() << "\"] " << ");"
+                    << std::endl;
+			}
 		}
 	}
 
