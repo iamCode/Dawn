@@ -1361,7 +1361,7 @@ bool CCharacter::castSpell( CSpellActionBase *spell )
 	    }
 	}
 
-	// if we're invisible or sneaking while casting, we remove that spell.
+	// if we're invisible, sneaking or channeling while casting, we remove that spell.
 	if ( isSneaking() == true ) {
 	    removeSpellsWithCharacterState( CharacterStates::Sneaking );
 	}
@@ -1369,6 +1369,11 @@ bool CCharacter::castSpell( CSpellActionBase *spell )
 	if ( isInvisible() == true ) {
 	    removeSpellsWithCharacterState( CharacterStates::Invisible );
 	}
+
+	if ( isChanneling() == true ) {
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
+	}
+
 
     giveToPreparation( spell );
     return true;
