@@ -177,6 +177,7 @@ void GroundLoot::searchForItems( int x, int y )
 void GroundLoot::lootItem( Item *item, size_t itemIndex )
 {
     GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
+    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
     if ( dynamic_cast<GoldHeap*>( item ) != NULL ) {
         // some gold heap
         GoldHeap *goldHeap = dynamic_cast<GoldHeap*>( item );
@@ -189,7 +190,8 @@ void GroundLoot::lootItem( Item *item, size_t itemIndex )
         if ( inserted ) {
             removeItem( itemIndex );
             DawnInterface::addTextToLogWindow( blue, "You looted %s.",item->getName().c_str() );
-
+        } else {
+            DawnInterface::addTextToLogWindow( yellow, "Inventory is full.");
         }
     }
 }
