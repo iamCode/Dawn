@@ -207,10 +207,10 @@ void ActionBar::clicked( int clickX, int clickY )
 	int buttonId = getMouseOverButtonId( clickX, clickY );
 	if ( buttonId >= 0 )
 	{
-		EffectType::EffectType effectType = button[buttonId].action->getEffectType();
 		// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
 		if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
 		{
+			EffectType::EffectType effectType = button[buttonId].action->getEffectType();
 			if ( effectType == EffectType::AreaTargetSpell ) // AoE spell
 			{
 				if ( player->getTarget() != NULL ) // is there a target?
