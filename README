@@ -1,5 +1,7 @@
 To compile Dawn: ./configure && make
-To run Dawn: ./dawn-rpg
+To run Dawn: ./dawn-starter.sh
+
+(./dawn-starter.sh will run ./dawn-rpg but add usable output in case of errors so if you want to support dawn, use it, please.)
 
 ---------------------------------------
 

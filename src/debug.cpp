@@ -162,6 +162,7 @@ void generalSignalHandler( int signum )
 	printf( "the program caught signal %d\n", signum );
 	printf( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n" );
 	print_backtrace();
+	fflush(stdout);
 
 	signal (signum, SIG_DFL);
 	raise (signum);
