@@ -111,7 +111,7 @@ bool InteractionPoint::isMouseOver( int mouseX, int mouseY ) const
 
 bool InteractionPoint::isInRange( int characterXpos, int characterYpos ) const
 {
-    if ( sqrt(pow(characterXpos-posX,2) + pow(characterYpos-posY,2)) > 120 )
+    if ( sqrt(pow(characterXpos-(posX + width/2),2) + pow(characterYpos-(posY + height/2),2)) > 120 )
 	{
 	    return false;
 	}

@@ -228,12 +228,12 @@ function quest_hexmaster.onEnteredUndergroundRegion()
 end
 
 function quest_hexmaster.onLeaveLaboratory()
-	if ( not quest_hexmaster.killedSkeletton )
+	if ( not quest_hexmaster.killedSkeleton )
 	then
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 2000 );
-		textWindow:setText("The door has been magically sealed again. Perhaps the door will open if you destroy the magic animating the skeletton.")
+		textWindow:setText("The door has been magically sealed again. Perhaps the door will open if you destroy the magic animating the skeleton.")
 	else
 		DawnInterface.enterZone( "data/arinoxDungeonLevel1", 1020, 400 );
 	end
@@ -253,7 +253,7 @@ function quest_hexmaster.showEnterRoomText( part )
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setText("Suddenly a cold breeze touches your shoulder. You hear a shallow laughter and it takes a blink to notice it is not in your ears, but in the back of your head. The ground seems to be moving before your eyes and it is when you lean against the wall for hold that you see it was no imagination at all. The bones are moving and form into a body again. You turn to flee, but it is too late. The door snaps shut behind you and you know instantly that it will not open to your touch. Slowly your nightmare continues as a full grown human skeletton rises before you with a battered but powerful blade in its bony fingers. The laughter in your head rises to a crescendo then suddendly moves away to come back from the mouth of the bony reaver as it moves towards you with obviously malicious intend.");
+		textWindow:setText("Suddenly a cold breeze touches your shoulder. You hear a shallow laughter and it takes a blink to notice it is not in your ears, but in the back of your head. The ground seems to be moving before your eyes and it is when you lean against the wall for hold that you see it was no imagination at all. The bones are moving and form into a body again. You turn to flee, but it is too late. The door snaps shut behind you and you know instantly that it will not open to your touch. Slowly your nightmare continues as a full grown human skeleton rises before you with a battered but powerful blade in its bony fingers. The laughter in your head rises to a crescendo then suddendly moves away to come back from the mouth of the bony reaver as it moves towards you with obviously malicious intend.");
 		textWindow:setOnCloseText( "quest_hexmaster.showEnterRoomText( 3 )" );
 	end
 	if ( part == 3 )
@@ -266,33 +266,33 @@ function quest_hexmaster.showEnterRoomText( part )
 	end
 	if ( part == 4 )
 	then
-		quest_hexmaster.skeletton = DawnInterface.addMobSpawnPoint( "Skeleton", -1145, 1321, 180, 0 )
-        	quest_hexmaster.skeletton:setAttitude( Attitude.HOSTILE )
+		quest_hexmaster.skeleton = DawnInterface.addMobSpawnPoint( "Skeleton", -1145, 1321, 180, 0 )
+        	quest_hexmaster.skeleton:setAttitude( Attitude.HOSTILE )
 		local onDieEventHandler = DawnInterface.createEventHandler();
 		onDieEventHandler:setExecuteText( "quest_hexmaster.showEnterRoomText( 5 )" );
-		quest_hexmaster.skeletton:addOnDieEventHandler( onDieEventHandler );
+		quest_hexmaster.skeleton:addOnDieEventHandler( onDieEventHandler );
 	end
 	if ( part == 5 )
 	then
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setText("When you crush its head the skeletton falls appart, now again a liveless heap of bones. With a shrill sound the black unlife behind the eye sockets vanishes and the head turns to dust. In the dust you see again the glittering from before. Clearly now before your eyes lies a perfectly circular silver plate and your gaze falls to the door on the western wall again. It might be worth a try...")
-		DawnInterface.removeMobSpawnPoint( quest_hexmaster.skeletton );
-		quest_hexmaster.skeletton = nil
-		quest_hexmaster.killedSkeletton = true
+		textWindow:setText("When you crush its head the skeleton falls appart, now again a liveless heap of bones. With a shrill sound the black unlife behind the eye sockets vanishes and the head turns to dust. In the dust you see again the glittering from before. Clearly now before your eyes lies a perfectly circular silver plate and your gaze falls to the door on the western wall again. It might be worth a try...")
+		DawnInterface.removeMobSpawnPoint( quest_hexmaster.skeleton );
+		quest_hexmaster.skeleton = nil
+		quest_hexmaster.killedSkeleton = true
 	end
 end
 
 function quest_hexmaster.onEnterHiddenChamber()
-	if ( not quest_hexmaster.killedSkeletton )
+	if ( not quest_hexmaster.killedSkeleton )
 	then
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 2000 );
 		textWindow:setText("The door has no handle, but only a perfectly circular depression is in the middle. Better turn to the fight than waste your time here.");
 	end
-	if ( quest_hexmaster.killedSkeletton and not quest_hexmaster.metJorni )
+	if ( quest_hexmaster.killedSkeleton and not quest_hexmaster.metJorni )
 	then
 		quest_hexmaster.showJorniText( 1 )
 	end
