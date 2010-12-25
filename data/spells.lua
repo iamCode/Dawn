@@ -646,7 +646,6 @@ curSpell:setName("Voice of the forest");
 curSpell:setStats( StatsType.MeleeCritical, 5 );
 curSpell:setStats( StatsType.Dexterity, 15 );
 curSpell:setDuration( 180 );
-curSpell:setCharacterState( CharacterStates.Movementspeed, 2.0 );
 curSpell:setInfo("The spirits of the forest imbues your body, increasing your melee critical strike chance and dexterity.");
 curSpell:setCastTime( 2000 );
 curSpell:setSpellSymbol( "data/spells/voiceoftheforest/symbol.tga" );
