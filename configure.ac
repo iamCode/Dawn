@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ([2.64])
-AC_INIT([dawn], [0.0.36], [dawn-rpg-bugreports@lists.sourceforge.net])
+AC_INIT([dawn], [0.0.37], [dawn-rpg-bugreports@lists.sourceforge.net])
 AM_INIT_AUTOMAKE
 
 # Checks for programs.
