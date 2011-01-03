@@ -1388,10 +1388,11 @@ void CCharacter::giveToPreparation( CSpellActionBase *toPrepare )
 		// setup all variables for casting / executing
 		isPreparing = true;
 		curSpellAction = toPrepare;
+        curSpellAction->playSoundSpellCasting();
 		toPrepare->beginPreparationOfSpellAction();
 		preparationStartTime = SDL_GetTicks();
 		continuePreparing();
-	}
+ 	}
 }
 
 bool CCharacter::continuePreparing()
@@ -1440,13 +1441,16 @@ void CCharacter::startSpellAction()
 		Globals::getCurrentZone()->MagicMap.back().getSpell()->startEffect();
 	}
 	else
-		curSpellAction->startEffect();
+        curSpellAction->stopSoundSpellCasting();
+        curSpellAction->startEffect();
 }
+
 
 void CCharacter::abortCurrentSpellAction()
 {
 	assert( curSpellAction != NULL );
 	if ( isPreparing ) {
+	    curSpellAction->stopSoundSpellCasting();
 		delete curSpellAction;
 		curSpellAction = NULL;
 		isPreparing = false;

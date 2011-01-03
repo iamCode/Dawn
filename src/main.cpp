@@ -628,7 +628,7 @@ public:
 		}
 
         activity = ActivityType::Dying;
-        int numOfMoves = 0;
+        size_t numOfMoves = 0;
         if ( player->getClass() == CharacterClass::Warrior ) {
             numOfMoves = 9;
         } else if ( player->getClass() == CharacterClass::Ranger ) {

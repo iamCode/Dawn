@@ -126,7 +126,18 @@ class CSpellActionBase
 		void beginPreparationOfSpellAction();
 		void markSpellActionAsFinished();
 
-			/// add additional spells to this spell, to be executed based on chance when the spell is finished.
+		/// \brief Functions for defining and playing sounds.
+		void setSoundSpellCasting( std::string soundSpellCasting );
+		void setSoundSpellStart( std::string soundSpellStart );
+		void setSoundSpellHit( std::string soundSpellHit );
+		void playSoundSpellCasting();
+		void playSoundSpellStart();
+		void playSoundSpellHit();
+		void stopSoundSpellCasting();
+		void stopSoundSpellStart();
+		void stopSoundSpellHit();
+
+        /// add additional spells to this spell, to be executed based on chance when the spell is finished.
 		void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
 		void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
 
@@ -162,6 +173,9 @@ class CSpellActionBase
 		bool finished;
 		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
 		CharacterClass::CharacterClass requiredClass;
+        std::string soundSpellCasting;
+        std::string soundSpellStart;
+        std::string soundSpellHit;
 		uint8_t requiredLevel;
 		uint32_t requiredWeapons;
 		uint8_t rank;

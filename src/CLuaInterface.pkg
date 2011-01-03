@@ -406,6 +406,9 @@ class CSpellActionBase
 	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
 	void setRequiredLevel( int requiredLevel );
 	void addRequiredWeapon( WeaponType::WeaponType weaponType );
+	void setSoundSpellCasting( std::string soundSpellCasting );
+	void setSoundSpellStart( std::string soundSpellStart );
+	void setSoundSpellHit( std::string soundSpellHit );
 	void setRank( int rank );
 	void setInstant( bool instant );
 	void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0 );

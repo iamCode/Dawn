@@ -20,6 +20,7 @@
 #define SOUNDENGINE_H
 
 #include <string>
+#include <map>
 
 class SoundEngine
 {
@@ -35,6 +36,8 @@ class SoundEngine
 		static void playMusic( std::string musicFile, bool playInLoop );
 		/// This plays a certain sound file. The sound file will be loaded into memory if not already done so.
 		static void playSound( std::string soundFile );
+		/// This attempts to stop a soundfile from being played, if it's currently being played. ;)
+		static void stopSound( std::string soundFile );
 
 		/// Whether the walking sound is to be enabled or not
 		static void useWalkingSound( bool enabled );

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Mon Dec 20 17:43:49 2010.
+** Generated automatically by tolua++-1.0.93 on Wed Dec 29 11:53:38 2010.
 */
 
 #ifndef __cplusplus
@@ -3181,6 +3181,105 @@ static int tolua_CLuaInterface_CSpellActionBase_addRequiredWeapon00(lua_State* t
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'addRequiredWeapon'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSoundSpellCasting of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setSoundSpellCasting00
+static int tolua_CLuaInterface_CSpellActionBase_setSoundSpellCasting00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  std::string soundSpellCasting = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSoundSpellCasting'", NULL);
+#endif
+  {
+   self->setSoundSpellCasting(soundSpellCasting);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSoundSpellCasting'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSoundSpellStart of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setSoundSpellStart00
+static int tolua_CLuaInterface_CSpellActionBase_setSoundSpellStart00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  std::string soundSpellStart = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSoundSpellStart'", NULL);
+#endif
+  {
+   self->setSoundSpellStart(soundSpellStart);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSoundSpellStart'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSoundSpellHit of class  CSpellActionBase */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_CSpellActionBase_setSoundSpellHit00
+static int tolua_CLuaInterface_CSpellActionBase_setSoundSpellHit00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CSpellActionBase* self = (CSpellActionBase*)  tolua_tousertype(tolua_S,1,0);
+  std::string soundSpellHit = ((std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSoundSpellHit'", NULL);
+#endif
+  {
+   self->setSoundSpellHit(soundSpellHit);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSoundSpellHit'.",&tolua_err);
  return 0;
 #endif
 }
@@ -7037,6 +7136,9 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setRequiredClass",tolua_CLuaInterface_CSpellActionBase_setRequiredClass00);
    tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_CSpellActionBase_setRequiredLevel00);
    tolua_function(tolua_S,"addRequiredWeapon",tolua_CLuaInterface_CSpellActionBase_addRequiredWeapon00);
+   tolua_function(tolua_S,"setSoundSpellCasting",tolua_CLuaInterface_CSpellActionBase_setSoundSpellCasting00);
+   tolua_function(tolua_S,"setSoundSpellStart",tolua_CLuaInterface_CSpellActionBase_setSoundSpellStart00);
+   tolua_function(tolua_S,"setSoundSpellHit",tolua_CLuaInterface_CSpellActionBase_setSoundSpellHit00);
    tolua_function(tolua_S,"setRank",tolua_CLuaInterface_CSpellActionBase_setRank00);
    tolua_function(tolua_S,"setInstant",tolua_CLuaInterface_CSpellActionBase_setInstant00);
    tolua_function(tolua_S,"setCharacterState",tolua_CLuaInterface_CSpellActionBase_setCharacterState00);

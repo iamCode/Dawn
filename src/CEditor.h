@@ -75,9 +75,10 @@ class CEditor
 		bool checkAndPlaceAdjacentTile();
 
 		bool enabled;
-		int tilepos_offset, tilepos, current_tilepos, current_object, objectedit_selected;
+		int tilepos_offset, current_object, objectedit_selected;
+		size_t tilepos,current_tilepos;
 		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce, KP_toggle_adjacencyMode;
-		
+
 		// Keeps track of the camera positions saves the original camera
 		// to snap back to target after done editing
 		cameraFocusHandler *editorFocus, *originalFocus;
@@ -86,11 +87,11 @@ class CEditor
 		GLFT_Font *objectDescriptionFont;
 		GLFT_Font *keybindingFont;
 		CZone *zoneToEdit;
-		
+
 		bool adjacencyModeEnabled;
 		std::vector< std::vector<Tile*> > curAdjacentTiles;
 		std::vector< std::vector<Point> > curAdjacencyOffsets;
-		int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
+		unsigned int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
 };
 
 #endif

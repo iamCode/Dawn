@@ -49,7 +49,7 @@ CSpellActionBase::CSpellActionBase()
 		  finished( false ),
 		  instant( false ),
 		  requiredClass( CharacterClass::NOCLASS ),
-		  requiredLevel( 1 ),
+          requiredLevel( 1 ),
 		  requiredWeapons( 0 ),
           rank( 1 )
 {
@@ -196,6 +196,63 @@ bool CSpellActionBase::getInstant( ) const
     return instant;
 }
 
+void CSpellActionBase::setSoundSpellCasting( std::string soundSpellCasting )
+{
+    this->soundSpellCasting = soundSpellCasting;
+}
+
+void CSpellActionBase::setSoundSpellStart( std::string soundSpellStart )
+{
+    this->soundSpellStart = soundSpellStart;
+}
+
+void CSpellActionBase::setSoundSpellHit( std::string soundSpellHit )
+{
+    this->soundSpellHit = soundSpellHit;
+}
+
+void CSpellActionBase::playSoundSpellCasting()
+{
+    if ( soundSpellCasting != "" ) {
+        SoundEngine::playSound( soundSpellCasting );
+    }
+}
+
+void CSpellActionBase::stopSoundSpellCasting()
+{
+    if ( soundSpellCasting != "" ) {
+        SoundEngine::stopSound( soundSpellCasting );
+    }
+}
+
+void CSpellActionBase::playSoundSpellStart()
+{
+    if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+    }
+}
+
+void CSpellActionBase::stopSoundSpellStart()
+{
+    if ( soundSpellStart != "" ) {
+        SoundEngine::stopSound( soundSpellStart );
+    }
+}
+
+void CSpellActionBase::playSoundSpellHit()
+{
+    if ( soundSpellHit != "" ) {
+        SoundEngine::playSound( soundSpellHit );
+    }
+}
+
+void CSpellActionBase::stopSoundSpellHit()
+{
+    if ( soundSpellHit != "" ) {
+        SoundEngine::stopSound( soundSpellHit );
+    }
+}
+
 void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
     characterStateEffects.first = characterState;
@@ -240,14 +297,18 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	radius = other->radius;
     instant = other->instant;
 
-  additionalSpellsOnCreator = other->additionalSpellsOnCreator;
-  additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
 
-  characterStateEffects = other->characterStateEffects;
+    characterStateEffects = other->characterStateEffects;
 
-  requiredClass = other->requiredClass;
-  requiredLevel = other->requiredLevel;
-  requiredWeapons = other->requiredWeapons;
+    soundSpellCasting = other->soundSpellCasting;
+    soundSpellHit = other->soundSpellHit;
+    soundSpellStart = other->soundSpellStart;
+
+    requiredClass = other->requiredClass;
+    requiredLevel = other->requiredLevel;
+    requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;
@@ -265,12 +326,12 @@ uint16_t ConfigurableSpell::getCastTime() const
 
 void ConfigurableSpell::setCooldown( uint16_t newCooldown )
 {
-  cooldown = newCooldown;
+    cooldown = newCooldown;
 }
 
 uint16_t ConfigurableSpell::getCooldown() const
 {
-  return cooldown;
+    return cooldown;
 }
 
 void ConfigurableSpell::setSpellCost( uint16_t spellCost )
@@ -306,11 +367,11 @@ void ConfigurableSpell::setRange( uint16_t minRange, uint16_t maxRange )
 
 bool ConfigurableSpell::isInRange( uint16_t distance ) const
 {
-  if ( distance >= minRange && distance <= maxRange )
-  {
+    if ( distance >= minRange && distance <= maxRange )
+    {
       return true;
-  }
-  return false;
+    }
+    return false;
 }
 
 bool ConfigurableSpell::isSpellHostile() const
@@ -340,7 +401,7 @@ std::string ConfigurableSpell::getInfo() const
 
 void ConfigurableSpell::setDuration( uint16_t newDuration )
 {
-  duration = newDuration;
+    duration = newDuration;
 }
 
 uint16_t ConfigurableSpell::getDuration() const
@@ -372,9 +433,9 @@ ConfigurableAction::ConfigurableAction()
 	cooldown = 0;
 	spellCost = 0;
 	duration = 0;
-  minRange = 0;
-  maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
-  hostileSpell = true;
+    minRange = 0;
+    maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
+    hostileSpell = true;
 
 	name = "";
 	info = "";
@@ -395,6 +456,10 @@ ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 
     additionalSpellsOnCreator = other->additionalSpellsOnCreator;
     additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+
+    soundSpellCasting = other->soundSpellCasting;
+    soundSpellHit = other->soundSpellHit;
+    soundSpellStart = other->soundSpellStart;
 
     characterStateEffects = other->characterStateEffects;
 
@@ -597,7 +662,12 @@ ElementType::ElementType GeneralDamageSpell::getContinuousDamageElement() const
 void GeneralDamageSpell::dealDirectDamage()
 {
 	if ( getDirectDamageMax() > 0 ) {
-	    int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
+        /// play the hit sound effect for the spell, if we have any.
+        if ( soundSpellHit != "" ) {
+            SoundEngine::playSound( soundSpellHit );
+        }
+
+        int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
 	    double fatigueDamageFactor = 1.0;
 
         // here we recalculate the damage if we're a fighter class with high fatigue
@@ -692,6 +762,10 @@ void GeneralRayDamageSpell::setAnimationTexture( int num, std::string filename )
 
 void GeneralRayDamageSpell::startEffect()
 {
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
 	remainingEffect = 0.0;
 	frameCount = 0;
 
@@ -873,6 +947,10 @@ void GeneralAreaDamageSpell::setAnimationTexture( int num, std::string filename 
 
 void GeneralAreaDamageSpell::startEffect()
 {
+	/// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
 	remainingEffect = 0.0;
 	frameCount = 0;
 
@@ -889,12 +967,6 @@ void GeneralAreaDamageSpell::startEffect()
 
 void GeneralAreaDamageSpell::inEffect()
 {
-
-
-
-
-
-
 	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
 	uint32_t elapsedSinceStart = curTime - effectStart;
@@ -1038,7 +1110,11 @@ void GeneralBoltDamageSpell::setAnimationTexture( int num, std::string filename 
 
 void GeneralBoltDamageSpell::startEffect()
 {
-	frameCount = 0;
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
+    frameCount = 0;
 	moveRemaining = 0.0;
 	effectStart = SDL_GetTicks();
 	animationTimerStart = effectStart;
@@ -1263,7 +1339,11 @@ double GeneralHealingSpell::calculateContinuousHealing( uint64_t timePassed )
 
 void GeneralHealingSpell::startEffect()
 {
-	remainingEffect = 0.0;
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
+    remainingEffect = 0.0;
     effectStart = SDL_GetTicks();
 	lastEffect = effectStart;
 
@@ -1463,6 +1543,10 @@ void GeneralBuffSpell::setSpellEffectElementModifierPoints( ElementType::Element
 
 void GeneralBuffSpell::startEffect()
 {
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
     effectStart = SDL_GetTicks();
 	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
@@ -1591,12 +1675,9 @@ void MeleeDamageAction::dealDamage()
         if ( ! target->isAlive() ) {
             creator->gainExperience( target->getModifiedMaxHealth() / 10 );
         }
-        if ( creator == Globals::getPlayer() ) {
-            SoundEngine::playSound( "data/sound/sword_01.ogg" );
-        }
-    } else {
-        if ( creator == Globals::getPlayer() ) {
-            SoundEngine::playSound( "data/sound/sword_swwosh.ogg" );
+        /// play the hit sound effect for the spell, if we have any.
+        if ( soundSpellHit != "" ) {
+            SoundEngine::playSound( soundSpellHit );
         }
     }
 }
@@ -1614,6 +1695,10 @@ EffectType::EffectType MeleeDamageAction::getEffectType() const
 
 void MeleeDamageAction::startEffect()
 {
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
 	effectStart = SDL_GetTicks();
 	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
@@ -1726,6 +1811,10 @@ void RangedDamageAction::setAnimationTexture( int num, std::string filename )
 
 void RangedDamageAction::startEffect()
 {
+    /// play the start sound effect for the spell, if we have any.
+	if ( soundSpellStart != "" ) {
+        SoundEngine::playSound( soundSpellStart );
+	}
 	frameCount = 0;
 	moveRemaining = 0.0;
 	effectStart = SDL_GetTicks();
@@ -1737,7 +1826,6 @@ void RangedDamageAction::startEffect()
 	target->addActiveSpell( this );
 	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
 	unbindFromCreator();
-	SoundEngine::playSound( "data/sound/arrowHit06.ogg" );
 }
 
 void RangedDamageAction::inEffect()
@@ -1891,6 +1979,10 @@ void RangedDamageAction::dealDamage()
         target->Damage( damageDone, criticalHit );
         if ( ! target->isAlive() ) {
             creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        }
+        /// play the hit sound effect for the spell, if we have any.
+        if ( soundSpellHit != "" ) {
+            SoundEngine::playSound( soundSpellHit );
         }
     }
 }

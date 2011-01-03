@@ -110,6 +110,29 @@ void SoundEngine::playSound( std::string soundFile )
 	logChannelUsage( curChannel );
 }
 
+void SoundEngine::stopSound( std::string soundFile )
+{
+    if ( !Configuration::soundenabled && soundFile != "" )
+    {
+        return;
+    }
+
+    /// load our sound file we want to stop in a Mix_Chunk to be able to compare it later.
+    Mix_Chunk *ourSample = soundCache->getSoundFromCache( soundFile );
+
+    /// get the number of channels in use.
+    int numOfChannelsPlaying = Mix_Playing( -1 );
+
+    /// here we check all channels we have to see if they are playing our chunk we want to stop.
+    for ( int curChannel = 0; curChannel < numOfChannelsPlaying; curChannel++ )
+    {
+        if ( ourSample == Mix_GetChunk( curChannel ) )
+        {
+            Mix_HaltChannel( curChannel );
+        }
+    }
+}
+
 static int walkingChannel = -1;
 
 void SoundEngine::useWalkingSound( bool enabled )

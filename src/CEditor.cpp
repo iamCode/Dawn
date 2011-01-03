@@ -893,7 +893,7 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 				if ( mouseInAdjacencyRect ) {
 					mouseWasInAnyDirectionsAdjacency = true;
 					if ( ( modification > 0
-					     && static_cast<int>(curDirectionAdjacencies.size()) > curDirectionAdjacencySelection[ curDirection ]+modification )
+					     && static_cast<unsigned int>(curDirectionAdjacencies.size()) > curDirectionAdjacencySelection[ curDirection ]+modification )
 					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
 						curDirectionAdjacencySelection[ curDirection ] += modification;
 					}
