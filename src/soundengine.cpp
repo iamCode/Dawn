@@ -124,7 +124,7 @@ void SoundEngine::stopSound( std::string soundFile )
     int numOfChannelsPlaying = Mix_Playing( -1 );
 
     /// here we check all channels we have to see if they are playing our chunk we want to stop.
-    for ( int curChannel = 0; curChannel < numOfChannelsPlaying; curChannel++ )
+    for ( int curChannel = 0; curChannel <= numOfChannelsPlaying; curChannel++ )
     {
         if ( ourSample == Mix_GetChunk( curChannel ) )
         {
