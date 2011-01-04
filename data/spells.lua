@@ -193,6 +193,18 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["steelgrip"] = curSpell;
+curSpell:setName("Steelgrip");
+curSpell:setInfo("Slams against your shield causing your blood to boil, increasing strength by 5.");
+curSpell:setStats( StatsType.Strength, 5 );
+curSpell:setCastTime( 0 );
+curSpell:setSpellCost( 0 );
+curSpell:setSpellSymbol( "data/spells/shieldbash/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setDuration( 30 );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["leatherskin"] = curSpell;
 curSpell:setName("Leatherskin");
 curSpell:setInfo("Encoats your skin with leather, increasing armor by 80.");
@@ -284,6 +296,17 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
+
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["flowingthought"] = curSpell;
+curSpell:setName("Flowing thought");
+curSpell:setStats( StatsType.ManaRegen, 5 );
+curSpell:setDuration( 3 );
+curSpell:setInfo("Clears your mind, regenerating 15 mana over 3 seconds.");
+curSpell:setCastTime( 0 );
+curSpell:setSpellSymbol( "data/spells/vortex/symbol.tga" );
+curSpell:setEffectType( EffectType.SelfAffectingSpell );
+curSpell:setRequiredClass( CharacterClass.ANYCLASS );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["manavortex"] = curSpell;

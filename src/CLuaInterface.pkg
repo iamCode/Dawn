@@ -321,6 +321,15 @@ namespace WeaponType
 	};
 }
 
+namespace TriggerType
+{
+	enum TriggerType
+	{
+		TAKING_DAMAGE,
+		EXECUTING_ACTION
+	};
+}
+
 class Item
 {
 	void setDescription( std::string description );
@@ -333,6 +342,8 @@ class Item
 	void setValue( int newValue );
 	void setSpellCharges( int newSpellCharges );
 	void setSpell( CSpell *newSpell );
+	void addTriggerSpellOnSelf( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+	void addTriggerSpellOnTarget( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
 };
 
 namespace InteractionType

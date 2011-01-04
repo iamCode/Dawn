@@ -1,6 +1,20 @@
---[[
-itemdatabase.lua generated 2010-02-27 17:02:23 by arnestig.
---]]
+-- ===============================================================================================
+-- Information about adding triggerspells.
+--
+-- addTriggerSpellOnSelf( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+-- addTriggerSpellOnTarget( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+--
+-- addTriggerSpellOnSelf will execute the spell on the player if triggered.
+-- addTriggerSpellOnTarget will execute the spell on the current target on the player (if any).
+--
+-- Two TriggerTypes to choose from so far, more might come: 
+-- TriggerType.TAKING_DAMAGE - To be used if we want to trigger the spell when taking damage.
+-- TriggerType.EXECUTING_ACTION - To be used if we want to trigger the spell when casting / attacking.
+--
+-- Example:
+-- curItem:addTriggerSpellOnSelf( spellDatabase["leatherskin"], 0.05, TriggerType.TAKING_DAMAGE );
+-- This will cast give the item a 5% chance to cast the spell leatherskin when we're taking damage.
+-- ===============================================================================================
 
 itemDatabase = {};
 
@@ -55,6 +69,7 @@ curItem = itemDatabase["gnollshield"];
 curItem:setStats( StatsType.Vitality, 3 );
 curItem:setStats( StatsType.ParryModifier, 3 );
 curItem:setStats( StatsType.Armor, 70 );
+curItem:addTriggerSpellOnSelf( spellDatabase["steelgrip"], 0.05, TriggerType.TAKING_DAMAGE );
 curItem:setValue( 225 );
 
 
@@ -142,6 +157,7 @@ curItem:setStats( StatsType.ManaRegen, 2 );
 curItem:setMinDamage( 2 );
 curItem:setMaxDamage( 6 );
 curItem:setValue( 216 );
+curItem:addTriggerSpellOnSelf( spellDatabase["flowingthought"], 0.1, TriggerType.EXECUTING_ACTION );
 
 itemDatabase["fungalboots"]=DawnInterface.createNewItem( "Fungal boots", 2, 2, "data/items/Boots1.tga", ItemQuality.ENHANCED, EquipPosition.BOOTS, ItemType.ARMOR, ArmorType.LEATHER, WeaponType.NO_WEAPON );
 curItem = itemDatabase["fungalboots"];

@@ -299,6 +299,33 @@ namespace ItemQuality
     };
 }
 
+namespace TriggerType
+{
+    /// defined here is the different types of trigger we can have for our triggerSpells. Many more could be added later on. Example: BLOCKING, AVOIDING, PARRY, CRITICALHIT, etc...
+    enum TriggerType
+    {
+        TAKING_DAMAGE,
+        EXECUTING_ACTION
+    };
+}
+
+class TriggerSpellOnItem
+{
+    public:
+        TriggerSpellOnItem( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType, bool castOnSelf );
+        CSpellActionBase *getSpellToTrigger() const;
+        float getChanceToTrigger() const;
+        TriggerType::TriggerType getTriggerType() const;
+        bool getCastOnSelf() const;
+        std::string getTooltipText() const;
+
+    private:
+        CSpellActionBase *spellToTrigger;
+        float chanceToTrigger;
+        TriggerType::TriggerType triggerType;
+        bool castOnSelf;
+};
+
 class Item
 {
 	public:
@@ -342,6 +369,11 @@ class Item
         void reduceSpellCharges();
         void setSpell( CSpell *newSpell );
 
+        ///\brief This section handles the spells that can be triggered from actions on the item
+        void addTriggerSpellOnSelf( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+        void addTriggerSpellOnTarget( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+        std::vector<TriggerSpellOnItem*> getTriggerSpells() const;
+
 		size_t getSizeX() const;
 		size_t getSizeY() const;
 
@@ -365,6 +397,8 @@ class Item
 		ArmorType::ArmorType armorType;
 		WeaponType::WeaponType weaponType;
 		EquipPosition::EquipPosition equipPosition;
+
+		std::vector <TriggerSpellOnItem*> triggerSpells;
 
 		bool useableItem;
 

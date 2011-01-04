@@ -1431,6 +1431,34 @@ void CCharacter::startSpellAction()
 	preparationCurrentTime = 0;
 	preparationStartTime = 0;
 
+    /// here we check for equipped items if they have any trigger spells which is used in TriggerType::EXECUTING_ACTION
+    if ( isPlayer() == true ) {
+        std::vector<InventoryItem*> inventory = Globals::getPlayer()->getInventory()->getEquippedItems();
+        for ( size_t curItem = 0; curItem < inventory.size(); curItem++ ) {
+            std::vector<TriggerSpellOnItem*> triggerSpells = inventory[ curItem ]->getItem()->getTriggerSpells();
+            for ( size_t curSpell = 0; curSpell < triggerSpells.size(); curSpell++ )
+            {
+                /// searches for spells on the item with the triggertype EXECUTING_ACTION.
+                if ( triggerSpells[ curSpell ]->getTriggerType() == TriggerType::EXECUTING_ACTION ) {
+                    /// found one, check to see if we manages to trigger the spell.
+
+                    if ( ( randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
+                        /// we triggered this spell, now we cast it based on if it's a self-cast spell or a cast on our target spell.
+                        if ( triggerSpells[ curSpell ]->getCastOnSelf() == true ) {
+                            /// cast spell on self
+                            executeSpellWithoutCasting( triggerSpells[ curSpell ]->getSpellToTrigger(), this );
+                        } else {
+                            if ( this->getTarget() != NULL ) {
+                                /// cast spell on the character's target.
+                                executeSpellWithoutCasting( triggerSpells[ curSpell ]->getSpellToTrigger(), this->getTarget() );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 	// are we casting an AoE spell?
 	if ( curSpellAction->getRadius() > 0 ) {
 		CMagic magic(curSpellAction);
@@ -1534,6 +1562,34 @@ void CCharacter::Damage(int amount, bool criticalHit)
 	if ( isMesmerized() == true ) { // if we're mesmerized while taking damage, we loose the mesmerize state
 	    removeSpellsWithCharacterState( CharacterStates::Mesmerized );
 	}
+
+    /// here we check for equipped items if they have any trigger spells which is used in TriggerType::TAKING_DAMAGE
+    if ( isPlayer() == true ) {
+        std::vector<InventoryItem*> inventory = Globals::getPlayer()->getInventory()->getEquippedItems();
+        for ( size_t curItem = 0; curItem < inventory.size(); curItem++ ) {
+            std::vector<TriggerSpellOnItem*> triggerSpells = inventory[ curItem ]->getItem()->getTriggerSpells();
+            for ( size_t curSpell = 0; curSpell < triggerSpells.size(); curSpell++ )
+            {
+                /// searches for spells on the item with the triggertype TAKING_DAMAGE.
+                if ( triggerSpells[ curSpell ]->getTriggerType() == TriggerType::TAKING_DAMAGE ) {
+                    /// found one, check to see if we manages to trigger the spell.
+
+                    if ( ( randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
+                        /// we triggered this spell, now we cast it based on if it's a self-cast spell or a cast on our target spell.
+                        if ( triggerSpells[ curSpell ]->getCastOnSelf() == true ) {
+                            /// cast spell on self
+                            executeSpellWithoutCasting( triggerSpells[ curSpell ]->getSpellToTrigger(), this );
+                        } else {
+                            if ( this->getTarget() != NULL ) {
+                                /// cast spell on the character's target.
+                                executeSpellWithoutCasting( triggerSpells[ curSpell ]->getSpellToTrigger(), this->getTarget() );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 	if (alive) {
         addDamageDisplayToGUI( amount, criticalHit, 0 );

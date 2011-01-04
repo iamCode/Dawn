@@ -546,6 +546,14 @@ void itemTooltip::getParentText()
 	    }
 	}
 
+	/// if the item has any spell trigger effects, we should inform the player of them here.
+    std::vector<TriggerSpellOnItem*> triggerSpells = parent->getTriggerSpells();
+    for ( size_t curSpell = 0; curSpell < triggerSpells.size(); curSpell++ )
+    {
+        addTooltipText( orange, 12, "%.0f%% %s", triggerSpells[ curSpell ]->getChanceToTrigger()*100, triggerSpells[ curSpell ]->getTooltipText().c_str() );
+    }
+
+
     // display the item description, if any
     if ( !parent->getDescription().empty() )
     {

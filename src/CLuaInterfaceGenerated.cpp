@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Wed Dec 29 11:53:38 2010.
+** Generated automatically by tolua++-1.0.93 on Tue Jan  4 18:06:17 2011.
 */
 
 #ifndef __cplusplus
@@ -2438,6 +2438,80 @@ static int tolua_CLuaInterface_Item_setSpell00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setSpell'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addTriggerSpellOnSelf of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_addTriggerSpellOnSelf00
+static int tolua_CLuaInterface_Item_addTriggerSpellOnSelf00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  CSpellActionBase* spellToTrigger = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  float chanceToTrigger = ((float)  tolua_tonumber(tolua_S,3,0));
+  TriggerType::TriggerType triggerType = ((TriggerType::TriggerType) (int)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addTriggerSpellOnSelf'", NULL);
+#endif
+  {
+   self->addTriggerSpellOnSelf(spellToTrigger,chanceToTrigger,triggerType);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addTriggerSpellOnSelf'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addTriggerSpellOnTarget of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_addTriggerSpellOnTarget00
+static int tolua_CLuaInterface_Item_addTriggerSpellOnTarget00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CSpellActionBase",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  CSpellActionBase* spellToTrigger = ((CSpellActionBase*)  tolua_tousertype(tolua_S,2,0));
+  float chanceToTrigger = ((float)  tolua_tonumber(tolua_S,3,0));
+  TriggerType::TriggerType triggerType = ((TriggerType::TriggerType) (int)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addTriggerSpellOnTarget'", NULL);
+#endif
+  {
+   self->addTriggerSpellOnTarget(spellToTrigger,chanceToTrigger,triggerType);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addTriggerSpellOnTarget'.",&tolua_err);
  return 0;
 #endif
 }
@@ -7069,6 +7143,11 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"CROSSBOW",WeaponType::CROSSBOW);
    tolua_constant(tolua_S,"SHIELD",WeaponType::SHIELD);
   tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"TriggerType",0);
+  tolua_beginmodule(tolua_S,"TriggerType");
+   tolua_constant(tolua_S,"TAKING_DAMAGE",TriggerType::TAKING_DAMAGE);
+   tolua_constant(tolua_S,"EXECUTING_ACTION",TriggerType::EXECUTING_ACTION);
+  tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"Item","Item","",NULL);
   tolua_beginmodule(tolua_S,"Item");
    tolua_function(tolua_S,"setDescription",tolua_CLuaInterface_Item_setDescription00);
@@ -7081,6 +7160,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setValue",tolua_CLuaInterface_Item_setValue00);
    tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
    tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
+   tolua_function(tolua_S,"addTriggerSpellOnSelf",tolua_CLuaInterface_Item_addTriggerSpellOnSelf00);
+   tolua_function(tolua_S,"addTriggerSpellOnTarget",tolua_CLuaInterface_Item_addTriggerSpellOnTarget00);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"InteractionType",0);
   tolua_beginmodule(tolua_S,"InteractionType");

@@ -19,6 +19,7 @@
 #include "item.h"
 #include "CSpell.h"
 #include <memory>
+#include <cassert>
 
 std::vector<Item*> allItems;
 
@@ -38,6 +39,55 @@ namespace DawnInterface
 		allItems.push_back( newItem );
 		return newItem;
 	}
+}
+
+TriggerSpellOnItem::TriggerSpellOnItem( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType, bool castOnSelf )
+{
+    assert( spellToTrigger != NULL );
+    this->spellToTrigger = spellToTrigger;
+    this->chanceToTrigger = chanceToTrigger;
+    this->triggerType = triggerType;
+    this->castOnSelf = castOnSelf;
+}
+
+CSpellActionBase *TriggerSpellOnItem::getSpellToTrigger() const
+{
+    return spellToTrigger;
+}
+
+float TriggerSpellOnItem::getChanceToTrigger() const
+{
+    return chanceToTrigger;
+}
+
+TriggerType::TriggerType TriggerSpellOnItem::getTriggerType() const
+{
+    return triggerType;
+}
+
+bool TriggerSpellOnItem::getCastOnSelf() const
+{
+    return castOnSelf;
+}
+
+std::string TriggerSpellOnItem::getTooltipText() const
+{
+
+    std::string toReturn = "chance to cast ";
+    toReturn.append( getSpellToTrigger()->getName() );
+    if ( getCastOnSelf() == true ) {
+        toReturn.append( " on yourself when " );
+    } else {
+        toReturn.append( " on your target when " );
+    }
+
+    if ( getTriggerType() == TriggerType::EXECUTING_ACTION ) {
+        toReturn.append( "casting spells." );
+    } else if ( getTriggerType() == TriggerType::TAKING_DAMAGE ) {
+        toReturn.append( "taking damage." );
+    }
+
+    return toReturn;
 }
 
 Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolFile,
@@ -258,6 +308,25 @@ void Item::setSpell( CSpell *newSpell )
 void Item::setDescription ( std::string description_ )
 {
     description = "\"" + description_ + "\"";
+}
+
+void Item::addTriggerSpellOnSelf( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType )
+{
+    assert ( spellToTrigger != NULL );
+
+    triggerSpells.push_back( new TriggerSpellOnItem( spellToTrigger, chanceToTrigger, triggerType, true ) );
+}
+
+void Item::addTriggerSpellOnTarget( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType )
+{
+    assert ( spellToTrigger != NULL );
+
+    triggerSpells.push_back( new TriggerSpellOnItem( spellToTrigger, chanceToTrigger, triggerType, false ) );
+}
+
+std::vector<TriggerSpellOnItem*> Item::getTriggerSpells() const
+{
+    return triggerSpells;
 }
 
 bool Item::isTwoHandedWeapon() const
