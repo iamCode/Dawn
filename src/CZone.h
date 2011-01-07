@@ -128,6 +128,7 @@ class CZone
 
 	public:
 		CZone();
+		~CZone();
 
 		void DrawZone();
 
@@ -180,7 +181,7 @@ class CZone
 		CallIndirection* getEventHandlerPointer( size_t posInArray ) const;
 
 		std::vector<sTileMap> TileMap;
-		std::vector<CMagic> MagicMap;
+		std::vector<CMagic*> MagicMap;
 		std::vector<sEnvironmentMap> EnvironmentMap;
 		// this is the old shadowmap, keeping it here a while... std::vector<sShadowMap> ShadowMap;
 		std::vector<sEnvironmentMap> ShadowMap;

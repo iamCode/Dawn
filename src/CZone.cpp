@@ -50,6 +50,14 @@ CZone::CZone()
 {
 }
 
+CZone::~CZone()
+{
+	for(int i=0;i<MagicMap.size();++i)
+	{
+		delete MagicMap[i];
+	}
+}
+
 void CZone::DrawZone()
 {
 	DrawTiles(); // draw the tiles (ground) first.

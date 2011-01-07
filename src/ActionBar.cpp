@@ -38,21 +38,21 @@ ActionBar::ActionBar( Player *player_ )
         height ( 49 ),
         spellQueue( NULL )
 {
-    shortcutFont = NULL;
-    cooldownFont = NULL;
-    button.push_back( sButton(0, 0, 50, 50, "1", SDLK_1) );
-    button.push_back( sButton(60, 0, 50, 50, "2", SDLK_2) );
-    button.push_back( sButton(120, 0, 50, 50, "3", SDLK_3) );
-    button.push_back( sButton(180, 0, 50, 50, "4", SDLK_4) );
-    button.push_back( sButton(240, 0, 50, 50, "5", SDLK_5) );
-    button.push_back( sButton(300, 0, 50, 50, "6", SDLK_6) );
-    button.push_back( sButton(360, 0, 50, 50, "7", SDLK_7) );
-    button.push_back( sButton(420, 0, 50, 50, "8", SDLK_8) );
-    button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
-    button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
-    castingAoESpell = false;
-    cursorRadius	= 0;
-    curAoESpell		= 0;
+	shortcutFont = NULL;
+	cooldownFont = NULL;
+	button.push_back( sButton(0, 0, 50, 50, "1", SDLK_1) );
+	button.push_back( sButton(60, 0, 50, 50, "2", SDLK_2) );
+	button.push_back( sButton(120, 0, 50, 50, "3", SDLK_3) );
+	button.push_back( sButton(180, 0, 50, 50, "4", SDLK_4) );
+	button.push_back( sButton(240, 0, 50, 50, "5", SDLK_5) );
+	button.push_back( sButton(300, 0, 50, 50, "6", SDLK_6) );
+	button.push_back( sButton(360, 0, 50, 50, "7", SDLK_7) );
+	button.push_back( sButton(420, 0, 50, 50, "8", SDLK_8) );
+	button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
+	button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
+	castingAoESpell = false;
+	cursorRadius	= 0;
+	curAoESpell		= 0;
 }
 
 ActionBar::~ActionBar()
@@ -215,7 +215,7 @@ void ActionBar::clicked( int clickX, int clickY )
 			{
 				if ( player->getTarget() != NULL ) // is there a target?
 				{
-					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->target );
+					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->getTarget() );
 					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 				}
 				else															// O.K., let's select a position then ( 0 0 for now )
@@ -284,7 +284,7 @@ void ActionBar::handleKeys()
 						}
 
 						if ( curAction != NULL ) {
-								player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+							player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 						}
 				}
 			}
@@ -294,7 +294,7 @@ void ActionBar::handleKeys()
 			}
 	}
 
-	// if the right mouse button is pressed you exit "disabled" mood and remove the cursor
+	// if the right mouse button is pressed you exit "disabled" mode and remove the cursor
 	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
 	{
 		castingAoESpell = false;

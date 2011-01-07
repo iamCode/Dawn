@@ -154,6 +154,7 @@ std::auto_ptr<LogWindow> logWindow;
 namespace Globals
 {
 	std::map< std::string, CZone* > allZones;
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells;
 }
 
 static bool HandleCommandLineAurguments(int argc, char** argv)
@@ -257,7 +258,15 @@ void DrawScene()
 		curInteraction->draw();
 	}
 
-    // draw the NPC
+	//draw AoE spells
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
+	for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
+		if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
+				activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
+		}
+	}
+
+	// draw the NPC
 	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
 	for (unsigned int x=0; x<zoneNPCs.size(); x++)
 	{
@@ -268,15 +277,12 @@ void DrawScene()
 	Player *player = Globals::getPlayer();
 	player->Draw();
 
-
-
-	// draw NPC's name and lifebar if it's in target
 	for (unsigned int x=0; x<zoneNPCs.size(); x++)
 	{
 		CNPC *curNPC = zoneNPCs[x];
 		if ( player->getTarget() == curNPC )
 		{
-            GUI.drawTargetedNPCText();
+			GUI.drawTargetedNPCText();
 		}
 
 		// draw the spell effects for our NPCs
@@ -287,8 +293,7 @@ void DrawScene()
 						}
 				}
 		}
-
-		// draw the spell effects for our player.
+	// draw the spell effects for our player.
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
 		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 				if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
@@ -951,15 +956,7 @@ void game_loop()
 						// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 						if ( clickedInFrame == false )
 						{
-							if( actionBar->isCastingAoESpell() )
-							{
-								CSpellActionBase *spell = actionBar->getAoESpell();
-								spell->cast( player, mouseX, mouseY );
-								actionBar->setCastingAoESpell( false );
-								Globals::setDisplayCursor( false );
-							}
-							else
-								actionBar->clicked( mouseX, mouseY );
+							actionBar->clicked( mouseX, mouseY );
 
 								buffWindow->clicked( mouseX, mouseY, event.button.button );
 								if ( shopWindow->hasFloatingSelection() )
@@ -992,19 +989,29 @@ void game_loop()
 														}
 												}
 
-												// search for new target
-												std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-												for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-														CNPC *curNPC = zoneNPCs[x];
-														if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-																if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
-																		if( !player->hasTarget( curNPC ) )
-																			player->setTarget( curNPC );
-																		else
-																			player->setTarget( NULL );
-																		break;
-																}
-														}
+												// search for new target if no AoE spell is supposed to be cast
+												if( actionBar->isCastingAoESpell() )
+												{
+													CSpellActionBase *spell = actionBar->getAoESpell();
+													player->castSpell( dynamic_cast<CSpellActionBase*>( spell->cast( player, mouseX + world_x, mouseY + world_y ) ) );
+													actionBar->setCastingAoESpell( false );
+													Globals::setDisplayCursor( false );
+												}
+												else
+												{
+													std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+													for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+															CNPC *curNPC = zoneNPCs[x];
+															if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+																	if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+																			if( !player->hasTarget( curNPC ) )
+																				player->setTarget( curNPC );
+																			else
+																				player->setTarget( NULL );
+																			break;
+																	}
+															}
+													}
 												}
 										}
 										break;
@@ -1105,10 +1112,13 @@ void game_loop()
 				curNPC->cleanupActiveSpells();
 			}
 
-			// check all active AoE spells and see they're finished
+			// check all active AoE spells and see they're finished and look for inEffects
 			for ( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i)
 			{
-				if ( Globals::getCurrentZone()->MagicMap[i].isDone() )
+				Globals::getCurrentZone()->MagicMap[i]->getSpell()->inEffect();
+				Globals::cleanupActiveAoESpells();
+
+				if ( Globals::getCurrentZone()->MagicMap[i]->isDone() )
 					Globals::getCurrentZone()->MagicMap.erase(Globals::getCurrentZone()->MagicMap.begin()+i);
 			}
 
@@ -1284,6 +1294,11 @@ player->cleanupActiveSpells();
 			if (!keys[SDLK_5]) {
 					KP_interrupt = false;
 			}
+
+//			if (keys[SDLK_BACKSPACE] && player->getTarget() != NULL) {
+//				GLfloat color[] = {255, 255, 255, 255};
+//				DawnInterface::addTextToLogWindow(color, "TarX:%d TarY:%d", player->getTarget()->getXPos(), player->getTarget()->getYPos());
+//			}
 		} //else
 
 		DrawScene();

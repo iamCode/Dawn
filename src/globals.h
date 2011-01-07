@@ -21,14 +21,18 @@
 
 #include <string>
 #include <map>
+#include <vector>
+#include <assert.h>
 
 // ideally this file should not add any include dependency on dawn files
 class CZone;
 class Player;
+class CSpellActionBase;
 
 namespace Globals
 {
 	extern std::map< std::string, CZone* > allZones;
+	extern std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells;
 	CZone *getCurrentZone();
 	void setCurrentZone( CZone *newCurZone );
 	bool isSavingAllowed();
@@ -36,6 +40,11 @@ namespace Globals
 	Player *getPlayer();
 	bool displayCursor();
 	void setDisplayCursor( bool flag );
+	void addActiveAoESpell( CSpellActionBase *spell );
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveAoESpells();
+	void cleanupActiveAoESpells();
+	void clearActiveAoESpells();
+	void removeActiveAoESpell( CSpellActionBase* activeSpell );
 }
 
 #endif // GLOBALS_H

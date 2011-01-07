@@ -61,6 +61,45 @@ namespace Globals
 	{
 		showCursor = flag;
 	}
+
+	void addActiveAoESpell( CSpellActionBase *spell )
+	{
+		assert( spell != NULL );
+		activeAoESpells.push_back( std::pair<CSpellActionBase*, uint32_t>( spell, SDL_GetTicks() ) );
+	}
+
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveAoESpells()
+	{
+		return activeAoESpells;
+	}
+
+	void cleanupActiveAoESpells()
+	{
+			size_t curSpell = 0;
+			while ( curSpell < activeAoESpells.size() ) {
+					if ( activeAoESpells[curSpell].first->isEffectComplete() == true ) {
+							delete activeAoESpells[curSpell].first;
+							activeAoESpells.erase( activeAoESpells.begin() + curSpell );
+					} else {
+							curSpell ++;
+					}
+			}
+	}
+
+	void clearActiveAoESpells()
+	{
+			activeAoESpells.clear();
+	}
+
+
+	void removeActiveAoESpell( CSpellActionBase* activeSpell )
+	{
+			for ( size_t curSpell = 0; curSpell < activeAoESpells.size(); curSpell++ ) {
+					if ( activeAoESpells[ curSpell ].first == activeSpell ) {
+							activeAoESpells[ curSpell ].first->markSpellActionAsFinished();
+					}
+			}
+	}
 } // namespace Globals
 
 namespace DawnInterface

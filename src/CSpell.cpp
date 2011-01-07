@@ -32,6 +32,10 @@
 
 #include <cassert>
 
+namespace DawnInterface {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+}
+
 size_t randomSizeT( size_t min, size_t max )
 {
 	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
@@ -910,7 +914,8 @@ CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, CCharacter 
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
 	newSpell->creator = creator;
-	newSpell->target = target;
+	centerX = target->getXPos()+target->getWidth()/2;
+	centerY = target->getYPos()+target->getHeight()/2;
 	newSpell->centerX = centerX;
 	newSpell->centerY = centerY;
 	newSpell->child		= child;
@@ -922,8 +927,10 @@ CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, int x, int 
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
 	newSpell->creator = creator;
-	newSpell->centerX = x;
-	newSpell->centerY = x;
+	centerX = x;
+	centerY = y;
+	newSpell->centerX = centerX;
+	newSpell->centerY = centerY;
 	newSpell->child		= false;
 
 	return newSpell;
@@ -960,8 +967,13 @@ void GeneralAreaDamageSpell::startEffect()
 	animationTimerStart = effectStart;
 	lastEffect = effectStart;
 
-	creator->addActiveSpell( this );
-	creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, NULL ) ) );
+	Globals::addActiveAoESpell( this );
+
+	if ( creator->getTarget() != NULL )
+		creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, creator->getTarget() ) ) );
+	else
+		creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, centerX, centerY ) ) );
+
 	unbindFromCreator();
 }
 
@@ -980,7 +992,7 @@ void GeneralAreaDamageSpell::inEffect()
 		return;
 	}
 
-	remainingEffect += calculateContinuousDamage( elapsedSinceLast );
+//	remainingEffect += calculateContinuousDamage( elapsedSinceLast );
 	// no critical damage in this phase so far
 
 	bool callFinish = false;
@@ -988,15 +1000,15 @@ void GeneralAreaDamageSpell::inEffect()
 		callFinish = true;
 	}
 
-	if ( floor(remainingEffect) > 0 ) {
-		//target->Damage( floor(remainingEffect), false );
-		remainingEffect = remainingEffect - floor( remainingEffect );
-//		if ( ! target->isAlive() ) {
-//			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-//		}
-
-		lastEffect = curTime;
-	}
+//	if ( floor(remainingEffect) > 0 ) {
+//		//target->Damage( floor(remainingEffect), false );
+//		remainingEffect = remainingEffect - floor( remainingEffect );
+////		if ( ! target->isAlive() ) {
+////			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+////		}
+//
+//		lastEffect = curTime;
+//	}
 
 	if ( callFinish ) {
 		finishEffect();
@@ -1031,7 +1043,7 @@ void GeneralAreaDamageSpell::drawEffect()
 		glPushMatrix();
 		glTranslatef(centerX, centerY, 0.0f);
 
-		DrawingHelpers::mapTextureToRect( spellTexture->getTexture(frameCount), centerX-radius, radius*2, centerY+radius, radius*2 );
+		DrawingHelpers::mapTextureToRect( spellTexture->getTexture(frameCount), -radius, radius*2, -radius, radius*2 );
 		glPopMatrix();
 	}
 }

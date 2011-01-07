@@ -35,6 +35,7 @@
 #include <limits>
 #include <iostream>
 #include <memory>
+#include <iostream>
 
 std::map< std::string, CCharacter* > allMobTypes;
 
@@ -1461,16 +1462,17 @@ void CCharacter::startSpellAction()
 
 	// are we casting an AoE spell?
 	if ( curSpellAction->getRadius() > 0 ) {
-		CMagic magic(curSpellAction);
-		Globals::getCurrentZone()->MagicMap.push_back(magic);
+		Globals::getCurrentZone()->MagicMap.push_back(new CMagic(curSpellAction));
+		Globals::getCurrentZone()->MagicMap.back()->getSpell()->startEffect();
 		isPreparing = false;
 		preparationCurrentTime = 0;
 		preparationStartTime = 0;
-		Globals::getCurrentZone()->MagicMap.back().getSpell()->startEffect();
 	}
 	else
-        curSpellAction->stopSoundSpellCasting();
-        curSpellAction->startEffect();
+	{
+		curSpellAction->stopSoundSpellCasting();
+		curSpellAction->startEffect();
+	}
 }
 
 
