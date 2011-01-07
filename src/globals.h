@@ -21,6 +21,7 @@
 
 #include <string>
 #include <map>
+#include <stdint.h>
 #include <vector>
 #include <assert.h>
 
