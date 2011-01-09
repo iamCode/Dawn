@@ -218,13 +218,22 @@ void ActionBar::clicked( int clickX, int clickY )
 					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->getTarget() );
 					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 				}
-				else															// O.K., let's select a position then ( 0 0 for now )
+				else															// O.K., let's select a position then
 				{
-					// we are going to display the cursor
-					Globals::setDisplayCursor( true );
-					cursorRadius = button[buttonId].action->getRadius();
-					curAoESpell = buttonId;
-					castingAoESpell = true;
+					bool onCD = false;
+
+					for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+						if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
+							onCD = true;
+
+					if( !onCD )
+					{
+						// we are going to display the cursor
+						Globals::setDisplayCursor( true );
+						cursorRadius = button[buttonId].action->getRadius();
+						curAoESpell = buttonId;
+						castingAoESpell = true;
+					}
 				}
 			}
 			else
@@ -275,11 +284,20 @@ void ActionBar::handleKeys()
 							}
 							else															// O.K., let's select a position then ( 0 0 for now )
 							{
-								// we are going to display the cursor
-								Globals::setDisplayCursor( true );
-								cursorRadius = button[buttonId].action->getRadius();
-								curAoESpell = buttonId;
-								castingAoESpell = true;
+								bool onCD = false;
+
+								for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+									if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
+										onCD = true;
+
+								if( !onCD )
+								{
+									// we are going to display the cursor
+									Globals::setDisplayCursor( true );
+									cursorRadius = button[buttonId].action->getRadius();
+									curAoESpell = buttonId;
+									castingAoESpell = true;
+								}
 							}
 						}
 

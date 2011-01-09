@@ -956,8 +956,6 @@ void game_loop()
 						// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 						if ( clickedInFrame == false )
 						{
-							actionBar->clicked( mouseX, mouseY );
-
 								buffWindow->clicked( mouseX, mouseY, event.button.button );
 								if ( shopWindow->hasFloatingSelection() )
 								{
@@ -1030,6 +1028,8 @@ void game_loop()
 										}
 										break;
 								}
+
+								actionBar->clicked( mouseX, mouseY );
 						}
 				}
 
