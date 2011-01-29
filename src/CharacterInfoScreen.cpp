@@ -298,7 +298,7 @@ void CharacterInfoScreen::drawTabs()
 
             infoFont->drawText( static_cast<float>(world_x) + posX + descriptionTextStart,
                                 static_cast<float>(world_y) + posY + frameHeight - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
-                                "Life regen" );
+                                "Health regen" );
             infoFont->drawText( static_cast<float>(world_x) + posX + valueFieldStart,
                                 static_cast<float>(world_y) + posY + frameHeight - (topBorderDistance + curLine*lineDistance + infoFont->getHeight()),
                                 "%d/sec", player->getModifiedHealthRegen() );
