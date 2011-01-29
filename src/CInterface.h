@@ -71,6 +71,7 @@ class CInterface
 		CCharacter *player;
 
 		GLFT_Font *NPCTextFont;
+		GLFT_Font *levelFont;
 };
 
 

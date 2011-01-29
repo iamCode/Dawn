@@ -83,7 +83,7 @@ class GLFT_Font
 		std::ostream& beginDraw(float x, float y);
 		StreamFlusher endDraw();
 
-		unsigned int calcStringWidth(const std::string& str) const;
+		unsigned int calcStringWidth(const std::string& str, ...) const;
 		unsigned int getHeight() const;
 
 	private:

@@ -27,6 +27,7 @@
 
 #include "CDirection.h"
 #include "elements.h"
+#include "debug.h"
 
 extern int RES_X,RES_Y,world_x,world_y;
 
@@ -69,6 +70,23 @@ namespace CharacterClass
             break;
         }
         return "";
+    }
+
+    inline std::string getCharacterClassPortrait( CharacterClass::CharacterClass characterClass )
+    {
+        switch ( characterClass ) {
+            case Liche:
+                return "data/interface/Portrait/Liche.tga";
+            break;
+            case Ranger:
+                return "data/interface/Portrait/Ranger.tga";
+            break;
+            case Warrior:
+                return "data/interface/Portrait/Warrior.tga";
+            break;
+            default:
+                dawn_debug_fatal("getCharacterClassPortrait() was called without a valid playable class. Shoult not be. Exiting!");
+        }
     }
 }
 
@@ -164,6 +182,8 @@ class CCharacter
 		virtual bool isPlayer() const;
 
 		int CollisionCheck(Direction direction);
+
+		CTexture *getPortraitTexture() const;
 
 		// casting spells and executing actions
 		void executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target );
@@ -470,6 +490,8 @@ class CCharacter
 	private:
 		// NPC attributes
 		std::string name;
+
+		CTexture *portrait;
 
 		uint32_t remainingRegenPoints;
 

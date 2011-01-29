@@ -197,6 +197,7 @@ wizardbase:setEvadeModifierPoints( 0 )
 wizardbase:setName("A wizard")
 wizardbase:setWanderRadius( 250 )
 wizardbase:setLevel( 2 )
+wizardbase:setClass( CharacterClass.Liche )
 
 spiderbase = DawnInterface.createNewMobType("Spider")
 spiderbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );

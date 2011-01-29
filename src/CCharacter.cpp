@@ -142,6 +142,11 @@ AttributeType getModifiedAttributeValue( AttributeType attributeValue, ModifierT
 		return (attributeValue + modifier);
 }
 
+CTexture* CCharacter::getPortraitTexture() const
+{
+    return portrait;
+}
+
 CCharacter* CCharacter::getTarget() const
 {
 	return target;
@@ -798,6 +803,13 @@ void CCharacter::setClass( CharacterClass::CharacterClass characterClass )
             characterArchType = CharacterArchType::Fighter;
         break;
     }
+
+    /// loading our portrait for the class
+    if ( portrait != NULL ) {
+        delete portrait;
+    }
+    portrait = new CTexture;
+    portrait->LoadIMG( CharacterClass::getCharacterClassPortrait( getClass() ), 0 );
 }
 
 CharacterClass::CharacterClass CCharacter::getClass() const
@@ -910,7 +922,8 @@ CCharacter::CCharacter()
 	  useBoundingBox( false ),
 	  minCoinDrop( 0 ),
 	  maxCoinDrop( 0 ),
-	  coinDropChance( 0.0 )
+	  coinDropChance( 0.0 ),
+	  portrait( NULL )
 {
 	resistElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifierPoints = new uint16_t[ static_cast<size_t>( ElementType::Count ) ];

@@ -334,15 +334,24 @@ StreamFlusher GLFT_Font::endDraw()
 	return StreamFlusher();
 }
 
-unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
+unsigned int GLFT_Font::calcStringWidth(const std::string& str, ...) const
 {
 	if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
 	}
 	unsigned int width=0;
 
+	char buf[1024];
+    std::va_list args;
+
+	va_start(args, str);
+	vsnprintf(buf, 1024, str.c_str(), args);
+	va_end(args);
+
+	std::string newStr = buf;
+
 	// iterate through widths of each char and accumulate width of string
-	for (std::string::const_iterator i = str.begin(); i < str.end(); ++i) {
+	for (std::string::const_iterator i = newStr.begin(); i < newStr.end(); ++i) {
 		width += widths_[static_cast<unsigned int>(*i) - SPACE];
 	}
 
