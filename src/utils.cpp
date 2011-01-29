@@ -26,6 +26,10 @@
 #include <cstring>
 #include <memory>
 
+namespace DawnInterface {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+}
+
 extern int world_x, world_y;
 
 bool utils::file_exists(const std::string& file)
@@ -39,7 +43,7 @@ bool utils::file_exists(const std::string& file)
 
 void utils::takeScreenshot()
 {
-  int w = Configuration::screenWidth;
+    int w = Configuration::screenWidth;
 	int h = Configuration::screenHeight;
 
 	png_t pngOutput;
@@ -83,5 +87,8 @@ void utils::takeScreenshot()
         png_set_data(&pngOutput, Configuration::screenWidth, Configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
         png_close_file(&pngOutput);
+
+        float white[] = { 1.0f, 0.0f, 0.0f };
+        DawnInterface::addTextToLogWindow( white, "Screenshot saved to %s.", filename.c_str() );
     }
 }
