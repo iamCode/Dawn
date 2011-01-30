@@ -69,6 +69,7 @@ void utils::takeScreenshot()
 		memcpy(outputImage+y*w*4, outputImage+(h-y-1)*w*4, w*4);
 		memcpy(outputImage+(h-y-1)*w*4, tempImage,w*4);
 	}
+	delete[] tempImage;
 
     // look for a free screenshot file to write to. screenshot0.PNG, screenshot1.PNG...screenshotX.PNG
     while ( utils::file_exists( filename ) )
