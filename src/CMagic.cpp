@@ -3,10 +3,9 @@
 CMagic::CMagic( CSpellActionBase *spell )
 {
 	this->spell = spell;
-	radius		= spell->getRadius();
-	duration	= spell->getDuration();
-	this->x = spell->getX();
-	this->y = spell->getY();
+	radius			= spell->getRadius();
+	this->x			= spell->getX();
+	this->y			= spell->getY();
 }
 
 CSpellActionBase *CMagic::getSpell()

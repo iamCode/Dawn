@@ -14,7 +14,6 @@ class CMagic
 	private:
 		CSpellActionBase *spell;
 		int radius;
-		int duration;
 		int x;
 		int y;
 };

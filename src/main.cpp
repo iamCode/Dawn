@@ -993,6 +993,7 @@ void game_loop()
 													CSpellActionBase *spell = actionBar->getAoESpell();
 													player->castSpell( dynamic_cast<CSpellActionBase*>( spell->cast( player, mouseX + world_x, mouseY + world_y ) ) );
 													actionBar->setCastingAoESpell( false );
+													actionBar->setJustCastAoESpell( true );
 													Globals::setDisplayCursor( false );
 												}
 												else

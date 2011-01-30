@@ -58,6 +58,7 @@ class ActionBar
 
 		bool isCastingAoESpell();
 		void setCastingAoESpell( bool flag );
+		void setJustCastAoESpell( bool flag );
 		CSpellActionBase *getAoESpell();
 		bool isMouseOver( int x, int y );
 		bool isButtonUsed( sButton *button ) const;
@@ -89,6 +90,7 @@ class ActionBar
 		sButton *spellQueue;
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
 		bool castingAoESpell;
+		bool justCastAoESpell;
 		int cursorRadius;
 		int curAoESpell;
 };

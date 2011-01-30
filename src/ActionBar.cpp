@@ -75,6 +75,11 @@ void ActionBar::setCastingAoESpell( bool flag )
 	castingAoESpell = flag;
 }
 
+void ActionBar::setJustCastAoESpell( bool flag )
+{
+	justCastAoESpell = flag;
+}
+
 CSpellActionBase *ActionBar::getAoESpell()
 {
 	return button[curAoESpell].action;
@@ -218,7 +223,7 @@ void ActionBar::clicked( int clickX, int clickY )
 					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->getTarget() );
 					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 				}
-				else															// O.K., let's select a position then
+				else if ( !justCastAoESpell && !player->getIsPreparing() )															// O.K., let's select a position then
 				{
 					bool onCD = false;
 
@@ -252,6 +257,8 @@ void ActionBar::clicked( int clickX, int clickY )
 			bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
 		}
 	}
+
+	justCastAoESpell = false;
 }
 
 void ActionBar::handleKeys()
