@@ -334,24 +334,39 @@ StreamFlusher GLFT_Font::endDraw()
 	return StreamFlusher();
 }
 
-unsigned int GLFT_Font::calcStringWidth(const std::string& str, ...) const
+unsigned int GLFT_Font::calcStringWidth(const char *str, ...) const
 {
-	if (!threadedMode && !isValid()) {
+    if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
 	}
 	unsigned int width=0;
 
-	char buf[1024];
     std::va_list args;
+	char buf[1024];
 
-	va_start(args, str);
-	vsnprintf(buf, 1024, str.c_str(), args);
+	va_start(args,str);
+	vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
 	va_end(args);
 
 	std::string newStr = buf;
 
 	// iterate through widths of each char and accumulate width of string
 	for (std::string::const_iterator i = newStr.begin(); i < newStr.end(); ++i) {
+		width += widths_[static_cast<unsigned int>(*i) - SPACE];
+	}
+
+	return width;
+}
+
+unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
+{
+	if (!threadedMode && !isValid()) {
+		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
+	}
+	unsigned int width=0;
+
+	// iterate through widths of each char and accumulate width of string
+	for (std::string::const_iterator i = str.begin(); i < str.end(); ++i) {
 		width += widths_[static_cast<unsigned int>(*i) - SPACE];
 	}
 
