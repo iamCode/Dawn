@@ -58,7 +58,7 @@ void utils::takeScreenshot()
 
     std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );
     unsigned char *outputImage = outputImageAuto.get();
-    unsigned char *tempImage = outputImage;// Configuration::screenHeight*Configuration::screenWidth*4;
+    unsigned char *tempImage = new unsigned char[w*4];
 
     glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
 
@@ -88,7 +88,7 @@ void utils::takeScreenshot()
 
         png_close_file(&pngOutput);
 
-        float white[] = { 1.0f, 0.0f, 0.0f };
+        float white[] = { 1.0f, 1.0f, 1.0f };
         DawnInterface::addTextToLogWindow( white, "Screenshot saved to %s.", filename.c_str() );
     }
 }
