@@ -3,6 +3,12 @@ To run Dawn: ./dawn-starter.sh
 
 (./dawn-starter.sh will run ./dawn-rpg but add usable output in case of errors so if you want to support dawn, use it, please.)
 
+Parameters
+-f, --fullscreen 	Run Dawn in fullscreen mode (default)
+-w, --window 		Run Dawn inside a window
+--nosound 		Run Dawn without sound
+-h, --help 		Show this help screen
+
 ---------------------------------------
 
 Keybindings:
