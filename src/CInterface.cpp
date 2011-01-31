@@ -25,6 +25,10 @@
 #include "CDrawingHelpers.h"
 #include <vector>
 
+namespace DawnInterface {
+    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+}
+
 CInterface::CInterface()
 {
     NPCTextFont = NULL;
@@ -137,7 +141,7 @@ void CInterface::DrawInterface()
                                     world_y+RES_Y-67, interfacetextures.getTexture(13).height );
 
     /// draw our level beside the experience bar
-    levelFont->drawText( float(world_x)+60-levelFont->calcStringWidth("%d", player->getLevel())/2, float(world_y)+RES_Y-70, "%d",player->getLevel() );
+    levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+RES_Y-70, "%d",player->getLevel() );
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 

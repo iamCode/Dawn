@@ -111,8 +111,8 @@ void ActionBar::draw()
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
 	{
-	    shortcutFont->drawText( static_cast<float>( world_x ) + 420 + buttonId * 60 - 8,
-                                static_cast<float>( world_y ) + 50, button[buttonId].number.c_str() );
+	    shortcutFont->drawText( world_x + 420 + buttonId * 60 - 8,
+                                world_y + 50, button[buttonId].number.c_str() );
 
 	    glColor3f( 0.4f, 0.4f, 0.4f );
 	    if ( player->getIsPreparing() && button[buttonId].action != NULL )
@@ -193,8 +193,8 @@ void ActionBar::draw()
             {
                 glColor3f( 1.0f, 0.0f, 0.0f );
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
-	            cooldownFont->drawText( static_cast<float>( world_x ) + 420 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
-                                        static_cast<float>( world_y ) + 28, cooldownText.c_str() );
+	            cooldownFont->drawText( world_x + 420 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
+                                        world_y + 28, cooldownText.c_str() );
             }
             glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
