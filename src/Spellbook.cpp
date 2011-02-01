@@ -97,8 +97,8 @@ void Spellbook::draw( int mouseX, int mouseY )
             spellSlot[x].action->drawSymbol( world_x + spellSlot[x].posX+posX+2, 46,
                                        world_y + spellSlot[x].posY+posY+2, 46 );
             glColor3f( 0.35f, 0.0f, 0.0f );
-            spellSlot[x].font->drawText( static_cast<float>( world_x ) + spellSlot[x].posX+posX + 25 - spellSlot[x].font->calcStringWidth( spellSlot[x].action->getName() ) / 2,
-                                         static_cast<float>( world_y ) + spellSlot[x].posY+posY-spellSlot[x].font->getHeight()-5,
+            spellSlot[x].font->drawText( world_x + spellSlot[x].posX+posX + 25 - spellSlot[x].font->calcStringWidth( spellSlot[x].action->getName() ) / 2,
+                                         world_y + spellSlot[x].posY+posY-spellSlot[x].font->getHeight()-5,
                                          spellSlot[x].action->getName() );
             glColor3f( 1.0f, 1.0f, 1.0f );
         }
@@ -149,8 +149,8 @@ void Spellbook::drawFloatingSpell( int mouseX, int mouseY )
         floatingSpell->action->drawSymbol( world_x + mouseX + 2, 46,
                                    world_y + mouseY + 20 + 2, 46 );
         // draw the spell name
-        floatingSpell->font->drawText( static_cast<float>( world_x ) + mouseX + 25 - floatingSpell->font->calcStringWidth( floatingSpell->action->getName() ) / 2,
-                                     static_cast<float>( world_y ) + mouseY + 20 - floatingSpell->font->getHeight()-5,
+        floatingSpell->font->drawText( world_x + mouseX + 25 - floatingSpell->font->calcStringWidth( floatingSpell->action->getName() ) / 2,
+                                     world_y + mouseY + 20 - floatingSpell->font->getHeight()-5,
                                      floatingSpell->action->getName() );
     }
 }
