@@ -235,7 +235,7 @@ function quest_hexmaster.onLeaveLaboratory()
 		textWindow:setAutocloseTime( 2000 );
 		textWindow:setText("The door has been magically sealed again. Perhaps the door will open if you destroy the magic animating the skeleton.")
 	else
-		DawnInterface.enterZone( "data/arinoxDungeonLevel1", 1020, 400 );
+		DawnInterface.enterZone( "data/arinoxDungeonLevel1", 1020, 420 );
 	end
 end
 
