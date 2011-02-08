@@ -147,23 +147,26 @@ void ActionBar::draw()
 						if ( castingAoESpell )
 							isSpellUseable = false;
 
+            // do we have enough fatigue to cast?
             if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
                 if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
                         isSpellUseable = false;
                 }
+            // do we have enough mana to cast?
             } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL && isSpellUseable == true ) {
                 if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
                     isSpellUseable = false;
                 }
             }
-
-            if ( player->getTarget() != NULL && isSpellUseable == true ) {
+            // do we have a target? if so, are we in range? (doesn't check for selfaffectign spells)
+            if ( player->getTarget() != NULL && isSpellUseable == true && button[buttonId].action->getEffectType() != EffectType::SelfAffectingSpell ) {
                 uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
                 if ( button[buttonId].action->isInRange( distance ) == false ) {
                     isSpellUseable = false;
                 }
             }
 
+            // is the spell on cooldown?
             for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
             {
                 if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
@@ -174,9 +177,12 @@ void ActionBar::draw()
                 }
             }
 
+            // are we stunned?
             if ( player->isStunned() == true || player->isFeared() == true || player->isMesmerized() == true || player->isCharmed() == true ) {
                 isSpellUseable = false;
             }
+
+            // does the spell / action require a weapon of any sort?
             if ( button[buttonId].action->getRequiredWeapons() != 0 ) {
                 if ( ( button[buttonId].action->getRequiredWeapons() & ( player->getInventory()->getWeaponTypeBySlot( ItemSlot::MAIN_HAND ) | player->getInventory()->getWeaponTypeBySlot( ItemSlot::OFF_HAND ) ) ) == 0 ) {
                     isSpellUseable = false;
