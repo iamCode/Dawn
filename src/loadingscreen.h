@@ -38,6 +38,7 @@ class LoadingScreen
 		int posY;
 		int width;
 		int height;
+		size_t backgroundToDraw;
 		CTexture *backgroundTexture;
 		CTexture *progressTexture;
 		GLFT_Font *font;

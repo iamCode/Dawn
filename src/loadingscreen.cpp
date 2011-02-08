@@ -24,6 +24,8 @@
 #include "fontcache.h"
 #include "configuration.h"
 
+extern size_t randomSizeT( size_t min, size_t max );
+
 LoadingScreen::LoadingScreen()
 {
 	font = NULL;
@@ -32,15 +34,18 @@ LoadingScreen::LoadingScreen()
 
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
-	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/loadingScreen.tga", 0 );
+	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/SilverForest.tga", 0 );
 	progressTexture = new CTexture();
-	progressTexture->LoadIMG( "data/interface/lifebar.tga", 0 );
+	progressTexture->LoadIMG( "data/lifebar.tga", 0 );
 
-	width = backgroundTexture->getTexture(0).width;
-	height = backgroundTexture->getTexture(0).height;
-	// center on screen
-	posX = (Configuration::screenWidth - width) / 2;
-	posY = (Configuration::screenHeight - height) / 2;
+    // randomly choose background and calculate positions for the background
+    srand( time( 0 ) );
+    backgroundToDraw = rand() % backgroundTexture->getTexture().size() + 0;
+    width = backgroundTexture->getTexture( backgroundToDraw ).width;
+    height = backgroundTexture->getTexture( backgroundToDraw ).height;
+    posX = (Configuration::screenWidth - width) / 2;
+    posY = (Configuration::screenHeight - height) / 2;
+
 	curText = "";
 	progress = 0.0;
 }
@@ -57,19 +62,31 @@ LoadingScreen::~LoadingScreen()
 
 void LoadingScreen::draw()
 {
+    int progressBarXPos = Configuration::screenWidth / 2 - 256;
+	int progressBarYPos = 20;
+	int progressBarWidth = Configuration::screenWidth / 2;
+
 	// show screen
-	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture(0),
+	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture( backgroundToDraw ),
 	                                  posX, width,
 	                                  posY, height );
-	DrawingHelpers::mapTextureToRect( progressTexture->getTexture(0),
-	                                  posX+92, progress * (width-184),
-	                                  posY+92, 32 );
 
-	// show option names (continue, quit, load, save, settings)
+	// draw the first part of the progress bar with a bright red color
+	glColor3f( 0.75f, 0.2f, 0.2f );
+	DrawingHelpers::mapTextureToRect( progressTexture->getTexture(0),
+	                                  progressBarXPos, progress * progressBarWidth,
+	                                  progressBarYPos, 16 );
+
+    // draw the second part of the progress bar with a dark red color
+	glColor3f( 0.5f, 0.1f, 0.1f );
+    DrawingHelpers::mapTextureToRect( progressTexture->getTexture(0),
+	                                  progressBarXPos+progress * progressBarWidth, progressBarWidth - progress * progressBarWidth,
+	                                  progressBarYPos, 16 );
+    glColor3f( 1.0f, 1.0f, 1.0f );
+
 	int textX = posX + width / 2 - font->calcStringWidth( curText ) / 2;
-	int textY = posY + height - 92 - font->getHeight();
+	int textY = 30 + font->getHeight();
 	font->drawText( textX, textY, curText );
-	//std::cout << "drawing loading screen" << std::endl;
 }
 
 void LoadingScreen::setCurrentText( std::string text )
