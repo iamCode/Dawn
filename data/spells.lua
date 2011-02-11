@@ -97,7 +97,7 @@ curSpell:setSpellCost( 50 );
 curSpell:setSoundSpellCasting( "data/sound/spellcast.ogg" );
 curSpell:setDirectDamage(  50, 100, ElementType.Air );
 curSpell:setContinuousDamage( 10, 20, 2000, ElementType.Air );
-curSpell:setSpellSymbol( "data/spells/lightning/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/electrocute/symbol.tga" );
 curSpell:setSoundSpellStart( "data/spells/lightning/lightning.ogg" );
 curSpell:setNumAnimations( 5 );
 curSpell:setAnimationTexture( 0, "data/spells/lightning/1.tga" );
