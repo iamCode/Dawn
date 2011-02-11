@@ -53,6 +53,7 @@
 #include "GLFT_Font.h"
 #include "pnglite/pnglite.h"
 
+#include "MenuBase.h"
 #include "CTexture.h"
 #include "CZone.h"
 #include "CInterface.h"
@@ -794,6 +795,31 @@ bool dawn_init(int argc, char** argv)
 		glEnable( GL_BLEND ); // enable blending
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
+
+
+        /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
+        std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
+        mainMenu->addMenuItem( "New game", MenuItemType::MENU );
+        mainMenu->addMenuItem( "Load game", MenuItemType::MENU );
+        mainMenu->addMenuItem( "Options", MenuItemType::MENU );
+        mainMenu->addMenuItem( "About", MenuItemType::MENU );
+        mainMenu->addMenuItem( "Quit", MenuItemType::FUNCTION );
+
+        while ( 1 )
+        {
+            SDL_Event event;
+            SDL_PollEvent(&event);
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                return -1;
+                //mainMenu->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+            }
+            glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            mainMenu->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+            SDL_GL_SwapBuffers();
+        }
+
 
 		textureFrame = new TextureFrame();
 		initPhase = true;
