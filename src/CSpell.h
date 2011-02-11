@@ -96,8 +96,8 @@ class CSpellActionBase
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
 		virtual uint16_t getRadius() const = 0;
-		virtual uint16_t getX() const = 0;
-		virtual uint16_t getY() const = 0;
+		virtual int16_t getX() const = 0;
+		virtual int16_t getY() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
 		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
@@ -227,8 +227,8 @@ class ConfigurableSpell : public CSpell
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
-		virtual uint16_t getX() const;
-		virtual uint16_t getY() const;
+		virtual int16_t getX() const;
+		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -254,8 +254,8 @@ class ConfigurableSpell : public CSpell
 		uint16_t maxRange;
 		bool hostileSpell;
 		uint16_t radius;
-		uint16_t centerX;
-		uint16_t centerY;
+		int16_t centerX;
+		int16_t centerY;
 
 		std::string name;
 		std::string info;
@@ -273,8 +273,8 @@ class ConfigurableAction : public CAction
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
-		virtual uint16_t getX() const;
-		virtual uint16_t getY() const;
+		virtual int16_t getX() const;
+		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
 		virtual bool isSpellHostile() const;
@@ -392,8 +392,8 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 
 		void setRadius( uint16_t newRadius );
 		virtual uint16_t getRadius();
-		virtual uint16_t getX();
-		virtual uint16_t getY();
+		virtual int16_t getX();
+		virtual int16_t getY();
 
 	protected:
 		GeneralAreaDamageSpell();

@@ -357,12 +357,12 @@ uint16_t ConfigurableSpell::getRadius() const
 	return radius;
 }
 
-uint16_t ConfigurableSpell::getX() const
+int16_t ConfigurableSpell::getX() const
 {
 	return centerX;
 }
 
-uint16_t ConfigurableSpell::getY() const
+int16_t ConfigurableSpell::getY() const
 {
 	return centerY;
 }
@@ -504,12 +504,12 @@ uint16_t ConfigurableAction::getRadius() const
 	return 0;
 }
 
-uint16_t ConfigurableAction::getX() const
+int16_t ConfigurableAction::getX() const
 {
 	return 0;
 }
 
-uint16_t ConfigurableAction::getY() const
+int16_t ConfigurableAction::getY() const
 {
 	return 0;
 }
@@ -876,12 +876,12 @@ void GeneralRayDamageSpell::drawEffect()
 
 /// class GeneralAreaDamageSpell
 
-uint16_t GeneralAreaDamageSpell::getX()
+int16_t GeneralAreaDamageSpell::getX()
 {
 	return centerX;
 }
 
-uint16_t GeneralAreaDamageSpell::getY()
+int16_t GeneralAreaDamageSpell::getY()
 {
 	return centerY;
 }
@@ -958,10 +958,11 @@ CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, CCharacter 
 CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, int x, int y )
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
+
 	newSpell->creator = creator;
 	newSpell->centerX = x;
 	newSpell->centerY = y;
-	newSpell->child		= false;
+	newSpell->child   = false;
 
 	return newSpell;
 }

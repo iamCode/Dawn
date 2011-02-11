@@ -16,8 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "main.h"
-
 #include "threadObject/Thread.h"
 
 #include <cstdio>
@@ -990,8 +988,7 @@ void game_loop()
 												// search for new target if no AoE spell is supposed to be cast
 												if( actionBar->isCastingAoESpell() )
 												{
-													CSpellActionBase *spell = actionBar->getAoESpell();
-													CSpellActionBase *newSpell = spell->cast( player, mouseX + world_x, mouseY + world_y );
+													CSpellActionBase *newSpell = actionBar->getAoESpell()->cast( player, mouseX+world_x, mouseY+world_y );
 													player->castSpell( newSpell );
 													actionBar->setCastingAoESpell( false );
 													actionBar->setJustCastAoESpell( true );

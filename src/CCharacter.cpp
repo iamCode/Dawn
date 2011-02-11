@@ -1476,8 +1476,8 @@ void CCharacter::startSpellAction()
 	// are we casting an AoE spell?
 	if ( curSpellAction->getRadius() > 0 ) {
 		Globals::getCurrentZone()->MagicMap.push_back(new CMagic(curSpellAction));
-		Globals::getCurrentZone()->MagicMap.back()->getSpell()->startEffect();
 		Globals::getCurrentZone()->MagicMap.back()->setCreator( this );
+		Globals::getCurrentZone()->MagicMap.back()->getSpell()->startEffect();
 		isPreparing = false;
 		preparationCurrentTime = 0;
 		preparationStartTime = 0;
