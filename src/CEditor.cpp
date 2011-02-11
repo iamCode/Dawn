@@ -24,6 +24,7 @@
 #include "fontcache.h"
 #include "globals.h"
 #include "tileset.h"
+#include "interactionregion.h"
 
 #include <iostream>
 
@@ -33,6 +34,7 @@ void CEditor::initFonts()
 {
 	objectDescriptionFont = FontCache::getFontFromCache( "data/verdana.ttf", 10 );
 	keybindingFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
+	tinyFont = FontCache::getFontFromCache( "data/verdana.ttf", 5 );
 }
 
 void CEditor::inc_tilepos()
@@ -659,20 +661,122 @@ void CEditor::HandleKeys()
 
 }
 
+void printShortText( GLFT_Font *font, const std::string &printText, int left, int width, int bottom, int height )
+{
+	int curY = bottom + height - font->getHeight();
+	const int lineHeight = font->getHeight() * 1.5;
+	const int bottomMargin = font->getHeight() * 0.5;
+	size_t curStringPos = 0;
+	while ( curY - bottomMargin > bottom )
+	{
+		std::string curLine = "";
+		curLine.push_back(printText.at(curStringPos));
+		++curStringPos;
+		while ( curStringPos < printText.size() && printText.at(curStringPos) != '\n' )
+		{
+			if ( printText.at(curStringPos) == '\r' )
+			{
+				++curStringPos;
+				continue;
+			}
+			curLine.push_back( printText.at(curStringPos) );
+			if ( font->calcStringWidth( curLine ) > width )
+			{
+				curLine.erase(curLine.size()-1,1);
+				break;
+			}
+			++curStringPos;
+		}
+		// skip until end of line
+		while ( curStringPos < printText.size() && printText.at(curStringPos) != '\n' )
+		{
+			++curStringPos;
+		}
+		++curStringPos;
+
+		// print current line
+		font->drawText( left, curY, curLine );
+
+		curY -= lineHeight;
+
+		if ( curStringPos >= printText.size() )
+			break;
+	}
+}
+
 void CEditor::DrawEditor()
 {
 	if (current_object == 3) {
 		// we have selected to work with collisionboxes, draw them.
 		for (unsigned int x = 0; x < zoneToEdit->CollisionMap.size(); x++) {
 			if (objectedit_selected == (signed int)x) { // if we have a selected collisionbox, draw it a little brighter than the others.
-				glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+				glColor4f(0.9f, 0.2f, 0.8f,0.8f);
 			} else {
-				glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
+				glColor4f(0.7f, 0.1f, 0.6f, 0.8f);
 			}
 
-			DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(1),
+			DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(4),
 			                                  zoneToEdit->CollisionMap[x].CR.x, zoneToEdit->CollisionMap[x].CR.w,
 			                                  zoneToEdit->CollisionMap[x].CR.y, zoneToEdit->CollisionMap[x].CR.h );
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
+		}
+
+		// draw interaction regions
+		std::vector<InteractionRegion*> zoneInteractionRegions = zoneToEdit->getInteractionRegions();
+		for ( size_t curInteractionRegionNr = 0; curInteractionRegionNr < zoneInteractionRegions.size(); ++curInteractionRegionNr )
+		{
+			InteractionRegion *curInteractionRegion = zoneInteractionRegions[ curInteractionRegionNr ];
+			int left, bottom, width, height;
+			curInteractionRegion->getPosition( left, bottom, width, height );
+			if ( ! DrawingHelpers::isRectOnScreen(left-4, width+8, bottom-4, height+8) )
+			{
+				continue;
+			}
+			// draw border around the region
+			glColor4f( 0.0f, 0.8f, 0.0f, 0.6f );
+			DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(4),
+											  left, width, bottom, height );
+			// draw region
+			if ( width > 8 && height > 8 )
+			{
+				glColor4f( 0.0f, 0.3f, 0.0f, 0.6f );
+				DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(4),
+												  left+4, width-8, bottom+4, height-8 );
+			}
+
+			// draw text for region
+			if ( width > 28 and height > tinyFont->getHeight() * 3 + 8 )
+			{
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+				std::string curEnterText = curInteractionRegion->getOnEnterText();
+				std::string curLeaveText = curInteractionRegion->getOnLeaveText();
+				bool printEnterAndLeaveText = ( curEnterText.size() > 0 && curLeaveText.size() > 0 && height > tinyFont->getHeight() * 6 );
+				if ( curEnterText.size() > 0 )
+				{
+					std::string printText = std::string("Enter:\n").append(curEnterText);
+					int printHeight = height - 8;
+					int printBottom = bottom + 4;
+					if ( printEnterAndLeaveText )
+					{
+						printBottom = printBottom - 4 + height - height/2;
+						printHeight = (height-8) / 2;
+					}
+					printShortText( tinyFont, printText, left + 4, width - 8, printBottom, printHeight );
+				}
+				if ( curLeaveText.size() > 0 )
+				{
+					std::string printText = std::string("Leave:\n").append(curLeaveText);
+					int printHeight = height - 8;
+					int printBottom = bottom + 4;
+					if ( printEnterAndLeaveText )
+					{
+						printHeight = (height-8) / 2;
+					}
+					printShortText( tinyFont, printText, left + 4, width - 8, printBottom, printHeight );
+				}
+
+			}
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
 		}
 	}
@@ -777,6 +881,7 @@ void CEditor::LoadTextures()
 	interfacetexture.LoadIMG("data/current_tile_backdrop.tga",1);
 	interfacetexture.LoadIMG("data/tile.tga",2);
 	interfacetexture.LoadIMG("data/edit_backdrop.tga",3);
+	interfacetexture.LoadIMG("data/tile_solid.tga",4);
 }
 
 bool CEditor::checkAndPlaceAdjacentTile()

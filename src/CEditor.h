@@ -44,6 +44,7 @@ class CEditor
 			zoneToEdit = NULL;
 			objectDescriptionFont = NULL;
 			keybindingFont = NULL;
+			tinyFont = NULL;
 			adjacencyModeEnabled = false;
 			for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 				curDirectionAdjacencySelection[ curDirection ] = 0;
@@ -86,6 +87,7 @@ class CEditor
 		CTexture interfacetexture;
 		GLFT_Font *objectDescriptionFont;
 		GLFT_Font *keybindingFont;
+		GLFT_Font *tinyFont;
 		CZone *zoneToEdit;
 
 		bool adjacencyModeEnabled;

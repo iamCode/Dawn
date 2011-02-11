@@ -45,14 +45,32 @@ void InteractionRegion::setPosition( int left_, int bottom_, int width_, int hei
 	height = height_;
 }
 
+void InteractionRegion::getPosition( int &left_, int &bottom_, int &width_, int &height_ ) const
+{
+	left_   = left;
+	bottom_ = bottom;
+	width_  = width;
+	height_ = height;
+}
+
 void InteractionRegion::setOnEnterText( std::string enterCode )
 {
 	this->onEnterCode = enterCode;
 }
 
+std::string InteractionRegion::getOnEnterText() const
+{
+	return onEnterCode;
+}
+
 void InteractionRegion::setOnLeaveText( std::string leaveCode )
 {
 	this->onLeaveCode = leaveCode;
+}
+
+std::string InteractionRegion::getOnLeaveText() const
+{
+	return onLeaveCode;
 }
 
 void InteractionRegion::interactWithPlayer( Player *player )

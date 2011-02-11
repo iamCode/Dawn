@@ -52,7 +52,7 @@ CZone::CZone()
 
 CZone::~CZone()
 {
-	for(int i=0;i<MagicMap.size();++i)
+	for(size_t i=0;i<MagicMap.size();++i)
 	{
 		delete MagicMap[i];
 	}
