@@ -1477,6 +1477,7 @@ void CCharacter::startSpellAction()
 	if ( curSpellAction->getRadius() > 0 ) {
 		Globals::getCurrentZone()->MagicMap.push_back(new CMagic(curSpellAction));
 		Globals::getCurrentZone()->MagicMap.back()->getSpell()->startEffect();
+		Globals::getCurrentZone()->MagicMap.back()->setCreator( this );
 		isPreparing = false;
 		preparationCurrentTime = 0;
 		preparationStartTime = 0;
