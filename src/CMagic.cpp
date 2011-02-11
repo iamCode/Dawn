@@ -75,24 +75,23 @@ bool CMagic::isDone()
 
 bool CMagic::collision(CNPC *npc)
 {
-	RECT rec;
-	rec.left				= npc->getXPos();
-	rec.right				= npc->getWidth();
-	rec.top					= npc->getYPos();
-	rec.bottom			= npc->getHeight();
+	int left				= npc->getXPos();
+	int right				= npc->getWidth();
+	int top					= npc->getYPos();
+	int bottom			= npc->getHeight();
 
-	int recCenterX 	= rec.left + rec.right/2;
-	int recCenterY 	= rec.top + rec.bottom/2;
-	int w						= rec.right/2;
-	int h						= rec.bottom/2;
+	int recCenterX 	= left + right/2;
+	int recCenterY 	= top + bottom/2;
+	int w						= right/2;
+	int h						= bottom/2;
 	int dx					= abs(spell->getX() - recCenterX);
 	int dy					= abs(spell->getY() - recCenterY);
 
 	if ( dx > (spell->getRadius() + w) || dy > (spell->getRadius() + h))
 		return false;
 
-	int cirDistX = abs(spell->getX() - rec.left - w);
-	int cirDistY = abs(spell->getY() - rec.top - h);
+	int cirDistX = abs(spell->getX() - left - w);
+	int cirDistY = abs(spell->getY() - top - h);
 
 	if ( cirDistX <= w)
 		return true;
