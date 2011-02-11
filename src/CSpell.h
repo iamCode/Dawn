@@ -173,9 +173,9 @@ class CSpellActionBase
 		bool finished;
 		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
 		CharacterClass::CharacterClass requiredClass;
-        std::string soundSpellCasting;
-        std::string soundSpellStart;
-        std::string soundSpellHit;
+		std::string soundSpellCasting;
+		std::string soundSpellStart;
+		std::string soundSpellHit;
 		uint8_t requiredLevel;
 		uint32_t requiredWeapons;
 		uint8_t rank;
@@ -254,6 +254,8 @@ class ConfigurableSpell : public CSpell
 		uint16_t maxRange;
 		bool hostileSpell;
 		uint16_t radius;
+		uint16_t centerX;
+		uint16_t centerY;
 
 		std::string name;
 		std::string info;
@@ -310,13 +312,13 @@ class GeneralDamageSpell : public ConfigurableSpell
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 
-    uint16_t getDirectDamageMin() const;
-    uint16_t getDirectDamageMax() const;
-    ElementType::ElementType getDirectDamageElement() const;
+	uint16_t getDirectDamageMin() const;
+	uint16_t getDirectDamageMax() const;
+	ElementType::ElementType getDirectDamageElement() const;
 
-    uint16_t getContinuousDamageMin() const;
-    uint16_t getContinuousDamageMax() const;
-    ElementType::ElementType getContinuousDamageElement() const;
+	uint16_t getContinuousDamageMin() const;
+	uint16_t getContinuousDamageMax() const;
+	ElementType::ElementType getContinuousDamageElement() const;
 
 		virtual EffectType::EffectType getEffectType() const;
 
@@ -411,8 +413,6 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 		int numTextures;
 		CTexture *spellTexture;
 
-		int centerX;
-		int centerY;
 		EffectType::EffectType effectType;
 		bool child;
 };

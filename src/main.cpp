@@ -251,19 +251,19 @@ void DrawScene()
 	// draw items on the ground
 	curZone->getGroundLoot()->draw();
 
-	// draw the interactions on screen
-	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
-	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-		curInteraction->draw();
-	}
-
 	//draw AoE spells
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
 	for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
 		if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
 				activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
 		}
+	}
+
+	// draw the interactions on screen
+	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+		curInteraction->draw();
 	}
 
 	// draw the NPC
@@ -991,7 +991,8 @@ void game_loop()
 												if( actionBar->isCastingAoESpell() )
 												{
 													CSpellActionBase *spell = actionBar->getAoESpell();
-													player->castSpell( dynamic_cast<CSpellActionBase*>( spell->cast( player, mouseX + world_x, mouseY + world_y ) ) );
+													CSpellActionBase *newSpell = spell->cast( player, mouseX + world_x, mouseY + world_y );
+													player->castSpell( newSpell );
 													actionBar->setCastingAoESpell( false );
 													actionBar->setJustCastAoESpell( true );
 													Globals::setDisplayCursor( false );
@@ -1093,7 +1094,6 @@ void game_loop()
 			player->Move();
 			player->regenerateLifeManaFatigue( ticksDiff );
 
-
 			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 				CNPC *curNPC = zoneNPCs[x];
@@ -1106,16 +1106,17 @@ void game_loop()
 				curNPC->Wander();
 
 				// check all active spells for inEffects on our NPCs.
+				curNPC->cleanupActiveSpells();
 				std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
 				for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 						activeSpellActions[ curActiveSpellNr ].first->inEffect();
 				}
-				curNPC->cleanupActiveSpells();
 			}
 
-			// check all active AoE spells and see they're finished and look for inEffects
+			// check all active AoE spells and see they're finished and look for inEffects and process 'em
 			for ( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i)
 			{
+				Globals::getCurrentZone()->MagicMap[i]->process();
 				Globals::getCurrentZone()->MagicMap[i]->getSpell()->inEffect();
 				Globals::cleanupActiveAoESpells();
 
