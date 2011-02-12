@@ -2220,16 +2220,20 @@ data/cliffs/cliff17.tga									CC-BY 3.0			http://www.lostgarden.com
 data/cliffs/cliff5.tga									CC-BY 3.0			http://www.lostgarden.com
 data/tree/tree1.tga										CC-BY 3.0			http://www.lostgarden.com
 data/tree/tree2.tga										CC-BY 3.0			http://www.lostgarden.com
-data/sound/sword_01.ogg
-data/sound/walking.ogg
-data/sound/quiet_click.ogg
-data/sound/sword_swwosh.ogg
-data/sound/click.ogg
-data/sound/sell_buy_item.ogg
-data/sound/arrowHit06.ogg
+data/sound/sword_01.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=52458
+data/sound/walking.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=15562
+data/sound/quiet_click.ogg						CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=407
+data/sound/sword_swwosh.ogg						CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=19312
+																			(slightly modified to remove the second swwosh)
+data/sound/click.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=406
+																			(shortened a little bit)
+data/sound/sell_buy_item.ogg		GNU GPL 2.0,GNU GPL 3.0,GNU LGPL 3.0
+									CC-BY 3.0,CC-BY-SA 3.0,CC0				http://opengameart.org/content/inventory-sound-effects
+data/sound/arrowHit06.ogg			GNU GPL 2.0,GNU GPL 3.0,CC-BY-SA 3.0	http://opengameart.org/content/arrow-hit-twang
 data/music/loading.ogg									CC-BY 3.0			http://opengameart.org/content/cave-theme
-data/music/mika_FallToPieces_Silence.ogg
+data/music/mika_FallToPieces_Silence.ogg				CC BY-NC 3.0		http://ccmixter.org/files/mika/24945
 data/music/Early_Dawn_Simple.ogg							GPLv3				Created by Dawn members
+data/music/ratsrats_0.ogg								CC-BY 3.0			http://opengameart.org/content/rat-sewer-0
 data/spells/frozenshot/symbol.tga							GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
 data/spells/landyrsforce/symbol.tga							CC0				http://opengameart.org/content/skill-magic-spell-icons
 data/spells/inferno/symbol.tga
