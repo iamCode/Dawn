@@ -698,10 +698,9 @@ void GeneralDamageSpell::dealDirectDamage()
             realDamage *= criticalDamageMultiplier;
         }
 
-        if ( target->isAlive() )
-					target->Damage( round(realDamage), criticalHit );
-        else
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        if ( target->isAlive() ) {
+            target->Damage( round(realDamage), criticalHit );
+        }
 	}
 }
 
@@ -819,9 +818,6 @@ void GeneralRayDamageSpell::inEffect()
 	if ( floor(remainingEffect) > 0 ) {
 		target->Damage( floor(remainingEffect), false );
 		remainingEffect = remainingEffect - floor( remainingEffect );
-		if ( ! target->isAlive() ) {
-			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-		}
 		lastEffect = curTime;
 	}
 
@@ -1040,7 +1036,6 @@ void GeneralAreaDamageSpell::inEffect()
 		target->Damage( floor(remainingEffect), false );
 		remainingEffect = remainingEffect - floor( remainingEffect );
 		if ( !target->isAlive() ) {
-			if( child ) creator->gainExperience( target->getModifiedMaxHealth() / 10 );
 			callFinish = true;
 		}
 
@@ -1722,9 +1717,7 @@ void MeleeDamageAction::dealDamage()
             damageDone = 1;
         }
         target->Damage( damageDone, criticalHit );
-        if ( ! target->isAlive() ) {
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-        }
+
         /// play the hit sound effect for the spell, if we have any.
         if ( soundSpellHit != "" ) {
             SoundEngine::playSound( soundSpellHit );
@@ -2027,9 +2020,7 @@ void RangedDamageAction::dealDamage()
             damageDone = 1;
         }
         target->Damage( damageDone, criticalHit );
-        if ( ! target->isAlive() ) {
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-        }
+
         /// play the hit sound effect for the spell, if we have any.
         if ( soundSpellHit != "" ) {
             SoundEngine::playSound( soundSpellHit );

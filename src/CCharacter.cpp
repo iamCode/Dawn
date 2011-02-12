@@ -1555,7 +1555,7 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 	}
 }
 
-void CCharacter::Damage(int amount, bool criticalHit)
+void CCharacter::Damage( int amount, bool criticalHit )
 {
     if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
         if ( randomSizeT( 0, 100 ) <= 20 ) {
@@ -1612,6 +1612,10 @@ void CCharacter::Damage(int amount, bool criticalHit)
 		if (current_health <= amount) {
 			current_health = 0;
 			Die();
+			if ( isPlayer() == false ) {
+			    Player *player = Globals::getPlayer();
+                player->gainExperience( getModifiedMaxHealth() / 10 );
+			}
 		} else {
 			modifyCurrentHealth( -amount );
 		}
