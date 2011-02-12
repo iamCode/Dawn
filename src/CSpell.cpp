@@ -29,6 +29,7 @@
 #include "item.h"
 #include "soundengine.h"
 #include "globals.h"
+#include "CLuaFunctions.h"
 
 #include <cassert>
 
@@ -55,7 +56,8 @@ CSpellActionBase::CSpellActionBase()
 		  requiredClass( CharacterClass::NOCLASS ),
           requiredLevel( 1 ),
 		  requiredWeapons( 0 ),
-          rank( 1 )
+		  rank( 1 ),
+		  luaID( "" )
 {
     characterStateEffects.first = CharacterStates::NOEFFECT;
     characterStateEffects.second = 1.0f;
@@ -123,21 +125,11 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 
 std::string CSpellActionBase::getID() const
 {
-	std::string name = getName();
-	std::ostringstream idstream;
-	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
-		if ( !isalpha( name[curChar] ) ) {
-			// ignore
-		} else if ( isupper( name[curChar] ) ) {
-			idstream << char( tolower( name[curChar] ) );
-		} else {
-			idstream << char( name[curChar] );
-		}
+	if ( luaID.size() == 0 )
+	{
+		luaID = LuaFunctions::getIDFromLuaTable( "spellDatabase", this );
 	}
-	if ( rank > 1 ) {
-		idstream << "rank" << static_cast<int>( rank );
-	}
-	return idstream.str();
+	return luaID;
 }
 
 void CSpellActionBase::addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute )
@@ -291,6 +283,7 @@ ConfigurableSpell::ConfigurableSpell()
 
 ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 {
+	luaID = other->getID();
 	spellSymbol = other->spellSymbol;
 
 	castTime = other->castTime;
@@ -451,6 +444,7 @@ ConfigurableAction::ConfigurableAction()
 
 ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 {
+	luaID = other->getID();
 	spellSymbol = other->spellSymbol;
 
 	castTime = other->castTime;

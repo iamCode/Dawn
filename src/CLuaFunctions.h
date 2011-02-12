@@ -34,6 +34,17 @@ namespace LuaFunctions
 
 	void executeLuaFile( std::string filename );
 	void executeLuaScript( std::string scripttext );
+
+	/// \brief gets the name of the entry of a certain value in a lua table
+	///
+	/// example: the magic-missile spell is stored in lua in the table spellDatabase
+	///          as spellDatabase["magicmissile"]
+	///          so if you call getIDFromLuaTable( "spellDatabase", <ptr to magic-missile spell> )
+	///			 it will return "magicmissile"
+	///
+	/// caution: This works only with the original instances that were put in the lua table. Any copies (new instances)
+	///          created from them will not work so this should only be used with objects that exist only exactly once.
+	std::string getIDFromLuaTable(const std::string &tableName, const void *value );
 } // namespace LuaFunctions
 
 #endif // LUAFUNCTIONS_H

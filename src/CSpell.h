@@ -172,6 +172,7 @@ class CSpellActionBase
 		bool boundToCreator;
 		bool finished;
 		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
+		mutable std::string luaID; // for caching the id and not having to get it every time again
 		CharacterClass::CharacterClass requiredClass;
 		std::string soundSpellCasting;
 		std::string soundSpellStart;
