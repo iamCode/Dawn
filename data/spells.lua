@@ -127,6 +127,7 @@ curSpell:setRadius( 120 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 -------------------------------------------------------------------------------
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
