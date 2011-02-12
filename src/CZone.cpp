@@ -576,6 +576,15 @@ namespace DawnInterface
 		}
 		Globals::setCurrentZone( newZone );
 		getPlayer()->setPosition( enterX, enterY );
+		std::ostringstream oss;
+		std::string zoneNameNoPrefix = zoneName;
+		if ( zoneNameNoPrefix.find_last_of('/') != std::string::npos )
+		{
+			zoneNameNoPrefix = zoneNameNoPrefix.substr( zoneNameNoPrefix.find_last_of('/')+1 );
+		}
+		oss << "if (" << zoneNameNoPrefix << ".onEnterMap ~= nil)\nthen\n    " << zoneNameNoPrefix << ".onEnterMap(" << enterX << "," << enterY << ");\nelse    print \"" << zoneNameNoPrefix << ".onEnterMap was not defined\";\nend";
+		std::string onEnterCall = oss.str();
+		LuaFunctions::executeLuaScript(onEnterCall);
 	}
 
 	void restoreGroundLootItem( Item *item, int xPos, int yPos )
