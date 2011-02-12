@@ -63,12 +63,13 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	interactionregion.$(OBJEXT) inventory.$(OBJEXT) \
 	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
-	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
-	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
-	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
-	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
-	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
-	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
+	MenuBase.$(OBJEXT) musiccache.$(OBJEXT) \
+	optionswindow.$(OBJEXT) Player.$(OBJEXT) questwindow.$(OBJEXT) \
+	shop.$(OBJEXT) soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
+	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
+	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
+	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
+	Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -286,6 +287,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
 	src/main.h \
+	src/MenuBase.cpp \
+	src/MenuBase.h \
 	src/musiccache.cpp \
 	src/musiccache.h \
 	src/optionswindow.cpp \
@@ -431,6 +434,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GroundLoot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryScreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogWindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
@@ -964,6 +968,20 @@ main.obj: src/main.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/main.cpp' object='main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
+
+MenuBase.o: src/MenuBase.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MenuBase.o -MD -MP -MF $(DEPDIR)/MenuBase.Tpo -c -o MenuBase.o `test -f 'src/MenuBase.cpp' || echo '$(srcdir)/'`src/MenuBase.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/MenuBase.Tpo $(DEPDIR)/MenuBase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/MenuBase.cpp' object='MenuBase.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MenuBase.o `test -f 'src/MenuBase.cpp' || echo '$(srcdir)/'`src/MenuBase.cpp
+
+MenuBase.obj: src/MenuBase.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MenuBase.obj -MD -MP -MF $(DEPDIR)/MenuBase.Tpo -c -o MenuBase.obj `if test -f 'src/MenuBase.cpp'; then $(CYGPATH_W) 'src/MenuBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MenuBase.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/MenuBase.Tpo $(DEPDIR)/MenuBase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/MenuBase.cpp' object='MenuBase.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MenuBase.obj `if test -f 'src/MenuBase.cpp'; then $(CYGPATH_W) 'src/MenuBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MenuBase.cpp'; fi`
 
 musiccache.o: src/musiccache.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT musiccache.o -MD -MP -MF $(DEPDIR)/musiccache.Tpo -c -o musiccache.o `test -f 'src/musiccache.cpp' || echo '$(srcdir)/'`src/musiccache.cpp
