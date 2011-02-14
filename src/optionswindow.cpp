@@ -33,6 +33,7 @@
 #include "ActionBar.h"
 #include "FramesBase.h"
 #include "configuration.h"
+#include "utils.h"
 #include <memory>
 
 extern std::auto_ptr<QuestWindow> questWindow;
@@ -104,10 +105,16 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	}
 	textY -= font->getHeight() * 1.5;
 	if ( selectedEntry == 1 ) {
-		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+        if ( utils::file_exists( "savegame.lua" ) == true ) {
+            glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+        } else {
+            glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+        }
+	} else if ( utils::file_exists( "savegame.lua" ) == false ) {
+        glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
 	}
 	font->drawText( textX, textY, "Load Game" );
-	if ( selectedEntry == 1 ) {
+	if ( selectedEntry == 1 || utils::file_exists( "savegame.lua" ) == false ) {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 	textY -= font->getHeight() * 1.5;
@@ -159,7 +166,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 
 	if ( selectedEntry == 0 ) {
 		setQuitGame();
-	} else if ( selectedEntry == 1 ) {
+	} else if ( selectedEntry == 1 && utils::file_exists( "savegame.lua" ) == true ) {
 		// Load Game
 
 		// clear current game data
