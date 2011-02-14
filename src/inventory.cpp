@@ -418,7 +418,14 @@ void Inventory::clear()
 	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
 	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
 		if ( equippedItems[ curEquippable ] != NULL ) {
-			delete equippedItems[ curEquippable ];
+            /// check if our weapon is of a two-handed type, then we need to set the other side (offhand or mainhand) to NULL aswell.
+            if ( equippedItems[ curEquippable]->getItem()->isTwoHandedWeapon() == true ) {
+                delete equippedItems[ curEquippable ];
+                equippedItems[ ItemSlot::MAIN_HAND ] = NULL;
+                equippedItems[ ItemSlot::OFF_HAND ] = NULL;
+            } else {
+                delete equippedItems[ curEquippable ];
+            }
 		}
 		equippedItems[ curEquippable ] = NULL;
 	}
