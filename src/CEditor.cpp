@@ -947,6 +947,9 @@ void CEditor::DrawEditor()
 		                                  editorFocus->getX()+(RES_X/2)+(tilepos*50)+(tilepos_offset*50), 40,
 		                                  editorFocus->getY()+RES_Y-60, 40 );
 	}
+
+	/// draw the world position of the mouse in the top left corner.
+	keybindingFont->drawText( editorFocus->getX()+10, editorFocus->getY()+RES_Y-10, "x: %d, y: %d", int(editorFocus->getX())+mouseX, int(editorFocus->getX())+mouseY );
 }
 
 void CEditor::LoadTextures()
