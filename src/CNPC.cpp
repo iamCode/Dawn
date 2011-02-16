@@ -340,6 +340,15 @@ void CNPC::addOnDieEventHandler( CallIndirection *eventHandler )
 	onDieEventHandlers.push_back( eventHandler );
 }
 
+bool CNPC::hasOnDieEventHandler() const
+{
+    if ( onDieEventHandlers.size() > 0 ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void CNPC::onDie()
 {
 	for ( size_t curEventHandlerNr=0; curEventHandlerNr < onDieEventHandlers.size(); ++curEventHandlerNr ) {
@@ -399,6 +408,21 @@ std::string CNPC::getLuaSaveText() const
 	return oss.str();
 }
 
+std::string CNPC::getLuaEditorSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curNPC";
+	oss << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", "
+	                                        << x_spawn_pos << ", "
+	                                        << y_spawn_pos << ", "
+	                                        << seconds_to_respawn << ", "
+	                                        << do_respawn << " );" << std::endl;
+
+	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
+	oss << objectName << ":setName( \"" << getName() << "\" );" << std::endl;
+
+	return oss.str();
+}
 
 
 

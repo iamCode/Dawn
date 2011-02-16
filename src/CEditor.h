@@ -66,6 +66,7 @@ class CEditor
 		void setEditZone( CZone *zoneToEdit );
 		bool isEnabled() const;
 		void setEnabled( bool enabled );
+		void loadNPCs();
 
 	private:
 		void inc_tilepos();
@@ -74,6 +75,8 @@ class CEditor
 		void DrawEditFrame(sEnvironmentMap *editobject);
 		bool checkAndApplyAdjacencyModification( int modification );
 		bool checkAndPlaceAdjacentTile();
+
+		std::vector< std::pair< std::string, CCharacter* > > editorNPCs;
 
 		bool enabled;
 		int tilepos_offset, current_object, objectedit_selected;

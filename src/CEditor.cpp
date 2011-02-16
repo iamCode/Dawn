@@ -29,6 +29,11 @@
 #include <iostream>
 
 extern CMessage message;
+extern std::map< std::string, CCharacter* > allMobTypes;
+
+namespace DawnInterface {
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
+}
 
 void CEditor::initFonts()
 {
@@ -67,6 +72,12 @@ void CEditor::inc_tilepos()
 			}
 		break;
 		case 3: // collisionboxes
+		break;
+		case 4: // NPCs
+            if ( current_tilepos+1 < editorNPCs.size() ) {
+                current_tilepos++;
+                tilepos_offset--;
+            }
 		break;
 	}
 }
@@ -148,6 +159,21 @@ void CEditor::SaveZone()
 		                                            << curCollision.CR.w << ", " << curCollision.CR.h << " );" << std::endl;
 	}
 	ofs.close();
+
+	// save the NPCs
+	/// NOTE! We only save NPCs that doesn't have any InteractionType added to them or an dieEventHandler. So all interaction NPCs will need to be modified manually.
+	std::string spawnpointFileName = zoneName;
+	spawnpointFileName.append( ".spawnpoints.lua" );
+
+	ofs.open( spawnpointFileName.c_str() );
+	std::vector<CNPC*> currentNPCs = zoneToEdit->getNPCs();
+	for ( size_t curNPC = 0; curNPC < currentNPCs.size(); curNPC++ ) {
+        if ( zoneToEdit->findInteractionPointForCharacter( dynamic_cast<CCharacter*>( currentNPCs[ curNPC ] ) ) == false
+          && currentNPCs[ curNPC ]->hasOnDieEventHandler() == false ) {
+            ofs << currentNPCs[ curNPC ]->getLuaEditorSaveText();
+        }
+    }
+    ofs.close();
 }
 
 void CEditor::setEditZone( CZone *zoneToEdit_ )
@@ -163,6 +189,8 @@ bool CEditor::isEnabled() const
 void CEditor::setEnabled( bool enabled_ )
 {
 	enabled = enabled_;
+
+	loadNPCs();
 
 	// ensure a correct zone has been set
 	if ( enabled && zoneToEdit == NULL ) {
@@ -216,6 +244,8 @@ void CEditor::HandleKeys()
 								case 3: // collisionboxes
 									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 								break;
+								case 4: // NPCs
+                                    objectedit_selected = zoneToEdit->LocateNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 								default:
 									curAdjacentTiles.clear();
 								break;
@@ -365,6 +395,23 @@ void CEditor::HandleKeys()
 						zoneToEdit->CollisionMap[objectedit_selected].CR.x++;
 					}
 				}
+			case 4: // NPCs
+                if (keys[SDLK_DOWN]) {
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->y_spawn_pos--;
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->y_pos--;
+                }
+                if (keys[SDLK_UP]) {
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->y_spawn_pos++;
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->y_pos++;
+                }
+                if (keys[SDLK_LEFT]) {
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->x_spawn_pos--;
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->x_pos--;
+                }
+                if (keys[SDLK_RIGHT]) {
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->x_spawn_pos++;
+                    zoneToEdit->getNPCs()[ objectedit_selected ]->x_pos++;
+                }
 			break;
 		}
 	} else if ( objectedit_selected < 0 ) { // Not editting an object, use arrows to move screen
@@ -421,6 +468,9 @@ void CEditor::HandleKeys()
 			case 3: // collisionboxes
 				zoneToEdit->DeleteCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
+			case 4: // NPCs
+                zoneToEdit->DeleteNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+                zoneToEdit->cleanupNPCList();
 		}
 	}
 
@@ -454,6 +504,10 @@ void CEditor::HandleKeys()
 			case 3: // collisionboxes
 				zoneToEdit->AddCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 			break;
+			case 4: // NPCs
+                CNPC *curNPC = DawnInterface::addMobSpawnPoint( editorNPCs[ current_tilepos ].first, editorFocus->getX()+mouseX-48, editorFocus->getY()+mouseY-48, 180, 1 );
+                curNPC->setAttitude( Attitude::HOSTILE );
+            break;
 		}
 	}
 
@@ -638,7 +692,7 @@ void CEditor::HandleKeys()
 		objectedit_selected = -1;
 
 		KP_toggle_tileset = true;
-		if (current_object < 3) {
+		if (current_object < 4) {
 			current_object++;
 		} else {
 			current_object = 0;
@@ -702,6 +756,14 @@ void printShortText( GLFT_Font *font, const std::string &printText, int left, in
 		if ( curStringPos >= printText.size() )
 			break;
 	}
+}
+
+void CEditor::loadNPCs()
+{
+    editorNPCs.clear();
+    for ( std::map< std::string, CCharacter* >::iterator curNPC = allMobTypes.begin(); curNPC != allMobTypes.end(); curNPC++ ) {
+        editorNPCs.push_back( std::pair< std::string, CCharacter* > ( (*curNPC).first, (*curNPC).second ) );
+    }
 }
 
 void CEditor::DrawEditor()
@@ -865,6 +927,18 @@ void CEditor::DrawEditor()
 			// draw all available shadows in edit frame
 			curTiles = tileSet->getAllTilesOfType( TileClassificationType::SHADOW );
 		break;
+		case 4:
+            // we have selected to work with NPCs, draw their bases
+            for ( size_t curNPC = 0; curNPC < editorNPCs.size(); curNPC++ ) {
+                int npcWidth = editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ).width;
+                int npcHeight = editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ).height;
+                DrawingHelpers::mapTextureToRect( editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ),
+                                                  editorFocus->getX()+(RES_X/2)+(curNPC*50)+(tilepos_offset*50)-48+20, npcWidth,
+                                                  editorFocus->getY()+RES_Y-40-48, npcHeight );
+            };
+            keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-90, editorNPCs[ current_tilepos ].first );
+            keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-100, "Level: %d (%s)", editorNPCs[ current_tilepos ].second->getLevel(), CharacterClass::getCharacterClassName( editorNPCs[ current_tilepos ].second->getClass() ).c_str() );
+        break;
 	}
 
 	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {

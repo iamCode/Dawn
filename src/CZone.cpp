@@ -88,7 +88,7 @@ void CZone::LoadZone(std::string file)
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".shadow.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".collision.lua" ) );
 
-	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".init.lua" ) );
 
 	mapLoaded = true;
 
@@ -225,6 +225,42 @@ int CZone::LocateEnvironment(int x, int y)
 	return -1;
 }
 
+// used by the editor
+int CZone::DeleteNPC(int x, int y)
+{
+    std::cout << "Trying to locate an NPC to delete...";
+	for (unsigned int t=0;t<npcs.size();t++) {
+		if ((npcs[t]->getXPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).width > x) &&
+		        (npcs[t]->getXPos() < x)) {
+		            std::cout << "found for X...";
+			if ((npcs[t]->getYPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).height > y) &&
+			        (npcs[t]->getYPos() < y)) {
+			            std::cout << "found for Y." << std::endl;
+				removeNPC( npcs[t] );
+				return 0;
+			}
+		}
+	}
+	std::cout << "nothing.. ;/" << std::endl;
+
+	return 1;
+}
+
+// used by the editor
+int CZone::LocateNPC(int x, int y)
+{
+	for (unsigned int t=0;t<npcs.size();t++) {
+		if ((npcs[t]->getXPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).width > x) &&
+		        (npcs[t]->getXPos() < x)) {
+			if ((npcs[t]->getYPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).height > y) &&
+			        (npcs[t]->getYPos() < y)) {
+				return t;
+			}
+		}
+	}
+	return -1;
+}
+
 int CZone::LocateShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
@@ -319,6 +355,19 @@ void CZone::cleanupNPCList()
 std::vector<InteractionPoint*> CZone::getInteractionPoints()
 {
 	return interactionPoints;
+}
+
+bool CZone::findInteractionPointForCharacter( CCharacter *character ) const
+{
+    for ( size_t curIP = 0; curIP < interactionPoints.size(); curIP++ ) {
+        CharacterInteractionPoint *curCharacterIP = dynamic_cast<CharacterInteractionPoint*>( interactionPoints[ curIP ] );
+        if ( curCharacterIP != NULL ) {
+            if ( character == curCharacterIP->getCharacter() ) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void CZone::addInteractionPoint( InteractionPoint *interactionPointToAdd )

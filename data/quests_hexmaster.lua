@@ -23,13 +23,6 @@ function quest_hexmaster.init()
         quest_hexmaster.noviceLeaderInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.noviceLeader );
         quest_hexmaster.noviceLeaderInteraction:setInteractionType( InteractionType.Quest );
         quest_hexmaster.noviceLeaderInteraction:setInteractionCode( "quest_hexmaster.onNoviceLeaderInteraction()" );
-	
-	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", -75, 2200, 1, 0 );
-	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
-	quest_hexmaster.noviceLeader:setName( "Novice" );
-	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", 55, 2200, 1, 0 );
-	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
-	quest_hexmaster.noviceLeader:setName( "Novice" );
 end
 
 function quest_hexmaster.onQuestGiverRegionInteraction()

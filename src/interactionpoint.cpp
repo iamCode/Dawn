@@ -245,6 +245,11 @@ bool CharacterInteractionPoint::isInRange( int characterXpos, int characterYpos 
 	return true;
 }
 
+CCharacter *CharacterInteractionPoint::getCharacter() const
+{
+    return interactionCharacter;
+}
+
 void CharacterInteractionPoint::draw()
 {
 	// no drawing since the character is what is drawn

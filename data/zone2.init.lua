@@ -1,7 +1,7 @@
 if ( zone2 == nil )
 then
 	zone2 = {};
-
+	dofile("data/zone2.spawnpoints.lua");
 	zone2.leavePoint = DawnInterface.addInteractionPoint();
 	zone2.leavePoint:setPosition( -670, 1568, 48, 70 );
 	zone2.leavePoint:setBackgroundTexture( "data/transparent2x2pixel.tga" );

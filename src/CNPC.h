@@ -60,12 +60,17 @@ class CNPC : public CCharacter
 		bool isMarkedAsDeletable() const;
 
 		void addOnDieEventHandler( CallIndirection *eventHandler );
+		bool hasOnDieEventHandler() const;
 
 		void onDie();
 		void setAttitude( Attitude::Attitude attitude );
 		Attitude::Attitude getAttitude() const;
 
+        /// \brief this function is used when saving the current state of the NPCs in a savegame.
 		std::string getLuaSaveText() const;
+
+		/// \brief this function is used when saving the NPCs in the editor.
+        std::string getLuaEditorSaveText() const;
 };
 
 #endif // __CNPC_H__

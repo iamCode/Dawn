@@ -1,7 +1,7 @@
 if ( arinoxDungeonLevel1 == nil )
 then
     arinoxDungeonLevel1 = {};
-
+    dofile("data/arinoxDungeonLevel1.spawnpoints.lua");
     arinoxDungeonLevel1.leavePoint = DawnInterface.addInteractionPoint();
     arinoxDungeonLevel1.leavePoint:setPosition( 2007, 1913, 76, 70 );
     arinoxDungeonLevel1.leavePoint:setBackgroundTexture( "data/transparent2x2pixel.tga" );

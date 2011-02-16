@@ -139,6 +139,7 @@ class CZone
 		int LocateShadow(int x, int y);
 		int LocateEnvironment(int x, int y);
 		int LocateCollisionbox(int x, int y);
+        int LocateNPC(int x, int y);
 
 		void ChangeTile(int iId, Tile *tile);
 		void AddEnvironment(int x_pos, int y_pos, Tile *tile, bool centeredOnPos);
@@ -147,6 +148,7 @@ class CZone
 		int DeleteEnvironment(int x, int y);
 		int DeleteShadow(int x, int y);
 		int DeleteCollisionbox(int x, int y);
+        int DeleteNPC(int x, int y);
 
 		void DeleteTile(int iId);
 
@@ -159,6 +161,7 @@ class CZone
 		void addInteractionPoint( InteractionPoint *interactionPointToAdd );
 		void cleanupInteractionList();
 		void purgeInteractionList();
+		bool findInteractionPointForCharacter( CCharacter *character ) const;
 
 		std::vector<InteractionRegion*> getInteractionRegions();
 		void addInteractionRegion( InteractionRegion *interactionRegionToAdd );

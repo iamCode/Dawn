@@ -91,6 +91,7 @@ class CharacterInteractionPoint : public InteractionPoint
 		virtual bool isMouseOver( int mouseX, int mouseY ) const;
 		virtual bool isInRange( int characterXpos, int characterYpos ) const;
 		virtual void draw();
+		virtual CCharacter *getCharacter() const;
 
 		virtual std::string getLuaSaveText() const;
 	private:
