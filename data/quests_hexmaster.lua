@@ -7,12 +7,13 @@ end
 function quest_hexmaster.init()
 	-- this quest is initialized from zone zone1
 	quest_hexmaster.questStartRegion = DawnInterface.addInteractionRegion();
-	quest_hexmaster.questStartRegion:setPosition( 730, 2300, 400, 310 );
+	quest_hexmaster.questStartRegion:setPosition( 730, 2250, 400, 310 );
 	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.onQuestGiverRegionInteraction()" );
 
-	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2450, 1, 0 );
+	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2350, 1, 0 );
         quest_hexmaster.ornadSaidor:setAttitude( Attitude.FRIENDLY );
-        quest_hexmaster.ornadSaidor:setName( "Rake Fleetwood" );
+        quest_hexmaster.ornadSaidor:setWanderRadius(50);
+        quest_hexmaster.ornadSaidor:setName( "Ornad Saidor" );
         quest_hexmaster.ornadSaidorInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.ornadSaidor );
         quest_hexmaster.ornadSaidorInteraction:setInteractionType( InteractionType.Quest );
         quest_hexmaster.ornadSaidorInteraction:setInteractionCode( "quest_hexmaster.onOrnadSaidorInteraction()" );
