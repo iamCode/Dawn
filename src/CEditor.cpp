@@ -837,12 +837,26 @@ void CEditor::DrawEditor()
 					}
 					printShortText( tinyFont, printText, left + 4, width - 8, printBottom, printHeight );
 				}
-
 			}
-			glColor4f(1.0f,1.0f,1.0f,1.0f);
+		}
+
+		// NPCs. Show wander radius
+		std::vector<CNPC*> npcs = zoneToEdit->getNPCs();
+		for ( size_t curNPCNr=0; curNPCNr<npcs.size(); ++curNPCNr )
+		{
+			CNPC *curNPC = npcs[ curNPCNr ];
+			int wanderRadius = curNPC->getWanderRadius();
+			double rootX = curNPC->x_spawn_pos + curNPC->getWidth() / 2;
+			double rootY = curNPC->y_spawn_pos + curNPC->getHeight() / 2;
+			double collisionRadius = wanderRadius + 0.5*sqrt( curNPC->getWidth()*curNPC->getWidth() + curNPC->getHeight()*curNPC->getHeight() );
+			glColor4f( 0.0f, 0.0f, 0.5f, 0.4f );
+			DrawingHelpers::mapTextureToRect( interfacetexture.getTexture( 5 ),
+											  rootX-collisionRadius, 2*collisionRadius,
+											  rootY-collisionRadius, 2*collisionRadius );
 		}
 	}
 
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	if (objectedit_selected >= 0) { // we have selected an object to edit it's properties, show the edit-screen.
 		switch (current_object) {
 			case 1:
@@ -935,6 +949,7 @@ void CEditor::DrawEditor()
                 DrawingHelpers::mapTextureToRect( editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ),
                                                   editorFocus->getX()+(RES_X/2)+(curNPC*50)+(tilepos_offset*50)-48+20, npcWidth,
                                                   editorFocus->getY()+RES_Y-40-48, npcHeight );
+
             };
             keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-90, editorNPCs[ current_tilepos ].first );
             keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-100, "Level: %d (%s)", editorNPCs[ current_tilepos ].second->getLevel(), CharacterClass::getCharacterClassName( editorNPCs[ current_tilepos ].second->getClass() ).c_str() );
@@ -959,6 +974,7 @@ void CEditor::LoadTextures()
 	interfacetexture.LoadIMG("data/tile.tga",2);
 	interfacetexture.LoadIMG("data/edit_backdrop.tga",3);
 	interfacetexture.LoadIMG("data/tile_solid.tga",4);
+	interfacetexture.LoadIMG("data/circle.tga",5);
 }
 
 bool CEditor::checkAndPlaceAdjacentTile()
@@ -1076,7 +1092,7 @@ bool CEditor::checkAndApplyAdjacencyModification( int modification )
 					mouseWasInAnyDirectionsAdjacency = true;
 					if ( ( modification > 0
 					     && static_cast<unsigned int>(curDirectionAdjacencies.size()) > curDirectionAdjacencySelection[ curDirection ]+modification )
-					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] + modification >= 0 ) ) {
+					   || ( modification < 0 && curDirectionAdjacencySelection[ curDirection ] >= -modification ) ) {
 						curDirectionAdjacencySelection[ curDirection ] += modification;
 					}
 				}
