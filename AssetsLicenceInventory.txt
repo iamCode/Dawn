@@ -18,6 +18,8 @@ data/houseinterior/insidewall14.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall16.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall8.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall_door.tga					CC-BY 3.0			http://www.lostgarden.com
+data/houseinterior/insidewall_door_open.tga				CC-BY 3.0			Modification of data/houseinterior/insidewall_door.tga
+data/houseinterior/insidewall_door_closed.tga			CC-BY 3.0			Modification of data/houseinterior/insidewall_door.tga, door from data/village/village11.tga
 data/houseinterior/chest1.tga							CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewalldamaged2.tga				CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall10.tga						CC-BY 3.0			http://www.lostgarden.com
