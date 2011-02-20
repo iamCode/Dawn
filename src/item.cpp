@@ -110,9 +110,9 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		spellEffectElementModifier( NULL ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
+		maxStackSize( 1 ),
 		requiredLevel( 1 ),
 		value( 0 ),
-		spellCharges( 0 ),
 		spell( NULL )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -173,6 +173,24 @@ size_t Item::getSizeX() const
 size_t Item::getSizeY() const
 {
 	return sizeY;
+}
+
+uint8_t Item::getMaxStackSize() const
+{
+    return maxStackSize;
+}
+
+void Item::setMaxStackSize( uint8_t maxStackSize )
+{
+    this->maxStackSize = maxStackSize;
+}
+
+bool Item::isItemStackable() const
+{
+    if ( getMaxStackSize() > 1 ) {
+        return true;
+    }
+    return false;
 }
 
 CTexture* Item::getSymbolTexture()
@@ -245,11 +263,6 @@ uint32_t Item::getValue() const
     return value;
 }
 
-uint8_t Item::getSpellCharges() const
-{
-    return spellCharges;
-}
-
 CSpell *Item::getSpell() const
 {
     return spell;
@@ -288,16 +301,6 @@ void Item::setRequiredLevel( uint8_t requiredLevel )
 void Item::setValue( uint32_t newValue )
 {
     value = newValue;
-}
-
-void Item::reduceSpellCharges()
-{
-    spellCharges--;
-}
-
-void Item::setSpellCharges( uint8_t newSpellCharges )
-{
-    spellCharges = newSpellCharges;
 }
 
 void Item::setSpell( CSpell *newSpell )

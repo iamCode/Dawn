@@ -16,6 +16,12 @@
 -- This will cast give the item a 5% chance to cast the spell leatherskin when we're taking damage.
 -- ===============================================================================================
 
+-- == item stacks ==
+-- Itemstacks can be used to allow us to have several items of one sort in one item.
+-- For example "Spellcharges" work this way now. If we want to let the player have 5 charges of an healing potion in one inventory position, then we need to set setMaxStackSize( 5 ) to that item.
+-- Same goes for any other item we want to stack up.
+
+
 itemDatabase = {};
 
 itemDatabase["axeofanguish"]=DawnInterface.createNewItem( "Axe of Anguish", 2, 3, "data/items/Axe2.tga", ItemQuality.ENHANCED, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.TWOHAND_AXE );
@@ -121,15 +127,15 @@ itemDatabase["scrolloftheboar"]=DawnInterface.createNewItem( "Scroll of the Boar
 curItem = itemDatabase["scrolloftheboar"];
 curItem:setRequiredLevel( 1 );
 curItem:setSpell( spellDatabase["spiritoftheboar"] );
-curItem:setSpellCharges( 5 );
 curItem:setValue( 100 );
+curItem:setMaxStackSize( 5 );
 
 
 itemDatabase["smallhealingpotion"]=DawnInterface.createNewItem( "Small healing potion", 1, 1, "data/items/Potion1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.POTION, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["smallhealingpotion"];
 curItem:setSpell( spellDatabase["smallhealingpotion"] );
-curItem:setSpellCharges( 1 );
 curItem:setValue( 500 );
+curItem:setMaxStackSize( 5 );
 
 
 itemDatabase["tornleatherbelt"]=DawnInterface.createNewItem( "Torn leather belt", 2, 1, "data/items/Belt1.tga", ItemQuality.NORMAL, EquipPosition.BELT, ItemType.ARMOR, ArmorType.LEATHER, WeaponType.NO_WEAPON );
@@ -140,7 +146,6 @@ curItem:setValue( 86 );
 itemDatabase["bookofmagicmissilerank2"]=DawnInterface.createNewItem( "Book of Magic Missile", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["bookofmagicmissilerank2"];
 curItem:setSpell( spellDatabase["magicmissilerank2"] );
-curItem:setSpellCharges( 0 );
 curItem:setValue( 2500 );
 
 itemDatabase["coppernecklace"]=DawnInterface.createNewItem( "Copper necklace", 1, 1, "data/items/Necklace1.tga", ItemQuality.ENHANCED, EquipPosition.AMULET,ItemType.JEWELRY, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
@@ -168,20 +173,34 @@ curItem:setValue( 78 );
 itemDatabase["bookofleatherskinrank2"]=DawnInterface.createNewItem( "Book of Leatherskin", 2, 2, "data/items/Spellbook1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.NEWSPELL, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["bookofleatherskinrank2"];
 curItem:setSpell( spellDatabase["leatherskinrank2"] );
-curItem:setSpellCharges( 0 );
 curItem:setValue( 2500 );
 
 itemDatabase["ajuicyapple"]=DawnInterface.createNewItem( "A juicy apple", 1, 1, "data/items/Food1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.FOOD, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["ajuicyapple"];
 curItem:setSpell( spellDatabase["food"] );
-curItem:setSpellCharges( 1 );
 curItem:setValue( 25 );
+curItem:setMaxStackSize( 5 );
+
+itemDatabase["patchofwolfskin"]=DawnInterface.createNewItem( "Patch of wolf skin", 1, 1, "data/items/Skin1.tga", ItemQuality.POOR, EquipPosition.NONE, ItemType.MISCELLANEOUS, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["patchofwolfskin"];
+curItem:setValue( 5 );
+curItem:setMaxStackSize( 20 );
+
+itemDatabase["spidersilk"]=DawnInterface.createNewItem( "Spidersilk", 1, 1, "data/items/Web1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.MISCELLANEOUS, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["spidersilk"];
+curItem:setValue( 16 );
+curItem:setMaxStackSize( 20 );
+
+itemDatabase["wolfmeat"]=DawnInterface.createNewItem( "Wolf meat", 1, 1, "data/items/Meat2.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.MISCELLANEOUS, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["wolfmeat"];
+curItem:setValue( 10 );
+curItem:setMaxStackSize( 20 );
 
 itemDatabase["awaterpouch"]=DawnInterface.createNewItem( "A waterpouch", 1, 1, "data/items/Food2.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.FOOD, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
 curItem = itemDatabase["awaterpouch"];
 curItem:setSpell( spellDatabase["drink"] );
-curItem:setSpellCharges( 5 );
 curItem:setValue( 40 );
+curItem:setMaxStackSize( 5 );
 
 itemDatabase["weakenedbow"]=DawnInterface.createNewItem( "Weakened bow", 2, 3, "data/items/Bow1.tga", ItemQuality.POOR, EquipPosition.MAIN_HAND, ItemType.WEAPON, ArmorType.NO_ARMOR, WeaponType.BOW );
 curItem = itemDatabase["weakenedbow"];

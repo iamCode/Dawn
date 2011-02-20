@@ -2247,3 +2247,30 @@ data/spells/pindown/symbol.tga								GPLv3				http://opengameart.org/content/42
 data/cursors/circle1_disabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
 data/cursors/circle1_enabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
 data/spells/phantomstrike/symbol.tga							GPLv3				http://opengameart.org/content/painterly-spell-icons-part-1
+data/sound/spellcast.ogg
+data/interface/LoadingScreen/SilverForest.tga
+data/interface/Portrait/bar_small.tga
+data/interface/Portrait/base.tga
+data/interface/Portrait/Liche.tga
+data/interface/Portrait/Warrior.tga
+data/interface/Portrait/bar.tga
+data/interface/Portrait/Ranger.tga
+data/items/Eye1.tga
+data/items/Fang1.tga
+data/items/Mushroom1.tga
+data/items/Web1.tga
+data/items/Skin1.tga
+data/items/Meat1.tga
+data/items/Tooth1.tga
+data/items/Meat2.tga
+data/tile_solid.tga
+data/circle.tga
+data/spells/electrocute/symbol.tga
+data/spells/flamingarrow/flamingarrow.ogg
+data/spells/lightning/lightning.ogg
+data/spells/rabidbite/rabidbite.ogg
+data/spells/venomspit/venomspit.ogg
+data/spells/melee/melee_swing.ogg
+data/spells/melee/melee_hit.ogg
+data/spells/shoot/shoot.ogg
+data/spells/terrify/terrify.ogg

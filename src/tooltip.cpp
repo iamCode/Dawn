@@ -37,8 +37,9 @@ size_t getNumBitsToUse( size_t maxBitValue )
     return log(maxBitValue) / log(2);
 }
 
-itemTooltip::itemTooltip( Item *parent_, Player *player_ )
-            :   parent( parent_ )
+itemTooltip::itemTooltip( Item *parent, InventoryItem *inventoryItem, Player *player_ )
+            :   parent( parent ),
+                inventoryItem( inventoryItem )
 {
     player = player_;
     blockWidth = 32;
@@ -533,9 +534,6 @@ void itemTooltip::getParentText()
 	if ( parent->isUseable() )
 	{
         addTooltipText( green, 11, parseInfoText( parent->getSpell(), parent->getUseableDescription() ) );
-        if ( parent->getSpellCharges() > 0 ) {
-	        addTooltipText( white, 11, "Charges: %d", parent->getSpellCharges() );
-	    }
 	    if ( parent->getSpell() != NULL )
 	    {
 	        if ( player->isSpellOnCooldown( parent->getSpell()->getName()) == true )
@@ -590,20 +588,21 @@ void itemTooltip::getParentText()
         }
     }
 
-    int32_t coins = parent->getValue();
+    int32_t coinsBuyPrice = parent->getValue() * inventoryItem->getCurrentStackSize();
+    int32_t coinsSellPrice = floor( parent->getValue() * 0.75 ) * inventoryItem->getCurrentStackSize();
 
     if ( player->isShopping() )
     {
         if ( isShopItem )
         {
-            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins );
-            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins );
-            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins );
+            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coinsBuyPrice );
+            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coinsBuyPrice );
+            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coinsBuyPrice );
             addTooltipText( white, 12, "Buy price: xxxxxxxxxxxx" );
         } else {
-            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coins * 0.75 );
-            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coins * 0.75 );
-            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coins * 0.75 );
+            itemValue[0] = currency::convertCoinsToString(currency::COPPER, coinsSellPrice );
+            itemValue[1] = currency::convertCoinsToString(currency::SILVER, coinsSellPrice );
+            itemValue[2] = currency::convertCoinsToString(currency::GOLD, coinsSellPrice );
             addTooltipText( white, 12, "Sell price: xxxxxxxxxxx" );
     	}
     }

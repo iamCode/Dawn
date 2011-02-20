@@ -28,7 +28,7 @@ class Player;
 class InventoryItem
 {
     public:
-        InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player );
+        InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player, InventoryItem *copyFrom = NULL );
         ~InventoryItem();
         size_t getInventoryPosX() const;
 		size_t getInventoryPosY() const;
@@ -37,6 +37,14 @@ class InventoryItem
 
 		size_t getSizeX() const;
 		size_t getSizeY() const;
+
+        uint8_t getCurrentStackSize() const;
+        void setCurrentStackSize( uint8_t currentStackSize );
+        void increaseCurrentStack();
+        void decreaseCurrentStack();
+        bool isItemStackFull() const;
+
+        void copyAttributes( InventoryItem *copyFrom );
 
         Item* getItem() const;
 
@@ -48,6 +56,8 @@ class InventoryItem
 		Player *player;
         itemTooltip *tooltip;
 
+        uint8_t currentStackSize;
+
 		size_t inventoryPosX;
 		size_t inventoryPosY;
 };
@@ -57,9 +67,10 @@ class Inventory
 	public:
 		Inventory( size_t sizeX, size_t sizeY, Player *player );
 		~Inventory();
-		bool insertItem( Item *item );
+		bool insertItem( Item *item, InventoryItem *oldInventoryItem = NULL );
 		bool hasSufficientSpaceAt( size_t invPosX, size_t invPosY, size_t itemSizeX, size_t itemSizeY ) const;
 		bool hasSufficientSpaceWithExchangeAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY );
+		bool stackItemIfPossible( Item *item, InventoryItem *itemToStack ) const;
 
 		std::vector<InventoryItem*> getEquippedItems() const;
 		std::vector<InventoryItem*> getBackpackItems() const;
@@ -69,6 +80,7 @@ class Inventory
 
 		bool isPositionFree( size_t invPosX, size_t invPosY ) const;
 		InventoryItem* getItemAt( size_t invPosX, size_t invPosY );
+        std::vector<InventoryItem*> getIdenticalItemsFromBackpack( Item *item ) const;
 
 		bool isWieldingTwoHandedWeapon() const;
 		WeaponType::WeaponType getWeaponTypeBySlot( ItemSlot::ItemSlot itemSlot) const;

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Tue Jan  4 18:06:17 2011.
+** Generated automatically by tolua++-1.0.93 on Sun Feb 20 23:12:18 2011.
 */
 
 #ifndef __cplusplus
@@ -2344,6 +2344,39 @@ static int tolua_CLuaInterface_Item_setRequiredLevel00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setMaxStackSize of class  Item */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setMaxStackSize00
+static int tolua_CLuaInterface_Item_setMaxStackSize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
+  int maxStackSize = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaxStackSize'", NULL);
+#endif
+  {
+   self->setMaxStackSize(maxStackSize);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaxStackSize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setValue of class  Item */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setValue00
 static int tolua_CLuaInterface_Item_setValue00(lua_State* tolua_S)
@@ -2372,39 +2405,6 @@ static int tolua_CLuaInterface_Item_setValue00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setValue'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: setSpellCharges of class  Item */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Item_setSpellCharges00
-static int tolua_CLuaInterface_Item_setSpellCharges00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Item* self = (Item*)  tolua_tousertype(tolua_S,1,0);
-  int newSpellCharges = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpellCharges'", NULL);
-#endif
-  {
-   self->setSpellCharges(newSpellCharges);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setSpellCharges'.",&tolua_err);
  return 0;
 #endif
 }
@@ -7157,8 +7157,8 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setMinDamage",tolua_CLuaInterface_Item_setMinDamage00);
    tolua_function(tolua_S,"setMaxDamage",tolua_CLuaInterface_Item_setMaxDamage00);
    tolua_function(tolua_S,"setRequiredLevel",tolua_CLuaInterface_Item_setRequiredLevel00);
+   tolua_function(tolua_S,"setMaxStackSize",tolua_CLuaInterface_Item_setMaxStackSize00);
    tolua_function(tolua_S,"setValue",tolua_CLuaInterface_Item_setValue00);
-   tolua_function(tolua_S,"setSpellCharges",tolua_CLuaInterface_Item_setSpellCharges00);
    tolua_function(tolua_S,"setSpell",tolua_CLuaInterface_Item_setSpell00);
    tolua_function(tolua_S,"addTriggerSpellOnSelf",tolua_CLuaInterface_Item_addTriggerSpellOnSelf00);
    tolua_function(tolua_S,"addTriggerSpellOnTarget",tolua_CLuaInterface_Item_addTriggerSpellOnTarget00);

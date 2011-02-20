@@ -80,6 +80,8 @@ class Shop : public FramesBase
 		friend class CZone; // just for now to be able to save the items
         uint8_t currentTab;
 
+        GLFT_Font *itemStackFont;
+
 		size_t backpackFieldWidth;
 		size_t backpackFieldHeight;
 		size_t backpackSeparatorWidth;

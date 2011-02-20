@@ -339,8 +339,8 @@ class Item
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
 	void setRequiredLevel( int requiredLevel );
+	void setMaxStackSize( int maxStackSize );
 	void setValue( int newValue );
-	void setSpellCharges( int newSpellCharges );
 	void setSpell( CSpell *newSpell );
 	void addTriggerSpellOnSelf( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
 	void addTriggerSpellOnTarget( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );

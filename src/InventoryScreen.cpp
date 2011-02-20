@@ -176,7 +176,7 @@ void InventoryScreen::equipOnSlotOriginDependingAndPlaySound( ItemSlot::ItemSlot
 	Inventory *inventory = player->getInventory();
 	if ( fromShop ) {
 		// shop self-destroys its inventory items. Copy to new inventory item.
-		wieldItem = new InventoryItem( wieldItem->getItem(), 0, 0, player );
+		wieldItem = new InventoryItem( wieldItem->getItem(), 0, 0, player, wieldItem );
 	}
 	inventory->wieldItemAtSlot( slotToUse, wieldItem );
 	floatingSelection = newFloatingSelection;
@@ -280,9 +280,8 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
                 } else {
                     // item is potion or scroll, use it.
                     if ( player->castSpell( dynamic_cast<CSpell*>( useItem->getItem()->getSpell()->cast( player, player ) ) ) == true ) {
-                        useItem->getItem()->reduceSpellCharges();
-                        useItem->getTooltip()->reloadTooltip();
-                        if ( useItem->getItem()->getSpellCharges() == 0 )
+                        useItem->decreaseCurrentStack();
+                        if ( useItem->getCurrentStackSize() == 0 )
                         {
                             inventory->removeItem( useItem );
                         }
@@ -355,7 +354,7 @@ void InventoryScreen::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	if ( floatingSelectionToHandle != NULL ) {
 		if ( inventory->hasSufficientSpaceWithExchangeAt( fieldIndexX, fieldIndexY, floatingSelectionToHandle->getSizeX(), floatingSelectionToHandle->getSizeY() ) ) {
 			if ( shopFloatingSelection ) {
-				floatingSelectionToHandle = new InventoryItem( floatingSelectionToHandle->getItem(), 0, 0, player );
+				floatingSelectionToHandle = new InventoryItem( floatingSelectionToHandle->getItem(), 0, 0, player, floatingSelectionToHandle );
 			}
 			floatingSelection = inventory->insertItemWithExchangeAt( floatingSelectionToHandle, fieldIndexX, fieldIndexY );
 			if ( shopFloatingSelection ) {
@@ -392,6 +391,13 @@ void InventoryScreen::drawBackpack()
 		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
 		                                  backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
+
+        // if we have an item that is stackable, and the stacksize is more than 1, we draw that number.
+		if ( curInvItem->getCurrentStackSize() > 1 ) {
+            coinsFont->drawText( world_x + posX + backpackOffsetX + backpackFieldWidth - coinsFont->calcStringWidth( "%d", curInvItem->getCurrentStackSize() ) + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
+                                 world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
+                                 "%d", curInvItem->getCurrentStackSize() );
+		}
 	}
 }
 

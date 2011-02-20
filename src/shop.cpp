@@ -75,6 +75,9 @@ Shop::Shop( Player *player_, CNPC *shopkeeper_) : FramesBase( 30, 80, 454, 404, 
     tabs[2].posX = 343;
     tabs[2].posY = 264;
 
+    // load the font for itemstack text.
+    itemStackFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
+
     loadShopkeeperInventory();
     loadTextures();
 
@@ -168,7 +171,14 @@ void Shop::drawItems()
 		                                  backpackFieldWidth * sizeX + (sizeX-1)*backpackSeparatorWidth,
 		                                  world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
 		                                  backpackFieldHeight * sizeY + (sizeY-1)*backpackSeparatorHeight);
-        }
+
+        // if we have an item that is stackable, and the stacksize is more than 1, we draw that number.
+		if ( curInvItem->getCurrentStackSize() > 1 ) {
+            itemStackFont->drawText( world_x + posX + backpackOffsetX + backpackFieldWidth - itemStackFont->calcStringWidth( "%d", curInvItem->getCurrentStackSize() ) + invPosX * backpackFieldWidth + invPosX * backpackSeparatorWidth,
+                                 world_y + posY + backpackOffsetY + invPosY * backpackFieldHeight + invPosY * backpackSeparatorHeight,
+                                 "%d", curInvItem->getCurrentStackSize() );
+		}
+    }
 }
 
 void Shop::drawItemTooltip( int mouseX, int mouseY )
@@ -266,7 +276,7 @@ void Shop::clicked( int mouseX, int mouseY, uint8_t mouseState )
             {
                 if ( mouseState == SDL_BUTTON_RIGHT ) {
                     // direct buy on right button
-                    bool inserted = player->getInventory()->insertItem( curItem->getItem() );
+                    bool inserted = player->getInventory()->insertItem( curItem->getItem(), curItem );
                     if ( inserted ) {
                         floatingSelection = curItem;
                         removeItem( floatingSelection );
@@ -355,27 +365,35 @@ void Shop::sellToShop( InventoryItem *sellItem, bool givePlayerMoney )
 	}
 
 	if ( foundPosition ) {
-		InventoryItem *newItem = new InventoryItem( item, foundX, foundY, player );
+		InventoryItem *newItem = new InventoryItem( item, foundX, foundY, player, sellItem );
         insertItemAt( newItem, foundX, foundY, itemTab );
     }
 
 	if ( givePlayerMoney ) {
         SoundEngine::playSound( "data/sound/sell_buy_item.ogg" );
 	    GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-	    player->giveCoins( sellItem->getItem()->getValue() * 0.75 );
-        DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
+	    player->giveCoins( floor( sellItem->getItem()->getValue() * 0.75 ) * sellItem->getCurrentStackSize() );
+	    if ( sellItem->getCurrentStackSize() > 1 ) {
+            DawnInterface::addTextToLogWindow( yellow, "Sold %d %s.", sellItem->getCurrentStackSize(), item->getName().c_str() );
+	    } else {
+            DawnInterface::addTextToLogWindow( yellow, "Sold %s.", item->getName().c_str() );
+	    }
         // player only gets 75% of the itemvalue when he sells an item
 	}
 }
 
 void Shop::buyFromShop()
 {
-    player->reduceCoins( floatingSelection->getItem()->getValue() );
+    player->reduceCoins( floatingSelection->getItem()->getValue() * floatingSelection->getCurrentStackSize() );
 
     SoundEngine::playSound( "data/sound/sell_buy_item.ogg" );
 
     GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-    DawnInterface::addTextToLogWindow( yellow, "Purchased %s.", floatingSelection->getItem()->getName().c_str() );
+    if ( floatingSelection->getCurrentStackSize() > 1 ) {
+        DawnInterface::addTextToLogWindow( yellow, "Purchased %d %s.", floatingSelection->getCurrentStackSize(), floatingSelection->getItem()->getName().c_str() );
+    } else {
+        DawnInterface::addTextToLogWindow( yellow, "Purchased %s.", floatingSelection->getItem()->getName().c_str() );
+    }
 
     delete floatingSelection;
     floatingSelection = NULL;
