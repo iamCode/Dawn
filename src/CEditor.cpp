@@ -460,17 +460,23 @@ void CEditor::HandleKeys()
 				zoneToEdit->DeleteTile(zoneToEdit->LocateTile(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY));
 			break;
 			case 1: // environment
-				zoneToEdit->DeleteEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+				if ( zoneToEdit->DeleteEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY) == 0 )
+					objectedit_selected = -1;
 			break;
 			case 2: // shadows
-				zoneToEdit->DeleteShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+				if ( zoneToEdit->DeleteShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY) == 0 )
+					objectedit_selected = -1;
 			break;
 			case 3: // collisionboxes
-				zoneToEdit->DeleteCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+				if ( zoneToEdit->DeleteCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY) == 0 )
+					objectedit_selected = -1;
 			break;
 			case 4: // NPCs
-                zoneToEdit->DeleteNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-                zoneToEdit->cleanupNPCList();
+				if ( zoneToEdit->DeleteNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY) == 0 )
+				{
+					zoneToEdit->cleanupNPCList();
+					objectedit_selected = -1;
+				}
 		}
 	}
 
