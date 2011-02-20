@@ -395,6 +395,7 @@ void CEditor::HandleKeys()
 						zoneToEdit->CollisionMap[objectedit_selected].CR.x++;
 					}
 				}
+			break;
 			case 4: // NPCs
                 if (keys[SDLK_DOWN]) {
                     zoneToEdit->getNPCs()[ objectedit_selected ]->y_spawn_pos--;
