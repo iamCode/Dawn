@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "FramesBase.h"
+#include "configuration.h"
 #include <vector>
 
 extern std::vector <FramesBase*> activeFrames;
@@ -41,6 +42,8 @@ FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint
         closeButton( false ),
         movingFrame( false )
 {
+	if ( posY + frameHeight + frameOffsetY > Configuration::screenHeight )
+		posY = Configuration::screenHeight - frameHeight - frameOffsetY;
 }
 
 void FramesBase::addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY )
