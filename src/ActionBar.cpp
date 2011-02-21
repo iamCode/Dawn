@@ -32,9 +32,8 @@ extern int mouseX, mouseY, world_x, world_y;
 
 ActionBar::ActionBar( Player *player_ )
 	:	player( player_ ),
-        posX ( 420 ),
-        posY ( 9 ),
-        width ( 680 ),
+        posY ( 13 ),
+        width ( 630 ),
         height ( 49 ),
         spellQueue( NULL )
 {
@@ -53,6 +52,7 @@ ActionBar::ActionBar( Player *player_ )
 	castingAoESpell = false;
 	cursorRadius	= 0;
 	curAoESpell		= 0;
+	posX = Configuration::screenWidth-width+20;
 }
 
 ActionBar::~ActionBar()
@@ -106,13 +106,13 @@ void ActionBar::draw()
 
 	// background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
-	                                  world_x + posX - 20, Configuration::screenWidth - posX + 20,
+	                                  world_x + Configuration::screenWidth-width, width,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
 	{
-	    shortcutFont->drawText( world_x + 420 + buttonId * 60 - 8,
-                                world_y + 50, button[buttonId].number.c_str() );
+	    shortcutFont->drawText( world_x + Configuration::screenWidth-width+20 + buttonId * 60 - 8,
+                                world_y + 54, button[buttonId].number.c_str() );
 
 	    glColor3f( 0.4f, 0.4f, 0.4f );
 	    if ( player->getIsPreparing() && button[buttonId].action != NULL )
@@ -126,8 +126,8 @@ void ActionBar::draw()
 	    }
 
 	    DrawingHelpers::mapTextureToRect( textures.getTexture(1),
-		                                  world_x+ 420 + buttonId * 60, 50,
-		                                  world_y+ 8, 50 );
+		                                  world_x+ Configuration::screenWidth-width+20 + buttonId * 60, 50,
+		                                  world_y+ 12, 50 );
 
         glColor3f( 1.0f, 1.0f, 1.0f );
 
@@ -193,14 +193,14 @@ void ActionBar::draw()
                 glColor3f( 0.4f, 0.4f, 0.4f );
             }
 
-	        button[buttonId].action->drawSymbol( world_x + 420 + buttonId * 60 + 2, 46, world_y + 10, 46 );
+	        button[buttonId].action->drawSymbol( world_x + Configuration::screenWidth-width+20 + buttonId * 60 + 2, 46, world_y + 14, 46 );
 
             if ( drawCooldownText == true )
             {
                 glColor3f( 1.0f, 0.0f, 0.0f );
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
-	            cooldownFont->drawText( world_x + 420 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
-                                        world_y + 28, cooldownText.c_str() );
+	            cooldownFont->drawText( world_x + Configuration::screenWidth-width+20 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
+                                        world_y + 32, cooldownText.c_str() );
             }
             glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
