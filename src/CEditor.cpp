@@ -227,19 +227,25 @@ void CEditor::HandleKeys()
 							switch (current_object) {
 								case 1: // environment
 									objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
-									for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
-										if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
-											curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
-										}
-										if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
-											curDirectionAdjacencySelection[ curDirection ] = 0;
+									if ( objectedit_selected >= 0 )
+									{
+										EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+										for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
+											if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
+												curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
+											}
+											if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
+												curDirectionAdjacencySelection[ curDirection ] = 0;
+											}
 										}
 									}
 								break;
 								case 2: // shadows
 									objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+									if ( objectedit_selected >= 0 )
+									{
+										EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+									}
 								break;
 								case 3: // collisionboxes
 									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
