@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Sun Feb 20 23:12:18 2011.
+** Generated automatically by tolua++-1.0.93 on Mon Feb 21 21:47:49 2011.
 */
 
 #ifndef __cplusplus
@@ -44,6 +44,232 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"CCharacter");
  tolua_usertype(tolua_S,"Shop");
 }
+
+/* function: Configuration::setResolution */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_setResolution00
+static int tolua_CLuaInterface_Configuration_setResolution00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int screenWidth = ((int)  tolua_tonumber(tolua_S,1,0));
+  int screenHeight = ((int)  tolua_tonumber(tolua_S,2,0));
+  {
+   Configuration::setResolution(screenWidth,screenHeight);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setResolution'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::setBpp */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_setBpp00
+static int tolua_CLuaInterface_Configuration_setBpp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  int bpp = ((int)  tolua_tonumber(tolua_S,1,0));
+  {
+   Configuration::setBpp(bpp);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setBpp'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::useFullscreen */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_useFullscreen00
+static int tolua_CLuaInterface_Configuration_useFullscreen00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool fullscreenEnabled = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::useFullscreen(fullscreenEnabled);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'useFullscreen'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::useSound */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_useSound00
+static int tolua_CLuaInterface_Configuration_useSound00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool soundEnabled = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::useSound(soundEnabled);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'useSound'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::showDebugStdout */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_showDebugStdout00
+static int tolua_CLuaInterface_Configuration_showDebugStdout00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool debug_stdout = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::showDebugStdout(debug_stdout);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showDebugStdout'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::showDebugFileout */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_showDebugFileout00
+static int tolua_CLuaInterface_Configuration_showDebugFileout00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool debug_fileout = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::showDebugFileout(debug_fileout);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showDebugFileout'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::showInfoMessages */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_showInfoMessages00
+static int tolua_CLuaInterface_Configuration_showInfoMessages00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool show_info_messages = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::showInfoMessages(show_info_messages);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showInfoMessages'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: Configuration::showWarningMessages */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_showWarningMessages00
+static int tolua_CLuaInterface_Configuration_showWarningMessages00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  bool show_warn_messages = ((bool)  tolua_toboolean(tolua_S,1,0));
+  {
+   Configuration::showWarningMessages(show_warn_messages);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'showWarningMessages'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
 
 /* method: baseOnType of class  CCharacter */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_CCharacter_baseOnType00
@@ -6901,6 +7127,17 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
  tolua_reg_types(tolua_S);
  tolua_module(tolua_S,NULL,0);
  tolua_beginmodule(tolua_S,NULL);
+  tolua_module(tolua_S,"Configuration",0);
+  tolua_beginmodule(tolua_S,"Configuration");
+   tolua_function(tolua_S,"setResolution",tolua_CLuaInterface_Configuration_setResolution00);
+   tolua_function(tolua_S,"setBpp",tolua_CLuaInterface_Configuration_setBpp00);
+   tolua_function(tolua_S,"useFullscreen",tolua_CLuaInterface_Configuration_useFullscreen00);
+   tolua_function(tolua_S,"useSound",tolua_CLuaInterface_Configuration_useSound00);
+   tolua_function(tolua_S,"showDebugStdout",tolua_CLuaInterface_Configuration_showDebugStdout00);
+   tolua_function(tolua_S,"showDebugFileout",tolua_CLuaInterface_Configuration_showDebugFileout00);
+   tolua_function(tolua_S,"showInfoMessages",tolua_CLuaInterface_Configuration_showInfoMessages00);
+   tolua_function(tolua_S,"showWarningMessages",tolua_CLuaInterface_Configuration_showWarningMessages00);
+  tolua_endmodule(tolua_S);
   tolua_constant(tolua_S,"STOP",STOP);
   tolua_constant(tolua_S,"N",N);
   tolua_constant(tolua_S,"NE",NE);

@@ -1308,11 +1308,7 @@ player->cleanupActiveSpells();
 
 int main(int argc, char* argv[])
 {
-	Configuration::logfile = "dawn-log.log";
-	Configuration::debug_stdout = true;
-	Configuration::debug_fileout = true;
-	Configuration::show_info_messages = true;
-	Configuration::show_warn_messages = true;
+	LuaFunctions::executeLuaFile("settings.lua");
 
 	if(dawn_init(argc, argv))
 		game_loop();

@@ -19,6 +19,7 @@
 #include "CCharacter.h"
 #include "interactionpoint.h"
 #include "interactionregion.h"
+#include "configuration.h"
 #include "textwindow.h"
 #include "CNPC.h"
 #include "Player.h"
@@ -104,4 +105,3 @@ namespace EditorInterface
 	void adjustLastScale( double scaleX, double scaleY );
 	void addCollisionRect( int lrx, int lry, int width, int height );
 }
-

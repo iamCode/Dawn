@@ -1,5 +1,17 @@
 $#include "CLuaInterface.h"
 
+namespace Configuration
+{
+    void setResolution( int screenWidth, int screenHeight );
+    void setBpp( int bpp );
+    void useFullscreen( bool fullscreenEnabled );
+    void useSound( bool soundEnabled );
+    void showDebugStdout( bool debug_stdout );
+    void showDebugFileout( bool debug_fileout );
+    void showInfoMessages( bool show_info_messages );
+    void showWarningMessages( bool show_warn_messages );
+};
+
 enum Direction
 {
     STOP = 0,
