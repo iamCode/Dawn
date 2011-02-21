@@ -77,14 +77,14 @@ class GLFT_Font
 
 		bool isValid() const;
 
-		void drawText(float x, float y, const char *str, ...) const;
-		void drawText(float x, float y, const std::string& str) const;
+		void drawText(int x, int y, const char *str, ...) const;
+		void drawText(int x, int y, const std::string& str) const;
 
 		std::ostream& beginDraw(float x, float y);
 		StreamFlusher endDraw();
 
-		float calcStringWidth(const char *str, ...) const;
-		float calcStringWidth(const std::string& str) const;
+		unsigned int calcStringWidth(const char *str, ...) const;
+		unsigned int calcStringWidth(const std::string& str) const;
 		unsigned int getHeight() const;
 
 	private:

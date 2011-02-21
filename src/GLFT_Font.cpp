@@ -38,7 +38,6 @@
 #include "GLFT_Font.h"
 
 #include <cstring>
-#include <cmath>
 
 // static members
 FT_Library FTLibraryContainer::library_;
@@ -262,7 +261,7 @@ bool GLFT_Font::isValid() const
 	return glIsTexture(texID_) == GL_TRUE;
 }
 
-void GLFT_Font::drawText(float x, float y, const char *str, ...) const
+void GLFT_Font::drawText(int x, int y, const char *str, ...) const
 {
 	if (!isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::drawText call.");
@@ -277,7 +276,7 @@ void GLFT_Font::drawText(float x, float y, const char *str, ...) const
 
 	glBindTexture(GL_TEXTURE_2D, texID_);
 	glPushMatrix();
-	glTranslated(floor(x),floor(y),0);
+	glTranslated(float(x),float(y),0);
 	for (unsigned int i=0; i < std::strlen(buf); ++i) {
 		unsigned char ch( buf[i] - SPACE );     // ch-SPACE = DisplayList offset
 		// replace characters outside the valid range with undrawable
@@ -294,7 +293,7 @@ void GLFT_Font::drawText(float x, float y, const char *str, ...) const
 	glPopMatrix();
 }
 
-void GLFT_Font::drawText(float x, float y, const std::string& str) const
+void GLFT_Font::drawText(int x, int y, const std::string& str) const
 {
 	if (!isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::drawText call.");
@@ -302,7 +301,7 @@ void GLFT_Font::drawText(float x, float y, const std::string& str) const
 
 	glBindTexture(GL_TEXTURE_2D, texID_);
 	glPushMatrix();
-	glTranslated(floor(x),floor(y),0);
+	glTranslated(float(x),float(y),0);
 	for (std::string::const_iterator i = str.begin(); i != str.end(); ++i) {
 		unsigned char ch( *i - SPACE ); // ch-SPACE = DisplayList offset
 		// replace characters outside the valid range with undrawable
@@ -335,7 +334,7 @@ StreamFlusher GLFT_Font::endDraw()
 	return StreamFlusher();
 }
 
-float GLFT_Font::calcStringWidth(const char *str, ...) const
+unsigned int GLFT_Font::calcStringWidth(const char *str, ...) const
 {
     if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
@@ -359,7 +358,7 @@ float GLFT_Font::calcStringWidth(const char *str, ...) const
 	return width;
 }
 
-float GLFT_Font::calcStringWidth(const std::string& str) const
+unsigned int GLFT_Font::calcStringWidth(const std::string& str) const
 {
 	if (!threadedMode && !isValid()) {
 		throw std::logic_error("Invalid GLFT_Font::calcStringWidth call.");
