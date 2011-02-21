@@ -32,7 +32,7 @@ BuffWindow::BuffWindow( Player *player ) : FramesBase ( 0, 0, 0, 0, 0, 0 )
     this->player = player;
     tooltip = NULL;
     posY = Configuration::screenHeight - 50;
-    posX = Configuration::screenWidth - 204;
+	posX = Configuration::screenWidth - 204;
 }
 
 BuffWindow::~BuffWindow()

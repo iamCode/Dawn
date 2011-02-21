@@ -106,7 +106,7 @@ void ActionBar::draw()
 
 	// background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
-	                                  world_x + posX - 20, RES_X - posX + 20,
+	                                  world_x + posX - 20, Configuration::screenWidth - posX + 20,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )

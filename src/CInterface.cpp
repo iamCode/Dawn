@@ -88,13 +88,13 @@ void CInterface::DrawInterface()
 	// draw the portrait of the character (ie, a humanlike guy or girl)
 	DrawingHelpers::mapTextureToRect( player->getPortraitTexture()->getTexture(0),
                                       world_x+4, player->getPortraitTexture()->getTexture(0).width,
-                                      world_y+RES_Y-68, player->getPortraitTexture()->getTexture(0).height );
+									  world_y+Configuration::screenHeight-68, player->getPortraitTexture()->getTexture(0).height );
 
 
 	// drawing the base of the portrait
 	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(11),
 	                                  world_x, interfacetextures.getTexture(11).width,
-	                                  world_y+50+RES_Y-interfacetextures.getTexture(11).height, interfacetextures.getTexture(11).height );
+									  world_y+50+Configuration::screenHeight-interfacetextures.getTexture(11).height, interfacetextures.getTexture(11).height );
 
     /** drawing the procentual display of characters life and mana.
     starts of at an X-offset of 76, this is where the hollow parts of the life, mana, fatigue and experience bars starts.
@@ -111,13 +111,13 @@ void CInterface::DrawInterface()
     glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
     DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
 	                                  world_x+76, lifeBarPercentage * 123,
-	                                  world_y+RES_Y-35, interfacetextures.getTexture(12).height );
+									  world_y+Configuration::screenHeight-35, interfacetextures.getTexture(12).height );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
         DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
                                         world_x+76, manaBarPercentage * 123,
-                                        world_y+RES_Y-53, interfacetextures.getTexture(12).height );
+										world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
     }
 
     /// fatigue bar
@@ -131,17 +131,17 @@ void CInterface::DrawInterface()
         }
         DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
                                           world_x+76, fatigueBarPercentage * 123,
-                                          world_y+RES_Y-53, interfacetextures.getTexture(12).height );
+										  world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
     }
 
     /// exp bar
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(13),
                                     world_x+76, experienceBarPercentage * 123,
-                                    world_y+RES_Y-67, interfacetextures.getTexture(13).height );
+									world_y+Configuration::screenHeight-67, interfacetextures.getTexture(13).height );
 
     /// draw our level beside the experience bar
-    levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+RES_Y-70, "%d",player->getLevel() );
+	levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+Configuration::screenHeight-70, "%d",player->getLevel() );
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 

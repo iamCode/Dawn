@@ -21,9 +21,8 @@
 
 #include "CTexture.h"
 #include "CCharacter.h"
+#include "configuration.h"
 #include "GLFT_Font.h"
-
-extern int RES_X,RES_Y,world_x,world_y;
 
 struct sDamageDisplay {
     int digitToDisplay;

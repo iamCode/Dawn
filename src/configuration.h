@@ -24,7 +24,7 @@
 
 namespace Configuration
 {
-    void setResolution( uint16_t screenWidth, uint16_t screenHeight );
+	void setResolution( uint16_t screenWidth, uint16_t screenHeight );
     void setBpp( uint8_t bpp );
     void useFullscreen( bool fullscreenEnabled );
     void useSound( bool soundEnabled );
@@ -33,7 +33,7 @@ namespace Configuration
     void showInfoMessages( bool show_info_messages );
     void showWarningMessages( bool show_warn_messages );
 
-    extern uint16_t screenWidth;
+	extern uint16_t screenWidth;
     extern uint16_t screenHeight;
     extern uint8_t bpp;
     extern std::string logfile; // The logfile

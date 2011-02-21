@@ -25,11 +25,12 @@
 #include <iostream>
 #include "cameraFocusHandler.h"
 #include "tileset.h"
+#include "configuration.h"
 
 class CZone;
 class sEnvironmentMap;
 
-extern int mouseX, mouseY, RES_X, RES_Y, done;
+extern int mouseX, mouseY, done;
 
 class CEditor
 {
@@ -75,6 +76,7 @@ class CEditor
 		void DrawEditFrame(sEnvironmentMap *editobject);
 		bool checkAndApplyAdjacencyModification( int modification );
 		bool checkAndPlaceAdjacentTile();
+		void updateAdjacencyList();
 
 		std::vector< std::pair< std::string, CCharacter* > > editorNPCs;
 

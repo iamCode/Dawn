@@ -199,6 +199,38 @@ void CEditor::setEnabled( bool enabled_ )
 	}
 }
 
+void CEditor::updateAdjacencyList()
+{
+	if ( ! adjacencyModeEnabled || objectedit_selected < 0 )
+		return;
+
+	switch ( current_object )
+	{
+		case 1: // environment
+			EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+			for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
+				if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
+					curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
+				}
+				if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
+					curDirectionAdjacencySelection[ curDirection ] = 0;
+				}
+			}
+		break;
+		case 2:
+			EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
+			for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
+				if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
+					curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
+				}
+				if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
+					curDirectionAdjacencySelection[ curDirection ] = 0;
+				}
+			}
+		break;
+	}
+}
+
 void CEditor::HandleKeys()
 {
 	Uint8 *keys;
@@ -221,31 +253,16 @@ void CEditor::HandleKeys()
 			switch (event.button.button) {
 				case SDL_BUTTON_LEFT: // mouse button 1
 					{
+						int previous_objectedit_selected = objectedit_selected;
 						bool handled = false;
 						// see if we can select an object being pointed at.
 						if ( ! handled ) {
 							switch (current_object) {
 								case 1: // environment
 									objectedit_selected = zoneToEdit->LocateEnvironment(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									if ( objectedit_selected >= 0 )
-									{
-										EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->EnvironmentMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
-										for ( size_t curDirection=0; curDirection<4; ++curDirection ) {
-											if ( curDirectionAdjacencySelection[ curDirection ] >= curAdjacentTiles[ curDirection ].size() ) {
-												curDirectionAdjacencySelection[ curDirection ] = curAdjacentTiles[ curDirection ].size()-1;
-											}
-											if ( curDirectionAdjacencySelection[ curDirection ] < 0 ) {
-												curDirectionAdjacencySelection[ curDirection ] = 0;
-											}
-										}
-									}
 								break;
 								case 2: // shadows
 									objectedit_selected = zoneToEdit->LocateShadow(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
-									if ( objectedit_selected >= 0 )
-									{
-										EditorInterface::getTileSet()->getAllAdjacentTiles( zoneToEdit->ShadowMap[objectedit_selected].tile, curAdjacentTiles, curAdjacencyOffsets );
-									}
 								break;
 								case 3: // collisionboxes
 									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
@@ -255,6 +272,14 @@ void CEditor::HandleKeys()
 								default:
 									curAdjacentTiles.clear();
 								break;
+							}
+						}
+						if ( previous_objectedit_selected != objectedit_selected )
+						{
+							// something new was selected. Update adjacency-list if necessary
+							if ( adjacencyModeEnabled )
+							{
+								updateAdjacencyList();
 							}
 						}
 					}
@@ -302,7 +327,7 @@ void CEditor::HandleKeys()
 
 		if (event.type == SDL_MOUSEMOTION) {
 			mouseX = event.motion.x;
-			mouseY = RES_Y - event.motion.y - 1;
+			mouseY = Configuration::screenHeight - event.motion.y - 1;
 		}
 	}
 
@@ -428,16 +453,16 @@ void CEditor::HandleKeys()
 	  {
       //corners
       if(mouseX < scrollHotSpot && mouseY < scrollHotSpot)                    editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()-1);  //bottom-left
-      else if(mouseX < scrollHotSpot && mouseY > RES_Y-scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()+1);  //top-left
-      else if(mouseX > RES_X-scrollHotSpot && mouseY < scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()-1);  //bottom-right
-      else if(mouseX > RES_X-scrollHotSpot && mouseY > RES_Y-scrollHotSpot)   editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()+1);  //top-right
+	  else if(mouseX < scrollHotSpot && mouseY > Configuration::screenHeight-scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()+1);  //top-left
+	  else if(mouseX > Configuration::screenWidth-scrollHotSpot && mouseY < scrollHotSpot)         editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()-1);  //bottom-right
+	  else if(mouseX > Configuration::screenWidth-scrollHotSpot && mouseY > Configuration::screenHeight-scrollHotSpot)   editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()+1);  //top-right
       else
       {
         //sides
         if(mouseX < scrollHotSpot)        editorFocus->setFocus(editorFocus->getX()-1, editorFocus->getY()); //left
-        if(mouseX > RES_X-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()); //right
+		if(mouseX > Configuration::screenWidth-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX()+1, editorFocus->getY()); //right
         if(mouseY < scrollHotSpot)        editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()-1); //bottom
-        if(mouseY > RES_Y-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()+1); //top
+		if(mouseY > Configuration::screenHeight-scrollHotSpot)  editorFocus->setFocus(editorFocus->getX(), editorFocus->getY()+1); //top
       }
 	  }
 
@@ -545,6 +570,10 @@ void CEditor::HandleKeys()
 	if (keys[SDLK_m] && !KP_toggle_adjacencyMode) {
 		KP_toggle_adjacencyMode = true;
 		adjacencyModeEnabled = ! adjacencyModeEnabled;
+		if ( adjacencyModeEnabled )
+		{
+			updateAdjacencyList();
+		}
 	}
 
 	if (!keys[SDLK_m]) {
@@ -719,7 +748,7 @@ void CEditor::HandleKeys()
 	if (keys[SDLK_s] && !KP_save_zone) {
 		KP_save_zone = true;
 		SaveZone();
-		message.AddText(editorFocus->getX() + (RES_X/2), editorFocus->getY() + (RES_Y/2), 1.0f, 0.625f, 0.71f, 1.0f, 15, 3.0f, "Zone saved ...");
+		message.AddText(editorFocus->getX() + (Configuration::screenWidth/2), editorFocus->getY() + (Configuration::screenHeight/2), 1.0f, 0.625f, 0.71f, 1.0f, 15, 3.0f, "Zone saved ...");
 	}
 
 	if (!keys[SDLK_s]) {
@@ -885,12 +914,12 @@ void CEditor::DrawEditor()
 
 	// quad on the top, baseframe for the object-selection.
 	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(0),
-	                                  editorFocus->getX(), RES_X,
-	                                  editorFocus->getY()+RES_Y-100, 100 );
+									  editorFocus->getX(), Configuration::screenWidth,
+									  editorFocus->getY()+Configuration::screenHeight-100, 100 );
 
 	// quad on bottom, baseframe for our helptext.
 	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(0),
-	                                  editorFocus->getX(), RES_X,
+									  editorFocus->getX(), Configuration::screenWidth,
 	                                  editorFocus->getY(), 100 );
 
 	int fontHeight = keybindingFont->getHeight();
@@ -921,8 +950,8 @@ void CEditor::DrawEditor()
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.
 
 	DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(1),
-	                                  editorFocus->getX()+(RES_X/2)-5, 50,
-	                                  editorFocus->getY()+RES_Y-65, 50 );
+									  editorFocus->getX()+(Configuration::screenWidth/2)-5, 50,
+									  editorFocus->getY()+Configuration::screenHeight-65, 50 );
 
 	glBegin(GL_LINES);
 	glTexCoord2f(0.0f, 0.0f);
@@ -960,24 +989,24 @@ void CEditor::DrawEditor()
                 int npcWidth = editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ).width;
                 int npcHeight = editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ).height;
                 DrawingHelpers::mapTextureToRect( editorNPCs[ curNPC ].second->getTexture( ActivityType::Walking )->getTexture( 5 ),
-                                                  editorFocus->getX()+(RES_X/2)+(curNPC*50)+(tilepos_offset*50)-48+20, npcWidth,
-                                                  editorFocus->getY()+RES_Y-40-48, npcHeight );
+												  editorFocus->getX()+(Configuration::screenWidth/2)+(curNPC*50)+(tilepos_offset*50)-48+20, npcWidth,
+												  editorFocus->getY()+Configuration::screenHeight-40-48, npcHeight );
 
             };
-            keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-90, editorNPCs[ current_tilepos ].first );
-            keybindingFont->drawText( editorFocus->getX()+(RES_X/2)-5, editorFocus->getY()+RES_Y-100, "Level: %d (%s)", editorNPCs[ current_tilepos ].second->getLevel(), CharacterClass::getCharacterClassName( editorNPCs[ current_tilepos ].second->getClass() ).c_str() );
+			keybindingFont->drawText( editorFocus->getX()+(Configuration::screenWidth/2)-5, editorFocus->getY()+Configuration::screenHeight-90, editorNPCs[ current_tilepos ].first );
+			keybindingFont->drawText( editorFocus->getX()+(Configuration::screenWidth/2)-5, editorFocus->getY()+Configuration::screenHeight-100, "Level: %d (%s)", editorNPCs[ current_tilepos ].second->getLevel(), CharacterClass::getCharacterClassName( editorNPCs[ current_tilepos ].second->getClass() ).c_str() );
         break;
 	}
 
 	for ( tilepos=0; tilepos<curTiles.size(); ++tilepos ) {
 		Tile *curTile = curTiles[ tilepos ];
 		DrawingHelpers::mapTextureToRect( curTile->texture->getTexture(0),
-		                                  editorFocus->getX()+(RES_X/2)+(tilepos*50)+(tilepos_offset*50), 40,
-		                                  editorFocus->getY()+RES_Y-60, 40 );
+										  editorFocus->getX()+(Configuration::screenWidth/2)+(tilepos*50)+(tilepos_offset*50), 40,
+										  editorFocus->getY()+Configuration::screenHeight-60, 40 );
 	}
 
 	/// draw the world position of the mouse in the top left corner.
-	keybindingFont->drawText( editorFocus->getX()+10, editorFocus->getY()+RES_Y-10, "x: %d, y: %d", int(editorFocus->getX())+mouseX, int(editorFocus->getX())+mouseY );
+	keybindingFont->drawText( editorFocus->getX()+10, editorFocus->getY()+Configuration::screenHeight-10, "x: %d, y: %d", int(editorFocus->getX())+mouseX, int(editorFocus->getX())+mouseY );
 }
 
 void CEditor::LoadTextures()
@@ -1181,7 +1210,7 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 		DrawingHelpers::mapTextureToRect( interfacetexture.getTexture(3),
 		                                  editorFocus->getX()+50, 350,
-		                                  editorFocus->getY()+(RES_Y/2)-200, 200 );
+										  editorFocus->getY()+(Configuration::screenHeight/2)-200, 200 );
 
 
 		// set the color, transparency, scale and then draws the object we are editing
@@ -1191,20 +1220,20 @@ void CEditor::DrawEditFrame(sEnvironmentMap *editobject)
 
 		DrawingHelpers::mapTextureToRect( editobject->tile->texture->getTexture(0),
 		                                  editorFocus->getX()+55, editobject->tile->texture->getTexture(0).width,
-		                                  editorFocus->getY()+(RES_Y/2)-editobject->tile->texture->getTexture(0).height-5, editobject->tile->texture->getTexture(0).height );
+										  editorFocus->getY()+(Configuration::screenHeight/2)-editobject->tile->texture->getTexture(0).height-5, editobject->tile->texture->getTexture(0).height );
 
 		glPopMatrix();
 
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		int fontHeight = objectDescriptionFont->getHeight();
 
-		objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(RES_Y/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
-		objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(RES_Y/2)-22 - fontHeight, "Red: %.2f",editobject->red);
-		objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(RES_Y/2)-34 - fontHeight, "Green: %.2f",editobject->green);
-		objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(RES_Y/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
-		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
-		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
-		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(RES_Y/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
+		objectDescriptionFont->drawText(editorFocus->getX()+242, editorFocus->getY()+(Configuration::screenHeight/2)-10 - fontHeight, "Transparency: %.2f",editobject->transparency);
+		objectDescriptionFont->drawText(editorFocus->getX()+319, editorFocus->getY()+(Configuration::screenHeight/2)-22 - fontHeight, "Red: %.2f",editobject->red);
+		objectDescriptionFont->drawText(editorFocus->getX()+300, editorFocus->getY()+(Configuration::screenHeight/2)-34 - fontHeight, "Green: %.2f",editobject->green);
+		objectDescriptionFont->drawText(editorFocus->getX()+312, editorFocus->getY()+(Configuration::screenHeight/2)-46 - fontHeight, "Blue: %.2f",editobject->blue);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(Configuration::screenHeight/2)-58 - fontHeight, "Scale X: %.2f",editobject->x_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(Configuration::screenHeight/2)-70 - fontHeight, "Scale Y: %.2f",editobject->y_scale);
+		objectDescriptionFont->drawText(editorFocus->getX()+287, editorFocus->getY()+(Configuration::screenHeight/2)-82 - fontHeight, "Z Position: %d",editobject->z_pos);
 
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 		glScalef(1.0f,1.0f,1.0f);

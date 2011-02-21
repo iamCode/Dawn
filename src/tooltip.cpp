@@ -166,9 +166,9 @@ void itemTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
+	if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
+		x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
     }
 
     if ( y + (curBlockNumberHeight + 2) * blockHeight > Configuration::screenHeight )
@@ -239,9 +239,9 @@ void spellTooltip::draw( int x, int y )
     }
 
     // make sure the tooltip doesnt go "off screen"
-    if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
+	if ( x + (curBlockNumberWidth + 2) * blockWidth > Configuration::screenWidth )
     {
-        x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
+		x = Configuration::screenWidth - (curBlockNumberWidth + 2) * blockWidth;
     }
 
     if ( y + (curBlockNumberHeight + 2) * blockHeight > Configuration::screenHeight )

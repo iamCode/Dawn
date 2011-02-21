@@ -218,7 +218,7 @@ void Shop::drawItemTooltip( int mouseX, int mouseY )
 
                         // if this is the first (or only) item we're going to draw in the compare we check where it will fit.
                         if ( firstItemCompared == false ) {
-                            if ( Configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
+							if ( Configuration::screenWidth - (mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 60) > equippedItems[ curItem ]->getTooltip()->getTooltipWidth() ) {
                                 thisTooltipPosX = mouseX + tooltipItem->getTooltip()->getTooltipWidth() + 30;
                             } else {
                                 thisTooltipPosX = mouseX - 30 - equippedItems[ curItem ]->getTooltip()->getTooltipWidth();

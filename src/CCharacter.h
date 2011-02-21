@@ -28,8 +28,9 @@
 #include "CDirection.h"
 #include "elements.h"
 #include "debug.h"
+#include "configuration.h"
 
-extern int RES_X,RES_Y,world_x,world_y;
+extern int world_x,world_y;
 
 class CSpellActionBase;
 class GeneralBuffSpell;

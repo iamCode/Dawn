@@ -43,7 +43,7 @@ bool utils::file_exists(const std::string& file)
 
 void utils::takeScreenshot()
 {
-    int w = Configuration::screenWidth;
+	int w = Configuration::screenWidth;
 	int h = Configuration::screenHeight;
 
 	png_t pngOutput;
@@ -85,7 +85,7 @@ void utils::takeScreenshot()
         png_init(0,0);
         png_open_file_write(&pngOutput,filename.c_str());
 
-        png_set_data(&pngOutput, Configuration::screenWidth, Configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
+		png_set_data(&pngOutput, Configuration::screenWidth, Configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
         png_close_file(&pngOutput);
 
