@@ -18,10 +18,8 @@
 
 #include "cameraFocusHandler.h"
 
-cameraFocusHandler::cameraFocusHandler(int _resW, int _resH)
+cameraFocusHandler::cameraFocusHandler()
 {
-	screenWidth = _resW;
-	screenHeight = _resH;
 	currentNPC = 0;
 	currentPlayer = 0;
 }
@@ -93,13 +91,13 @@ void cameraFocusHandler::updateFocus()
 
 	switch (followTag) {
 		case (VIEW_CNPC):
-			XYCoOrdinates.first = (float)currentNPC->x_pos-(screenWidth/2);
-			XYCoOrdinates.second = (float)currentNPC->y_pos-(screenHeight/2);
+			XYCoOrdinates.first = (float)currentNPC->x_pos-(Configuration::screenWidth/2);
+			XYCoOrdinates.second = (float)currentNPC->y_pos-(Configuration::screenHeight/2);
 		break;
 
 		case (VIEW_PLAYER):
-			XYCoOrdinates.first = (float)currentPlayer->x_pos-(screenWidth/2);
-			XYCoOrdinates.second = (float)currentPlayer->y_pos-(screenHeight/2);
+			XYCoOrdinates.first = (float)currentPlayer->x_pos-(Configuration::screenWidth/2);
+			XYCoOrdinates.second = (float)currentPlayer->y_pos-(Configuration::screenHeight/2);
 		break;
 
 		case (VIEW_PATH):

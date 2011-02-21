@@ -48,7 +48,7 @@ class cameraFocusHandler
 		Player *currentPlayer; // Player to lock onto in VIEW_PLAYER state
 
 	public:
-		cameraFocusHandler(int _resW, int _resH);
+		cameraFocusHandler();
 		~cameraFocusHandler();
 
 		void setFocus(CNPC *sprite); // Follow Specified CNPC

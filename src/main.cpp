@@ -113,7 +113,7 @@ uint32_t drawingTime = 0;
 uint32_t initStartTicks = 0;
 
 SDL_Surface *screen;
-cameraFocusHandler focus(Configuration::screenWidth, Configuration::screenHeight);
+cameraFocusHandler focus;
 
 CEditor Editor;
 
@@ -654,7 +654,7 @@ public:
 		player->setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
 		player->setBoundingBox( 18, 20, 64, 64 );
 		player->setUseBoundingBox( true );
-		player->Init(Configuration::screenWidth/2,Configuration::screenHeight/2);
+		player->Init(512,400);
 		player->setActiveGUI( &GUI );
 		player->setMaxHealth(400);
 		player->setMaxMana(250);
