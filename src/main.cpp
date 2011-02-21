@@ -159,7 +159,6 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 {
 	bool run_game = true;
 	std::string executable(argv[0]);
-	Configuration::soundenabled = true;
 #ifdef _WIN32
 	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
 #endif

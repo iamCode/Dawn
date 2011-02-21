@@ -31,7 +31,7 @@ namespace Configuration
         Configuration::bpp = bpp;
     }
 
-    void useFullscreen( bool fullscreenEnabled )
+	void useFullscreen( bool fullscreenenabled )
     {
         Configuration::fullscreenenabled = fullscreenenabled;
     }
