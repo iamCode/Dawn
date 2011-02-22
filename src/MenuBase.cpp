@@ -19,6 +19,7 @@
 #include "MenuBase.h"
 #include "configuration.h"
 #include "fontcache.h"
+#include "tooltip.h"
 
 MenuItem::MenuItem( std::string caption_, MenuItemType::MenuItemType menuItemType_ )
     :   caption( caption_ ),
@@ -46,28 +47,37 @@ void MenuItem::drawText( int x, int y ) const
     font->drawText( x, y, caption );
 }
 
-MenuBase::MenuBase()
+size_t MenuItem::getTextWidth() const
 {
-    baseTextures = new CTexture();
-    baseTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
-    baseTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
-    baseTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
-    baseTextures->LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
-    baseTextures->LoadIMG( "data/interface/tooltip/background2.tga", 4 );
-    baseTextures->LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
-    baseTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
-    baseTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
-    baseTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
+	return font->calcStringWidth(caption);
+}
+
+MenuBase::MenuBase()
+	: neededBlocksWidth(0),
+	  neededBlocksHeight(0)
+{
 }
 
 MenuBase::~MenuBase()
 {
-    delete baseTextures;
 }
 
 void MenuBase::resizeMenu()
 {
+	const size_t blockWidth = 32;
+	const size_t blockHeight = 32;
+	neededBlocksHeight = (menuItems.size() * 40) / blockHeight;
+	if ( neededBlocksHeight * blockHeight < (menuItems.size() * 40) )
+		neededBlocksHeight++;
 
+	size_t maxWidth = 0;
+	for ( size_t curMenuItemNr=0; curMenuItemNr<menuItems.size(); ++curMenuItemNr )
+	{
+		maxWidth = std::max( maxWidth, menuItems[curMenuItemNr]->getTextWidth() );
+	}
+	neededBlocksWidth = maxWidth / blockWidth;
+	if ( neededBlocksWidth * blockWidth < maxWidth )
+		neededBlocksWidth++;
 }
 
 MenuItem* MenuBase::getMenuItem( size_t index )
@@ -93,7 +103,18 @@ void MenuBase::clicked( int mouseX, int mouseY, uint8_t mouseState )
 
 void MenuBase::draw( int mouseX, int mouseY )
 {
+	const size_t blockWidth = 32;
+	const size_t blockHeight = 32;
+	Frames::drawFrame( (Configuration::screenWidth - (neededBlocksWidth+2) * blockWidth)/2,
+					   (Configuration::screenHeight - (neededBlocksHeight+2) * blockHeight)/2,
+					   neededBlocksWidth,
+					   neededBlocksHeight,
+					   blockWidth,
+					   blockHeight );
+	int startX = (Configuration::screenWidth - neededBlocksWidth * blockWidth)/2;
+	int startY = (Configuration::screenHeight + neededBlocksHeight * blockHeight)/2 - 40;
     for ( size_t curMenuItem = 0; curMenuItem < menuItems.size(); curMenuItem++ ) {
-        getMenuItem( curMenuItem )->drawText( Configuration::screenWidth / 2, Configuration::screenHeight / 2 - curMenuItem * 40 );
+		getMenuItem( curMenuItem )->drawText( startX, startY );
+		startY -= 40;
     }
 }

@@ -39,6 +39,7 @@ class MenuItem {
         MenuItemType::MenuItemType getMenuItemType() const;
         std::string getCaption() const;
         void drawText( int x, int y ) const;
+		size_t getTextWidth() const;
 
     private:
         GLFT_Font *font;
@@ -60,7 +61,9 @@ class MenuBase {
     private:
         void resizeMenu();
         std::vector<MenuItem*> menuItems;
-        CTexture *baseTextures;
+
+		size_t neededBlocksWidth;
+		size_t neededBlocksHeight;
 };
 
 #endif

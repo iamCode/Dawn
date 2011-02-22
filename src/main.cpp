@@ -798,6 +798,7 @@ bool dawn_init(int argc, char** argv)
 
 
         /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
+		Frames::initFrameTextures();
         std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
         mainMenu->addMenuItem( "New game", MenuItemType::MENU );
         mainMenu->addMenuItem( "Load game", MenuItemType::MENU );
