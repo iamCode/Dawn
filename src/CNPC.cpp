@@ -78,8 +78,18 @@ void CNPC::chasePlayer( CCharacter *player )
     setTarget( player );
 }
 
+bool CNPC::canBeDamaged() const
+{
+	// FRIENDLY characters (quest characters etc.) can't be damaged
+	return attitudeTowardsPlayer != Attitude::FRIENDLY;
+}
+
 void CNPC::Damage(int amount, bool criticalHit)
 {
+	// don't damage quest characters etc.
+	if ( ! canBeDamaged() )
+		return;
+
 	chasePlayer( Globals::getPlayer() );
 	CCharacter::Damage( amount, criticalHit );
 }

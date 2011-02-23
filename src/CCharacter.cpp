@@ -1558,6 +1558,11 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 	}
 }
 
+bool CCharacter::canBeDamaged() const
+{
+	return true;
+}
+
 void CCharacter::Damage( int amount, bool criticalHit )
 {
     if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
@@ -1925,7 +1930,10 @@ void CCharacter::setSpellbook( std::vector<CSpellActionBase*> spellbook )
 
 void CCharacter::addActiveSpell( CSpellActionBase *spell )
 {
-    assert( spell != NULL );
+	if ( ! canBeDamaged() )
+		return;
+
+	assert( spell != NULL );
     // here we check to see if the current spell cast is already on the character. if it is, then we refresh it.
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
     {

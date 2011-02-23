@@ -54,6 +54,7 @@ class CNPC : public CCharacter
 		void Respawn();
 		void Wander();
         void Die();
+		virtual bool canBeDamaged() const;
 		void Damage(int amount, bool criticalHit);
 
 		void markAsDeleted();

@@ -414,6 +414,7 @@ class CCharacter
 		virtual uint16_t getModifiedMaxDamage() const;
 
 		bool CheckMouseOver(int _x_pos, int _y_pos);
+		virtual bool canBeDamaged() const;
 		virtual void Damage(int amount, bool criticalHit);
 		void Heal(int amount);
 		virtual void Die();
