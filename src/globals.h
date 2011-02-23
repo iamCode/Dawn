@@ -39,8 +39,6 @@ namespace Globals
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
 	Player *getPlayer();
-	bool displayCursor();
-	void setDisplayCursor( bool flag );
 	void addActiveAoESpell( CSpellActionBase *spell );
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveAoESpells();
 	void cleanupActiveAoESpells();

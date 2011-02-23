@@ -117,7 +117,7 @@ curSpell:setName("Inferno");
 curSpell:setInfo("Burns the target with %minSpellDirectDamage%-%maxSpellDirectDamage% point of fire damage + %minSpellContinuousDamage%-%maxSpellContinuousDamage% fire damage over 5 seconds.");
 curSpell:setCastTime( 2000 );
 curSpell:setCooldown( 5 );
-curSpell:setSpellCost( 10 );
+curSpell:setSpellCost( 75 );
 curSpell:setDirectDamage(  15, 30, ElementType.Fire );
 curSpell:setContinuousDamage( 4, 7, 5000, ElementType.Fire );
 curSpell:setSpellSymbol( "data/spells/inferno/symbol.tga" );

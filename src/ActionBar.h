@@ -34,18 +34,26 @@ struct sButton
 	uint8_t height;
 	uint8_t width;
 	bool wasPressed;
+	int actionSpecificXPos;
+	int actionSpecificYPos;
+	bool actionReadyToCast;
+	bool areaOfEffectOnSpecificLocation;
 	SDLKey key;
 
 	sButton( int posX_, int posY_, int width_, int height_, std::string number_, SDLKey key_)
 	{
-		posX				= posX_;
-		posY				= posY_;
-		height			= height_;
-		width				= width_;
-		number			= number_;
-		key					= key_;
-		tooltip			= NULL;
-		action			= NULL;
+		posX = posX_;
+		posY = posY_;
+		height = height_;
+		width = width_;
+		number = number_;
+		key	= key_;
+		tooltip = NULL;
+		action = NULL;
+		actionSpecificXPos = 0;
+		actionSpecificYPos = 0;
+		actionReadyToCast = true;
+		areaOfEffectOnSpecificLocation = false;
 		wasPressed	= false;
 	};
 };
@@ -56,12 +64,11 @@ class ActionBar
 		ActionBar( Player *player_ );
 		~ActionBar();
 
-		bool isCastingAoESpell();
-		void setCastingAoESpell( bool flag );
-		void setJustCastAoESpell( bool flag );
-		CSpellActionBase *getAoESpell();
+		bool isPreparingAoESpell() const;
+        void stopCastingAoE();
 		bool isMouseOver( int x, int y );
 		bool isButtonUsed( sButton *button ) const;
+		bool isSpellUseable( CSpellActionBase *action );
 		void draw();
 		void drawSpellTooltip( int x, int y );
 		void clicked( int clickX, int clickY );
@@ -71,6 +78,7 @@ class ActionBar
 		int8_t getMouseOverButtonId( int x, int y );
 		void bindAction ( sButton *button, CSpellActionBase* action );
 		void unbindAction ( sButton *button );
+        void setSpellQueue( sButton &button, bool actionReadyToCast = true );
 		void loadTextures();
 		void initFonts();
 		std::string getLuaSaveText();
@@ -89,10 +97,8 @@ class ActionBar
 		GLFT_Font *cooldownFont;
 		sButton *spellQueue;
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
-		bool castingAoESpell;
-		bool justCastAoESpell;
+		bool preparingAoESpell;
 		int cursorRadius;
-		int curAoESpell;
 };
 
 #endif

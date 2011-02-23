@@ -318,9 +318,9 @@ void DrawScene()
       }
     }
 
-		actionBar->draw();
-		logWindow->draw();
-		GUI.DrawInterface();
+    actionBar->draw();
+    logWindow->draw();
+    GUI.DrawInterface();
 	}
 
 	// loop through our vector of active frames and draw them. If they are in the vector they are visible...
@@ -950,6 +950,7 @@ void game_loop()
 						// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 						if ( clickedInFrame == false )
 						{
+								actionBar->clicked( mouseX, mouseY );
 								buffWindow->clicked( mouseX, mouseY, event.button.button );
 								if ( shopWindow->hasFloatingSelection() )
 								{
@@ -981,31 +982,19 @@ void game_loop()
 														}
 												}
 
-												// search for new target if no AoE spell is supposed to be cast
-												if( actionBar->isCastingAoESpell() )
-												{
-													CSpellActionBase *newSpell = actionBar->getAoESpell()->cast( player, mouseX+world_x, mouseY+world_y );
-													player->castSpell( newSpell );
-													actionBar->setCastingAoESpell( false );
-													actionBar->setJustCastAoESpell( true );
-													Globals::setDisplayCursor( false );
-												}
-												else
-												{
-													std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-													for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-															CNPC *curNPC = zoneNPCs[x];
-															if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-																	if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
-																			if( !player->hasTarget( curNPC ) )
-																				player->setTarget( curNPC );
-																			else
-																				player->setTarget( NULL );
-																			break;
-																	}
-															}
-													}
-												}
+                                                std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+                                                for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                                                        CNPC *curNPC = zoneNPCs[x];
+                                                        if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+                                                                if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+                                                                        if( !player->hasTarget( curNPC ) )
+                                                                            player->setTarget( curNPC );
+                                                                        else
+                                                                            player->setTarget( NULL );
+                                                                        break;
+                                                                }
+                                                        }
+                                                }
 										}
 										break;
 
@@ -1023,8 +1012,6 @@ void game_loop()
 										}
 										break;
 								}
-
-								actionBar->clicked( mouseX, mouseY );
 						}
 				}
 
@@ -1033,7 +1020,8 @@ void game_loop()
 						mouseX = event.motion.x;
 						mouseY = Configuration::screenHeight - event.motion.y - 1;
 
-						if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+                        // we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
+						if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && event.button.button == SDL_BUTTON_LEFT )
 						{
 								actionBar->dragSpell();
 						}

@@ -52,16 +52,6 @@ namespace Globals
 		return &thePlayer;
 	}
 
-	bool displayCursor()
-	{
-		return showCursor;
-	}
-
-	void setDisplayCursor( bool flag )
-	{
-		showCursor = flag;
-	}
-
 	void addActiveAoESpell( CSpellActionBase *spell )
 	{
 		assert( spell != NULL );
