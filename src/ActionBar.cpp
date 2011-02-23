@@ -423,7 +423,7 @@ void ActionBar::dragSpell()
     {
         if ( spellQueue->action != NULL )
         {
-            spellbook->setFloatingSpell( spellbook->getSpellSlotBySpell( spellQueue->action ) );
+			spellbook->setFloatingSpell( spellQueue->action );
             unbindAction( spellQueue );
             spellQueue = NULL;
         }

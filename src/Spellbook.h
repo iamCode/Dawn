@@ -67,8 +67,7 @@ class Spellbook : public FramesBase
 
         int8_t getMouseOverSpellSlotId( int mouseX, int mouseY ) const;
         sSpellSlot *getFloatingSpell() const;
-        sSpellSlot *getSpellSlotBySpell( CSpellActionBase *spell ) const;
-        void setFloatingSpell( sSpellSlot *newFloatingSpell );
+		void setFloatingSpell( CSpellActionBase *newFloatingSpell );
         void unsetFloatingSpell();
         void reloadSpellsFromPlayer();
         void clear();
@@ -93,6 +92,7 @@ class Spellbook : public FramesBase
 
         CTexture textures;
         std::vector<sSpellSlot> spellSlot;
+		sSpellSlot floatingSpellSlot;
         std::vector<CSpellActionBase*> inscribedSpells;
         Player *player;
         int curPage;
