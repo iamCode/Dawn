@@ -213,3 +213,11 @@ curItem = itemDatabase["moldytome"];
 curItem:setSpellEffectElementModifierPoints( ElementType.Dark, 6 );
 curItem:setStats( StatsType.Wisdom, 2 );
 curItem:setStats( StatsType.ManaRegen, 1 );
+
+itemDatabase["leynorscap"]=DawnInterface.createNewItem( "Leynor's Cap", 2, 2, "data/items/Helmet1.tga", ItemQuality.ENHANCED, EquipPosition.HEAD, ItemType.ARMOR, ArmorType.CLOTH, WeaponType.NO_WEAPON );
+curItem = itemDatabase["leynorscap"];
+curItem:setStats( StatsType.Armor, 4 );
+curItem:setValue( 276 );
+curItem:setStats( StatsType.Wisdom, 2 );
+curItem:setStats( StatsType.Intellect, 1 );
+

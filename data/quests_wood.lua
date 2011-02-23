@@ -45,6 +45,7 @@ function quest_playHideAndSeek.init()
 	traderInteraction:setInteractionType( InteractionType.Shop );
 	traderInteraction:setInteractionCode( "quest_playHideAndSeek.onActivateTrader()" );
 	traderShop = DawnInterface.addShop();
+	traderShop:addItem( itemDatabase["leynorscap"] );
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
 	traderShop:addItem( itemDatabase["smallhealingpotion"] );
