@@ -166,6 +166,10 @@ class CSpellActionBase
 		std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
 
 		void drawSymbol( int left, int width, int bottom, int height ) const;
+
+		/// this resets the luaID to empty. It is only to be used in copySpell-function because there we want to create a new spell which
+		/// will be inscribed in the spell database so it will get an ID.
+		void unsetLuaID();
 	protected:
 		CCharacter *creator;
 		CCharacter *target;

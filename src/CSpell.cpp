@@ -132,6 +132,11 @@ std::string CSpellActionBase::getID() const
 	return luaID;
 }
 
+void CSpellActionBase::unsetLuaID()
+{
+	luaID = "";
+}
+
 void CSpellActionBase::addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute )
 {
     additionalSpellsOnTarget.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
@@ -2150,42 +2155,49 @@ namespace DawnInterface
     GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
 	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralAreaDamageSpell> newSpell( dynamic_cast<GeneralAreaDamageSpell*>( SpellCreation::getGeneralAreaDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralHealingSpell* copySpell( GeneralHealingSpell *other )
 	{
 		 std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralBuffSpell* copySpell( GeneralBuffSpell *other )
 	{
 		 std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     MeleeDamageAction* copySpell( MeleeDamageAction *other )
 	{
 		 std::auto_ptr<MeleeDamageAction> newSpell( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     RangedDamageAction* copySpell( RangedDamageAction *other )
 	{
 		 std::auto_ptr<RangedDamageAction> newSpell( dynamic_cast<RangedDamageAction*>( SpellCreation::getRangedDamageAction( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 }
