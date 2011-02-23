@@ -151,14 +151,10 @@ std::string Item::getID() const
 {
 	std::ostringstream idstream;
 	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
-		if ( isspace( name[curChar] ) ) {
-			// ignore
-		} else if ( isupper( name[curChar] ) ) {
-			idstream << char( tolower( name[curChar] ) );
-		} else {
-			idstream << char( name[curChar] );
+		if ( islower( tolower( name[ curChar ] ) ) ) {
+		    idstream << char( tolower( name[ curChar ] ) );
 		}
-	}
+    }
 	if ( spell != NULL && spell->getRank() > 1 ) {
 		idstream << "rank" << static_cast<int>(spell->getRank());
 	}

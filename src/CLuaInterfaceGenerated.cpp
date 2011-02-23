@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.93 on Wed Feb 23 17:46:47 2011.
+** Generated automatically by tolua++-1.0.93 on Wed Feb 23 18:10:24 2011.
 */
 
 #ifndef __cplusplus
@@ -6139,7 +6139,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00(lua_State* 
      !tolua_isusertype(tolua_S,1,"Item",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
@@ -6149,7 +6149,7 @@ static int tolua_CLuaInterface_DawnInterface_restoreItemInBackpack00(lua_State* 
   Item* item = ((Item*)  tolua_tousertype(tolua_S,1,0));
   int inventoryPosX = ((int)  tolua_tonumber(tolua_S,2,0));
   int inventoryPosY = ((int)  tolua_tonumber(tolua_S,3,0));
-  int stackSize = ((int)  tolua_tonumber(tolua_S,4,0));
+  int stackSize = ((int)  tolua_tonumber(tolua_S,4,1));
   {
    DawnInterface::restoreItemInBackpack(item,inventoryPosX,inventoryPosY,stackSize);
   }
