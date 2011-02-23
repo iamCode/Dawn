@@ -175,12 +175,12 @@ size_t Item::getSizeY() const
 	return sizeY;
 }
 
-uint8_t Item::getMaxStackSize() const
+size_t Item::getMaxStackSize() const
 {
     return maxStackSize;
 }
 
-void Item::setMaxStackSize( uint8_t maxStackSize )
+void Item::setMaxStackSize( size_t maxStackSize )
 {
     this->maxStackSize = maxStackSize;
 }

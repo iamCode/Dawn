@@ -38,8 +38,8 @@ class InventoryItem
 		size_t getSizeX() const;
 		size_t getSizeY() const;
 
-        uint8_t getCurrentStackSize() const;
-        void setCurrentStackSize( uint8_t currentStackSize );
+        size_t getCurrentStackSize() const;
+        void setCurrentStackSize( size_t currentStackSize );
         void increaseCurrentStack();
         void decreaseCurrentStack();
         bool isItemStackFull() const;
@@ -56,7 +56,7 @@ class InventoryItem
 		Player *player;
         itemTooltip *tooltip;
 
-        uint8_t currentStackSize;
+        size_t currentStackSize;
 
 		size_t inventoryPosX;
 		size_t inventoryPosY;

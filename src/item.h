@@ -371,8 +371,8 @@ class Item
         void addTriggerSpellOnTarget( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
         std::vector<TriggerSpellOnItem*> getTriggerSpells() const;
 
-        uint8_t getMaxStackSize() const;
-        void setMaxStackSize( uint8_t maxStackSize );
+        size_t getMaxStackSize() const;
+        void setMaxStackSize( size_t maxStackSize );
         bool isItemStackable() const;
 
 		size_t getSizeX() const;
@@ -410,7 +410,7 @@ class Item
         uint8_t minDamage;
         uint8_t maxDamage;
 
-        uint8_t maxStackSize;
+        size_t maxStackSize;
 
         uint8_t requiredLevel;
 

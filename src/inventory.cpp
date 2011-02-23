@@ -415,12 +415,12 @@ InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem
 	return blockingItem;
 }
 
-uint8_t InventoryItem::getCurrentStackSize() const
+size_t InventoryItem::getCurrentStackSize() const
 {
     return currentStackSize;
 }
 
-void InventoryItem::setCurrentStackSize( uint8_t currentStackSize )
+void InventoryItem::setCurrentStackSize( size_t currentStackSize )
 {
     this->currentStackSize = currentStackSize;
 }
@@ -459,7 +459,7 @@ std::string Inventory::getReloadText()
 		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
 		Item *curItem = curBackpackItem->getItem();
 		oss << "DawnInterface.restoreItemInBackpack( itemDatabase[\"" << curItem->getID() << "\"], "
-		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
+		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << ", " << curBackpackItem->getCurrentStackSize() << " );"
 		    << std::endl;
 	}
 
@@ -520,9 +520,10 @@ namespace DawnInterface
 		return Globals::getPlayer()->getInventory()->getReloadText();
 	}
 
-	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, size_t stackSize )
 	{
 		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, Globals::getPlayer() );
+		invItem->setCurrentStackSize( stackSize );
 		Globals::getPlayer()->getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
 	}
 

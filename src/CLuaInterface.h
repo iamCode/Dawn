@@ -72,7 +72,7 @@ namespace DawnInterface
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
 	std::string getSpellbookSaveText();
-	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, size_t stackSize = 1 );
 	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );
 	void restoreGroundGold( int amount, int xPos, int yPos );
