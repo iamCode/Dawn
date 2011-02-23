@@ -728,6 +728,9 @@ uint16_t CCharacter::getModifiedMaxDamage() const
 
 void CCharacter::addItemToLootTable(Item *item, double dropChance )
 {
+    if ( item == NULL ) {
+         dawn_debug_fatal("CCharacter::addItemToLootTable() was called without a valid Item. Exiting!");
+    }
     lootTable.push_back( sLootTable( item, dropChance ) );
 }
 

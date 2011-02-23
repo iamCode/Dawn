@@ -271,7 +271,7 @@ spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
-spiderbase:addItemToLootTable( spellDatabase["spidersilk"], 0.30 );
+spiderbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
 
 skeletonbase = DawnInterface.createNewMobType("Skeleton")
 skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 9 );
