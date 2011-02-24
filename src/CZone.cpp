@@ -228,20 +228,16 @@ int CZone::LocateEnvironment(int x, int y)
 // used by the editor
 int CZone::DeleteNPC(int x, int y)
 {
-    std::cout << "Trying to locate an NPC to delete...";
 	for (unsigned int t=0;t<npcs.size();t++) {
 		if ((npcs[t]->getXPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).width > x) &&
 		        (npcs[t]->getXPos() < x)) {
-		            std::cout << "found for X...";
 			if ((npcs[t]->getYPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).height > y) &&
 			        (npcs[t]->getYPos() < y)) {
-			            std::cout << "found for Y." << std::endl;
 				removeNPC( npcs[t] );
 				return 0;
 			}
 		}
 	}
-	std::cout << "nothing.. ;/" << std::endl;
 
 	return 1;
 }
