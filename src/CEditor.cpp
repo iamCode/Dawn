@@ -1006,7 +1006,7 @@ void CEditor::DrawEditor()
 	}
 
 	/// draw the world position of the mouse in the top left corner.
-	keybindingFont->drawText( editorFocus->getX()+10, editorFocus->getY()+Configuration::screenHeight-10, "x: %d, y: %d", int(editorFocus->getX())+mouseX, int(editorFocus->getX())+mouseY );
+	keybindingFont->drawText( editorFocus->getX()+10, editorFocus->getY()+Configuration::screenHeight-10, "x: %d, y: %d", int(editorFocus->getX())+mouseX, int(editorFocus->getY())+mouseY );
 }
 
 void CEditor::LoadTextures()
