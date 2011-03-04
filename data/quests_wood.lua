@@ -38,36 +38,11 @@ function quest_playHideAndSeek.init()
 	townLeaveRegion:setPosition( 550, 1200, 300, 100 );
 	townLeaveRegion:setOnEnterText( "quest_playHideAndSeek.leaveTown()" );
 
-	trader = DawnInterface.addMobSpawnPoint( "Human", 600, 1400, 1, 0 );
-	trader:setAttitude( Attitude.FRIENDLY );
-	trader:setName( "Rake Fleetwood" );
-	traderInteraction = DawnInterface.addCharacterInteractionPoint( trader );
-	traderInteraction:setInteractionType( InteractionType.Shop );
-	traderInteraction:setInteractionCode( "quest_playHideAndSeek.onActivateTrader()" );
-	traderShop = DawnInterface.addShop();
-	traderShop:addItem( itemDatabase["leynorscap"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["smallhealingpotion"] );
-	traderShop:addItem( itemDatabase["bladeofstrength"] );
-	traderShop:addItem( itemDatabase["bookofleatherskinrank2"] );
-
 	john = DawnInterface.addInteractionPoint();
 	john:setPosition( 820, 270, 64, 64 );
 	john:setBackgroundTexture( "data/character/John.tga" );
 	john:setInteractionType( InteractionType.Quest );
 	john:setInteractionCode( "quest_playHideAndSeek.onActivateJohn()" );
-end
-
-function quest_playHideAndSeek.onActivateTrader()
-	traderShop:toggle()
 end
 
 function quest_playHideAndSeek.onActivateJohn()

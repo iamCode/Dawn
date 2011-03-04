@@ -21,7 +21,6 @@ end
 
 function arinoxDungeonLevel1.onEnterMap(x,y)
     DawnInterface.setBackgroundMusic("data/music/ratsrats_0.ogg");
-    print( "arinoxDungeonLevel1.onEnterMap("..x..","..y..") called" );
 end
 
 function arinoxDungeonLevel1.closedDoorInteraction()

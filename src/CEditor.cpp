@@ -695,7 +695,7 @@ void CEditor::HandleKeys()
 	}
 
 	// increase the Z-position
-    if (keys[SDLK_m] && !KP_increase_Zpos)
+    if (keys[SDLK_b] && !KP_increase_Zpos)
     {
         KP_increase_Zpos = true;
         if ( current_object == 1 ) // environment
@@ -704,7 +704,7 @@ void CEditor::HandleKeys()
 	    }
 	}
 
-	if (!keys[SDLK_m])
+	if (!keys[SDLK_b])
 	{
 		KP_increase_Zpos = false;
 	}
@@ -944,7 +944,7 @@ void CEditor::DrawEditor()
 		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+60 - fontHeight, "[ , ]  Decrease transparency");
 		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+50 - fontHeight, "[ 1/2/3 ]  Increase color RED/GREEN/BLUE");
 		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+40 - fontHeight, "[ Left Shift + 1/2/3 ]  Decrease color RED/GREEN/BLUE)");
-		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+30 - fontHeight, "[ n/m ] Increase / decrease Z-position");
+		keybindingFont->drawText(editorFocus->getX()+500, editorFocus->getY()+30 - fontHeight, "[ b/n ] Increase / decrease Z-position");
 	}
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f); // and back to white.

@@ -30,7 +30,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
 	wander_thisframe = 0.0f;
 	wander_lastframe = 0.0f; // helping us decide when the mob will wander.
-	wander_every_seconds = 1; // this mob wanders every 1 seconds.
+	wander_every_seconds = 3; // this mob wanders every 1 seconds.
 	wandering = false;
 	MovingDirection = STOP;
 
