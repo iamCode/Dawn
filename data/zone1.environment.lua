@@ -1442,7 +1442,6 @@ EditorInterface.addEnvironment( -1208, -1698, 0, tree_tree2_tga );
 EditorInterface.addEnvironment( -2021, -1698, 0, tree_tree2_tga );
 EditorInterface.addEnvironment( 1228, -1700, 0, tree_tree2_tga );
 EditorInterface.addEnvironment( 599, -1700, 0, tree_tree1_tga );
-EditorInterface.addEnvironment( -1433, -1701, 0, tree_tree1_tga );
 EditorInterface.addEnvironment( 469, -1708, 0, tree_tree2_tga );
 EditorInterface.addEnvironment( -119, -1721, 0, tree_tree2_tga );
 EditorInterface.addEnvironment( 66, -1731, 0, tree_tree2_tga );
