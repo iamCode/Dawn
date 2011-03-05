@@ -226,8 +226,8 @@ void ActionBar::clicked( int clickX, int clickY )
         preparingAoESpell = false;
         spellQueue->actionReadyToCast = true;
         spellQueue->areaOfEffectOnSpecificLocation = true;
-        spellQueue->actionSpecificXPos = clickX;
-        spellQueue->actionSpecificYPos = clickY;
+        spellQueue->actionSpecificXPos = clickX+world_x;
+        spellQueue->actionSpecificYPos = clickY+world_y;
     } else {
         int buttonId = getMouseOverButtonId( clickX, clickY );
         if ( buttonId >= 0 )
