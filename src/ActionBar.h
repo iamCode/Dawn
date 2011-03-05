@@ -65,7 +65,8 @@ class ActionBar
 		~ActionBar();
 
 		bool isPreparingAoESpell() const;
-        void stopCastingAoE();
+		void makeReadyToCast( int x, int y );
+		void stopCastingAoE();
 		bool isMouseOver( int x, int y );
 		bool isButtonUsed( sButton *button ) const;
 		bool isSpellUseable( CSpellActionBase *action );
@@ -78,7 +79,7 @@ class ActionBar
 		int8_t getMouseOverButtonId( int x, int y );
 		void bindAction ( sButton *button, CSpellActionBase* action );
 		void unbindAction ( sButton *button );
-        void setSpellQueue( sButton &button, bool actionReadyToCast = true );
+		void setSpellQueue( sButton &button, bool actionReadyToCast = true );
 		void loadTextures();
 		void initFonts();
 		std::string getLuaSaveText();

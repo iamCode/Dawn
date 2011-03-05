@@ -1021,7 +1021,7 @@ void game_loop()
 						mouseY = Configuration::screenHeight - event.motion.y - 1;
 
                         // we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
-						if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && event.button.button == SDL_BUTTON_LEFT )
+						if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && event.button.button == SDL_BUTTON_LEFT && !actionBar->isPreparingAoESpell() )
 						{
 								actionBar->dragSpell();
 						}
@@ -1038,6 +1038,8 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONUP)
 				{
+					if( actionBar->isPreparingAoESpell() )
+						actionBar->makeReadyToCast( mouseX+world_x, mouseY+world_y );
 
 					actionBar->executeSpellQueue();
 					for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )

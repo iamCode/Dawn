@@ -213,6 +213,14 @@ void ActionBar::stopCastingAoE()
     }
 }
 
+void ActionBar::makeReadyToCast( int x, int y )
+{
+	spellQueue->actionReadyToCast = true;
+	spellQueue->areaOfEffectOnSpecificLocation = true;
+	spellQueue->actionSpecificXPos = x;
+	spellQueue->actionSpecificYPos = y;
+}
+
 void ActionBar::clicked( int clickX, int clickY )
 {
     // if the right mouse button is pressed you exit "disabled" mode and remove the cursor
@@ -221,40 +229,30 @@ void ActionBar::clicked( int clickX, int clickY )
 		stopCastingAoE();
 	}
 
-    // did we click outside of the actionbar and have prepared an aoe spell?
-	if ( isPreparingAoESpell() == true ) { // we've prepared a spellqueue before. so now it's time to let it finish
-        preparingAoESpell = false;
-        spellQueue->actionReadyToCast = true;
-        spellQueue->areaOfEffectOnSpecificLocation = true;
-        spellQueue->actionSpecificXPos = clickX+world_x;
-        spellQueue->actionSpecificYPos = clickY+world_y;
-    } else {
-        int buttonId = getMouseOverButtonId( clickX, clickY );
-        if ( buttonId >= 0 )
-        {
-            // we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
-            if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
-            {
-                if ( button[ buttonId ].action->getEffectType() == EffectType::AreaTargetSpell && player->getTarget() == NULL && isSpellUseable( button[ buttonId ].action ) == true ) { // AoE spell with specific position
-                    setSpellQueue( button[buttonId], false );
-                    preparingAoESpell = true;
-                    cursorRadius = button[buttonId].action->getRadius();
-                } else { // "regular" spell
-                    setSpellQueue( button[buttonId] );
-                }
-            }
+	int buttonId = getMouseOverButtonId( clickX, clickY );
+	if ( buttonId >= 0 )
+	{
+			// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
+			if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
+			{
+					if ( button[ buttonId ].action->getEffectType() == EffectType::AreaTargetSpell && player->getTarget() == NULL && isSpellUseable( button[ buttonId ].action ) == true ) { // AoE spell with specific position
+							setSpellQueue( button[buttonId], false );
+							cursorRadius = button[buttonId].action->getRadius();
+					} else { // "regular" spell
+							setSpellQueue( button[buttonId] );
+					}
+			}
 
-            // check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
-            if ( spellbook->hasFloatingSpell() )
-            {
-                if ( isButtonUsed( &button[buttonId] ) )
-                {
-                    unbindAction( &button[buttonId] );
-                }
-                bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
-            }
-        }
-    }
+			// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
+			if ( spellbook->hasFloatingSpell() )
+			{
+					if ( isButtonUsed( &button[buttonId] ) )
+					{
+							unbindAction( &button[buttonId] );
+					}
+					bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
+			}
+	}
 }
 
 void ActionBar::handleKeys()
@@ -365,30 +363,36 @@ void ActionBar::executeSpellQueue()
 {
     if ( spellQueue != NULL )
     {
-        if ( spellQueue->action != NULL && spellQueue->actionReadyToCast == true )
-        {
-            CSpellActionBase *curAction = NULL;
+    	EffectType::EffectType effectType = spellQueue->action->getEffectType();
 
-            EffectType::EffectType effectType = spellQueue->action->getEffectType();
+			if ( spellQueue->action != NULL && spellQueue->actionReadyToCast == true )
+			{
+					CSpellActionBase *curAction = NULL;
 
-            if ( effectType == EffectType::SingleTargetSpell
-                     && player->getTarget() != NULL ) {
-                curAction = spellQueue->action->cast( player, player->getTarget() );
-            } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                curAction = spellQueue->action->cast( player, player );
-            } else if ( effectType == EffectType::AreaTargetSpell ) {
-                if ( player->getTarget() != NULL ) { // AoE spell cast on target
-                    curAction = spellQueue->action->cast( player, player->getTarget() );
-                } else if ( spellQueue->areaOfEffectOnSpecificLocation == true ) { // AoE spell cast on specific position
-                    curAction = spellQueue->action->cast( player, spellQueue->actionSpecificXPos, spellQueue->actionSpecificYPos );
-                }
-            }
+					if ( effectType == EffectType::SingleTargetSpell
+									 && player->getTarget() != NULL ) {
+							curAction = spellQueue->action->cast( player, player->getTarget() );
+					} else if ( effectType == EffectType::SelfAffectingSpell ) {
+							curAction = spellQueue->action->cast( player, player );
+					} else if ( effectType == EffectType::AreaTargetSpell ) {
+							if ( player->getTarget() != NULL ) { // AoE spell cast on target
+									curAction = spellQueue->action->cast( player, player->getTarget() );
+							} else if ( spellQueue->areaOfEffectOnSpecificLocation == true ) { // AoE spell cast on specific position
+									curAction = spellQueue->action->cast( player, spellQueue->actionSpecificXPos, spellQueue->actionSpecificYPos );
+									preparingAoESpell = false;
+							}
+					}
 
-            if ( curAction != NULL ) {
-                player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
-            }
-            spellQueue = NULL;
-        }
+					if ( curAction != NULL ) {
+							player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+					}
+					spellQueue = NULL;
+			}
+			else if ( spellQueue->action )
+			{
+				if ( effectType == EffectType::AreaTargetSpell )
+					preparingAoESpell = true;
+			}
     }
 }
 
