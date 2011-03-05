@@ -99,10 +99,10 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
             // give us the size of the image's width and height and store it.
             textures[ filename ].width = surface->w;
             textures[ filename ].height = surface->h;
-            textures[ filename ].x1=0.0f;
-            textures[ filename ].x2=1.0f;
-            textures[ filename ].y1=0.0f;
-            textures[ filename ].y2=1.0f;
+			textures[ filename ].x1=(0.5/surface->w);
+			textures[ filename ].x2=1.0f-(0.5/surface->w);
+			textures[ filename ].y1=(0.5/surface->h);;
+			textures[ filename ].y2=1.0f-(0.5/surface->h);
 
             // set the texture file name
             textures[ filename ].textureFile = filename;
@@ -111,7 +111,7 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
             size_t minPotY=2;
             while ( minPotX<surface->w ) minPotX *= 2;
             while ( minPotY<surface->h ) minPotY *= 2;
-            bool isPOT = (surface->w==minPotX) && (surface->h==minPotY);
+			bool isPOT = (surface->w==minPotX) && (surface->h==minPotY);
 
             if ( initPhase && (! isPOT) && nOfColors==4 && texture_format==GL_BGRA && surface->w<=textureFrame->getWidth() && surface->h<=textureFrame->getHeight() ) {
                 textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
@@ -129,7 +129,7 @@ sTexture TextureCache::getTextureFromCache( std::string filename )
                 uint32_t mipmapStart = SDL_GetTicks();
                 // Edit the texture object's image data using the information SDL_Surface gives us
                 if (isPOT) {
-                    glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+					glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
                 } else {
                     gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
                 }
