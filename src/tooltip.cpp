@@ -26,6 +26,7 @@
 #include "elements.h"
 #include "shop.h"
 #include "configuration.h"
+#include "Frames.h"
 #include <memory>
 
 extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
@@ -214,7 +215,7 @@ void itemTooltip::drawCoinsLine( int x, int frameWidth, int y, sTooltipText *too
     {
         if ( itemValue[i] != "0" )
         {
-            Frames::drawCoin( x + frameWidth - xoffset, y+1, i );
+			DrawFunctions::drawCoin( x + frameWidth - xoffset, y+1, i );
             int stringWidth = tooltipText->font->calcStringWidth( itemValue[i] );
             tooltipText->font->drawText( x + frameWidth - xoffset - stringWidth, y, itemValue[i] );
             xoffset = xoffset + 25 + stringWidth;
@@ -799,82 +800,36 @@ Item *itemTooltip::getParent() const
     return parent;
 }
 
-/// FRAMES
 
-std::auto_ptr<CTexture> frameTextures( NULL );
-
-namespace Frames
+namespace DrawFunctions
 {
+	std::auto_ptr<CTexture> drawTextures( NULL );
 
-	void initFrameTextures()
+	void initDrawTextures()
 	{
-		if ( frameTextures.get() != NULL ) {
+		if ( drawTextures.get() != NULL ) {
 			return;
 		}
 
-		frameTextures = std::auto_ptr<CTexture>(new CTexture());
-		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
-		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
-		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
-		frameTextures->LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
-		frameTextures->LoadIMG( "data/interface/tooltip/background2.tga", 4 );
-		frameTextures->LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
-		frameTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
-		frameTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
-		frameTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
-		frameTextures->LoadIMG( "data/interface/inventory/goldcoin.tga", 9 );
-        frameTextures->LoadIMG( "data/interface/inventory/silvercoin.tga", 10 );
-        frameTextures->LoadIMG( "data/interface/inventory/coppercoin.tga", 11 );
-
-	}
-
-	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
-	{
-		// draw the corners
-		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(0), leftX, blockWidth, bottomY, blockHeight); // lower left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(1), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
-		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(2), leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
-		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(3), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
-
-		// draw the top and bottom borders
-		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
-		{
-			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(5), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
-			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(6), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
-		}
-
-		// draw the right and left borders
-		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
-		{
-			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(7), leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
-			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(8), leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
-		}
-
-		// draw the background
-		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
-		{
-			for ( int blockX = 0; blockX < numBlocksX; blockX++ )
-			{
-				DrawingHelpers::mapTextureToRect( frameTextures->getTexture(4), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
-			}
-		}
+		drawTextures = std::auto_ptr<CTexture>(new CTexture());
+		drawTextures->LoadIMG( "data/interface/inventory/goldcoin.tga", 0 );
+		drawTextures->LoadIMG( "data/interface/inventory/silvercoin.tga", 1 );
+		drawTextures->LoadIMG( "data/interface/inventory/coppercoin.tga", 2 );
 	}
 
 	void drawCoin( int x, int y, int coin )
 	{
-	    if ( coin == currency::GOLD )
-	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(9), x, 16, y, 16 );
-	    }
-	    if ( coin == currency::SILVER )
-	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(10), x, 16, y, 16 );
-	    }
-	    if ( coin == currency::COPPER )
-	    {
-	        DrawingHelpers::mapTextureToRect( frameTextures->getTexture(11), x, 16, y, 16 );
-	    }
+		if ( coin == currency::GOLD )
+		{
+			DrawingHelpers::mapTextureToRect( drawTextures->getTexture(0), x, 16, y, 16 );
+		}
+		if ( coin == currency::SILVER )
+		{
+			DrawingHelpers::mapTextureToRect( drawTextures->getTexture(1), x, 16, y, 16 );
+		}
+		if ( coin == currency::COPPER )
+		{
+			DrawingHelpers::mapTextureToRect( drawTextures->getTexture(2), x, 16, y, 16 );
+		}
 	}
-} // namespace Frames
-
-
+}

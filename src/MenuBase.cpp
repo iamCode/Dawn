@@ -19,7 +19,7 @@
 #include "MenuBase.h"
 #include "configuration.h"
 #include "fontcache.h"
-#include "tooltip.h"
+#include "Frames.h"
 
 MenuItem::MenuItem( std::string caption_, MenuItemType::MenuItemType menuItemType_ )
     :   caption( caption_ ),

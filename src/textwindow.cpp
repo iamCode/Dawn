@@ -18,7 +18,8 @@
 
 #include "textwindow.h"
 
-#include "tooltip.h" // for Frames
+#include "SDL/SDL.h"
+#include "Frames.h" // for Frames
 
 #include <cstring> // for strtok_r
 #include <memory>

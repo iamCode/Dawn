@@ -18,6 +18,7 @@
 
 #include "FramesBase.h"
 #include <vector>
+#include "CDrawingHelpers.h"
 
 extern std::vector <FramesBase*> activeFrames;
 
@@ -33,9 +34,9 @@ FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint
     :   posX( posX_ ),
         posY( posY_ ),
         frameWidth( frameWidth_ ),
-        frameHeight( frameHeight_ ),
-        frameOffsetX( frameOffsetX_ ),
-        frameOffsetY( frameOffsetY_ ),
+		frameHeight( frameHeight_ ),
+		frameOffsetX( frameOffsetX_ ),
+		frameOffsetY( frameOffsetY_ ),
         visible( false ),
         moveableFrame( false),
         closeButton( false ),
@@ -93,10 +94,26 @@ bool FramesBase::isMovingFrame() const
 
 void FramesBase::draw( int mouseX, int mouseY )
 {
+	if ( childFrames.size() > 0 )
+	{
+		glTranslatef( posX, posY, 0.0f );
+		for ( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr )
+		{
+			childFrames[ curChildNr ]->draw( mouseX-posX, mouseY-posY );
+		}
+		glTranslatef( -posX, -posY, 0.0f );
+	}
 }
 
 void FramesBase::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
+	//bool clickHandled = false;
+	for ( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr )
+	{
+		// clickHandled |= childControls[ curChildNr ]->click( mouseX-relPosX, mouseY-relPosY, mouseState );
+		childFrames[ curChildNr ]->clicked( mouseX-posX, mouseY-posY, mouseState );
+	}
+	//return clickHandled;
 }
 
 bool FramesBase::isMouseOnTitlebar( int mouseX, int mouseY ) const
@@ -122,7 +139,7 @@ bool FramesBase::isMouseOnCloseButton( int mouseX, int mouseY ) const
     if ( closeButton == false )
     {
         return false;
-    }
+	}
 
     if ( mouseX < posX + buttonOffsetX
 	     || mouseY < posY + buttonOffsetY
@@ -141,9 +158,9 @@ bool FramesBase::isMouseOnFrame( int mouseX, int mouseY ) const
 	}
 
 	if ( mouseX < posX + frameOffsetX
-	     || mouseY < posY + frameOffsetY
-	     || mouseX > posX + frameOffsetX + frameWidth
-	     || mouseY > posY + frameOffsetY + frameHeight ) {
+		 || mouseY < posY + frameOffsetY
+		 || mouseX > posX + frameOffsetX + frameWidth
+		 || mouseY > posY + frameOffsetY + frameHeight ) {
 	    return false;
 	}
 	return true;
@@ -194,3 +211,47 @@ void FramesBase::setOnTop()
         }
     }
 }
+
+void FramesBase::setPosition( int parentOffsetX, int parentOffsetY )
+{
+	posX = parentOffsetX;
+	posY = parentOffsetY;
+}
+
+void FramesBase::addToParent( int posOffsetX, int posOffsetY, FramesBase *parent )
+{
+	this->parentFrame = parent;
+	setPosition( posOffsetX, posOffsetY );
+}
+
+void FramesBase::addChildFrame( int posOffsetX, int posOffsetY, FramesBase *newChild )
+{
+	newChild->addToParent( posOffsetX, posOffsetY, this );
+	childFrames.push_back( newChild );
+}
+
+int FramesBase::getPosX() const
+{
+	return posX;
+}
+
+int FramesBase::getPosY() const
+{
+	return posY;
+}
+
+int FramesBase::getWidth() const
+{
+	return frameWidth;
+}
+
+int FramesBase::getHeight() const
+{
+	return frameHeight;
+}
+
+std::vector<FramesBase*> FramesBase::getChildFrames()
+{
+	return childFrames;
+}
+

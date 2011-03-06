@@ -1,0 +1,79 @@
+#include "Frames.h"
+
+#include "CTexture.h"
+#include <memory>
+#include "CDrawingHelpers.h"
+
+/// FRAMES
+
+namespace Frames
+{
+	std::auto_ptr<CTexture> frameTextures( NULL );
+
+	void initFrameTextures()
+	{
+		if ( frameTextures.get() != NULL ) {
+			return;
+		}
+
+		frameTextures = std::auto_ptr<CTexture>(new CTexture());
+		frameTextures->LoadIMG( "data/interface/tooltip/lower_left2.tga", 0 );
+		frameTextures->LoadIMG( "data/interface/tooltip/lower_right2.tga", 1 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper_left2.tga", 2 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper_right2.tga", 3 );
+		frameTextures->LoadIMG( "data/interface/tooltip/background2.tga", 4 );
+		frameTextures->LoadIMG( "data/interface/tooltip/upper2.tga", 5 );
+		frameTextures->LoadIMG( "data/interface/tooltip/lower2.tga", 6 );
+		frameTextures->LoadIMG( "data/interface/tooltip/left2.tga", 7 );
+		frameTextures->LoadIMG( "data/interface/tooltip/right2.tga", 8 );
+	}
+
+	void drawFrame( int leftX, int bottomY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight )
+	{
+		// draw the corners
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(0), leftX, blockWidth, bottomY, blockHeight); // lower left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(1), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY, blockHeight); // lower right corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(2), leftX, blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper left corner
+		DrawingHelpers::mapTextureToRect( frameTextures->getTexture(3), leftX+blockWidth+(numBlocksX*blockWidth), blockWidth, bottomY+blockHeight+(numBlocksY*blockHeight), blockHeight); // upper right corner
+
+		// draw the top and bottom borders
+		for ( int blockX = 0; blockX < numBlocksX; blockX++ )
+		{
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(5), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(numBlocksY*blockHeight),blockHeight); // top border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(6), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY,blockHeight); // bottom border
+		}
+
+		// draw the right and left borders
+		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
+		{
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(7), leftX,blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // left border
+			DrawingHelpers::mapTextureToRect( frameTextures->getTexture(8), leftX+blockWidth+(numBlocksX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight); // right border
+		}
+
+		// draw the background
+		for ( int blockY = 0; blockY < numBlocksY; blockY++ )
+		{
+			for ( int blockX = 0; blockX < numBlocksX; blockX++ )
+			{
+				DrawingHelpers::mapTextureToRect( frameTextures->getTexture(4), leftX+blockWidth+(blockX*blockWidth),blockWidth,bottomY+blockHeight+(blockY*blockHeight),blockHeight);
+			}
+		}
+	}
+
+	int calculateNeededBlockWidth( int contentWidth, int singleBlockWidth )
+	{
+		if ( contentWidth % singleBlockWidth == 0 )
+			return (contentWidth / singleBlockWidth );
+		else
+			return (contentWidth / singleBlockWidth + 1 );
+	}
+
+	int calculateNeededBlockHeight( int contentHeight, int singleBlockHeight )
+	{
+		if ( contentHeight % singleBlockHeight == 0 )
+			return (contentHeight / singleBlockHeight );
+		else
+			return (contentHeight / singleBlockHeight + 1 );
+	}
+} // namespace Frames
+

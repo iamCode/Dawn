@@ -20,12 +20,13 @@
 #define __FRAMESBASE_H__
 
 #include <stdint.h>
+#include <vector>
 
 class FramesBase
 {
     public:
         FramesBase();
-        FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ );
+		FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ );
 
         void addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY );
         void addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY );
@@ -40,6 +41,13 @@ class FramesBase
         virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
         virtual void draw( int mouseX, int mouseY );
 
+		virtual void addChildFrame( int relPosX, int relPosY, FramesBase *newChild );
+		virtual int getPosX() const;
+		virtual int getPosY() const;
+		virtual int getWidth() const;
+		virtual int getHeight() const;
+		void setPosition( int parentOffsetX, int parentOffsetY );
+
         virtual void toggle();
         void setOnTop();
 
@@ -47,6 +55,9 @@ class FramesBase
         void setVisible( bool visible );
 
     protected:
+		void addToParent( int posOffsetX, int posOffestY, FramesBase *parent );
+		std::vector<FramesBase*> getChildFrames();
+
         bool visible;
 
         int16_t posX;
@@ -69,6 +80,9 @@ class FramesBase
 
 		uint16_t startMovingFrameXpos;
         uint16_t startMovingFrameYpos;
+
+		std::vector<FramesBase*> childFrames;
+		FramesBase *parentFrame;
 
     private:
         bool closeButton;

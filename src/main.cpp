@@ -86,6 +86,8 @@
 #include "textureframe.h"
 #include "soundengine.h"
 #include "configuration.h"
+#include "ConfigurableFrame.h"
+#include "Frames.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -796,53 +798,148 @@ bool dawn_init(int argc, char** argv)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
-
         /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
 		Frames::initFrameTextures();
-        std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
+		DrawFunctions::initDrawTextures();
+
+		bool quit = false;
+
+		std::auto_ptr<ConfigurableFrame> demoFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+		demoFrame->setAutoresize();
+		demoFrame->setCenteringLayout();
+		demoFrame->setCenterOnScreen();
+		std::auto_ptr<Label> quitLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Quit Game" ) );
+		quitLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		quitLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> optionsLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Options" ) );
+		optionsLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		optionsLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> newGameLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "New Game" ) );
+		newGameLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		newGameLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+
+		class NewGameFunction : public SimpleFunctionObject
+		{
+			private:
+				bool &quitLoop;
+			public:
+				NewGameFunction( bool & quitLoop_ ) : quitLoop( quitLoop_ )
+				{
+				}
+				void operator() ()
+				{
+					quitLoop=true;
+				}
+		} myNewGameFunction( quit );
+
+		class QuitGameFunction : public SimpleFunctionObject
+		{
+			void operator() ()
+			{
+				exit(0);
+			}
+		} myQuitGameFunction;
+
+		quitLabel->setOnClicked( &myQuitGameFunction );
+		newGameLabel->setOnClicked( &myNewGameFunction );
+
+
+		demoFrame->addChildFrame( 0, 0, quitLabel.get() );
+		demoFrame->addChildFrame( 0, 10, optionsLabel.get() );
+		demoFrame->addChildFrame( 0, 30, newGameLabel.get() );
+		/*
+		std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
         mainMenu->addMenuItem( "New game", MenuItemType::MENU );
         mainMenu->addMenuItem( "Load game", MenuItemType::MENU );
         mainMenu->addMenuItem( "Options", MenuItemType::MENU );
         mainMenu->addMenuItem( "About", MenuItemType::MENU );
         mainMenu->addMenuItem( "Quit", MenuItemType::FUNCTION );
-
-        while ( 1 )
+*/
+		while ( ! quit )
         {
             SDL_Event event;
             SDL_PollEvent(&event);
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
-                return -1;
-                //mainMenu->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+				demoFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+				//break;
+				//mainMenu->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
             }
-            glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-            mainMenu->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
-            SDL_GL_SwapBuffers();
+			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+			glColor4d( 1.0, 1.0, 1.0, 1.0 );
+			glLoadIdentity();
+			//mainMenu->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			demoFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			SDL_GL_SwapBuffers();
         }
 
+		std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+		chooseClassFrame->setAutoresize();
+		chooseClassFrame->setCenteringLayout();
+		chooseClassFrame->setCenterOnScreen();
+		std::auto_ptr<Label> captionLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Choose class" ) );
+		captionLabel->setBaseColor( 1.0f, 0.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> licheLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Liche" ) );
+		licheLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		licheLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> rangerLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Ranger" ) );
+		rangerLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		rangerLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> warriorLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Warrior" ) );
+		warriorLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		warriorLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
 
-		textureFrame = new TextureFrame();
-		initPhase = true;
-		/// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
-		std::auto_ptr<ChooseClassScreen> chooseClassScreen( new ChooseClassScreen() );
-		chooseClassScreen->setTextureDependentPositions();
-		textureFrame->finishFrame();
+		quit = false;
 
-		while ( chooseClassScreen->isDone() == false )
+		class ChooseClassFunction : public SimpleFunctionObject
+		{
+			private:
+				CharacterClass::CharacterClass characterClass;
+				bool &quitLoop;
+			public:
+				ChooseClassFunction( CharacterClass::CharacterClass characterClass_, bool & quitLoop_ )
+					: characterClass( characterClass_ ),
+					  quitLoop( quitLoop_ )
+				{
+				}
+
+				void operator() ()
+				{
+					Globals::getPlayer()->setClass( characterClass );
+					quitLoop=true;
+				}
+		};
+
+		ChooseClassFunction chooseLiche( CharacterClass::Liche, quit );
+		ChooseClassFunction chooseRanger( CharacterClass::Ranger, quit );
+		ChooseClassFunction chooseWarrior( CharacterClass::Warrior, quit );
+		licheLabel->setOnClicked( &chooseLiche );
+		rangerLabel->setOnClicked( &chooseRanger );
+		warriorLabel->setOnClicked( &chooseWarrior );
+
+		chooseClassFrame->addChildFrame( 0, 0, warriorLabel.get() );
+		chooseClassFrame->addChildFrame( 0, 0, rangerLabel.get() );
+		chooseClassFrame->addChildFrame( 0, 0, licheLabel.get() );
+		chooseClassFrame->addChildFrame( 0, 0, captionLabel.get() );
+
+		while ( ! quit )
 		{
             SDL_Event event;
             SDL_PollEvent(&event);
 
 			if (event.type == SDL_MOUSEBUTTONDOWN) {
-                chooseClassScreen->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+				chooseClassFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
 			}
 			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			chooseClassScreen->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			glColor4d( 1.0, 1.0, 1.0, 1.0 );
+			glLoadIdentity();
+			chooseClassFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
-
 		}
+		glLoadIdentity();
+		glColor4d( 1.0, 1.0, 1.0, 1.0 );
 
 		initStartTicks = SDL_GetTicks();
 		imgLoadTime = 0;
@@ -851,6 +948,8 @@ bool dawn_init(int argc, char** argv)
 		debugOutputTime = 0;
 		drawingTime = 0;
 
+		initPhase = true;
+		textureFrame = new TextureFrame();
 		std::auto_ptr<LoadingScreen> loadingScreen( new LoadingScreen() );
 		textureFrame->finishFrame();
 		DawnInitObject obj;

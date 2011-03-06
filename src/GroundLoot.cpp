@@ -363,7 +363,7 @@ void GroundLoot::drawTooltip()
                 {
                     if ( groundItems[curItem].itemValue[i] != "0" )
                     {
-                        Frames::drawCoin( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth - groundItems[curItem].coinsOffset[i], groundItems[curItem].tooltipYpos+2, i );
+						DrawFunctions::drawCoin( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth - groundItems[curItem].coinsOffset[i], groundItems[curItem].tooltipYpos+2, i );
                         font->drawText( groundItems[curItem].tooltipXpos + groundItems[curItem].tooltipWidth - groundItems[curItem].coinsOffset[i] - groundItems[curItem].coinsTextOffset[i], groundItems[curItem].tooltipYpos+2, groundItems[curItem].itemValue[i] );
                     }
                 }
