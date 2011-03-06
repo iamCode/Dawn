@@ -804,10 +804,10 @@ bool dawn_init(int argc, char** argv)
 
 		bool quit = false;
 
-		std::auto_ptr<ConfigurableFrame> demoFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
-		demoFrame->setAutoresize();
-		demoFrame->setCenteringLayout();
-		demoFrame->setCenterOnScreen();
+		std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+		mainMenuFrame->setAutoresize();
+		mainMenuFrame->setCenteringLayout();
+		mainMenuFrame->setCenterOnScreen();
 		std::auto_ptr<Label> quitLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Quit Game" ) );
 		quitLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		quitLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
@@ -844,9 +844,9 @@ bool dawn_init(int argc, char** argv)
 		newGameLabel->setOnClicked( &myNewGameFunction );
 
 
-		demoFrame->addChildFrame( 0, 0, quitLabel.get() );
-		demoFrame->addChildFrame( 0, 10, optionsLabel.get() );
-		demoFrame->addChildFrame( 0, 30, newGameLabel.get() );
+		mainMenuFrame->addChildFrame( 0, 0, quitLabel.get() );
+		mainMenuFrame->addChildFrame( 0, 10, optionsLabel.get() );
+		mainMenuFrame->addChildFrame( 0, 30, newGameLabel.get() );
 		/*
 		std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
         mainMenu->addMenuItem( "New game", MenuItemType::MENU );
@@ -861,16 +861,14 @@ bool dawn_init(int argc, char** argv)
             SDL_PollEvent(&event);
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
-				demoFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
-				//break;
-				//mainMenu->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+				mainMenuFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
             }
 			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			glColor4d( 1.0, 1.0, 1.0, 1.0 );
 			glLoadIdentity();
 			//mainMenu->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
-			demoFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			mainMenuFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
         }
 
