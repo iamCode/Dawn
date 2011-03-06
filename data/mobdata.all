@@ -198,6 +198,80 @@ wizardbase:setWanderRadius( 250 )
 wizardbase:setLevel( 2 )
 wizardbase:setClass( CharacterClass.Liche )
 
+spiderlingbase = DawnInterface.createNewMobType("Spiderling")
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
+for index=0,7,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/spiderling/walking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/spiderling/walking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/spiderling/walking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/spiderling/walking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/spiderling/walking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/spiderling/walking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/spiderling/walking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/spiderling/walking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 9 );
+for index=0,8,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 9 );
+for index=0,8,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 11 );
+for index=0,10,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/spiderling/dying n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/spiderling/dying nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/spiderling/dying w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/spiderling/dying sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/spiderling/dying s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/spiderling/dying se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/spiderling/dying e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/spiderling/dying ne000"..index..".tga" );
+end
+
+spiderlingbase:setStrength( 10 )
+spiderlingbase:setDexterity( 10 )
+spiderlingbase:setVitality( 10 )
+spiderlingbase:setIntellect( 10 )
+spiderlingbase:setWisdom( 10 )
+spiderlingbase:setMaxHealth( 80 )
+spiderlingbase:setMaxMana( 500 )
+spiderlingbase:setMaxFatigue( 100 )
+spiderlingbase:setHealthRegen( 0 )
+spiderlingbase:setManaRegen( 50 )
+spiderlingbase:setFatigueRegen( 25 )
+spiderlingbase:setMinDamage( 8 )
+spiderlingbase:setMaxDamage( 12 )
+spiderlingbase:setArmor( 10 )
+spiderlingbase:setDamageModifierPoints( 5 )
+spiderlingbase:setHitModifierPoints( 5 )
+spiderlingbase:setEvadeModifierPoints( 0 )
+spiderlingbase:setName("Spiderling")
+spiderlingbase:setWanderRadius( 250 )
+spiderlingbase:setLevel( 2 )
+spiderlingbase:setClass( CharacterClass.Warrior );
+spiderlingbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
+spiderlingbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
+spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+
 spiderbase = DawnInterface.createNewMobType("Spider")
 spiderbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
 for index=0,7,1 do
