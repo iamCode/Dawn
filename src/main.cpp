@@ -804,7 +804,102 @@ bool dawn_init(int argc, char** argv)
 
 		bool quit = false;
 
+		std::auto_ptr<ConfigurableFrame> optionsFrame( new ConfigurableFrame( 100, 100, 100, 100 ) );
 		std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+
+		// setup options menu frame
+		optionsFrame->setAutoresize();
+		optionsFrame->setCenteringLayout();
+		optionsFrame->setCenterOnScreen();
+		std::auto_ptr<Label> optionsFrameLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Select Options" ));
+		optionsFrameLabel->setBaseColor( 1.0f, 0.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> optionsFrameBackLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Back" ));
+		optionsFrameBackLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		optionsFrameBackLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		std::auto_ptr<Label> optionsFrameFullscreenLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Fullscreen" ));
+		optionsFrameFullscreenLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		optionsFrameFullscreenLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+		optionsFrame->addChildFrame( 10, 0, optionsFrameBackLabel.get() );
+		optionsFrame->addChildFrame( 10, 22, optionsFrameFullscreenLabel.get() );
+		optionsFrame->addChildFrame( 0, 70, optionsFrameLabel.get() );
+		optionsFrame->setVisible( false );
+
+		if ( ! Configuration::fullscreenenabled )
+			optionsFrameFullscreenLabel->setText( "Windowed" );
+
+		class ToggleFrameFunction : public SimpleFunctionObject
+		{
+			private:
+				FramesBase *currentFrame;
+				FramesBase *nextFrame;
+
+			public:
+				ToggleFrameFunction( FramesBase *current, FramesBase *next )
+					: currentFrame( current ),
+					  nextFrame( next )
+				{
+				}
+				void operator() ()
+				{
+					currentFrame->toggle();
+					nextFrame->toggle();
+				}
+		};
+
+		ToggleFrameFunction optionsScreenBackFunc( optionsFrame.get(), mainMenuFrame.get() );
+		optionsFrameBackLabel->setOnClicked( &optionsScreenBackFunc );
+
+		class ToggleFullscreenFunction : public SimpleFunctionObject
+		{
+			private:
+				Label *fullscreenLabel;
+				bool fullscreen;
+			public:
+				ToggleFullscreenFunction( Label *fullscreenLabel_, bool initialValue )
+					: fullscreenLabel( fullscreenLabel_ ),
+					  fullscreen( initialValue )
+				{
+				}
+				void operator() ()
+				{
+					Configuration::fullscreenenabled = !Configuration::fullscreenenabled;
+					if (Configuration::fullscreenenabled)
+					{
+						screen = SDL_SetVideoMode(Configuration::screenWidth,
+												  Configuration::screenHeight, Configuration::bpp,
+												  SDL_OPENGL | SDL_FULLSCREEN);
+						if ( screen == NULL )
+						{
+							Configuration::fullscreenenabled = false;
+							screen = SDL_SetVideoMode(Configuration::screenWidth,
+													  Configuration::screenHeight, Configuration::bpp,
+													  SDL_OPENGL);
+						}
+					}
+					else
+					{
+						screen = SDL_SetVideoMode(Configuration::screenWidth,
+												  Configuration::screenHeight, Configuration::bpp,
+												  SDL_OPENGL);
+						if ( screen == NULL )
+						{
+							Configuration::fullscreenenabled = true;
+							screen = SDL_SetVideoMode(Configuration::screenWidth,
+													  Configuration::screenHeight, Configuration::bpp,
+													  SDL_OPENGL | SDL_FULLSCREEN);
+						}
+					}
+					if ( fullscreen )
+						fullscreenLabel->setText("Fullscreen");
+					else
+						fullscreenLabel->setText("Windowed");
+				}
+		};
+
+		ToggleFullscreenFunction optionsFrameFullscreenFunc( optionsFrameFullscreenLabel.get(), Configuration::fullscreenenabled );
+		optionsFrameFullscreenLabel->setOnClicked( &optionsFrameFullscreenFunc );
+
+		// setup main menu frame
 		mainMenuFrame->setAutoresize();
 		mainMenuFrame->setCenteringLayout();
 		mainMenuFrame->setCenterOnScreen();
@@ -832,6 +927,8 @@ bool dawn_init(int argc, char** argv)
 				}
 		} myNewGameFunction( quit );
 
+		ToggleFrameFunction myOptionsFunction( mainMenuFrame.get(), optionsFrame.get() );
+
 		class QuitGameFunction : public SimpleFunctionObject
 		{
 			void operator() ()
@@ -841,12 +938,15 @@ bool dawn_init(int argc, char** argv)
 		} myQuitGameFunction;
 
 		quitLabel->setOnClicked( &myQuitGameFunction );
+		optionsLabel->setOnClicked( &myOptionsFunction );
 		newGameLabel->setOnClicked( &myNewGameFunction );
-
 
 		mainMenuFrame->addChildFrame( 0, 0, quitLabel.get() );
 		mainMenuFrame->addChildFrame( 0, 10, optionsLabel.get() );
 		mainMenuFrame->addChildFrame( 0, 30, newGameLabel.get() );
+
+		activeFrames.push_back( mainMenuFrame.get() );
+		mainMenuFrame->setVisible( true );
 		/*
 		std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
         mainMenu->addMenuItem( "New game", MenuItemType::MENU );
@@ -855,19 +955,38 @@ bool dawn_init(int argc, char** argv)
         mainMenu->addMenuItem( "About", MenuItemType::MENU );
         mainMenu->addMenuItem( "Quit", MenuItemType::FUNCTION );
 */
+		bool mouseButtonDown = false;
 		while ( ! quit )
         {
             SDL_Event event;
             SDL_PollEvent(&event);
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
-				mainMenuFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+				if ( ! mouseButtonDown )
+				{
+					mouseButtonDown = true;
+					// iterate through all our active frames and click on them if mouse is over.
+					for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+					{
+						if ( activeFrames[ curFrame ]->isMouseOnFrame( event.motion.x, Configuration::screenHeight - event.motion.y - 1 ) )
+						{
+							activeFrames[ curFrame ]->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
+						}
+					}
+				}
             }
+			else
+			{
+				mouseButtonDown = false;
+			}
 			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			glColor4d( 1.0, 1.0, 1.0, 1.0 );
 			glLoadIdentity();
-			mainMenuFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+			{
+				activeFrames[curFrame]->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+			}
 			SDL_GL_SwapBuffers();
         }
 

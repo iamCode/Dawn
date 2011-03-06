@@ -159,8 +159,8 @@ bool FramesBase::isMouseOnFrame( int mouseX, int mouseY ) const
 
 	if ( mouseX < posX + frameOffsetX
 		 || mouseY < posY + frameOffsetY
-		 || mouseX > posX + frameOffsetX + frameWidth
-		 || mouseY > posY + frameOffsetY + frameHeight ) {
+		 || mouseX > posX + frameOffsetX + getWidth()
+		 || mouseY > posY + frameOffsetY + getHeight() ) {
 	    return false;
 	}
 	return true;

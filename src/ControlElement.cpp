@@ -55,6 +55,7 @@ void Label::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		if ( mouseX > getPosX() && mouseX < getPosX() + font->calcStringWidth( text )
 				&& mouseY > getPosY() && mouseY < getPosY() + font->getHeight() )
 		{
+			std::cout << "clicked on label " << text << std::endl;
 			(*onClickedFunc)();
 			return; // true;
 		}
