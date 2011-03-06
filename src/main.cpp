@@ -867,7 +867,6 @@ bool dawn_init(int argc, char** argv)
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			glColor4d( 1.0, 1.0, 1.0, 1.0 );
 			glLoadIdentity();
-			//mainMenu->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
 			mainMenuFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
 			SDL_GL_SwapBuffers();
         }
