@@ -27,8 +27,8 @@
 
 #include "CNPC.h"
 #include "Player.h"
-#include "globals.h"
 #include "configuration.h"
+#include "globals.h"
 
 #include <map>
 #include <string>
@@ -152,9 +152,20 @@ CCharacter* CCharacter::getTarget() const
 	return target;
 }
 
+Attitude::Attitude CCharacter::getTargetAttitude()
+{
+	return targetAttitude;
+}
+
 void CCharacter::setTarget( CCharacter *target )
 {
     this->target = target;
+}
+
+void CCharacter::setTarget( CCharacter *target, Attitude::Attitude attitude )
+{
+    this->target = target;
+    targetAttitude = attitude;
 }
 
 std::string CCharacter::getName() const

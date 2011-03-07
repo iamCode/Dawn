@@ -30,6 +30,16 @@
 #include "debug.h"
 #include "configuration.h"
 
+namespace Attitude
+{
+	enum Attitude
+	{
+		FRIENDLY,
+		NEUTRAL,
+		HOSTILE
+	};
+}
+
 extern int world_x,world_y;
 
 class CSpellActionBase;
@@ -202,7 +212,9 @@ class CCharacter
 		void regenerateLifeManaFatigue( uint32_t regenPoints );
 
 		CCharacter* getTarget() const;
+		Attitude::Attitude getTargetAttitude();
 		void setTarget( CCharacter *target );
+		void setTarget( CCharacter *target, Attitude::Attitude attitude );
 
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
@@ -490,6 +502,9 @@ class CCharacter
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
 	private:
+	// attitude
+	Attitude::Attitude targetAttitude;
+
 		// NPC attributes
 		std::string name;
 

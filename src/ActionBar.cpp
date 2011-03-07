@@ -174,6 +174,7 @@ bool ActionBar::isSpellUseable( CSpellActionBase *action )
     }
     // do we have a target? if so, are we in range? (doesn't check for selfaffectign spells)
     if ( player->getTarget() != NULL && action->getEffectType() != EffectType::SelfAffectingSpell ) {
+    	if ( player->getTargetAttitude() == Attitude::FRIENDLY ) return false;
         uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
         if ( action->isInRange( distance ) == false ) {
             return false;
@@ -233,7 +234,7 @@ void ActionBar::clicked( int clickX, int clickY )
 	if ( buttonId >= 0 )
 	{
 			// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
-			if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
+			if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() && isSpellUseable( button[buttonId].action ) )
 			{
 					if ( button[ buttonId ].action->getEffectType() == EffectType::AreaTargetSpell && player->getTarget() == NULL && isSpellUseable( button[ buttonId ].action ) == true ) { // AoE spell with specific position
 							setSpellQueue( button[buttonId], false );
@@ -263,7 +264,7 @@ void ActionBar::handleKeys()
 			// TODO: use a conversion table here from quickslot nr to keycode
 			if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
 					button[buttonId].wasPressed = true;
-					if ( button[buttonId].action != NULL ) {
+					if ( button[buttonId].action != NULL && isSpellUseable( button[buttonId].action ) ) {
 						CSpellActionBase *curAction = NULL;
 
 						EffectType::EffectType effectType = button[buttonId].action->getEffectType();

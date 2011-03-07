@@ -31,6 +31,7 @@ void CMagic::process()
 	std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 	for (unsigned int x=0; x<zoneNPCs.size(); x++)
 	{
+		//zoneNPCs[x].
 		CNPC *curNPC = zoneNPCs[x];
 
 		// is the npc colliding with the spell and make sure it's alive
@@ -75,6 +76,8 @@ bool CMagic::isDone()
 
 bool CMagic::collision(CNPC *npc)
 {
+	if( npc == NULL ) return false;
+
 	int left				= npc->getXPos();
 	int right				= npc->getWidth();
 	int top					= npc->getYPos();

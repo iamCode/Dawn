@@ -22,16 +22,6 @@
 #include "CCharacter.h"
 #include "callindirection.h"
 
-namespace Attitude
-{
-	enum Attitude
-	{
-		FRIENDLY,
-		NEUTRAL,
-		HOSTILE
-	};
-}
-
 class CNPC : public CCharacter
 {
 	private:

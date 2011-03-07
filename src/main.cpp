@@ -988,7 +988,7 @@ void game_loop()
                                                         if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
                                                                 if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
                                                                         if( !player->hasTarget( curNPC ) )
-                                                                            player->setTarget( curNPC );
+                                                                            player->setTarget( curNPC, curNPC->getAttitude() );
                                                                         else
                                                                             player->setTarget( NULL );
                                                                         break;
@@ -1191,14 +1191,14 @@ player->cleanupActiveSpells();
 					// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
 					for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
 							if (!player->getTarget()) {
-									player->setTarget(NPClist[0]);
+									player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 							}
 
 							if ( player->getTarget() == NPClist[curNPC] ) {
 									if ( curNPC+1 == NPClist.size() ) {
-											player->setTarget(NPClist[0]);
+											player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 									} else {
-											player->setTarget(NPClist[curNPC+1]);
+											player->setTarget(NPClist[curNPC+1], NPClist[curNPC+1]->getAttitude());
 									}
 									FoundNewTarget = true;
 									break;
@@ -1206,7 +1206,7 @@ player->cleanupActiveSpells();
 					}
 
 					if ( !FoundNewTarget && NPClist.size() > 0) {
-							player->setTarget(NPClist[0]);
+							player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 					}
 			}
 
