@@ -148,9 +148,6 @@ void Player::Move()
 	dx = getXPos()-oldX;
 	dy = getYPos()-oldY;
 
-	if( oldX != getXPos() ) DawnInterface::addTextToLogWindow( white, "dx: %d", dx );
-	if( oldY != getYPos() ) DawnInterface::addTextToLogWindow( white, "dy: %d", dy );
-
 	// if the character has moved, enable walking sound
 	if ( oldX != getXPos() || oldY != getYPos() ) {
 		SoundEngine::useWalkingSound( true );
