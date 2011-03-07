@@ -478,6 +478,9 @@ class CCharacter
 		bool canSeeSneaking() const;
 		float getMovementSpeed() const;
 
+		int getDeltaX();
+		int getDeltaY();
+
 		// timers
 		float wander_thisframe, wander_lastframe;
 		float respawn_thisframe, respawn_lastframe;
@@ -500,6 +503,8 @@ class CCharacter
 
 		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
+
+		int dx, dy;
 
 	private:
 	// attitude

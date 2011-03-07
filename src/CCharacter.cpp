@@ -1707,9 +1707,9 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 {
     if (isPlayer())
 	{
-        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y);
+        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y, true );
 	} else {
-	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
+	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52, false );
 	}
 }
 
@@ -1841,6 +1841,16 @@ float CCharacter::getMovementSpeed() const
     } else {
         return highestMovementSpeed;
     }
+}
+
+int CCharacter::getDeltaX()
+{
+	return dx;
+}
+
+int CCharacter::getDeltaY()
+{
+	return dy;
 }
 
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )

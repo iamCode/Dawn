@@ -33,14 +33,16 @@ struct sDamageDisplay {
     float transparency;
     uint32_t thisFrame;
     uint32_t lastFrame;
+    bool update;
 
-    sDamageDisplay(int digitToDisplay_, bool critical_, uint8_t damageType_, int x_pos_, int y_pos_) {
+    sDamageDisplay(int digitToDisplay_, bool critical_, uint8_t damageType_, int x_pos_, int y_pos_, bool update_) {
         digitToDisplay = digitToDisplay_;
         critical = critical_;
         damageType = damageType_;
         x_pos = x_pos_;
         y_pos = y_pos_;
         transparency = 1.0f;
+        update = update_;
     }
 };
 
@@ -57,7 +59,7 @@ class CInterface
 		void drawCharacterStates();
 		void SetPlayer(CCharacter *player_);
 
-		void addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos);
+		void addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos, bool update );
 
 	private:
 		CTexture interfacetextures;

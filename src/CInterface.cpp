@@ -168,7 +168,7 @@ void CInterface::SetPlayer(CCharacter *player_)
 	player = player_;
 }
 
-void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos )
+void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos, bool update )
 {
     std::stringstream converterStream, damageStream;
     converterStream << amount;
@@ -191,12 +191,13 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
         damageStream.clear();
         damageStream << tempString.at(streamCounter);
         damageStream >> damageNumber;
-        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*characterSpace)+rand_x, y_pos ));
+        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*characterSpace)+rand_x, y_pos, update ));
     }
 }
 
 void CInterface::drawCombatText()
 {
+	int k = 0;
     // different color for heal and damage. damage = red, heal = green
     GLfloat damageType[2][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } };
 
@@ -223,11 +224,15 @@ void CInterface::drawCombatText()
 
         // fading and moving text upwards every 50ms
         damageDisplay[currentDamageDisplay].thisFrame = SDL_GetTicks();
-        if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50) {
+        if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50 ) {
             damageDisplay[currentDamageDisplay].transparency -= reduce_amount;
             damageDisplay[currentDamageDisplay].y_pos++;
             damageDisplay[currentDamageDisplay].lastFrame = damageDisplay[currentDamageDisplay].thisFrame;
         }
+
+        if( damageDisplay[currentDamageDisplay].update ) k = 1;
+        damageDisplay[currentDamageDisplay].x_pos += (player->getDeltaX()*k);
+        damageDisplay[currentDamageDisplay].y_pos += (player->getDeltaY()*k);
 
         //sets the color of the text we're drawing based on what type of damage type we're displaying.
         glColor4f(damageType[damageDisplay[currentDamageDisplay].damageType][0],damageType[damageDisplay[currentDamageDisplay].damageType][1],damageType[damageDisplay[currentDamageDisplay].damageType][2],damageDisplay[currentDamageDisplay].transparency);
