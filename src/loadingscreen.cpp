@@ -62,9 +62,9 @@ LoadingScreen::~LoadingScreen()
 
 void LoadingScreen::draw()
 {
-	int progressBarXPos = Configuration::screenWidth / 2 - 256;
-	int progressBarYPos = 20;
 	int progressBarWidth = Configuration::screenWidth / 2;
+	int progressBarXPos = (Configuration::screenWidth - progressBarWidth) / 2;
+	int progressBarYPos = 20;
 
 	// show screen
 	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture( backgroundToDraw ),
