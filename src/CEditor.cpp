@@ -104,6 +104,7 @@ void CEditor::SaveZone()
 	for (size_t x=0; x<zoneToEdit->TileMap.size();x++) {
 		sTileMap &curTile = zoneToEdit->TileMap[x];
 		ofs << "EditorInterface.addGroundTile( " << curTile.x_pos << ", " << curTile.y_pos << ", "
+												 << "MapData.DontSave."
 		                                         << getID( curTile.tile->filename ) << " );" << std::endl;
 	}
 	ofs.close();
@@ -118,6 +119,7 @@ void CEditor::SaveZone()
 	for (size_t x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
 		sEnvironmentMap &curEnv = zoneToEdit->EnvironmentMap[x];
 		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+												  << "MapData.DontSave."
 		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
 		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
 			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
@@ -137,6 +139,7 @@ void CEditor::SaveZone()
 	for (size_t x=0;x<zoneToEdit->ShadowMap.size();x++) {
 		sEnvironmentMap &curEnv = zoneToEdit->ShadowMap[x];
 		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
+												  << "MapData.DontSave."
 		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
 		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
 			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "

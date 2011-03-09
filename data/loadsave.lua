@@ -32,9 +32,13 @@ function printValue( surroundingName, varname, value )
 	elseif ( type(value) == "table" )
 	then
 		io.write( prefix..varname..'='..'{}'..'\n' )
-		for innervarname,innervalue in pairs(value) 
-		do 
-			printValue(prefix..varname, innervarname, innervalue )
+		-- all variables in tables/namespaces with name DontSave are not saved. This allows for some temporary data
+		if ( varname ~= "DontSave" )
+		then
+			for innervarname,innervalue in pairs(value) 
+			do 
+				printValue(prefix..varname, innervarname, innervalue )
+			end
 		end
 	elseif ( type(value) == "userdata" )
 	then

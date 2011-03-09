@@ -78,6 +78,8 @@ void CZone::LoadZone(std::string file)
 	zoneName = file;
 	Globals::allZones[ file ] = this;
 	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
+	LuaFunctions::executeLuaScript( std::string("if ( MapData == nil )\nthen\n    MapData={}\nend") );
+	LuaFunctions::executeLuaScript( std::string("if ( MapData.DontSave == nil )\nthen\n    MapData.DontSave={}\nend") );
 
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_ground.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_environment.lua" ) );
