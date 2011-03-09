@@ -282,6 +282,7 @@ void ActionBar::handleKeys()
 							if ( player->getTarget() != NULL ) // is there a target?
 							{
 								curAction = button[buttonId].action->cast( player, player->getTarget() );
+								preparingAoESpell = false;
 							} else {
 							    setSpellQueue( button[ buttonId ], false );
 							    preparingAoESpell = true;
@@ -376,7 +377,8 @@ void ActionBar::executeSpellQueue()
 					} else if ( effectType == EffectType::SelfAffectingSpell ) {
 							curAction = spellQueue->action->cast( player, player );
 					} else if ( effectType == EffectType::AreaTargetSpell ) {
-							if ( player->getTarget() != NULL ) { // AoE spell cast on target
+							if ( ! preparingAoESpell ) { // AoE spell cast on target with target selected previous to casting
+									assert( player->getTarget() != NULL );
 									curAction = spellQueue->action->cast( player, player->getTarget() );
 							} else if ( spellQueue->areaOfEffectOnSpecificLocation == true ) { // AoE spell cast on specific position
 									curAction = spellQueue->action->cast( player, spellQueue->actionSpecificXPos, spellQueue->actionSpecificYPos );
