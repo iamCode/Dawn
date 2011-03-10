@@ -390,6 +390,9 @@ class CCharacter
 		uint16_t getFatigueRegen() const;
 		void modifyFatigueRegen( int16_t fatigueRegenModifier );
 
+		void setExperienceValue( uint8_t newFatigueRegen );
+		uint8_t getExperienceValue() const;
+
 		void setClass( CharacterClass::CharacterClass );
 		CharacterClass::CharacterClass getClass() const;
 		CharacterArchType::CharacterArchType getArchType() const;
@@ -531,6 +534,7 @@ class CCharacter
 		uint16_t healthRegen;
 		uint16_t manaRegen;
 		uint16_t fatigueRegen;
+		uint8_t experienceValue;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;

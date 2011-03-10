@@ -69,13 +69,13 @@ namespace CharacterStates
         Confused,
         Feared,
         Invisible,
-		Mesmerized,
+	Mesmerized,
         Movementspeed,
-		SeeInvisible,
-		SeeSneaking,
+	SeeInvisible,
+	SeeSneaking,
         Sneaking,
         Stunned,
-		NOEFFECT
+	NOEFFECT
     };
 }
 
@@ -114,8 +114,9 @@ class CCharacter {
   int getMaxFatigue() const;
   void modifyMaxFatigue( int maxFatigueModifier );
 
+  void setExperienceValue( int experienceValue );
 
-	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
+  void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
   void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
 
   void setClass( CharacterClass::CharacterClass characterClass );
@@ -485,7 +486,7 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 	void setNumAnimations( int count );
 	void setAnimationTexture( int num, std::string filename );
 	void setRadius( int newRadius );
-}
+};
 
 class GeneralBoltDamageSpell : public GeneralDamageSpell
 {

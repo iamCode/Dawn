@@ -116,6 +116,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
 	setSpellbook( other->getSpellbook() );
+	setExperienceValue( other->getExperienceValue() );
 }
 
 std::string CCharacter::getClassID() const
@@ -737,6 +738,16 @@ uint16_t CCharacter::getModifiedMaxDamage() const
 	return getMaxDamage();
 }
 
+void CCharacter::setExperienceValue( uint8_t experienceValue )
+{
+    this->experienceValue = experienceValue;
+}
+
+uint8_t CCharacter::getExperienceValue() const
+{
+    return experienceValue;
+}
+
 void CCharacter::addItemToLootTable(Item *item, double dropChance )
 {
     if ( item == NULL ) {
@@ -928,6 +939,7 @@ CCharacter::CCharacter()
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
 	  spellCriticalModifierPoints( 0 ),
+	  experienceValue( 0 ),
 	  level( 1 ),
 	  boundingBoxX( 0 ),
 	  boundingBoxY( 0 ),
@@ -1633,7 +1645,7 @@ void CCharacter::Damage( int amount, bool criticalHit )
 			Die();
 			if ( isPlayer() == false ) {
 			    Player *player = Globals::getPlayer();
-                player->gainExperience( getModifiedMaxHealth() / 10 );
+                player->gainExperience( getExperienceValue() );
 			}
 		} else {
 			modifyCurrentHealth( -amount );

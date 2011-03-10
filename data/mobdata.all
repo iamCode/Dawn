@@ -69,6 +69,7 @@ wolfbase:inscribeSpellInSpellbook( spellDatabase["wolfbite"] );
 wolfbase:inscribeSpellInSpellbook( spellDatabase["rabidbite"] );
 wolfbase:addItemToLootTable( itemDatabase["patchofwolfskin"], 0.25 )
 wolfbase:addItemToLootTable( itemDatabase["wolfmeat"], 0.10 )
+wolfbase:setExperienceValue( 25 );
 
 wolfpup = DawnInterface.createNewMobType("Wolf Pup")
 wolfpup:baseOnType("Wolf")
@@ -84,6 +85,7 @@ wolfpup:setArmor( 10 )
 wolfpup:setName("A wolf pup")
 wolfpup:setWanderRadius( 250 )
 wolfpup:setLevel( 1 )
+wolfpup:setExperienceValue( 15 );
 
 giantwolf = DawnInterface.createNewMobType("Giant Wolf")
 giantwolf:baseOnType("Wolf")
@@ -99,6 +101,7 @@ giantwolf:setArmor( 50 )
 giantwolf:setName("A giant wolf")
 giantwolf:setWanderRadius( 50 )
 giantwolf:setLevel( 5 )
+giantwolf:setExperienceValue( 40 );
 
 humanbase = DawnInterface.createNewMobType("Human")
 humanbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -149,6 +152,7 @@ humanbase:setName("A swordsman")
 humanbase:setWanderRadius( 250 )
 humanbase:setLevel( 2 )
 humanbase:setClass( CharacterClass.Warrior );
+humanbase:setExperienceValue( 25 );
 
 wizardbase = DawnInterface.createNewMobType("Wizard")
 
@@ -197,6 +201,7 @@ wizardbase:setName("A wizard")
 wizardbase:setWanderRadius( 250 )
 wizardbase:setLevel( 2 )
 wizardbase:setClass( CharacterClass.Liche )
+wizardbase:setExperienceValue( 25 );
 
 spiderlingbase = DawnInterface.createNewMobType("Spiderling")
 spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -252,7 +257,7 @@ spiderlingbase:setDexterity( 10 )
 spiderlingbase:setVitality( 10 )
 spiderlingbase:setIntellect( 10 )
 spiderlingbase:setWisdom( 10 )
-spiderlingbase:setMaxHealth( 80 )
+spiderlingbase:setMaxHealth( 135 )
 spiderlingbase:setMaxMana( 500 )
 spiderlingbase:setMaxFatigue( 100 )
 spiderlingbase:setHealthRegen( 0 )
@@ -271,6 +276,7 @@ spiderlingbase:setClass( CharacterClass.Warrior );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
 spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderlingbase:setExperienceValue( 30 );
 
 spiderbase = DawnInterface.createNewMobType("Spider")
 spiderbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -346,6 +352,7 @@ spiderbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 spiderbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderbase:setExperienceValue( 27 );
 
 skeletonbase = DawnInterface.createNewMobType("Skeleton")
 skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 9 );
@@ -418,6 +425,7 @@ skeletonbase:setWanderRadius( 250 )
 skeletonbase:setLevel( 3 )
 skeletonbase:setCoinDrop( 25, 75, 0.75 );
 skeletonbase:setClass( CharacterClass.Warrior );
+skeletonbase:setExperienceValue( 40 );
 
 skeletonarcherbase = DawnInterface.createNewMobType("Skeleton Archer")
 skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -504,3 +512,4 @@ skeletonarcherbase:setCoinDrop( 25, 75, 0.75 );
 skeletonarcherbase:setClass( CharacterClass.Ranger );
 skeletonarcherbase:inscribeSpellInSpellbook( spellDatabase["shoot"] );
 skeletonarcherbase:addItemToLootTable( itemDatabase["weakenedbow"], 0.25 );
+skeletonarcherbase:setExperienceValue( 40 );
