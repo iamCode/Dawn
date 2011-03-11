@@ -228,16 +228,16 @@ for index=0,8,1 do
 	spiderlingbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
 end
 
-spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Casting, 9 );
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Shooting, 9 );
 for index=0,8,1 do
-	spiderlingbase:setMoveTexture( ActivityType.Casting, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
-	spiderlingbase:setMoveTexture( ActivityType.Casting, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
 end
 
 spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 11 );
@@ -263,8 +263,8 @@ spiderlingbase:setMaxFatigue( 100 )
 spiderlingbase:setHealthRegen( 0 )
 spiderlingbase:setManaRegen( 50 )
 spiderlingbase:setFatigueRegen( 25 )
-spiderlingbase:setMinDamage( 8 )
-spiderlingbase:setMaxDamage( 12 )
+spiderlingbase:setMinDamage( 12 )
+spiderlingbase:setMaxDamage( 16 )
 spiderlingbase:setArmor( 10 )
 spiderlingbase:setDamageModifierPoints( 5 )
 spiderlingbase:setHitModifierPoints( 5 )
@@ -273,8 +273,8 @@ spiderlingbase:setName("Spiderling")
 spiderlingbase:setWanderRadius( 250 )
 spiderlingbase:setLevel( 2 )
 spiderlingbase:setClass( CharacterClass.Ranger );
-spiderlingbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["sylphiricacid"] );
+spiderlingbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
 spiderlingbase:setExperienceValue( 30 );
 
@@ -338,8 +338,8 @@ spiderbase:setMaxFatigue( 100 )
 spiderbase:setHealthRegen( 0 )
 spiderbase:setManaRegen( 50 )
 spiderbase:setFatigueRegen( 25 )
-spiderbase:setMinDamage( 8 )
-spiderbase:setMaxDamage( 12 )
+spiderbase:setMinDamage( 5 )
+spiderbase:setMaxDamage( 9 )
 spiderbase:setArmor( 120 )
 spiderbase:setDamageModifierPoints( 10 )
 spiderbase:setHitModifierPoints( 10 )
@@ -349,7 +349,7 @@ spiderbase:setWanderRadius( 250 )
 spiderbase:setLevel( 2 )
 spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
-spiderbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
+spiderbase:inscribeSpellInSpellbook( spellDatabase["venomweave"] );
 spiderbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
 spiderbase:setExperienceValue( 27 );
 

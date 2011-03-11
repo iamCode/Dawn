@@ -380,24 +380,30 @@ curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["venomweaveeffect2"] = curSpell;
+curSpell:setName("Venomweave");
+curSpell:setInfo("Spiderweb entangled your entire body, rendering you unable to act or move!");
+curSpell:setCharacterState( CharacterStates.Stunned );
+curSpell:setDuration( 5 );
+curSpell:setSpellSymbol( "data/spells/venomweave/symbol.tga" );
+
 curSpell = DawnInterface.createGeneralRayDamageSpell();
-spellDatabase["shardsofvenomeffect1"] = curSpell;
-curSpell:setName("Shards of Venom");
+spellDatabase["venomweaveeffect1"] = curSpell;
+curSpell:setName("Venomweave");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
-curSpell:setContinuousDamage( 4, 6, 12000, ElementType.Earth );
+curSpell:setContinuousDamage( 4, 6, 3000, ElementType.Earth );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomweaveeffect2"], 0.1 );
 
 curSpell = DawnInterface.createMeleeDamageAction();
-spellDatabase["shardsofvenom"] = curSpell;
-curSpell:setName("Shards of Venom");
+spellDatabase["venomweave"] = curSpell;
+curSpell:setName("Venomweave");
 curSpell:setDamageBonus( 2.0 );
 curSpell:setCooldown( 4 );
-curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/venomweave/symbol.tga" );
 curSpell:setSpellCost( 25 );
-curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
-curSpell:addAdditionalSpellOnTarget( spellDatabase["shardsofvenomeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomweaveeffect1"], 0.75 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
-
-DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["rabies"] = curSpell;
@@ -725,5 +731,5 @@ curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
 curSpell:setMoveSpeed( 600 );
 curSpell:setSpellSymbol( "data/spells/landyrsforce/symbol.tga" );
 curSpell:setCooldown( 12 );
-curSpell:addAdditionalSpellOnTarget( spellDatabase["sylphiricacideffect1"], 0.2 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["sylphiricacideffect1"], 1.0 );
 curSpell:setRequiredClass( CharacterClass.Ranger );

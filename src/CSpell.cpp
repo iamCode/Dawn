@@ -254,10 +254,16 @@ void CSpellActionBase::stopSoundSpellHit()
     }
 }
 
+bool CSpellActionBase::isSpellHostile() const
+{
+    return hostileSpell;
+}
+
 void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
     characterStateEffects.first = characterState;
     characterStateEffects.second = value;
+    hostileSpell = CharacterStates::isStateConsideredHarmfull( characterState, value );
 }
 
 std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getCharacterState() const
@@ -276,8 +282,7 @@ ConfigurableSpell::ConfigurableSpell()
 	spellCost = 0;
 	duration = 0;
 	minRange = 0;
-	maxRange = 460; // default maxrange for spells. Can be overridden with setRange().
-	hostileSpell = true;
+	maxRange = 360; // default maxrange for spells. Can be overridden with setRange().
 	radius = 0;
 	centerX = 0;
 	centerY = 0;
@@ -380,11 +385,6 @@ bool ConfigurableSpell::isInRange( uint16_t distance ) const
     return false;
 }
 
-bool ConfigurableSpell::isSpellHostile() const
-{
-    return hostileSpell;
-}
-
 void ConfigurableSpell::setName( std::string newName )
 {
 	name = newName;
@@ -441,7 +441,6 @@ ConfigurableAction::ConfigurableAction()
 	duration = 0;
 	minRange = 0;
 	maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
-	hostileSpell = true;
 
 	name = "";
 	info = "";
@@ -536,11 +535,6 @@ bool ConfigurableAction::isInRange( uint16_t distance ) const
         return true;
     }
     return false;
-}
-
-bool ConfigurableAction::isSpellHostile() const
-{
-    return hostileSpell;
 }
 
 void ConfigurableAction::setName( std::string newName )
@@ -1789,7 +1783,7 @@ void MeleeDamageAction::finishEffect()
 RangedDamageAction::RangedDamageAction()
 {
     minRange = 0;
-	maxRange = 460; // default maxrange for ranged attacks. Can be overridden with setRange().
+	maxRange = 360; // default maxrange for ranged attacks. Can be overridden with setRange().
 	numProjectileTextures = 0;
 	damageBonus = 1.0;
 	projectileTexture = NULL;

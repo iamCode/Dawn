@@ -99,7 +99,6 @@ class CSpellActionBase
 		virtual int16_t getX() const = 0;
 		virtual int16_t getY() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
-		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -165,6 +164,8 @@ class CSpellActionBase
 		void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
 		std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
 
+        bool isSpellHostile() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
 
 		/// this resets the luaID to empty. It is only to be used in copySpell-function because there we want to create a new spell which
@@ -175,6 +176,7 @@ class CSpellActionBase
 		CCharacter *target;
 		bool boundToCreator;
 		bool finished;
+        bool hostileSpell;
 		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
 		mutable std::string luaID; // for caching the id and not having to get it every time again
 		CharacterClass::CharacterClass requiredClass;
@@ -236,7 +238,6 @@ class ConfigurableSpell : public CSpell
 		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
-		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -257,7 +258,6 @@ class ConfigurableSpell : public CSpell
 		uint16_t duration;
 		uint16_t minRange;
 		uint16_t maxRange;
-		bool hostileSpell;
 		uint16_t radius;
 		int16_t centerX;
 		int16_t centerY;
@@ -282,7 +282,6 @@ class ConfigurableAction : public CAction
 		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
-		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -303,7 +302,6 @@ class ConfigurableAction : public CAction
 		uint16_t duration;
 		uint16_t minRange;
 		uint16_t maxRange;
-		bool hostileSpell;
 
 		std::string name;
 		std::string info;
