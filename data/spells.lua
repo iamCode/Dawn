@@ -73,19 +73,18 @@ curSpell:setName("Venomspit");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
 curSpell:setContinuousDamage( 4, 6, 10000, ElementType.Earth );
 
-curSpell = DawnInterface.createGeneralBoltDamageSpell();
+curSpell = DawnInterface.createRangedDamageAction();
 spellDatabase["venomspit"] = curSpell;
 curSpell:setName("Venomspit");
-curSpell:setCastTime( 2500 );
-curSpell:setCooldown( 10 );
-curSpell:setSpellCost( 50 );
-curSpell:setDirectDamage(  10, 20, ElementType.Earth );
+curSpell:setDamageBonus( 1.0 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 0 );
 curSpell:setSoundSpellStart( "data/spells/venomspit/venomspit.ogg" );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
-curSpell:setMoveSpeed( 600 );
-curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 1.0 );
-curSpell:setRequiredClass( CharacterClass.Warrior );
+curSpell:setMoveSpeed( 1000 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 0.05 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
@@ -706,3 +705,25 @@ curSpell:setRequiredClass( CharacterClass.Ranger );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["sylphiricacideffect1"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCharacterState( CharacterStates.Feared );
+curSpell:setDuration( 4 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["sylphiricacid"] = curSpell;
+curSpell:setName("Sylphiric Acid");
+curSpell:setInfo("Burning acid sphews over the victim, causing agonizing pain and sometimes inflicts terror in the victim.");
+curSpell:setDamageBonus( 2.5 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 35 );
+curSpell:setSoundSpellStart( "data/spells/venomspit/venomspit.ogg" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
+curSpell:setMoveSpeed( 600 );
+curSpell:setSpellSymbol( "data/spells/landyrsforce/symbol.tga" );
+curSpell:setCooldown( 12 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["sylphiricacideffect1"], 0.2 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
