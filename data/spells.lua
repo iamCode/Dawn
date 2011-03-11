@@ -109,7 +109,6 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
--------------------------------------------------------------------------------
 curSpell = DawnInterface.createGeneralAreaDamageSpell();
 spellDatabase["inferno"] = curSpell;
 curSpell:setName("Inferno");
@@ -127,7 +126,6 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
--------------------------------------------------------------------------------
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["lightningbolt"] = curSpell;
@@ -214,7 +212,7 @@ curSpell:setSpellCost( 75 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 300 );
-curSpell:setRequiredClass( CharacterClass.Liche );
+curSpell:setRequiredClass( CharacterClass.Ranger );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -289,10 +287,10 @@ curSpell:setStats( StatsType.Strength, 15 );
 curSpell:setDuration( 600 );
 curSpell:setInfo("Calls for the power of the Titans, increasing your strength.");
 curSpell:setCastTime( 1000 );
-curSpell:setSpellCost( 25 );
+curSpell:setSpellCost( 0 );
 curSpell:setSpellSymbol( "data/spells/mightofthetitan/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setRequiredClass( CharacterClass.Liche );
+curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
