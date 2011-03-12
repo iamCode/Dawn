@@ -99,34 +99,35 @@ bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t cu
 	//##########################################################################
 	//  additional variables for making the code more readable
 	//##########################################################################
-	int itemWidth		= groundItem.item->getSizeX()*32;
-	int itemHeight	= groundItem.item->getSizeY()*32;
-	int itemX				= groundItem.xpos;
-	int itemY				= groundItem.ypos;
-	int playerXSize	= player_->getWidth()/2;
-	int playerYSize	= player_->getHeight()-50;
-	int wGrade			= itemWidth/32;
-	int hGrade			= itemHeight/32;
-	int wDiff				= 0;
-	int hDiff				= 0;
+	int itemWidth				= groundItem.item->getSizeX()*32;
+	int itemHeight			= groundItem.item->getSizeY()*32;
+	int itemX						= groundItem.xpos;
+	int itemY						= groundItem.ypos;
+	int playerXSize			= player_->getWidth()/2;
+	int playerYSize			= player_->getHeight()-50;
+	int wGrade					= itemWidth/32;
+	int hGrade					= itemHeight/32;
+	int wDiff						= 0;
+	int hDiff						= 0;
+	int additionalDist	= 70;
 
 	//##########################################################################
 	//  this is the range value the players horizontal centerpoint must be in
 	//##########################################################################
 	switch( wGrade )
 	{
-		case 1: wDiff = itemWidth*2;		break;		//32px
-		case 2: wDiff = itemWidth;			break;		//64px
-		case 3: wDiff = itemWidth;			break;		//96px
-		default:												break;		//??px
+		case 1: wDiff = itemWidth*2+additionalDist;		break;		//32px
+		case 2: wDiff = itemWidth+additionalDist;			break;		//64px
+		case 3: wDiff = itemWidth+additionalDist;			break;		//96px
+		default:																			break;		//??px
 	}
 
 	switch( hGrade )
 	{
-			case 1: hDiff = itemHeight*2;		break;	//32px
-			case 2: hDiff = itemHeight;			break;	//64px
-			case 3: hDiff = itemHeight;			break;	//96px
-			default:												break;	//??px
+		case 1: hDiff = itemHeight*2+additionalDist;		break;	//32px
+		case 2: hDiff = itemHeight+additionalDist;			break;	//64px
+		case 3: hDiff = itemHeight+additionalDist;			break;	//96px
+		default:																				break;	//??px
 	}
 
 		//##########################################################################
