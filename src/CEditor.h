@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -25,11 +25,12 @@
 #include <iostream>
 #include "cameraFocusHandler.h"
 #include "tileset.h"
+#include "configuration.h"
 
 class CZone;
 class sEnvironmentMap;
 
-extern int mouseX, mouseY, RES_X, RES_Y, done;
+extern int mouseX, mouseY, done;
 
 class CEditor
 {
@@ -44,6 +45,7 @@ class CEditor
 			zoneToEdit = NULL;
 			objectDescriptionFont = NULL;
 			keybindingFont = NULL;
+			tinyFont = NULL;
 			adjacencyModeEnabled = false;
 			for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
 				curDirectionAdjacencySelection[ curDirection ] = 0;
@@ -65,6 +67,7 @@ class CEditor
 		void setEditZone( CZone *zoneToEdit );
 		bool isEnabled() const;
 		void setEnabled( bool enabled );
+		void loadNPCs();
 
 	private:
 		void inc_tilepos();
@@ -73,6 +76,9 @@ class CEditor
 		void DrawEditFrame(sEnvironmentMap *editobject);
 		bool checkAndApplyAdjacencyModification( int modification );
 		bool checkAndPlaceAdjacentTile();
+		void updateAdjacencyList();
+
+		std::vector< std::pair< std::string, CCharacter* > > editorNPCs;
 
 		bool enabled;
 		int tilepos_offset, current_object, objectedit_selected;
@@ -86,6 +92,7 @@ class CEditor
 		CTexture interfacetexture;
 		GLFT_Font *objectDescriptionFont;
 		GLFT_Font *keybindingFont;
+		GLFT_Font *tinyFont;
 		CZone *zoneToEdit;
 
 		bool adjacencyModeEnabled;

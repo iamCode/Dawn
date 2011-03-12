@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -19,6 +19,7 @@
 #include "CCharacter.h"
 #include "interactionpoint.h"
 #include "interactionregion.h"
+#include "configuration.h"
 #include "textwindow.h"
 #include "CNPC.h"
 #include "Player.h"
@@ -51,12 +52,12 @@ namespace DawnInterface
 	RangedDamageAction* createRangedDamageAction();
 	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
 	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other );
-  GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
-  GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
-  GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
-  MeleeDamageAction* copySpell( MeleeDamageAction *other );
-  RangedDamageAction* copySpell( RangedDamageAction *other );
-  void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+    GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+    GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+    GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+    MeleeDamageAction* copySpell( MeleeDamageAction *other );
+    RangedDamageAction* copySpell( RangedDamageAction *other );
+    void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	void addQuest( std::string questName, std::string questDescription );
 	void removeQuest( std::string questName );
 	void changeQuestDescription( std::string questName, std::string newDescription );
@@ -71,7 +72,7 @@ namespace DawnInterface
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
 	std::string getSpellbookSaveText();
-	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, size_t stackSize = 1 );
 	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );
 	void restoreGroundGold( int amount, int xPos, int yPos );
@@ -90,7 +91,7 @@ namespace DawnInterface
 	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
 	std::string getActionbarSaveText();
 	void restoreActionBar( int buttonNr, CSpellActionBase *action );
-  void addTextToLogWindow( GLfloat color[], const char *text, ... );
+	void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
 #include "tileset.h"
@@ -104,4 +105,3 @@ namespace EditorInterface
 	void adjustLastScale( double scaleX, double scaleY );
 	void addCollisionRect( int lrx, int lry, int width, int height );
 }
-

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -26,13 +26,18 @@
 #include <cassert>
 
 
-InventoryItem::InventoryItem( Item *item_, size_t inventoryPosX_, size_t inventoryPosY_, Player *player_ )
-    :   item( item_ ),
-		player( player_ ),
-		inventoryPosX( inventoryPosX_ ),
-		inventoryPosY( inventoryPosY_ )
+InventoryItem::InventoryItem( Item *item, size_t inventoryPosX, size_t inventoryPosY, Player *player, InventoryItem *copyFrom )
+    :   item( item ),
+		player( player ),
+        currentStackSize( 1 ),
+		inventoryPosX( inventoryPosX ),
+		inventoryPosY( inventoryPosY )
 {
-    tooltip = new itemTooltip(item_, player);
+    // copy properties from the original inventoryItem (if we've suggested so)
+    if ( copyFrom != NULL ) {
+        copyAttributes( copyFrom );
+    }
+    tooltip = new itemTooltip(item, this, player);
 }
 
 InventoryItem::~InventoryItem()
@@ -109,8 +114,35 @@ Inventory::~Inventory()
 	delete[] slotUsed;
 }
 
-bool Inventory::insertItem( Item *item )
+bool Inventory::stackItemIfPossible( Item *item, InventoryItem *itemToStack ) const
 {
+    if ( item->isItemStackable() == true ) {
+        std::vector<InventoryItem*> fittingItemsToStack = getIdenticalItemsFromBackpack( item );
+        for ( size_t curItem = 0; curItem < fittingItemsToStack.size(); curItem++ ) {
+            if ( itemToStack != NULL ) { /// checking for suitable item to stack when we have an InventoryItem to account for
+                if ( itemToStack->getCurrentStackSize() + fittingItemsToStack[ curItem ]->getCurrentStackSize() <= item->getMaxStackSize() ) {
+                    fittingItemsToStack[ curItem ]->setCurrentStackSize( itemToStack->getCurrentStackSize() + fittingItemsToStack[ curItem ]->getCurrentStackSize() );
+                    return true;
+                }
+            } else { /// else we just check for an item that fits that isn't already full.
+                if ( fittingItemsToStack[ curItem ]->isItemStackFull() == false ) {
+                    fittingItemsToStack[ curItem ]->increaseCurrentStack();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Inventory::insertItem( Item *item, InventoryItem *oldInventoryItem )
+{
+    /// if the item is stackable, we will try and add it to an existing item's stack, if such an item exists in the inventory.
+    bool ableToStackTheItem = stackItemIfPossible( item, oldInventoryItem );
+    if ( ableToStackTheItem == true ) {
+        return true;
+    }
+
 	size_t itemSizeX = item->getSizeX();
 	size_t itemSizeY = item->getSizeY();
 
@@ -133,9 +165,9 @@ bool Inventory::insertItem( Item *item )
 		return false;
 	}
 
-	InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY, player );
-	insertItemAt( newInvItem, foundX, foundY );
-	return true;
+    InventoryItem *newInvItem = new InventoryItem( item, foundX, foundY, player, oldInventoryItem );
+    insertItemAt( newInvItem, foundX, foundY );
+    return true;
 }
 
 bool Inventory::hasSufficientSpaceAt( size_t inventoryPosX, size_t inventoryPosY, size_t itemSizeX, size_t itemSizeY ) const
@@ -285,6 +317,11 @@ InventoryItem* Inventory::getItemAt( size_t invPosX, size_t invPosY )
 	abort();
 }
 
+void InventoryItem::copyAttributes( InventoryItem *copyFrom )
+{
+    currentStackSize = copyFrom->getCurrentStackSize();
+}
+
 bool Inventory::isWieldingTwoHandedWeapon() const
 {
     if ( equippedItems[ static_cast<size_t>( ItemSlot::MAIN_HAND ) ] != NULL ) {
@@ -300,6 +337,17 @@ WeaponType::WeaponType Inventory::getWeaponTypeBySlot( ItemSlot::ItemSlot itemSl
         return WeaponType::NO_WEAPON;
     }
     return equippedItems[ static_cast<size_t>( itemSlot ) ]->getItem()->getWeaponType();
+}
+
+std::vector<InventoryItem*> Inventory::getIdenticalItemsFromBackpack( Item *item ) const
+{
+    std::vector<InventoryItem*> ourItems;
+    for ( size_t curBackpackItemNr=0; curBackpackItemNr<backpackItems.size(); ++curBackpackItemNr ) {
+		if ( backpackItems[ curBackpackItemNr ]->getItem() == item ) {
+			ourItems.push_back( backpackItems[ curBackpackItemNr ] );
+		}
+	}
+	return ourItems;
 }
 
 bool Inventory::containsItem( InventoryItem *inventoryItem ) const
@@ -367,6 +415,40 @@ InventoryItem* Inventory::insertItemWithExchangeAt( InventoryItem *inventoryItem
 	return blockingItem;
 }
 
+size_t InventoryItem::getCurrentStackSize() const
+{
+    return currentStackSize;
+}
+
+void InventoryItem::setCurrentStackSize( size_t currentStackSize )
+{
+    this->currentStackSize = currentStackSize;
+}
+
+void InventoryItem::increaseCurrentStack()
+{
+    if ( currentStackSize < getItem()->getMaxStackSize() ) {
+        currentStackSize++;
+        getTooltip()->reloadTooltip();
+    }
+}
+
+void InventoryItem::decreaseCurrentStack()
+{
+    if ( currentStackSize > 0 ) {
+        currentStackSize--;
+        getTooltip()->reloadTooltip();
+    }
+}
+
+bool InventoryItem::isItemStackFull() const
+{
+    if ( currentStackSize == getItem()->getMaxStackSize() ) {
+        return true;
+    }
+    return false;
+}
+
 std::string Inventory::getReloadText()
 {
 	std::ostringstream oss;
@@ -377,7 +459,7 @@ std::string Inventory::getReloadText()
 		InventoryItem *curBackpackItem = backpackItems[ curBackpackNr ];
 		Item *curItem = curBackpackItem->getItem();
 		oss << "DawnInterface.restoreItemInBackpack( itemDatabase[\"" << curItem->getID() << "\"], "
-		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << " );"
+		    << curBackpackItem->getInventoryPosX() << ", " << curBackpackItem->getInventoryPosY() << ", " << curBackpackItem->getCurrentStackSize() << " );"
 		    << std::endl;
 	}
 
@@ -418,7 +500,14 @@ void Inventory::clear()
 	size_t numEquippable = static_cast<size_t>( ItemSlot::COUNT );
 	for ( size_t curEquippable=0; curEquippable<numEquippable; ++curEquippable ) {
 		if ( equippedItems[ curEquippable ] != NULL ) {
-			delete equippedItems[ curEquippable ];
+            /// check if our weapon is of a two-handed type, then we need to set the other side (offhand or mainhand) to NULL aswell.
+            if ( equippedItems[ curEquippable]->getItem()->isTwoHandedWeapon() == true ) {
+                delete equippedItems[ curEquippable ];
+                equippedItems[ ItemSlot::MAIN_HAND ] = NULL;
+                equippedItems[ ItemSlot::OFF_HAND ] = NULL;
+            } else {
+                delete equippedItems[ curEquippable ];
+            }
 		}
 		equippedItems[ curEquippable ] = NULL;
 	}
@@ -431,9 +520,10 @@ namespace DawnInterface
 		return Globals::getPlayer()->getInventory()->getReloadText();
 	}
 
-	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY )
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, size_t stackSize )
 	{
 		InventoryItem *invItem = new InventoryItem( item, inventoryPosX, inventoryPosY, Globals::getPlayer() );
+		invItem->setCurrentStackSize( stackSize );
 		Globals::getPlayer()->getInventory()->insertItemWithExchangeAt( invItem, inventoryPosX, inventoryPosY );
 	}
 

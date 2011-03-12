@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -91,6 +91,7 @@ class CharacterInteractionPoint : public InteractionPoint
 		virtual bool isMouseOver( int mouseX, int mouseY ) const;
 		virtual bool isInRange( int characterXpos, int characterYpos ) const;
 		virtual void draw();
+		virtual CCharacter *getCharacter() const;
 
 		virtual std::string getLuaSaveText() const;
 	private:

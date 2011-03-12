@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -30,7 +30,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	respawn_lastframe = 0.0f; // helps us count when to respawn the NPC.
 	wander_thisframe = 0.0f;
 	wander_lastframe = 0.0f; // helping us decide when the mob will wander.
-	wander_every_seconds = 1; // this mob wanders every 1 seconds.
+	wander_every_seconds = 3; // this mob wanders every 1 seconds.
 	wandering = false;
 	MovingDirection = STOP;
 
@@ -78,8 +78,18 @@ void CNPC::chasePlayer( CCharacter *player )
     setTarget( player );
 }
 
+bool CNPC::canBeDamaged() const
+{
+	// FRIENDLY characters (quest characters etc.) can't be damaged
+	return attitudeTowardsPlayer != Attitude::FRIENDLY;
+}
+
 void CNPC::Damage(int amount, bool criticalHit)
 {
+	// don't damage quest characters etc.
+	if ( ! canBeDamaged() )
+		return;
+
 	chasePlayer( Globals::getPlayer() );
 	CCharacter::Damage( amount, criticalHit );
 }
@@ -340,6 +350,15 @@ void CNPC::addOnDieEventHandler( CallIndirection *eventHandler )
 	onDieEventHandlers.push_back( eventHandler );
 }
 
+bool CNPC::hasOnDieEventHandler() const
+{
+    if ( onDieEventHandlers.size() > 0 ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void CNPC::onDie()
 {
 	for ( size_t curEventHandlerNr=0; curEventHandlerNr < onDieEventHandlers.size(); ++curEventHandlerNr ) {
@@ -399,6 +418,21 @@ std::string CNPC::getLuaSaveText() const
 	return oss.str();
 }
 
+std::string CNPC::getLuaEditorSaveText() const
+{
+	std::ostringstream oss;
+	std::string objectName = "curNPC";
+	oss << objectName << " = DawnInterface.addMobSpawnPoint( \"" << getClassID() << "\", "
+	                                        << x_spawn_pos << ", "
+	                                        << y_spawn_pos << ", "
+	                                        << seconds_to_respawn << ", "
+	                                        << do_respawn << " );" << std::endl;
+
+	oss << objectName << ":setAttitude( Attitude." << attitudeToString( attitudeTowardsPlayer ) << " );" << std::endl;
+	oss << objectName << ":setName( \"" << getName() << "\" );" << std::endl;
+
+	return oss.str();
+}
 
 
 

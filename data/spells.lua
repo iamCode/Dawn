@@ -73,19 +73,18 @@ curSpell:setName("Venomspit");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
 curSpell:setContinuousDamage( 4, 6, 10000, ElementType.Earth );
 
-curSpell = DawnInterface.createGeneralBoltDamageSpell();
+curSpell = DawnInterface.createRangedDamageAction();
 spellDatabase["venomspit"] = curSpell;
 curSpell:setName("Venomspit");
-curSpell:setCastTime( 2500 );
-curSpell:setCooldown( 10 );
-curSpell:setSpellCost( 50 );
-curSpell:setDirectDamage(  10, 20, ElementType.Earth );
+curSpell:setDamageBonus( 1.0 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 0 );
 curSpell:setSoundSpellStart( "data/spells/venomspit/venomspit.ogg" );
 curSpell:setNumAnimations( 1 );
 curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
-curSpell:setMoveSpeed( 600 );
-curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 1.0 );
-curSpell:setRequiredClass( CharacterClass.Warrior );
+curSpell:setMoveSpeed( 1000 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomspiteffect1"], 0.05 );
+curSpell:setRequiredClass( CharacterClass.Ranger );
 
 curSpell = DawnInterface.createGeneralRayDamageSpell();
 spellDatabase["electrocute"] = curSpell;
@@ -97,7 +96,7 @@ curSpell:setSpellCost( 50 );
 curSpell:setSoundSpellCasting( "data/sound/spellcast.ogg" );
 curSpell:setDirectDamage(  50, 100, ElementType.Air );
 curSpell:setContinuousDamage( 10, 20, 2000, ElementType.Air );
-curSpell:setSpellSymbol( "data/spells/lightning/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/electrocute/symbol.tga" );
 curSpell:setSoundSpellStart( "data/spells/lightning/lightning.ogg" );
 curSpell:setNumAnimations( 5 );
 curSpell:setAnimationTexture( 0, "data/spells/lightning/1.tga" );
@@ -110,14 +109,13 @@ curSpell:setRequiredClass( CharacterClass.Liche );
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
--------------------------------------------------------------------------------
 curSpell = DawnInterface.createGeneralAreaDamageSpell();
 spellDatabase["inferno"] = curSpell;
 curSpell:setName("Inferno");
 curSpell:setInfo("Burns the target with %minSpellDirectDamage%-%maxSpellDirectDamage% point of fire damage + %minSpellContinuousDamage%-%maxSpellContinuousDamage% fire damage over 5 seconds.");
 curSpell:setCastTime( 2000 );
 curSpell:setCooldown( 5 );
-curSpell:setSpellCost( 10 );
+curSpell:setSpellCost( 75 );
 curSpell:setDirectDamage(  15, 30, ElementType.Fire );
 curSpell:setContinuousDamage( 4, 7, 5000, ElementType.Fire );
 curSpell:setSpellSymbol( "data/spells/inferno/symbol.tga" );
@@ -127,7 +125,7 @@ curSpell:setRadius( 120 );
 curSpell:setRequiredClass( CharacterClass.Liche );
 
 -- add this spell to players spellbook
--------------------------------------------------------------------------------
+DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralBoltDamageSpell();
 spellDatabase["lightningbolt"] = curSpell;
@@ -214,7 +212,7 @@ curSpell:setSpellCost( 75 );
 curSpell:setSpellSymbol( "data/spells/leatherskin/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
 curSpell:setDuration( 300 );
-curSpell:setRequiredClass( CharacterClass.Liche );
+curSpell:setRequiredClass( CharacterClass.Ranger );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -289,10 +287,10 @@ curSpell:setStats( StatsType.Strength, 15 );
 curSpell:setDuration( 600 );
 curSpell:setInfo("Calls for the power of the Titans, increasing your strength.");
 curSpell:setCastTime( 1000 );
-curSpell:setSpellCost( 25 );
+curSpell:setSpellCost( 0 );
 curSpell:setSpellSymbol( "data/spells/mightofthetitan/symbol.tga" );
 curSpell:setEffectType( EffectType.SelfAffectingSpell );
-curSpell:setRequiredClass( CharacterClass.Liche );
+curSpell:setRequiredClass( CharacterClass.Warrior );
 
 -- add this spell to players spellbook
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
@@ -380,24 +378,30 @@ curSpell:setRequiredClass( CharacterClass.Warrior );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["venomweaveeffect2"] = curSpell;
+curSpell:setName("Venomweave");
+curSpell:setInfo("Spiderweb entangled your entire body, rendering you unable to act or move!");
+curSpell:setCharacterState( CharacterStates.Stunned );
+curSpell:setDuration( 5 );
+curSpell:setSpellSymbol( "data/spells/venomweave/symbol.tga" );
+
 curSpell = DawnInterface.createGeneralRayDamageSpell();
-spellDatabase["shardsofvenomeffect1"] = curSpell;
-curSpell:setName("Shards of Venom");
+spellDatabase["venomweaveeffect1"] = curSpell;
+curSpell:setName("Venomweave");
 curSpell:setSpellSymbol( "data/spells/venomspit/symbol.tga" );
-curSpell:setContinuousDamage( 4, 6, 12000, ElementType.Earth );
+curSpell:setContinuousDamage( 4, 6, 3000, ElementType.Earth );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomweaveeffect2"], 0.1 );
 
 curSpell = DawnInterface.createMeleeDamageAction();
-spellDatabase["shardsofvenom"] = curSpell;
-curSpell:setName("Shards of Venom");
+spellDatabase["venomweave"] = curSpell;
+curSpell:setName("Venomweave");
 curSpell:setDamageBonus( 2.0 );
 curSpell:setCooldown( 4 );
-curSpell:setSpellSymbol( "data/spells/melee/symbol.tga" );
+curSpell:setSpellSymbol( "data/spells/venomweave/symbol.tga" );
 curSpell:setSpellCost( 25 );
-curSpell:setInfo("Striking your enemy with a blade coated with venom, causing %minWeaponDamage% to %maxWeaponDamage% damage.");
-curSpell:addAdditionalSpellOnTarget( spellDatabase["shardsofvenomeffect1"], 1.0 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["venomweaveeffect1"], 0.75 );
 curSpell:setRequiredClass( CharacterClass.Warrior );
-
-DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
 curSpell = DawnInterface.createGeneralBuffSpell();
 spellDatabase["rabies"] = curSpell;
@@ -705,3 +709,25 @@ curSpell:setRequiredClass( CharacterClass.Ranger );
 
 DawnInterface.inscribeSpellInPlayerSpellbook( curSpell );
 
+curSpell = DawnInterface.createGeneralBuffSpell();
+spellDatabase["sylphiricacideffect1"] = curSpell;
+curSpell:setName("Terrify");
+curSpell:setCharacterState( CharacterStates.Feared );
+curSpell:setDuration( 4 );
+curSpell:setSpellSymbol( "data/spells/terrify/symbol.tga" );
+
+curSpell = DawnInterface.createRangedDamageAction();
+spellDatabase["sylphiricacid"] = curSpell;
+curSpell:setName("Sylphiric Acid");
+curSpell:setInfo("Burning acid sphews over the victim, causing agonizing pain and sometimes inflicts terror in the victim.");
+curSpell:setDamageBonus( 2.5 );
+curSpell:setCastTime( 2000 );
+curSpell:setSpellCost( 35 );
+curSpell:setSoundSpellStart( "data/spells/venomspit/venomspit.ogg" );
+curSpell:setNumAnimations( 1 );
+curSpell:setAnimationTexture( 0, "data/spells/venomspit/0.tga" );
+curSpell:setMoveSpeed( 600 );
+curSpell:setSpellSymbol( "data/spells/landyrsforce/symbol.tga" );
+curSpell:setCooldown( 12 );
+curSpell:addAdditionalSpellOnTarget( spellDatabase["sylphiricacideffect1"], 1.0 );
+curSpell:setRequiredClass( CharacterClass.Ranger );

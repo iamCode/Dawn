@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -32,7 +32,7 @@ BuffWindow::BuffWindow( Player *player ) : FramesBase ( 0, 0, 0, 0, 0, 0 )
     this->player = player;
     tooltip = NULL;
     posY = Configuration::screenHeight - 50;
-    posX = Configuration::screenWidth - 204;
+	posX = Configuration::screenWidth - 204;
 }
 
 BuffWindow::~BuffWindow()

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -143,6 +143,10 @@ void Player::Move()
 	int oldY = getYPos();
 
 	CCharacter::Move();
+
+	GLfloat white[] = { 255, 255, 255, 255 };
+	dx = getXPos()-oldX;
+	dy = getYPos()-oldY;
 
 	// if the character has moved, enable walking sound
 	if ( oldX != getXPos() || oldY != getYPos() ) {
@@ -500,4 +504,3 @@ std::string Player::getSaveText() const
 
 	return oss.str();
 }
-

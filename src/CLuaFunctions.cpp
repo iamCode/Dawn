@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -25,6 +25,7 @@
 
 #include <tolua++.h>
 #include "CLuaInterfaceGenerated.h"
+#include "debug.h"
 
 namespace LuaFunctions
 {
@@ -94,6 +95,66 @@ namespace LuaFunctions
 			std::cout << "error in lua script: " << lua_tostring(lState, -1) << std::endl;
 			abort();
 		}
+	}
+
+	std::string getIDFromLuaTable( const std::string &tableName, const void *value )
+	{
+		lua_State *lState = getGlobalLuaState();
+		lua_getglobal(lState, tableName.c_str());
+		if ( lua_isnil( lState, -1 ) || ! lua_istable( lState, -1 ) )
+		{
+			dawn_debug_fatal(std::string("table ").append(tableName).append(" does not exist in lua as global table"));
+		}
+		lua_pushnil(lState);
+
+		// lua-stack layout now:
+		// -1 nil
+		// -2 table
+
+		bool found = false;
+		std::string foundKey = "";
+
+		while( ! found && lua_next(lState, -2) )
+		{
+			// lua-stack layout now:
+			// -1 value
+			// -2 key
+			// -3 table
+			if(lua_isuserdata (lState, -1) )
+			{
+				// tolua stores userdata in a strange way so we need to retrieve it as *(void**)
+				const void *curUserData = *(void**) lua_touserdata(lState, -1);
+
+				if ( curUserData == value )
+				{
+					// we have found the value
+					// normally we should not convert the key directly to string since afterwards it might not
+					// be usable for lua_next anymore if it was no string. But since we don't need lua_next afterwards
+					// anymore it does not matter
+					// still it should be a string in our case so we check that
+					if ( ! lua_isstring( lState, -2 ) )
+					{
+						dawn_debug_fatal( std::string("lua table ").append(tableName).append(" had a non-string key"));
+					}
+					found = true;
+					foundKey = lua_tostring( lState, -2 );
+				}
+			}
+			// pop the value from the stack
+			lua_pop(lState, 1);
+		}
+		// pop the last key from the stack
+		lua_pop(lState, 1);
+
+		// pop the table from the stack
+		lua_pop(lState, 1);
+
+		if ( ! found )
+		{
+			dawn_debug_fatal( std::string("could not find searched value in table ").append(tableName) );
+		}
+
+		return foundKey;
 	}
 
 } // namespace LuaFunctions

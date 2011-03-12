@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -110,9 +110,9 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 		spellEffectElementModifier( NULL ),
 		minDamage( 0 ),
 		maxDamage( 0 ),
+		maxStackSize( 1 ),
 		requiredLevel( 1 ),
 		value( 0 ),
-		spellCharges( 0 ),
 		spell( NULL )
 {
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
@@ -151,14 +151,10 @@ std::string Item::getID() const
 {
 	std::ostringstream idstream;
 	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
-		if ( isspace( name[curChar] ) ) {
-			// ignore
-		} else if ( isupper( name[curChar] ) ) {
-			idstream << char( tolower( name[curChar] ) );
-		} else {
-			idstream << char( name[curChar] );
+		if ( islower( tolower( name[ curChar ] ) ) ) {
+		    idstream << char( tolower( name[ curChar ] ) );
 		}
-	}
+    }
 	if ( spell != NULL && spell->getRank() > 1 ) {
 		idstream << "rank" << static_cast<int>(spell->getRank());
 	}
@@ -173,6 +169,24 @@ size_t Item::getSizeX() const
 size_t Item::getSizeY() const
 {
 	return sizeY;
+}
+
+size_t Item::getMaxStackSize() const
+{
+    return maxStackSize;
+}
+
+void Item::setMaxStackSize( size_t maxStackSize )
+{
+    this->maxStackSize = maxStackSize;
+}
+
+bool Item::isItemStackable() const
+{
+    if ( getMaxStackSize() > 1 ) {
+        return true;
+    }
+    return false;
 }
 
 CTexture* Item::getSymbolTexture()
@@ -245,11 +259,6 @@ uint32_t Item::getValue() const
     return value;
 }
 
-uint8_t Item::getSpellCharges() const
-{
-    return spellCharges;
-}
-
 CSpell *Item::getSpell() const
 {
     return spell;
@@ -288,16 +297,6 @@ void Item::setRequiredLevel( uint8_t requiredLevel )
 void Item::setValue( uint32_t newValue )
 {
     value = newValue;
-}
-
-void Item::reduceSpellCharges()
-{
-    spellCharges--;
-}
-
-void Item::setSpellCharges( uint8_t newSpellCharges )
-{
-    spellCharges = newSpellCharges;
 }
 
 void Item::setSpell( CSpell *newSpell )

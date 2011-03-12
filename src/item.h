@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -355,7 +355,6 @@ class Item
         uint8_t getMaxDamage() const;
         uint32_t getValue() const;
         uint8_t getRequiredLevel() const;
-        uint8_t getSpellCharges() const;
         CSpell *getSpell() const;
 
         void setStats( StatsType::StatsType statsType, int16_t amount );
@@ -365,14 +364,16 @@ class Item
         void setMaxDamage( uint8_t maxDamage );
         void setValue( uint32_t newValue );
         void setRequiredLevel( uint8_t requiredLevel );
-        void setSpellCharges( uint8_t newSpellCharges );
-        void reduceSpellCharges();
         void setSpell( CSpell *newSpell );
 
         ///\brief This section handles the spells that can be triggered from actions on the item
         void addTriggerSpellOnSelf( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
         void addTriggerSpellOnTarget( CSpellActionBase* spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
         std::vector<TriggerSpellOnItem*> getTriggerSpells() const;
+
+        size_t getMaxStackSize() const;
+        void setMaxStackSize( size_t maxStackSize );
+        bool isItemStackable() const;
 
 		size_t getSizeX() const;
 		size_t getSizeY() const;
@@ -409,11 +410,12 @@ class Item
         uint8_t minDamage;
         uint8_t maxDamage;
 
+        size_t maxStackSize;
+
         uint8_t requiredLevel;
 
         uint32_t value;
 
-        uint8_t spellCharges;
         CSpell *spell;
 
 	protected:

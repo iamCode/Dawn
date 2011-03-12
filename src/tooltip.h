@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -21,11 +21,11 @@
 
 #include "CTexture.h"
 #include "CSpell.h"
-#include "item.h"
 #include "GLFT_Font.h"
 #include "fontcache.h"
 
 class Player;
+class InventoryItem;
 
 struct sTooltipText
 {
@@ -103,13 +103,14 @@ class spellTooltip : public Tooltip
 class itemTooltip : public Tooltip
 {
     public:
-        itemTooltip(Item *parent, Player *player);
+        itemTooltip(Item *parent, InventoryItem *inventoryItem, Player *player);
         void draw( int x, int y );
         void setShopItem( bool isShopItem_ );
         Item *getParent() const;
 
     private:
         Item *parent;
+        InventoryItem *inventoryItem;
         std::string currentCooldownText;
 
         bool isShopItem;

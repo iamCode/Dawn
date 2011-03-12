@@ -1,5 +1,17 @@
 $#include "CLuaInterface.h"
 
+namespace Configuration
+{
+    void setResolution( int screenWidth, int screenHeight );
+    void setBpp( int bpp );
+    void useFullscreen( bool fullscreenEnabled );
+    void useSound( bool soundEnabled );
+    void showDebugStdout( bool debug_stdout );
+    void showDebugFileout( bool debug_fileout );
+    void showInfoMessages( bool show_info_messages );
+    void showWarningMessages( bool show_warn_messages );
+};
+
 enum Direction
 {
     STOP = 0,
@@ -57,13 +69,13 @@ namespace CharacterStates
         Confused,
         Feared,
         Invisible,
-		Mesmerized,
+	Mesmerized,
         Movementspeed,
-		SeeInvisible,
-		SeeSneaking,
+	SeeInvisible,
+	SeeSneaking,
         Sneaking,
         Stunned,
-		NOEFFECT
+	NOEFFECT
     };
 }
 
@@ -102,8 +114,9 @@ class CCharacter {
   int getMaxFatigue() const;
   void modifyMaxFatigue( int maxFatigueModifier );
 
+  void setExperienceValue( int experienceValue );
 
-	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
+  void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
   void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
 
   void setClass( CharacterClass::CharacterClass characterClass );
@@ -339,8 +352,8 @@ class Item
 	void setMinDamage( int minDamage );
 	void setMaxDamage( int maxDamage );
 	void setRequiredLevel( int requiredLevel );
+	void setMaxStackSize( int maxStackSize );
 	void setValue( int newValue );
-	void setSpellCharges( int newSpellCharges );
 	void setSpell( CSpell *newSpell );
 	void addTriggerSpellOnSelf( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
 	void addTriggerSpellOnTarget( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
@@ -473,7 +486,7 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 	void setNumAnimations( int count );
 	void setAnimationTexture( int num, std::string filename );
 	void setRadius( int newRadius );
-}
+};
 
 class GeneralBoltDamageSpell : public GeneralDamageSpell
 {
@@ -568,7 +581,7 @@ namespace DawnInterface
 	std::string getQuestSaveText();
 	std::string getInventorySaveText();
 	std::string getSpellbookSaveText();
-	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY );
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, int stackSize = 1 );
 	void restoreWieldItem( int slot, Item *item );
 	void restoreGroundLootItem( Item *item, int xPos, int yPos );
 	void restoreGroundGold( int amount, int xPos, int yPos );

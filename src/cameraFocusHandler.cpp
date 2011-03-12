@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -18,10 +18,8 @@
 
 #include "cameraFocusHandler.h"
 
-cameraFocusHandler::cameraFocusHandler(int _resW, int _resH)
+cameraFocusHandler::cameraFocusHandler()
 {
-	screenWidth = _resW;
-	screenHeight = _resH;
 	currentNPC = 0;
 	currentPlayer = 0;
 }
@@ -93,13 +91,13 @@ void cameraFocusHandler::updateFocus()
 
 	switch (followTag) {
 		case (VIEW_CNPC):
-			XYCoOrdinates.first = (float)currentNPC->x_pos-(screenWidth/2);
-			XYCoOrdinates.second = (float)currentNPC->y_pos-(screenHeight/2);
+			XYCoOrdinates.first = (float)currentNPC->x_pos-(Configuration::screenWidth/2);
+			XYCoOrdinates.second = (float)currentNPC->y_pos-(Configuration::screenHeight/2);
 		break;
 
 		case (VIEW_PLAYER):
-			XYCoOrdinates.first = (float)currentPlayer->x_pos-(screenWidth/2);
-			XYCoOrdinates.second = (float)currentPlayer->y_pos-(screenHeight/2);
+			XYCoOrdinates.first = (float)currentPlayer->x_pos-(Configuration::screenWidth/2);
+			XYCoOrdinates.second = (float)currentPlayer->y_pos-(Configuration::screenHeight/2);
 		break;
 
 		case (VIEW_PATH):

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -50,16 +50,6 @@ namespace Globals
 	Player* getPlayer()
 	{
 		return &thePlayer;
-	}
-
-	bool displayCursor()
-	{
-		return showCursor;
-	}
-
-	void setDisplayCursor( bool flag )
-	{
-		showCursor = flag;
 	}
 
 	void addActiveAoESpell( CSpellActionBase *spell )

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -52,7 +52,7 @@ CZone::CZone()
 
 CZone::~CZone()
 {
-	for(int i=0;i<MagicMap.size();++i)
+	for(size_t i=0;i<MagicMap.size();++i)
 	{
 		delete MagicMap[i];
 	}
@@ -78,6 +78,8 @@ void CZone::LoadZone(std::string file)
 	zoneName = file;
 	Globals::allZones[ file ] = this;
 	LuaFunctions::executeLuaScript( std::string("DawnInterface.setCurrentZone( \"").append( zoneName ).append("\");") );
+	LuaFunctions::executeLuaScript( std::string("if ( MapData == nil )\nthen\n    MapData={}\nend") );
+	LuaFunctions::executeLuaScript( std::string("if ( MapData.DontSave == nil )\nthen\n    MapData.DontSave={}\nend") );
 
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_ground.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append ( ".tiles_environment.lua" ) );
@@ -88,7 +90,7 @@ void CZone::LoadZone(std::string file)
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".shadow.lua" ) );
 	LuaFunctions::executeLuaFile( std::string( file ).append( ".collision.lua" ) );
 
-	LuaFunctions::executeLuaFile( std::string( file ).append( ".spawnpoints" ) );
+	LuaFunctions::executeLuaFile( std::string( file ).append( ".init.lua" ) );
 
 	mapLoaded = true;
 
@@ -225,6 +227,38 @@ int CZone::LocateEnvironment(int x, int y)
 	return -1;
 }
 
+// used by the editor
+int CZone::DeleteNPC(int x, int y)
+{
+	for (unsigned int t=0;t<npcs.size();t++) {
+		if ((npcs[t]->getXPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).width > x) &&
+		        (npcs[t]->getXPos() < x)) {
+			if ((npcs[t]->getYPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).height > y) &&
+			        (npcs[t]->getYPos() < y)) {
+				removeNPC( npcs[t] );
+				return 0;
+			}
+		}
+	}
+
+	return 1;
+}
+
+// used by the editor
+int CZone::LocateNPC(int x, int y)
+{
+	for (unsigned int t=0;t<npcs.size();t++) {
+		if ((npcs[t]->getXPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).width > x) &&
+		        (npcs[t]->getXPos() < x)) {
+			if ((npcs[t]->getYPos()+npcs[t]->getTexture( ActivityType::Walking )->getTexture( 1 ).height > y) &&
+			        (npcs[t]->getYPos() < y)) {
+				return t;
+			}
+		}
+	}
+	return -1;
+}
+
 int CZone::LocateShadow(int x, int y)
 {
 	for (unsigned int t=0;t<ShadowMap.size();t++) {
@@ -319,6 +353,19 @@ void CZone::cleanupNPCList()
 std::vector<InteractionPoint*> CZone::getInteractionPoints()
 {
 	return interactionPoints;
+}
+
+bool CZone::findInteractionPointForCharacter( CCharacter *character ) const
+{
+    for ( size_t curIP = 0; curIP < interactionPoints.size(); curIP++ ) {
+        CharacterInteractionPoint *curCharacterIP = dynamic_cast<CharacterInteractionPoint*>( interactionPoints[ curIP ] );
+        if ( curCharacterIP != NULL ) {
+            if ( character == curCharacterIP->getCharacter() ) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void CZone::addInteractionPoint( InteractionPoint *interactionPointToAdd )
@@ -576,6 +623,15 @@ namespace DawnInterface
 		}
 		Globals::setCurrentZone( newZone );
 		getPlayer()->setPosition( enterX, enterY );
+		std::ostringstream oss;
+		std::string zoneNameNoPrefix = zoneName;
+		if ( zoneNameNoPrefix.find_last_of('/') != std::string::npos )
+		{
+			zoneNameNoPrefix = zoneNameNoPrefix.substr( zoneNameNoPrefix.find_last_of('/')+1 );
+		}
+		oss << "if (" << zoneNameNoPrefix << ".onEnterMap ~= nil)\nthen\n    " << zoneNameNoPrefix << ".onEnterMap(" << enterX << "," << enterY << ");\nelse    print \"" << zoneNameNoPrefix << ".onEnterMap was not defined\";\nend";
+		std::string onEnterCall = oss.str();
+		LuaFunctions::executeLuaScript(onEnterCall);
 	}
 
 	void restoreGroundLootItem( Item *item, int xPos, int yPos )

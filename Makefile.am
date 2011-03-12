@@ -76,7 +76,6 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/LogWindow.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
-	src/main.h \
 	src/MenuBase.cpp \
 	src/MenuBase.h \
 	src/musiccache.cpp \

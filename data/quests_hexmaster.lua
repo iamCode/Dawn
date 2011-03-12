@@ -7,12 +7,13 @@ end
 function quest_hexmaster.init()
 	-- this quest is initialized from zone zone1
 	quest_hexmaster.questStartRegion = DawnInterface.addInteractionRegion();
-	quest_hexmaster.questStartRegion:setPosition( 730, 2300, 400, 310 );
+	quest_hexmaster.questStartRegion:setPosition( 730, 2250, 400, 310 );
 	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.onQuestGiverRegionInteraction()" );
 
-	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2450, 1, 0 );
+	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2350, 1, 0 );
         quest_hexmaster.ornadSaidor:setAttitude( Attitude.FRIENDLY );
-        quest_hexmaster.ornadSaidor:setName( "Rake Fleetwood" );
+        quest_hexmaster.ornadSaidor:setWanderRadius(50);
+        quest_hexmaster.ornadSaidor:setName( "Ornad Saidor" );
         quest_hexmaster.ornadSaidorInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.ornadSaidor );
         quest_hexmaster.ornadSaidorInteraction:setInteractionType( InteractionType.Quest );
         quest_hexmaster.ornadSaidorInteraction:setInteractionCode( "quest_hexmaster.onOrnadSaidorInteraction()" );
@@ -23,13 +24,6 @@ function quest_hexmaster.init()
         quest_hexmaster.noviceLeaderInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.noviceLeader );
         quest_hexmaster.noviceLeaderInteraction:setInteractionType( InteractionType.Quest );
         quest_hexmaster.noviceLeaderInteraction:setInteractionCode( "quest_hexmaster.onNoviceLeaderInteraction()" );
-	
-	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", -75, 2200, 1, 0 );
-	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
-	quest_hexmaster.noviceLeader:setName( "Novice" );
-	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", 55, 2200, 1, 0 );
-	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
-	quest_hexmaster.noviceLeader:setName( "Novice" );
 end
 
 function quest_hexmaster.onQuestGiverRegionInteraction()
@@ -235,7 +229,7 @@ function quest_hexmaster.onLeaveLaboratory()
 		textWindow:setAutocloseTime( 2000 );
 		textWindow:setText("The door has been magically sealed again. Perhaps the door will open if you destroy the magic animating the skeleton.")
 	else
-		DawnInterface.enterZone( "data/arinoxDungeonLevel1", 1020, 400 );
+		DawnInterface.enterZone( "data/arinoxDungeonLevel1", 1020, 420 );
 	end
 end
 

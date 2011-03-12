@@ -31,11 +31,18 @@ DawnInterface.giveItemToPlayer( itemDatabase["gutteraxe"] );
 DawnInterface.giveItemToPlayer( itemDatabase["snakeloop"] );
 DawnInterface.giveItemToPlayer( itemDatabase["shadering"] );
 DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
+DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
+DawnInterface.giveItemToPlayer( itemDatabase["scrolloftheboar"] );
 DawnInterface.giveItemToPlayer( itemDatabase["smallhealingpotion"] );
 DawnInterface.giveItemToPlayer( itemDatabase["tornleatherbelt"] );
 DawnInterface.giveItemToPlayer( itemDatabase["coppernecklace"] );
 DawnInterface.giveItemToPlayer( itemDatabase["fungalboots"] );
 DawnInterface.giveItemToPlayer( itemDatabase["ajuicyapple"] );
+DawnInterface.giveItemToPlayer( itemDatabase["ajuicyapple"] );
+DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
+DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
+DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
+DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
 DawnInterface.giveItemToPlayer( itemDatabase["awaterpouch"] );
 --note: this is just for debug the items need to be copied not accessed directly else the same reference is used!!!
 

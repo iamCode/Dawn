@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -32,11 +32,12 @@ extern int mouseX, mouseY, world_x, world_y;
 
 ActionBar::ActionBar( Player *player_ )
 	:	player( player_ ),
-        posX ( 420 ),
-        posY ( 9 ),
-        width ( 680 ),
+        posY ( 13 ),
+        width ( 630 ),
         height ( 49 ),
-        spellQueue( NULL )
+        spellQueue( NULL ),
+        preparingAoESpell( false ),
+        cursorRadius( 0 )
 {
 	shortcutFont = NULL;
 	cooldownFont = NULL;
@@ -50,9 +51,7 @@ ActionBar::ActionBar( Player *player_ )
 	button.push_back( sButton(420, 0, 50, 50, "8", SDLK_8) );
 	button.push_back( sButton(480, 0, 50, 50, "9", SDLK_9) );
 	button.push_back( sButton(540, 0, 50, 50, "0", SDLK_0) );
-	castingAoESpell = false;
-	cursorRadius	= 0;
-	curAoESpell		= 0;
+	posX = Configuration::screenWidth-width+20;
 }
 
 ActionBar::~ActionBar()
@@ -63,26 +62,6 @@ void ActionBar::initFonts()
 {
 	shortcutFont = FontCache::getFontFromCache( "data/verdana.ttf", 9 );
 	cooldownFont = FontCache::getFontFromCache( "data/verdana.ttf", 11 );
-}
-
-bool ActionBar::isCastingAoESpell()
-{
-	return castingAoESpell;
-}
-
-void ActionBar::setCastingAoESpell( bool flag )
-{
-	castingAoESpell = flag;
-}
-
-void ActionBar::setJustCastAoESpell( bool flag )
-{
-	justCastAoESpell = flag;
-}
-
-CSpellActionBase *ActionBar::getAoESpell()
-{
-	return button[curAoESpell].action;
 }
 
 bool ActionBar::isMouseOver( int x, int y )
@@ -106,13 +85,13 @@ void ActionBar::draw()
 
 	// background at bottom of screen, black and nicely blended.
 	DrawingHelpers::mapTextureToRect( textures.getTexture(0),
-	                                  world_x + posX - 20, RES_X - posX + 20,
+	                                  world_x + Configuration::screenWidth-width, width,
 	                                  world_y, 80 );
 
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ )
 	{
-	    shortcutFont->drawText( world_x + 420 + buttonId * 60 - 8,
-                                world_y + 50, button[buttonId].number.c_str() );
+	    shortcutFont->drawText( world_x + Configuration::screenWidth-width+20 + buttonId * 60 - 8,
+                                world_y + 54, button[buttonId].number.c_str() );
 
 	    glColor3f( 0.4f, 0.4f, 0.4f );
 	    if ( player->getIsPreparing() && button[buttonId].action != NULL )
@@ -126,8 +105,8 @@ void ActionBar::draw()
 	    }
 
 	    DrawingHelpers::mapTextureToRect( textures.getTexture(1),
-		                                  world_x+ 420 + buttonId * 60, 50,
-		                                  world_y+ 8, 50 );
+		                                  world_x+ Configuration::screenWidth-width+20 + buttonId * 60, 50,
+		                                  world_y+ 12, 50 );
 
         glColor3f( 1.0f, 1.0f, 1.0f );
 
@@ -142,141 +121,150 @@ void ActionBar::draw()
                     * we are stunned
                     * spell has a weapon requirement not met
                     * the player is casting an AoE spell **/
-            bool isSpellUseable = true;
-
-						if ( castingAoESpell )
-							isSpellUseable = false;
-
-            // do we have enough fatigue to cast?
-            if ( dynamic_cast<CAction*>( button[buttonId].action ) != NULL ) {
-                if ( button[buttonId].action->getSpellCost() > player->getCurrentFatigue() ) {
-                        isSpellUseable = false;
-                }
-            // do we have enough mana to cast?
-            } else if ( dynamic_cast<CSpell*>( button[buttonId].action ) != NULL && isSpellUseable == true ) {
-                if ( button[buttonId].action->getSpellCost() > player->getCurrentMana() ) {
-                    isSpellUseable = false;
-                }
-            }
-            // do we have a target? if so, are we in range? (doesn't check for selfaffectign spells)
-            if ( player->getTarget() != NULL && isSpellUseable == true && button[buttonId].action->getEffectType() != EffectType::SelfAffectingSpell ) {
-                uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
-                if ( button[buttonId].action->isInRange( distance ) == false ) {
-                    isSpellUseable = false;
-                }
-            }
+            bool useableSpell = isSpellUseable( button[ buttonId ].action );
 
             // is the spell on cooldown?
             for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
             {
                 if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
                 {
-                    isSpellUseable = false;
+                    useableSpell = false;
                     drawCooldownText = true;
                     cooldownText = TimeConverter::convertTime( cooldownSpells[curSpell].second, cooldownSpells[curSpell].first->getCooldown() );
                 }
             }
 
-            // are we stunned?
-            if ( player->isStunned() == true || player->isFeared() == true || player->isMesmerized() == true || player->isCharmed() == true ) {
-                isSpellUseable = false;
-            }
-
-            // does the spell / action require a weapon of any sort?
-            if ( button[buttonId].action->getRequiredWeapons() != 0 ) {
-                if ( ( button[buttonId].action->getRequiredWeapons() & ( player->getInventory()->getWeaponTypeBySlot( ItemSlot::MAIN_HAND ) | player->getInventory()->getWeaponTypeBySlot( ItemSlot::OFF_HAND ) ) ) == 0 ) {
-                    isSpellUseable = false;
-                }
-            }
-
-            if ( isSpellUseable == false ) {
+            if ( useableSpell == false ) {
                 glColor3f( 0.4f, 0.4f, 0.4f );
             }
 
-	        button[buttonId].action->drawSymbol( world_x + 420 + buttonId * 60 + 2, 46, world_y + 10, 46 );
+	        button[buttonId].action->drawSymbol( world_x + Configuration::screenWidth-width+20 + buttonId * 60 + 2, 46, world_y + 14, 46 );
 
             if ( drawCooldownText == true )
             {
                 glColor3f( 1.0f, 0.0f, 0.0f );
                 unsigned int xModifier = cooldownFont->calcStringWidth( cooldownText );
-	            cooldownFont->drawText( world_x + 420 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
-                                        world_y + 28, cooldownText.c_str() );
+	            cooldownFont->drawText( world_x + Configuration::screenWidth-width+20 + buttonId * 60 + 6 + (static_cast<float>(50)-xModifier) / 2,
+                                        world_y + 32, cooldownText.c_str() );
             }
             glColor3f( 1.0f, 1.0f, 1.0f );
 	    }
 	}
 
 	// draw the cursor if it's supposed to be drawn
-	if( Globals::displayCursor() )
+	if( isPreparingAoESpell() == true )
 	{
 		DrawingHelpers::mapTextureToRect(textures.getTexture(2), mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
 	}
 }
 
+bool ActionBar::isSpellUseable( CSpellActionBase *action )
+{
+    // do we have enough fatigue to cast?
+    if ( dynamic_cast<CAction*>( action ) != NULL ) {
+        if ( action->getSpellCost() > player->getCurrentFatigue() ) {
+                return false;
+        }
+
+    // do we have enough mana to cast?
+    } else if ( dynamic_cast<CSpell*>( action ) != NULL ) {
+        if ( action->getSpellCost() > player->getCurrentMana() ) {
+            return false;
+        }
+    }
+    // do we have a target? if so, are we in range? (doesn't check for selfaffectign spells)
+    if ( player->getTarget() != NULL && action->getEffectType() != EffectType::SelfAffectingSpell ) {
+    	if ( player->getTargetAttitude() == Attitude::FRIENDLY ) return false;
+        uint16_t distance = sqrt( pow( ( player->getXPos() + player->getWidth() / 2 ) - ( player->getTarget()->getXPos() + player->getTarget()->getWidth() / 2 ),2) + pow( ( player->getYPos() + player->getHeight() / 2 ) - ( player->getTarget()->getYPos() + player->getTarget()->getHeight() / 2 ),2) );
+        if ( action->isInRange( distance ) == false ) {
+            return false;
+        }
+    }
+
+    // are we stunned?
+    if ( player->isStunned() == true || player->isFeared() == true || player->isMesmerized() == true || player->isCharmed() == true ) {
+        return false;
+    }
+
+    // does the spell / action require a weapon of any sort?
+    if ( action->getRequiredWeapons() != 0 ) {
+        if ( ( action->getRequiredWeapons() & ( player->getInventory()->getWeaponTypeBySlot( ItemSlot::MAIN_HAND ) | player->getInventory()->getWeaponTypeBySlot( ItemSlot::OFF_HAND ) ) ) == 0 ) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void ActionBar::setSpellQueue( sButton &button, bool actionReadyToCast )
+{
+    spellQueue = &button;
+    spellQueue->actionReadyToCast = actionReadyToCast;
+}
+
+bool ActionBar::isPreparingAoESpell() const
+{
+    return preparingAoESpell;
+}
+
+void ActionBar::stopCastingAoE()
+{
+    if ( isPreparingAoESpell() == true ) {
+        spellQueue = NULL;
+        preparingAoESpell = false;
+    }
+}
+
+void ActionBar::makeReadyToCast( int x, int y )
+{
+	spellQueue->actionReadyToCast = true;
+	spellQueue->areaOfEffectOnSpecificLocation = true;
+	spellQueue->actionSpecificXPos = x;
+	spellQueue->actionSpecificYPos = y;
+}
+
 void ActionBar::clicked( int clickX, int clickY )
 {
+    // if the right mouse button is pressed you exit "disabled" mode and remove the cursor
+	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
+	{
+		stopCastingAoE();
+	}
+
 	int buttonId = getMouseOverButtonId( clickX, clickY );
 	if ( buttonId >= 0 )
 	{
-		// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
-		if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() )
-		{
-			EffectType::EffectType effectType = button[buttonId].action->getEffectType();
-			if ( effectType == EffectType::AreaTargetSpell ) // AoE spell
+			// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
+			if ( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() && isSpellUseable( button[buttonId].action ) )
 			{
-				if ( player->getTarget() != NULL ) // is there a target?
-				{
-					CSpellActionBase *curAction = button[buttonId].action->cast( player, player->getTarget() );
-					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
-				}
-				else if ( !justCastAoESpell && !player->getIsPreparing() )															// O.K., let's select a position then
-				{
-					bool onCD = false;
-
-					for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
-						if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
-							onCD = true;
-
-					if( !onCD )
-					{
-						// we are going to display the cursor
-						Globals::setDisplayCursor( true );
-						cursorRadius = button[buttonId].action->getRadius();
-						curAoESpell = buttonId;
-						castingAoESpell = true;
+					if ( button[ buttonId ].action->getEffectType() == EffectType::AreaTargetSpell && player->getTarget() == NULL && isSpellUseable( button[ buttonId ].action ) == true ) { // AoE spell with specific position
+							setSpellQueue( button[buttonId], false );
+							cursorRadius = button[buttonId].action->getRadius();
+					} else { // "regular" spell
+							setSpellQueue( button[buttonId] );
 					}
-				}
 			}
-			else
-			{
-				spellQueue = &button[buttonId];
-			}
-		}
 
-		// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
-		if ( spellbook->hasFloatingSpell() )
-		{
-			if ( isButtonUsed( &button[buttonId] ) )
+			// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
+			if ( spellbook->hasFloatingSpell() )
 			{
-				unbindAction( &button[buttonId] );
+					if ( isButtonUsed( &button[buttonId] ) )
+					{
+							unbindAction( &button[buttonId] );
+					}
+					bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
 			}
-			bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
-		}
 	}
-
-	justCastAoESpell = false;
 }
 
 void ActionBar::handleKeys()
 {
 	Uint8 *keys = SDL_GetKeyState(NULL);
 
-	if ( !castingAoESpell )
 	for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
 			// TODO: use a conversion table here from quickslot nr to keycode
 			if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed ) {
 					button[buttonId].wasPressed = true;
-					if ( button[buttonId].action != NULL ) {
+					if ( button[buttonId].action != NULL && isSpellUseable( button[buttonId].action ) ) {
 						CSpellActionBase *curAction = NULL;
 
 						EffectType::EffectType effectType = button[buttonId].action->getEffectType();
@@ -294,23 +282,11 @@ void ActionBar::handleKeys()
 							if ( player->getTarget() != NULL ) // is there a target?
 							{
 								curAction = button[buttonId].action->cast( player, player->getTarget() );
-							}
-							else															// O.K., let's select a position then ( 0 0 for now )
-							{
-								bool onCD = false;
-
-								for (size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
-									if ( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
-										onCD = true;
-
-								if( !onCD )
-								{
-									// we are going to display the cursor
-									Globals::setDisplayCursor( true );
-									cursorRadius = button[buttonId].action->getRadius();
-									curAoESpell = buttonId;
-									castingAoESpell = true;
-								}
+								preparingAoESpell = false;
+							} else {
+							    setSpellQueue( button[ buttonId ], false );
+							    preparingAoESpell = true;
+							    cursorRadius = button[buttonId].action->getRadius();
 							}
 						}
 
@@ -323,13 +299,6 @@ void ActionBar::handleKeys()
 			if ( ! keys[ button[buttonId].key ] ) {
 					button[buttonId].wasPressed = false;
 			}
-	}
-
-	// if the right mouse button is pressed you exit "disabled" mode and remove the cursor
-	if(SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(3))
-	{
-		castingAoESpell = false;
-		Globals::setDisplayCursor( false );
 	}
 }
 
@@ -378,7 +347,7 @@ bool ActionBar::isButtonUsed( sButton *button ) const
 void ActionBar::drawSpellTooltip( int x, int y )
 {
     int buttonId = getMouseOverButtonId( x, y );
-    if ( buttonId >= 0 && button[buttonId].tooltip != NULL && !castingAoESpell)
+    if ( buttonId >= 0 && button[buttonId].tooltip != NULL && isPreparingAoESpell() == false )
     {
         button[buttonId].tooltip->draw( x, y );
     }
@@ -396,24 +365,37 @@ void ActionBar::executeSpellQueue()
 {
     if ( spellQueue != NULL )
     {
-        if ( spellQueue->action != NULL )
-        {
-            CSpellActionBase *curAction = NULL;
+    	EffectType::EffectType effectType = spellQueue->action->getEffectType();
 
-            EffectType::EffectType effectType = spellQueue->action->getEffectType();
+			if ( spellQueue->action != NULL && spellQueue->actionReadyToCast == true )
+			{
+					CSpellActionBase *curAction = NULL;
 
-            if ( effectType == EffectType::SingleTargetSpell
-                     && player->getTarget() != NULL ) {
-                curAction = spellQueue->action->cast( player, player->getTarget() );
-            } else if ( effectType == EffectType::SelfAffectingSpell ) {
-                curAction = spellQueue->action->cast( player, player );
-            }
+					if ( effectType == EffectType::SingleTargetSpell
+									 && player->getTarget() != NULL ) {
+							curAction = spellQueue->action->cast( player, player->getTarget() );
+					} else if ( effectType == EffectType::SelfAffectingSpell ) {
+							curAction = spellQueue->action->cast( player, player );
+					} else if ( effectType == EffectType::AreaTargetSpell ) {
+							if ( ! preparingAoESpell ) { // AoE spell cast on target with target selected previous to casting
+									assert( player->getTarget() != NULL );
+									curAction = spellQueue->action->cast( player, player->getTarget() );
+							} else if ( spellQueue->areaOfEffectOnSpecificLocation == true ) { // AoE spell cast on specific position
+									curAction = spellQueue->action->cast( player, spellQueue->actionSpecificXPos, spellQueue->actionSpecificYPos );
+									preparingAoESpell = false;
+							}
+					}
 
-            if ( curAction != NULL ) {
-                player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
-            }
-            spellQueue = NULL;
-        }
+					if ( curAction != NULL ) {
+							player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+					}
+					spellQueue = NULL;
+			}
+			else if ( spellQueue->action )
+			{
+				if ( effectType == EffectType::AreaTargetSpell )
+					preparingAoESpell = true;
+			}
     }
 }
 
@@ -423,7 +405,7 @@ void ActionBar::dragSpell()
     {
         if ( spellQueue->action != NULL )
         {
-            spellbook->setFloatingSpell( spellbook->getSpellSlotBySpell( spellQueue->action ) );
+            spellbook->setFloatingSpell( spellQueue->action );
             unbindAction( spellQueue );
             spellQueue = NULL;
         }

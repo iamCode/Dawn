@@ -64,10 +64,12 @@ wolfbase:setEvadeModifierPoints( 0 )
 wolfbase:setName("A wolf")
 wolfbase:setWanderRadius( 250 )
 wolfbase:setLevel( 2 )
-wolfbase:setCoinDrop( 1, 3, 0.75 );
 wolfbase:setClass( CharacterClass.Warrior );
 wolfbase:inscribeSpellInSpellbook( spellDatabase["wolfbite"] );
 wolfbase:inscribeSpellInSpellbook( spellDatabase["rabidbite"] );
+wolfbase:addItemToLootTable( itemDatabase["patchofwolfskin"], 0.25 )
+wolfbase:addItemToLootTable( itemDatabase["wolfmeat"], 0.10 )
+wolfbase:setExperienceValue( 25 );
 
 wolfpup = DawnInterface.createNewMobType("Wolf Pup")
 wolfpup:baseOnType("Wolf")
@@ -83,8 +85,7 @@ wolfpup:setArmor( 10 )
 wolfpup:setName("A wolf pup")
 wolfpup:setWanderRadius( 250 )
 wolfpup:setLevel( 1 )
-wolfpup:addItemToLootTable( itemDatabase["shadering"], 0.25 )
-wolfpup:addItemToLootTable( itemDatabase["arustysword"], 0.25 )
+wolfpup:setExperienceValue( 15 );
 
 giantwolf = DawnInterface.createNewMobType("Giant Wolf")
 giantwolf:baseOnType("Wolf")
@@ -100,6 +101,7 @@ giantwolf:setArmor( 50 )
 giantwolf:setName("A giant wolf")
 giantwolf:setWanderRadius( 50 )
 giantwolf:setLevel( 5 )
+giantwolf:setExperienceValue( 40 );
 
 humanbase = DawnInterface.createNewMobType("Human")
 humanbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -150,6 +152,7 @@ humanbase:setName("A swordsman")
 humanbase:setWanderRadius( 250 )
 humanbase:setLevel( 2 )
 humanbase:setClass( CharacterClass.Warrior );
+humanbase:setExperienceValue( 25 );
 
 wizardbase = DawnInterface.createNewMobType("Wizard")
 
@@ -198,6 +201,82 @@ wizardbase:setName("A wizard")
 wizardbase:setWanderRadius( 250 )
 wizardbase:setLevel( 2 )
 wizardbase:setClass( CharacterClass.Liche )
+wizardbase:setExperienceValue( 25 );
+
+spiderlingbase = DawnInterface.createNewMobType("Spiderling")
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
+for index=0,7,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/spiderling/walking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/spiderling/walking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/spiderling/walking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/spiderling/walking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/spiderling/walking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/spiderling/walking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/spiderling/walking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/spiderling/walking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Attacking, 9 );
+for index=0,8,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Attacking, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Shooting, 9 );
+for index=0,8,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, N, index, "data/character/spiderling/attacking n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, NW, index, "data/character/spiderling/attacking nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, W, index, "data/character/spiderling/attacking w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, SW, index, "data/character/spiderling/attacking sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, S, index, "data/character/spiderling/attacking s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, SE, index, "data/character/spiderling/attacking se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, E, index, "data/character/spiderling/attacking e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Shooting, NE, index, "data/character/spiderling/attacking ne000"..index..".tga" );
+end
+
+spiderlingbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 11 );
+for index=0,10,1 do
+	spiderlingbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/spiderling/dying n000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/spiderling/dying nw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/spiderling/dying w000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/spiderling/dying sw000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/spiderling/dying s000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/spiderling/dying se000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/spiderling/dying e000"..index..".tga" );
+	spiderlingbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/spiderling/dying ne000"..index..".tga" );
+end
+
+spiderlingbase:setStrength( 10 )
+spiderlingbase:setDexterity( 10 )
+spiderlingbase:setVitality( 10 )
+spiderlingbase:setIntellect( 10 )
+spiderlingbase:setWisdom( 10 )
+spiderlingbase:setMaxHealth( 135 )
+spiderlingbase:setMaxMana( 500 )
+spiderlingbase:setMaxFatigue( 100 )
+spiderlingbase:setHealthRegen( 0 )
+spiderlingbase:setManaRegen( 50 )
+spiderlingbase:setFatigueRegen( 25 )
+spiderlingbase:setMinDamage( 12 )
+spiderlingbase:setMaxDamage( 16 )
+spiderlingbase:setArmor( 10 )
+spiderlingbase:setDamageModifierPoints( 5 )
+spiderlingbase:setHitModifierPoints( 5 )
+spiderlingbase:setEvadeModifierPoints( 0 )
+spiderlingbase:setName("Spiderling")
+spiderlingbase:setWanderRadius( 250 )
+spiderlingbase:setLevel( 2 )
+spiderlingbase:setClass( CharacterClass.Ranger );
+spiderlingbase:inscribeSpellInSpellbook( spellDatabase["sylphiricacid"] );
+spiderlingbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
+spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderlingbase:setExperienceValue( 30 );
 
 spiderbase = DawnInterface.createNewMobType("Spider")
 spiderbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -253,14 +332,14 @@ spiderbase:setDexterity( 30 )
 spiderbase:setVitality( 20 )
 spiderbase:setIntellect( 15 )
 spiderbase:setWisdom( 15 )
-spiderbase:setMaxHealth( 300 )
+spiderbase:setMaxHealth( 270 )
 spiderbase:setMaxMana( 500 )
 spiderbase:setMaxFatigue( 100 )
 spiderbase:setHealthRegen( 0 )
 spiderbase:setManaRegen( 50 )
 spiderbase:setFatigueRegen( 25 )
-spiderbase:setMinDamage( 8 )
-spiderbase:setMaxDamage( 12 )
+spiderbase:setMinDamage( 5 )
+spiderbase:setMaxDamage( 9 )
 spiderbase:setArmor( 120 )
 spiderbase:setDamageModifierPoints( 10 )
 spiderbase:setHitModifierPoints( 10 )
@@ -268,11 +347,11 @@ spiderbase:setEvadeModifierPoints( 10 )
 spiderbase:setName("Spider")
 spiderbase:setWanderRadius( 250 )
 spiderbase:setLevel( 2 )
-spiderbase:setCoinDrop( 0, 0, 0.00 );
 spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
-spiderbase:inscribeSpellInSpellbook( spellDatabase["shardsofvenom"] );
-spiderbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
+spiderbase:inscribeSpellInSpellbook( spellDatabase["venomweave"] );
+spiderbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderbase:setExperienceValue( 27 );
 
 skeletonbase = DawnInterface.createNewMobType("Skeleton")
 skeletonbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 9 );
@@ -345,6 +424,7 @@ skeletonbase:setWanderRadius( 250 )
 skeletonbase:setLevel( 3 )
 skeletonbase:setCoinDrop( 25, 75, 0.75 );
 skeletonbase:setClass( CharacterClass.Warrior );
+skeletonbase:setExperienceValue( 40 );
 
 skeletonarcherbase = DawnInterface.createNewMobType("Skeleton Archer")
 skeletonarcherbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
@@ -431,3 +511,4 @@ skeletonarcherbase:setCoinDrop( 25, 75, 0.75 );
 skeletonarcherbase:setClass( CharacterClass.Ranger );
 skeletonarcherbase:inscribeSpellInSpellbook( spellDatabase["shoot"] );
 skeletonarcherbase:addItemToLootTable( itemDatabase["weakenedbow"], 0.25 );
+skeletonarcherbase:setExperienceValue( 40 );

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -33,7 +33,9 @@ void sSpellSlot::initFont()
 }
 
 
-Spellbook::Spellbook( Player *player_ ) : FramesBase( 125, 50, 454, 672, 13, 15 )
+Spellbook::Spellbook( Player *player_ )
+	: FramesBase( 125, 50, 454, 672, 13, 15 ),
+	  floatingSpellSlot( 0,0,0,0 )
 {
     addMoveableFrame( 454, 22, 13, 665 );
     addCloseButton( 22, 22, 444, 666 );
@@ -214,21 +216,10 @@ sSpellSlot *Spellbook::getFloatingSpell() const
     return floatingSpell;
 }
 
-sSpellSlot *Spellbook::getSpellSlotBySpell( CSpellActionBase *spell) const
+void Spellbook::setFloatingSpell( CSpellActionBase *newFloatingSpell )
 {
-    for ( size_t index = 0; index < spellSlot.size(); index++ )
-    {
-        if ( spellSlot[index].action == spell )
-        {
-            return const_cast<sSpellSlot *> (&spellSlot[index]);
-        }
-    }
-    abort();
-}
-
-void Spellbook::setFloatingSpell( sSpellSlot *newFloatingSpell )
-{
-    floatingSpell = newFloatingSpell;
+	floatingSpellSlot.action = newFloatingSpell;
+	floatingSpell = &floatingSpellSlot;
 }
 
 void Spellbook::unsetFloatingSpell()

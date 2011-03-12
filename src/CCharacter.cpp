@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -27,8 +27,8 @@
 
 #include "CNPC.h"
 #include "Player.h"
-#include "globals.h"
 #include "configuration.h"
+#include "globals.h"
 
 #include <map>
 #include <string>
@@ -116,6 +116,7 @@ void CCharacter::baseOnType( std::string otherName )
 	setUseBoundingBox( other->getUseBoundingBox() );
 	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
 	setSpellbook( other->getSpellbook() );
+	setExperienceValue( other->getExperienceValue() );
 }
 
 std::string CCharacter::getClassID() const
@@ -152,9 +153,20 @@ CCharacter* CCharacter::getTarget() const
 	return target;
 }
 
+Attitude::Attitude CCharacter::getTargetAttitude()
+{
+	return targetAttitude;
+}
+
 void CCharacter::setTarget( CCharacter *target )
 {
     this->target = target;
+}
+
+void CCharacter::setTarget( CCharacter *target, Attitude::Attitude attitude )
+{
+    this->target = target;
+    targetAttitude = attitude;
 }
 
 std::string CCharacter::getName() const
@@ -726,8 +738,21 @@ uint16_t CCharacter::getModifiedMaxDamage() const
 	return getMaxDamage();
 }
 
+void CCharacter::setExperienceValue( uint8_t experienceValue )
+{
+    this->experienceValue = experienceValue;
+}
+
+uint8_t CCharacter::getExperienceValue() const
+{
+    return experienceValue;
+}
+
 void CCharacter::addItemToLootTable(Item *item, double dropChance )
 {
+    if ( item == NULL ) {
+         dawn_debug_fatal("CCharacter::addItemToLootTable() was called without a valid Item. Exiting!");
+    }
     lootTable.push_back( sLootTable( item, dropChance ) );
 }
 
@@ -914,6 +939,7 @@ CCharacter::CCharacter()
 	  spellEffectElementModifierPoints( NULL ),
 	  spellEffectAllModifierPoints( 0 ),
 	  spellCriticalModifierPoints( 0 ),
+	  experienceValue( 0 ),
 	  level( 1 ),
 	  boundingBoxX( 0 ),
 	  boundingBoxY( 0 ),
@@ -1476,6 +1502,7 @@ void CCharacter::startSpellAction()
 	// are we casting an AoE spell?
 	if ( curSpellAction->getRadius() > 0 ) {
 		Globals::getCurrentZone()->MagicMap.push_back(new CMagic(curSpellAction));
+		Globals::getCurrentZone()->MagicMap.back()->setCreator( this );
 		Globals::getCurrentZone()->MagicMap.back()->getSpell()->startEffect();
 		isPreparing = false;
 		preparationCurrentTime = 0;
@@ -1554,7 +1581,12 @@ bool CCharacter::mayDoAnythingAffectingSpellActionWithAborting() const
 	}
 }
 
-void CCharacter::Damage(int amount, bool criticalHit)
+bool CCharacter::canBeDamaged() const
+{
+	return true;
+}
+
+void CCharacter::Damage( int amount, bool criticalHit )
 {
     if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
         if ( randomSizeT( 0, 100 ) <= 20 ) {
@@ -1611,6 +1643,10 @@ void CCharacter::Damage(int amount, bool criticalHit)
 		if (current_health <= amount) {
 			current_health = 0;
 			Die();
+			if ( isPlayer() == false ) {
+			    Player *player = Globals::getPlayer();
+                player->gainExperience( getExperienceValue() );
+			}
 		} else {
 			modifyCurrentHealth( -amount );
 		}
@@ -1683,9 +1719,9 @@ void CCharacter::addDamageDisplayToGUI( int amount, bool critical, uint8_t damag
 {
     if (isPlayer())
 	{
-        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y);
+        activeGUI->addCombatText(amount, critical, damageType, world_x+140,Configuration::screenHeight-40+world_y, true );
 	} else {
-	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52);
+	    activeGUI->addCombatText(amount, critical, damageType, getXPos() + getWidth()/2, getYPos()+getHeight()+52, false );
 	}
 }
 
@@ -1819,6 +1855,16 @@ float CCharacter::getMovementSpeed() const
     }
 }
 
+int CCharacter::getDeltaX()
+{
+	return dx;
+}
+
+int CCharacter::getDeltaY()
+{
+	return dy;
+}
+
 void CCharacter::setBoundingBox( int bbx, int bby, int bbw, int bbh )
 {
 	boundingBoxX = bbx;
@@ -1917,7 +1963,10 @@ void CCharacter::setSpellbook( std::vector<CSpellActionBase*> spellbook )
 
 void CCharacter::addActiveSpell( CSpellActionBase *spell )
 {
-    assert( spell != NULL );
+	if ( ! canBeDamaged() )
+		return;
+
+	assert( spell != NULL );
     // here we check to see if the current spell cast is already on the character. if it is, then we refresh it.
     for ( size_t curSpell = 0; curSpell < activeSpells.size(); curSpell++ )
     {

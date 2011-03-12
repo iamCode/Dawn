@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -43,7 +43,7 @@ LoadingScreen::LoadingScreen()
     backgroundToDraw = rand() % backgroundTexture->getTexture().size() + 0;
     width = backgroundTexture->getTexture( backgroundToDraw ).width;
     height = backgroundTexture->getTexture( backgroundToDraw ).height;
-    posX = (Configuration::screenWidth - width) / 2;
+	posX = (Configuration::screenWidth - width) / 2;
     posY = (Configuration::screenHeight - height) / 2;
 
 	curText = "";
@@ -62,9 +62,9 @@ LoadingScreen::~LoadingScreen()
 
 void LoadingScreen::draw()
 {
-    int progressBarXPos = Configuration::screenWidth / 2 - 256;
-	int progressBarYPos = 20;
 	int progressBarWidth = Configuration::screenWidth / 2;
+	int progressBarXPos = (Configuration::screenWidth - progressBarWidth) / 2;
+	int progressBarYPos = 20;
 
 	// show screen
 	DrawingHelpers::mapTextureToRect( backgroundTexture->getTexture( backgroundToDraw ),

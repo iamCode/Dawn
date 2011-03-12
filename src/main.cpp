@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -15,8 +15,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
-
-#include "main.h"
 
 #include "threadObject/Thread.h"
 
@@ -104,9 +102,6 @@
 // 	objects dont need those variables.
 //	david: I'll have this sorted pretty
 //	quick.
-int RES_X = Configuration::screenWidth;
-int RES_Y = Configuration::screenHeight;
-
 int world_x = 0, world_y = 0;
 int mouseX, mouseY;
 int done = 0;
@@ -121,7 +116,7 @@ uint32_t drawingTime = 0;
 uint32_t initStartTicks = 0;
 
 SDL_Surface *screen;
-cameraFocusHandler focus(Configuration::screenWidth, Configuration::screenHeight);
+cameraFocusHandler focus;
 
 CEditor Editor;
 
@@ -164,7 +159,6 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 {
 	bool run_game = true;
 	std::string executable(argv[0]);
-	Configuration::soundenabled = true;
 #ifdef _WIN32
 	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
 #endif
@@ -254,19 +248,19 @@ void DrawScene()
 	// draw items on the ground
 	curZone->getGroundLoot()->draw();
 
-	// draw the interactions on screen
-	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
-	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-		curInteraction->draw();
-	}
-
 	//draw AoE spells
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
 	for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
 		if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
 				activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
 		}
+	}
+
+	// draw the interactions on screen
+	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
+	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
+		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+		curInteraction->draw();
 	}
 
 	// draw the NPC
@@ -327,9 +321,9 @@ void DrawScene()
       }
     }
 
-		actionBar->draw();
-		logWindow->draw();
-		GUI.DrawInterface();
+    actionBar->draw();
+    logWindow->draw();
+    GUI.DrawInterface();
 	}
 
 	// loop through our vector of active frames and draw them. If they are in the vector they are visible...
@@ -353,9 +347,9 @@ void DrawScene()
 	//       causing overflow and not drawing the font if it gets negative
 
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
-	//fpsFont->drawText(focus.getX(), focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
+	//fpsFont->drawText(focus.getX(), focus.getY()+Configuration::screenHeight - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 	// Only FPS
-	fpsFont->drawText(focus.getX()+RES_X-100, focus.getY()+RES_Y - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
+	fpsFont->drawText(focus.getX()+Configuration::screenWidth-100, focus.getY()+Configuration::screenHeight - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
 
 	message.DrawAll();
 	message.DeleteDecayed();
@@ -663,7 +657,7 @@ public:
 		player->setMoveTexture( ActivityType::Walking, STOP, 0, std::string("").append( characterDataString ).append("walking s0000.tga" ) );
 		player->setBoundingBox( 18, 20, 64, 64 );
 		player->setUseBoundingBox( true );
-		player->Init(Configuration::screenWidth/2,Configuration::screenHeight/2);
+		player->Init(512,400);
 		player->setActiveGUI( &GUI );
 		player->setMaxHealth(400);
 		player->setMaxMana(250);
@@ -989,6 +983,8 @@ bool dawn_init(int argc, char** argv)
 			}
 			SDL_GL_SwapBuffers();
         }
+		
+		activeFrames.clear();
 
 		std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
 		chooseClassFrame->setAutoresize();
@@ -1198,6 +1194,7 @@ void game_loop()
 						// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 						if ( clickedInFrame == false )
 						{
+								actionBar->clicked( mouseX, mouseY );
 								buffWindow->clicked( mouseX, mouseY, event.button.button );
 								if ( shopWindow->hasFloatingSelection() )
 								{
@@ -1229,31 +1226,19 @@ void game_loop()
 														}
 												}
 
-												// search for new target if no AoE spell is supposed to be cast
-												if( actionBar->isCastingAoESpell() )
-												{
-													CSpellActionBase *spell = actionBar->getAoESpell();
-													player->castSpell( dynamic_cast<CSpellActionBase*>( spell->cast( player, mouseX + world_x, mouseY + world_y ) ) );
-													actionBar->setCastingAoESpell( false );
-													actionBar->setJustCastAoESpell( true );
-													Globals::setDisplayCursor( false );
-												}
-												else
-												{
-													std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-													for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-															CNPC *curNPC = zoneNPCs[x];
-															if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
-																	if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
-																			if( !player->hasTarget( curNPC ) )
-																				player->setTarget( curNPC );
-																			else
-																				player->setTarget( NULL );
-																			break;
-																	}
-															}
-													}
-												}
+                                                std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+                                                for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+                                                        CNPC *curNPC = zoneNPCs[x];
+                                                        if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+                                                                if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+                                                                        if( !player->hasTarget( curNPC ) )
+                                                                            player->setTarget( curNPC, curNPC->getAttitude() );
+                                                                        else
+                                                                            player->setTarget( NULL );
+                                                                        break;
+                                                                }
+                                                        }
+                                                }
 										}
 										break;
 
@@ -1271,8 +1256,6 @@ void game_loop()
 										}
 										break;
 								}
-
-								actionBar->clicked( mouseX, mouseY );
 						}
 				}
 
@@ -1281,7 +1264,8 @@ void game_loop()
 						mouseX = event.motion.x;
 						mouseY = Configuration::screenHeight - event.motion.y - 1;
 
-						if ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 )
+                        // we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
+						if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && event.button.button == SDL_BUTTON_LEFT && !actionBar->isPreparingAoESpell() )
 						{
 								actionBar->dragSpell();
 						}
@@ -1298,6 +1282,8 @@ void game_loop()
 
 				if (event.type == SDL_MOUSEBUTTONUP)
 				{
+					if( actionBar->isPreparingAoESpell() )
+						actionBar->makeReadyToCast( mouseX+world_x, mouseY+world_y );
 
 					actionBar->executeSpellQueue();
 					for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
@@ -1335,7 +1321,6 @@ void game_loop()
 			player->Move();
 			player->regenerateLifeManaFatigue( ticksDiff );
 
-
 			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 				CNPC *curNPC = zoneNPCs[x];
@@ -1348,16 +1333,17 @@ void game_loop()
 				curNPC->Wander();
 
 				// check all active spells for inEffects on our NPCs.
+				curNPC->cleanupActiveSpells();
 				std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
 				for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 						activeSpellActions[ curActiveSpellNr ].first->inEffect();
 				}
-				curNPC->cleanupActiveSpells();
 			}
 
-			// check all active AoE spells and see they're finished and look for inEffects
+			// check all active AoE spells and see they're finished and look for inEffects and process 'em
 			for ( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i)
 			{
+				Globals::getCurrentZone()->MagicMap[i]->process();
 				Globals::getCurrentZone()->MagicMap[i]->getSpell()->inEffect();
 				Globals::cleanupActiveAoESpells();
 
@@ -1449,14 +1435,14 @@ player->cleanupActiveSpells();
 					// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
 					for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
 							if (!player->getTarget()) {
-									player->setTarget(NPClist[0]);
+									player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 							}
 
 							if ( player->getTarget() == NPClist[curNPC] ) {
 									if ( curNPC+1 == NPClist.size() ) {
-											player->setTarget(NPClist[0]);
+											player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 									} else {
-											player->setTarget(NPClist[curNPC+1]);
+											player->setTarget(NPClist[curNPC+1], NPClist[curNPC+1]->getAttitude());
 									}
 									FoundNewTarget = true;
 									break;
@@ -1464,7 +1450,7 @@ player->cleanupActiveSpells();
 					}
 
 					if ( !FoundNewTarget && NPClist.size() > 0) {
-							player->setTarget(NPClist[0]);
+							player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 					}
 			}
 
@@ -1552,11 +1538,7 @@ player->cleanupActiveSpells();
 
 int main(int argc, char* argv[])
 {
-	Configuration::logfile = "dawn-log.log";
-	Configuration::debug_stdout = true;
-	Configuration::debug_fileout = true;
-	Configuration::show_info_messages = true;
-	Configuration::show_warn_messages = true;
+	LuaFunctions::executeLuaFile("settings.lua");
 
 	if(dawn_init(argc, argv))
 		game_loop();

@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -20,20 +20,30 @@
 #define CONFIGURATION_H
 
 #include <string>
+#include <stdint.h>
 
 namespace Configuration
 {
-	extern bool fullscreenenabled;
-	extern bool soundenabled;
-	extern int screenWidth;
-	extern int screenHeight;
-	extern int bpp;
-	
-	extern std::string logfile; // The logfile
-	extern bool debug_stdout; // Write messages to stdout
-	extern bool debug_fileout; // Write messages to a file
-	extern bool show_info_messages; // Show or hide debug info
-	extern bool show_warn_messages; // show or hide warnings
+	void setResolution( uint16_t screenWidth, uint16_t screenHeight );
+    void setBpp( uint8_t bpp );
+    void useFullscreen( bool fullscreenEnabled );
+    void useSound( bool soundEnabled );
+    void showDebugStdout( bool debug_stdout );
+    void showDebugFileout( bool debug_fileout );
+    void showInfoMessages( bool show_info_messages );
+    void showWarningMessages( bool show_warn_messages );
+
+	extern uint16_t screenWidth;
+    extern uint16_t screenHeight;
+    extern uint8_t bpp;
+    extern std::string logfile; // The logfile
+    extern bool debug_stdout; // Write messages to stdout
+    extern bool debug_fileout; // Write messages to a file
+    extern bool show_info_messages; // Show or hide debug info
+    extern bool show_warn_messages; // show or hide warnings
+    extern bool fullscreenenabled;
+    extern bool soundenabled;
+
 }
 
 #endif // CONFIGURATION_H

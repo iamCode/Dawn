@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -20,11 +20,10 @@
 #define __C_DRAWING_HELPERS_H_
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
+#include "configuration.h"
 
 extern int world_x;
 extern int world_y;
-extern int RES_X;
-extern int RES_Y;
 extern int64_t numTexturesDrawn;
 
 #include "CTexture.h"
@@ -64,8 +63,8 @@ namespace DrawingHelpers
 
 	inline bool isRectOnScreen( int left, int width, int bottom, int height )
 	{
-		if (    left >= (world_x + RES_X)           // object right of screen
-		        || bottom >= (world_y + RES_Y)         // object above screen
+		if (    left >= (world_x + Configuration::screenWidth)           // object right of screen
+				|| bottom >= (world_y + Configuration::screenHeight)         // object above screen
 		        || (left + width) <= world_x           // object left of screen
 		        || (bottom + height) <= world_y ) {    // object below screen
 			return false;

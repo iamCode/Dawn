@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -29,6 +29,7 @@
 #include "item.h"
 #include "soundengine.h"
 #include "globals.h"
+#include "CLuaFunctions.h"
 
 #include <cassert>
 
@@ -55,7 +56,8 @@ CSpellActionBase::CSpellActionBase()
 		  requiredClass( CharacterClass::NOCLASS ),
           requiredLevel( 1 ),
 		  requiredWeapons( 0 ),
-          rank( 1 )
+		  rank( 1 ),
+		  luaID( "" )
 {
     characterStateEffects.first = CharacterStates::NOEFFECT;
     characterStateEffects.second = 1.0f;
@@ -123,21 +125,16 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 
 std::string CSpellActionBase::getID() const
 {
-	std::string name = getName();
-	std::ostringstream idstream;
-	for ( size_t curChar=0; curChar<name.size(); ++curChar ) {
-		if ( !isalpha( name[curChar] ) ) {
-			// ignore
-		} else if ( isupper( name[curChar] ) ) {
-			idstream << char( tolower( name[curChar] ) );
-		} else {
-			idstream << char( name[curChar] );
-		}
+	if ( luaID.size() == 0 )
+	{
+		luaID = LuaFunctions::getIDFromLuaTable( "spellDatabase", this );
 	}
-	if ( rank > 1 ) {
-		idstream << "rank" << static_cast<int>( rank );
-	}
-	return idstream.str();
+	return luaID;
+}
+
+void CSpellActionBase::unsetLuaID()
+{
+	luaID = "";
 }
 
 void CSpellActionBase::addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute )
@@ -257,10 +254,16 @@ void CSpellActionBase::stopSoundSpellHit()
     }
 }
 
+bool CSpellActionBase::isSpellHostile() const
+{
+    return hostileSpell;
+}
+
 void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
     characterStateEffects.first = characterState;
     characterStateEffects.second = value;
+    hostileSpell = CharacterStates::isStateConsideredHarmfull( characterState, value );
 }
 
 std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getCharacterState() const
@@ -279,9 +282,10 @@ ConfigurableSpell::ConfigurableSpell()
 	spellCost = 0;
 	duration = 0;
 	minRange = 0;
-	maxRange = 460; // default maxrange for spells. Can be overridden with setRange().
-	hostileSpell = true;
+	maxRange = 360; // default maxrange for spells. Can be overridden with setRange().
 	radius = 0;
+	centerX = 0;
+	centerY = 0;
 
 	name = "";
 	info = "";
@@ -289,6 +293,7 @@ ConfigurableSpell::ConfigurableSpell()
 
 ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 {
+	luaID = other->getID();
 	spellSymbol = other->spellSymbol;
 
 	castTime = other->castTime;
@@ -299,20 +304,22 @@ ConfigurableSpell::ConfigurableSpell( ConfigurableSpell *other )
 	maxRange = other->maxRange;
 	hostileSpell = other->hostileSpell;
 	radius = other->radius;
-    instant = other->instant;
+	centerX = other->centerX;
+	centerY = other->centerY;
+	instant = other->instant;
 
-    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
-    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+	additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+	additionalSpellsOnTarget = other->additionalSpellsOnTarget;
 
-    characterStateEffects = other->characterStateEffects;
+	characterStateEffects = other->characterStateEffects;
 
-    soundSpellCasting = other->soundSpellCasting;
-    soundSpellHit = other->soundSpellHit;
-    soundSpellStart = other->soundSpellStart;
+	soundSpellCasting = other->soundSpellCasting;
+	soundSpellHit = other->soundSpellHit;
+	soundSpellStart = other->soundSpellStart;
 
-    requiredClass = other->requiredClass;
-    requiredLevel = other->requiredLevel;
-    requiredWeapons = other->requiredWeapons;
+	requiredClass = other->requiredClass;
+	requiredLevel = other->requiredLevel;
+	requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;
@@ -353,14 +360,14 @@ uint16_t ConfigurableSpell::getRadius() const
 	return radius;
 }
 
-uint16_t ConfigurableSpell::getX() const
+int16_t ConfigurableSpell::getX() const
 {
-	return 0;
+	return centerX;
 }
 
-uint16_t ConfigurableSpell::getY() const
+int16_t ConfigurableSpell::getY() const
 {
-	return 0;
+	return centerY;
 }
 
 void ConfigurableSpell::setRange( uint16_t minRange, uint16_t maxRange )
@@ -376,11 +383,6 @@ bool ConfigurableSpell::isInRange( uint16_t distance ) const
       return true;
     }
     return false;
-}
-
-bool ConfigurableSpell::isSpellHostile() const
-{
-    return hostileSpell;
 }
 
 void ConfigurableSpell::setName( std::string newName )
@@ -437,9 +439,8 @@ ConfigurableAction::ConfigurableAction()
 	cooldown = 0;
 	spellCost = 0;
 	duration = 0;
-    minRange = 0;
-    maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
-    hostileSpell = true;
+	minRange = 0;
+	maxRange = 100; // default maxrange for melee actions. Can be overridden with setRange().
 
 	name = "";
 	info = "";
@@ -447,29 +448,30 @@ ConfigurableAction::ConfigurableAction()
 
 ConfigurableAction::ConfigurableAction( ConfigurableAction *other )
 {
+	luaID = other->getID();
 	spellSymbol = other->spellSymbol;
 
 	castTime = other->castTime;
 	cooldown = other->cooldown;
 	spellCost = other->spellCost;
 	duration = other->duration;
-    minRange = other->minRange;
-    maxRange = other->maxRange;
-    hostileSpell = other->hostileSpell;
-    instant = other->instant;
+	minRange = other->minRange;
+	maxRange = other->maxRange;
+	hostileSpell = other->hostileSpell;
+	instant = other->instant;
 
-    additionalSpellsOnCreator = other->additionalSpellsOnCreator;
-    additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+	additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+	additionalSpellsOnTarget = other->additionalSpellsOnTarget;
 
-    soundSpellCasting = other->soundSpellCasting;
-    soundSpellHit = other->soundSpellHit;
-    soundSpellStart = other->soundSpellStart;
+	soundSpellCasting = other->soundSpellCasting;
+	soundSpellHit = other->soundSpellHit;
+	soundSpellStart = other->soundSpellStart;
 
-    characterStateEffects = other->characterStateEffects;
+	characterStateEffects = other->characterStateEffects;
 
-    requiredClass = other->requiredClass;
-    requiredLevel = other->requiredLevel;
-    requiredWeapons = other->requiredWeapons;
+	requiredClass = other->requiredClass;
+	requiredLevel = other->requiredLevel;
+	requiredWeapons = other->requiredWeapons;
 
 	name = other->name;
 	info = other->info;
@@ -487,12 +489,12 @@ uint16_t ConfigurableAction::getCastTime() const
 
 void ConfigurableAction::setCooldown( uint16_t newCooldown )
 {
-    cooldown = newCooldown;
+	cooldown = newCooldown;
 }
 
 uint16_t ConfigurableAction::getCooldown() const
 {
-    return cooldown;
+	return cooldown;
 }
 
 uint16_t ConfigurableAction::getRadius() const
@@ -500,12 +502,12 @@ uint16_t ConfigurableAction::getRadius() const
 	return 0;
 }
 
-uint16_t ConfigurableAction::getX() const
+int16_t ConfigurableAction::getX() const
 {
 	return 0;
 }
 
-uint16_t ConfigurableAction::getY() const
+int16_t ConfigurableAction::getY() const
 {
 	return 0;
 }
@@ -533,11 +535,6 @@ bool ConfigurableAction::isInRange( uint16_t distance ) const
         return true;
     }
     return false;
-}
-
-bool ConfigurableAction::isSpellHostile() const
-{
-    return hostileSpell;
 }
 
 void ConfigurableAction::setName( std::string newName )
@@ -694,9 +691,8 @@ void GeneralDamageSpell::dealDirectDamage()
             realDamage *= criticalDamageMultiplier;
         }
 
-        target->Damage( round(realDamage), criticalHit );
-        if ( ! target->isAlive() ) {
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
+        if ( target->isAlive() ) {
+            target->Damage( round(realDamage), criticalHit );
         }
 	}
 }
@@ -815,9 +811,6 @@ void GeneralRayDamageSpell::inEffect()
 	if ( floor(remainingEffect) > 0 ) {
 		target->Damage( floor(remainingEffect), false );
 		remainingEffect = remainingEffect - floor( remainingEffect );
-		if ( ! target->isAlive() ) {
-			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-		}
 		lastEffect = curTime;
 	}
 
@@ -872,12 +865,12 @@ void GeneralRayDamageSpell::drawEffect()
 
 /// class GeneralAreaDamageSpell
 
-uint16_t GeneralAreaDamageSpell::getX()
+int16_t GeneralAreaDamageSpell::getX()
 {
 	return centerX;
 }
 
-uint16_t GeneralAreaDamageSpell::getY()
+int16_t GeneralAreaDamageSpell::getY()
 {
 	return centerY;
 }
@@ -908,17 +901,45 @@ GeneralAreaDamageSpell::GeneralAreaDamageSpell( GeneralAreaDamageSpell *other )
 
 	numTextures = other->numTextures;
 	spellTexture = other->spellTexture;
+	spellSymbol = other->spellSymbol;
+
+	castTime = other->castTime;
+	cooldown = other->cooldown;
+	spellCost = other->spellCost;
+	duration = other->duration;
+	minRange = other->minRange;
+	maxRange = other->maxRange;
+	hostileSpell = other->hostileSpell;
+	radius = other->radius;
+	centerX = other->centerX;
+	centerY = other->centerY;
+	instant = other->instant;
+
+	additionalSpellsOnCreator = other->additionalSpellsOnCreator;
+	additionalSpellsOnTarget = other->additionalSpellsOnTarget;
+
+	characterStateEffects = other->characterStateEffects;
+
+	soundSpellCasting = other->soundSpellCasting;
+	soundSpellHit = other->soundSpellHit;
+	soundSpellStart = other->soundSpellStart;
+
+	requiredClass = other->requiredClass;
+	requiredLevel = other->requiredLevel;
+	requiredWeapons = other->requiredWeapons;
+
+	name = other->name;
+	info = other->info;
 }
 
 CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, CCharacter *target, bool child=false )
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
 	newSpell->creator = creator;
-	centerX = target->getXPos()+target->getWidth()/2;
-	centerY = target->getYPos()+target->getHeight()/2;
-	newSpell->centerX = centerX;
-	newSpell->centerY = centerY;
+	newSpell->centerX = target->getXPos()+target->getWidth()/2;
+	newSpell->centerY = target->getYPos()+target->getHeight()/2;
 	newSpell->child		= child;
+	newSpell->target	= target;
 
 	return newSpell;
 }
@@ -926,12 +947,11 @@ CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, CCharacter 
 CSpellActionBase* GeneralAreaDamageSpell::cast( CCharacter *creator, int x, int y )
 {
 	GeneralAreaDamageSpell* newSpell = new GeneralAreaDamageSpell( this );
+
 	newSpell->creator = creator;
-	centerX = x;
-	centerY = y;
-	newSpell->centerX = centerX;
-	newSpell->centerY = centerY;
-	newSpell->child		= false;
+	newSpell->centerX = x;
+	newSpell->centerY = y;
+	newSpell->child   = false;
 
 	return newSpell;
 }
@@ -958,23 +978,27 @@ void GeneralAreaDamageSpell::startEffect()
 	if ( soundSpellStart != "" ) {
         SoundEngine::playSound( soundSpellStart );
 	}
+
 	remainingEffect = 0.0;
 	frameCount = 0;
 
-	//dealDirectDamage();
+	if ( child ) dealDirectDamage();
 
 	effectStart = SDL_GetTicks();
-	animationTimerStart = effectStart;
-	lastEffect = effectStart;
+	animationTimerStart = SDL_GetTicks();
+	lastEffect = SDL_GetTicks();
 
-	Globals::addActiveAoESpell( this );
+	if( !child )
+	{
+		Globals::addActiveAoESpell( this );
 
-	if ( creator->getTarget() != NULL )
-		creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, creator->getTarget() ) ) );
-	else
-		creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, centerX, centerY ) ) );
+		if ( creator->getTarget() != NULL )
+			creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, creator->getTarget() ) ) );
+		else
+			creator->addCooldownSpell( dynamic_cast<CSpellActionBase*> ( cast( NULL, centerX, centerY ) ) );
 
-	unbindFromCreator();
+		unbindFromCreator();
+	}
 }
 
 void GeneralAreaDamageSpell::inEffect()
@@ -982,6 +1006,7 @@ void GeneralAreaDamageSpell::inEffect()
 	uint32_t curTime = SDL_GetTicks();
 	uint32_t elapsedSinceLast  = curTime - lastEffect;
 	uint32_t elapsedSinceStart = curTime - effectStart;
+
 	if ( curTime - lastEffect < 1000 ) {
 		// do damage at most every 1 seconds unless effect is done
 		if ( elapsedSinceStart >= continuousDamageTime )
@@ -992,7 +1017,7 @@ void GeneralAreaDamageSpell::inEffect()
 		return;
 	}
 
-//	remainingEffect += calculateContinuousDamage( elapsedSinceLast );
+	if ( child ) remainingEffect += calculateContinuousDamage( elapsedSinceLast );
 	// no critical damage in this phase so far
 
 	bool callFinish = false;
@@ -1000,15 +1025,15 @@ void GeneralAreaDamageSpell::inEffect()
 		callFinish = true;
 	}
 
-//	if ( floor(remainingEffect) > 0 ) {
-//		//target->Damage( floor(remainingEffect), false );
-//		remainingEffect = remainingEffect - floor( remainingEffect );
-////		if ( ! target->isAlive() ) {
-////			creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-////		}
-//
-//		lastEffect = curTime;
-//	}
+	if ( floor(remainingEffect) > 0  && child) {
+		target->Damage( floor(remainingEffect), false );
+		remainingEffect = remainingEffect - floor( remainingEffect );
+		if ( !target->isAlive() ) {
+			callFinish = true;
+		}
+
+		lastEffect = curTime;
+	}
 
 	if ( callFinish ) {
 		finishEffect();
@@ -1126,7 +1151,8 @@ void GeneralBoltDamageSpell::startEffect()
 	if ( soundSpellStart != "" ) {
         SoundEngine::playSound( soundSpellStart );
 	}
-    frameCount = 0;
+
+	frameCount = 0;
 	moveRemaining = 0.0;
 	effectStart = SDL_GetTicks();
 	animationTimerStart = effectStart;
@@ -1684,9 +1710,7 @@ void MeleeDamageAction::dealDamage()
             damageDone = 1;
         }
         target->Damage( damageDone, criticalHit );
-        if ( ! target->isAlive() ) {
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-        }
+
         /// play the hit sound effect for the spell, if we have any.
         if ( soundSpellHit != "" ) {
             SoundEngine::playSound( soundSpellHit );
@@ -1759,7 +1783,7 @@ void MeleeDamageAction::finishEffect()
 RangedDamageAction::RangedDamageAction()
 {
     minRange = 0;
-	maxRange = 460; // default maxrange for ranged attacks. Can be overridden with setRange().
+	maxRange = 360; // default maxrange for ranged attacks. Can be overridden with setRange().
 	numProjectileTextures = 0;
 	damageBonus = 1.0;
 	projectileTexture = NULL;
@@ -1989,9 +2013,7 @@ void RangedDamageAction::dealDamage()
             damageDone = 1;
         }
         target->Damage( damageDone, criticalHit );
-        if ( ! target->isAlive() ) {
-            creator->gainExperience( target->getModifiedMaxHealth() / 10 );
-        }
+
         /// play the hit sound effect for the spell, if we have any.
         if ( soundSpellHit != "" ) {
             SoundEngine::playSound( soundSpellHit );
@@ -2127,42 +2149,49 @@ namespace DawnInterface
     GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralRayDamageSpell> newSpell( dynamic_cast<GeneralRayDamageSpell*>( SpellCreation::getGeneralRayDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
 	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralAreaDamageSpell> newSpell( dynamic_cast<GeneralAreaDamageSpell*>( SpellCreation::getGeneralAreaDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other )
 	{
 		 std::auto_ptr<GeneralBoltDamageSpell> newSpell( dynamic_cast<GeneralBoltDamageSpell*>( SpellCreation::getGeneralBoltDamageSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralHealingSpell* copySpell( GeneralHealingSpell *other )
 	{
 		 std::auto_ptr<GeneralHealingSpell> newSpell( dynamic_cast<GeneralHealingSpell*>( SpellCreation::getGeneralHealingSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     GeneralBuffSpell* copySpell( GeneralBuffSpell *other )
 	{
 		 std::auto_ptr<GeneralBuffSpell> newSpell( dynamic_cast<GeneralBuffSpell*>( SpellCreation::getGeneralBuffSpell( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     MeleeDamageAction* copySpell( MeleeDamageAction *other )
 	{
 		 std::auto_ptr<MeleeDamageAction> newSpell( dynamic_cast<MeleeDamageAction*>( SpellCreation::getMeleeDamageAction( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 
     RangedDamageAction* copySpell( RangedDamageAction *other )
 	{
 		 std::auto_ptr<RangedDamageAction> newSpell( dynamic_cast<RangedDamageAction*>( SpellCreation::getRangedDamageAction( other ) ) );
+		 newSpell->unsetLuaID();
 		 return newSpell.release();
 	}
 }

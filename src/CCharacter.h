@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -28,8 +28,19 @@
 #include "CDirection.h"
 #include "elements.h"
 #include "debug.h"
+#include "configuration.h"
 
-extern int RES_X,RES_Y,world_x,world_y;
+namespace Attitude
+{
+	enum Attitude
+	{
+		FRIENDLY,
+		NEUTRAL,
+		HOSTILE
+	};
+}
+
+extern int world_x,world_y;
 
 class CSpellActionBase;
 class GeneralBuffSpell;
@@ -129,6 +140,52 @@ namespace CharacterStates
 		Stunned,
 		NOEFFECT
 	};
+
+	inline bool isStateConsideredHarmfull( CharacterStates::CharacterStates characterState, float characterStateValue )
+	{
+	    switch ( characterState ) {
+	        case CharacterStates::Channeling:
+                return false;
+            break;
+            case CharacterStates::Charmed:
+                return true;
+            break;
+            case CharacterStates::Confused:
+                return true;
+            break;
+            case CharacterStates::Feared:
+                return true;
+            break;
+            case CharacterStates::Invisible:
+                return false;
+            break;
+            case CharacterStates::Mesmerized:
+                return true;
+            break;
+            case CharacterStates::Movementspeed:
+                if ( characterStateValue >= 1.0 ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            break;
+            case CharacterStates::SeeInvisible:
+                return false;
+            break;
+            case CharacterStates::SeeSneaking:
+                return false;
+            break;
+            case CharacterStates::Sneaking:
+                return false;
+            break;
+            case CharacterStates::Stunned:
+                return true;
+            break;
+            default:
+                false;
+            break;
+	    }
+	}
 }
 
 struct sLootTable
@@ -201,7 +258,9 @@ class CCharacter
 		void regenerateLifeManaFatigue( uint32_t regenPoints );
 
 		CCharacter* getTarget() const;
+		Attitude::Attitude getTargetAttitude();
 		void setTarget( CCharacter *target );
+		void setTarget( CCharacter *target, Attitude::Attitude attitude );
 
 		//active buffs and debuffs
 		void addActiveSpell( CSpellActionBase *spell );
@@ -377,6 +436,9 @@ class CCharacter
 		uint16_t getFatigueRegen() const;
 		void modifyFatigueRegen( int16_t fatigueRegenModifier );
 
+		void setExperienceValue( uint8_t newFatigueRegen );
+		uint8_t getExperienceValue() const;
+
 		void setClass( CharacterClass::CharacterClass );
 		CharacterClass::CharacterClass getClass() const;
 		CharacterArchType::CharacterArchType getArchType() const;
@@ -413,6 +475,7 @@ class CCharacter
 		virtual uint16_t getModifiedMaxDamage() const;
 
 		bool CheckMouseOver(int _x_pos, int _y_pos);
+		virtual bool canBeDamaged() const;
 		virtual void Damage(int amount, bool criticalHit);
 		void Heal(int amount);
 		virtual void Die();
@@ -464,6 +527,9 @@ class CCharacter
 		bool canSeeSneaking() const;
 		float getMovementSpeed() const;
 
+		int getDeltaX();
+		int getDeltaY();
+
 		// timers
 		float wander_thisframe, wander_lastframe;
 		float respawn_thisframe, respawn_lastframe;
@@ -487,7 +553,12 @@ class CCharacter
 		bool mayDoAnythingAffectingSpellActionWithoutAborting() const;
 		bool mayDoAnythingAffectingSpellActionWithAborting() const;
 
+		int dx, dy;
+
 	private:
+	// attitude
+	Attitude::Attitude targetAttitude;
+
 		// NPC attributes
 		std::string name;
 
@@ -509,6 +580,7 @@ class CCharacter
 		uint16_t healthRegen;
 		uint16_t manaRegen;
 		uint16_t fatigueRegen;
+		uint8_t experienceValue;
 
 		uint16_t armor;
 		uint16_t damageModifierPoints;

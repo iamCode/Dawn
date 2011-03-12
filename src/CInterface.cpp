@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -88,13 +88,13 @@ void CInterface::DrawInterface()
 	// draw the portrait of the character (ie, a humanlike guy or girl)
 	DrawingHelpers::mapTextureToRect( player->getPortraitTexture()->getTexture(0),
                                       world_x+4, player->getPortraitTexture()->getTexture(0).width,
-                                      world_y+RES_Y-68, player->getPortraitTexture()->getTexture(0).height );
+									  world_y+Configuration::screenHeight-68, player->getPortraitTexture()->getTexture(0).height );
 
 
 	// drawing the base of the portrait
 	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(11),
 	                                  world_x, interfacetextures.getTexture(11).width,
-	                                  world_y+50+RES_Y-interfacetextures.getTexture(11).height, interfacetextures.getTexture(11).height );
+									  world_y+50+Configuration::screenHeight-interfacetextures.getTexture(11).height, interfacetextures.getTexture(11).height );
 
     /** drawing the procentual display of characters life and mana.
     starts of at an X-offset of 76, this is where the hollow parts of the life, mana, fatigue and experience bars starts.
@@ -111,13 +111,13 @@ void CInterface::DrawInterface()
     glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
     DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
 	                                  world_x+76, lifeBarPercentage * 123,
-	                                  world_y+RES_Y-35, interfacetextures.getTexture(12).height );
+									  world_y+Configuration::screenHeight-35, interfacetextures.getTexture(12).height );
     /// mana bar
     if ( player->getArchType() == CharacterArchType::Caster ) {
         glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
         DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
                                         world_x+76, manaBarPercentage * 123,
-                                        world_y+RES_Y-53, interfacetextures.getTexture(12).height );
+										world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
     }
 
     /// fatigue bar
@@ -131,17 +131,17 @@ void CInterface::DrawInterface()
         }
         DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
                                           world_x+76, fatigueBarPercentage * 123,
-                                          world_y+RES_Y-53, interfacetextures.getTexture(12).height );
+										  world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
     }
 
     /// exp bar
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(13),
                                     world_x+76, experienceBarPercentage * 123,
-                                    world_y+RES_Y-67, interfacetextures.getTexture(13).height );
+									world_y+Configuration::screenHeight-67, interfacetextures.getTexture(13).height );
 
     /// draw our level beside the experience bar
-    levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+RES_Y-70, "%d",player->getLevel() );
+	levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+Configuration::screenHeight-70, "%d",player->getLevel() );
 
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -168,7 +168,7 @@ void CInterface::SetPlayer(CCharacter *player_)
 	player = player_;
 }
 
-void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos )
+void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, int x_pos, int y_pos, bool update )
 {
     std::stringstream converterStream, damageStream;
     converterStream << amount;
@@ -191,12 +191,13 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
         damageStream.clear();
         damageStream << tempString.at(streamCounter);
         damageStream >> damageNumber;
-        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*characterSpace)+rand_x, y_pos ));
+        damageDisplay.push_back(sDamageDisplay( damageNumber, critical, damageType, x_pos+(streamCounter*characterSpace)+rand_x, y_pos, update ));
     }
 }
 
 void CInterface::drawCombatText()
 {
+	int k = 0;
     // different color for heal and damage. damage = red, heal = green
     GLfloat damageType[2][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } };
 
@@ -223,11 +224,15 @@ void CInterface::drawCombatText()
 
         // fading and moving text upwards every 50ms
         damageDisplay[currentDamageDisplay].thisFrame = SDL_GetTicks();
-        if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50) {
+        if ((damageDisplay[currentDamageDisplay].thisFrame - damageDisplay[currentDamageDisplay].lastFrame) > 50 ) {
             damageDisplay[currentDamageDisplay].transparency -= reduce_amount;
             damageDisplay[currentDamageDisplay].y_pos++;
             damageDisplay[currentDamageDisplay].lastFrame = damageDisplay[currentDamageDisplay].thisFrame;
         }
+
+        if( damageDisplay[currentDamageDisplay].update ) k = 1;
+        damageDisplay[currentDamageDisplay].x_pos += (player->getDeltaX()*k);
+        damageDisplay[currentDamageDisplay].y_pos += (player->getDeltaY()*k);
 
         //sets the color of the text we're drawing based on what type of damage type we're displaying.
         glColor4f(damageType[damageDisplay[currentDamageDisplay].damageType][0],damageType[damageDisplay[currentDamageDisplay].damageType][1],damageType[damageDisplay[currentDamageDisplay].damageType][2],damageDisplay[currentDamageDisplay].transparency);
@@ -351,26 +356,26 @@ void CInterface::drawCharacterStates()
         /// draws fear symbol
         if ( allCharacters[ curCharacter  ]->isFeared() == true ) {
             DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(7),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(11).width / 2, interfacetextures.getTexture(11).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(11).height );
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(7).width / 2, interfacetextures.getTexture(7).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(7).height );
         }
         /// draws stun symbol
         if ( allCharacters[ curCharacter ]->isStunned() == true ) {
             DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(8),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(12).width / 2, interfacetextures.getTexture(12).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(12).height );
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(8).width / 2, interfacetextures.getTexture(8).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(8).height );
         }
         /// draws confused symbol
         if ( allCharacters[ curCharacter ]->isConfused() == true ) {
             DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(9),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(13).width / 2, interfacetextures.getTexture(13).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(13).height );
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(9).width / 2, interfacetextures.getTexture(9).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(9).height );
         }
         /// draws mesmerized symbol
         if ( allCharacters[ curCharacter ]->isMesmerized() == true ) {
             DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(10),
-                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(14).width / 2, interfacetextures.getTexture(14).width,
-                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(14).height );
+                                              allCharacters[ curCharacter ]->getXPos() + allCharacters[ curCharacter ]->getWidth() / 2 - interfacetextures.getTexture(10).width / 2, interfacetextures.getTexture(10).width,
+                                              allCharacters[ curCharacter ]->getYPos() + allCharacters[ curCharacter ]->getHeight() / 2, interfacetextures.getTexture(10).height );
         }
     }
 }

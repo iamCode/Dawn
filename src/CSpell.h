@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
 
@@ -96,10 +96,9 @@ class CSpellActionBase
 		virtual uint16_t getSpellCost() const = 0;
 		virtual uint16_t getDuration() const = 0;
 		virtual uint16_t getRadius() const = 0;
-		virtual uint16_t getX() const = 0;
-		virtual uint16_t getY() const = 0;
+		virtual int16_t getX() const = 0;
+		virtual int16_t getY() const = 0;
 		virtual bool isInRange( uint16_t distance ) const = 0;
-		virtual bool isSpellHostile() const = 0;
 		virtual std::string getName() const = 0;
 		virtual std::string getID() const;
 		virtual std::string getInfo() const = 0;
@@ -165,17 +164,25 @@ class CSpellActionBase
 		void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0f );
 		std::pair<CharacterStates::CharacterStates, float> getCharacterState() const;
 
+        bool isSpellHostile() const;
+
 		void drawSymbol( int left, int width, int bottom, int height ) const;
+
+		/// this resets the luaID to empty. It is only to be used in copySpell-function because there we want to create a new spell which
+		/// will be inscribed in the spell database so it will get an ID.
+		void unsetLuaID();
 	protected:
 		CCharacter *creator;
 		CCharacter *target;
 		bool boundToCreator;
 		bool finished;
+        bool hostileSpell;
 		bool instant; // makes the spell instant, doesn't require the spell to "hit" the target. (ranged + bolt spells)
+		mutable std::string luaID; // for caching the id and not having to get it every time again
 		CharacterClass::CharacterClass requiredClass;
-        std::string soundSpellCasting;
-        std::string soundSpellStart;
-        std::string soundSpellHit;
+		std::string soundSpellCasting;
+		std::string soundSpellStart;
+		std::string soundSpellHit;
 		uint8_t requiredLevel;
 		uint32_t requiredWeapons;
 		uint8_t rank;
@@ -227,11 +234,10 @@ class ConfigurableSpell : public CSpell
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
-		virtual uint16_t getX() const;
-		virtual uint16_t getY() const;
+		virtual int16_t getX() const;
+		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
-		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -252,8 +258,9 @@ class ConfigurableSpell : public CSpell
 		uint16_t duration;
 		uint16_t minRange;
 		uint16_t maxRange;
-		bool hostileSpell;
 		uint16_t radius;
+		int16_t centerX;
+		int16_t centerY;
 
 		std::string name;
 		std::string info;
@@ -271,11 +278,10 @@ class ConfigurableAction : public CAction
 		void setSpellCost( uint16_t spellCost );
 		virtual uint16_t getSpellCost() const;
 		virtual uint16_t getRadius() const;
-		virtual uint16_t getX() const;
-		virtual uint16_t getY() const;
+		virtual int16_t getX() const;
+		virtual int16_t getY() const;
 		void setRange( uint16_t minRange, uint16_t maxRange );
 		virtual bool isInRange( uint16_t distance ) const;
-		virtual bool isSpellHostile() const;
 		void setName( std::string newName );
 		virtual std::string getName() const;
 		void setInfo( std::string newInfo );
@@ -296,7 +302,6 @@ class ConfigurableAction : public CAction
 		uint16_t duration;
 		uint16_t minRange;
 		uint16_t maxRange;
-		bool hostileSpell;
 
 		std::string name;
 		std::string info;
@@ -310,13 +315,13 @@ class GeneralDamageSpell : public ConfigurableSpell
 		void setDirectDamage( uint16_t newMinDirectDamage, uint16_t newMaxDirectDamage, ElementType::ElementType newElementDirect );
 		void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, uint16_t newContDamageTime, ElementType::ElementType newContDamageElement );
 
-    uint16_t getDirectDamageMin() const;
-    uint16_t getDirectDamageMax() const;
-    ElementType::ElementType getDirectDamageElement() const;
+	uint16_t getDirectDamageMin() const;
+	uint16_t getDirectDamageMax() const;
+	ElementType::ElementType getDirectDamageElement() const;
 
-    uint16_t getContinuousDamageMin() const;
-    uint16_t getContinuousDamageMax() const;
-    ElementType::ElementType getContinuousDamageElement() const;
+	uint16_t getContinuousDamageMin() const;
+	uint16_t getContinuousDamageMax() const;
+	ElementType::ElementType getContinuousDamageElement() const;
 
 		virtual EffectType::EffectType getEffectType() const;
 
@@ -390,8 +395,8 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 
 		void setRadius( uint16_t newRadius );
 		virtual uint16_t getRadius();
-		virtual uint16_t getX();
-		virtual uint16_t getY();
+		virtual int16_t getX();
+		virtual int16_t getY();
 
 	protected:
 		GeneralAreaDamageSpell();
@@ -411,8 +416,6 @@ class GeneralAreaDamageSpell : public GeneralDamageSpell
 		int numTextures;
 		CTexture *spellTexture;
 
-		int centerX;
-		int centerY;
 		EffectType::EffectType effectType;
 		bool child;
 };

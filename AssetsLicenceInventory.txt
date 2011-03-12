@@ -18,6 +18,8 @@ data/houseinterior/insidewall14.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall16.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall8.tga						CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall_door.tga					CC-BY 3.0			http://www.lostgarden.com
+data/houseinterior/insidewall_door_open.tga				CC-BY 3.0			Modification of data/houseinterior/insidewall_door.tga
+data/houseinterior/insidewall_door_closed.tga			CC-BY 3.0			Modification of data/houseinterior/insidewall_door.tga, door from data/village/village11.tga
 data/houseinterior/chest1.tga							CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewalldamaged2.tga				CC-BY 3.0			http://www.lostgarden.com
 data/houseinterior/insidewall10.tga						CC-BY 3.0			http://www.lostgarden.com
@@ -2220,16 +2222,20 @@ data/cliffs/cliff17.tga									CC-BY 3.0			http://www.lostgarden.com
 data/cliffs/cliff5.tga									CC-BY 3.0			http://www.lostgarden.com
 data/tree/tree1.tga										CC-BY 3.0			http://www.lostgarden.com
 data/tree/tree2.tga										CC-BY 3.0			http://www.lostgarden.com
-data/sound/sword_01.ogg
-data/sound/walking.ogg
-data/sound/quiet_click.ogg
-data/sound/sword_swwosh.ogg
-data/sound/click.ogg
-data/sound/sell_buy_item.ogg
-data/sound/arrowHit06.ogg
+data/sound/sword_01.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=52458
+data/sound/walking.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=15562
+data/sound/quiet_click.ogg						CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=407
+data/sound/sword_swwosh.ogg						CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=19312
+																			(slightly modified to remove the second swwosh)
+data/sound/click.ogg							CC Sampling Plus 1.0		http://www.freesound.org/samplesViewSingle.php?id=406
+																			(shortened a little bit)
+data/sound/sell_buy_item.ogg		GNU GPL 2.0,GNU GPL 3.0,GNU LGPL 3.0
+									CC-BY 3.0,CC-BY-SA 3.0,CC0				http://opengameart.org/content/inventory-sound-effects
+data/sound/arrowHit06.ogg			GNU GPL 2.0,GNU GPL 3.0,CC-BY-SA 3.0	http://opengameart.org/content/arrow-hit-twang
 data/music/loading.ogg									CC-BY 3.0			http://opengameart.org/content/cave-theme
-data/music/mika_FallToPieces_Silence.ogg
+data/music/mika_FallToPieces_Silence.ogg				CC BY-NC 3.0		http://ccmixter.org/files/mika/24945
 data/music/Early_Dawn_Simple.ogg							GPLv3				Created by Dawn members
+data/music/ratsrats_0.ogg								CC-BY 3.0			http://opengameart.org/content/rat-sewer-0
 data/spells/frozenshot/symbol.tga							GPLv3				http://opengameart.org/content/420-pixel-art-icons-medievalfantasy-rpg
 data/spells/landyrsforce/symbol.tga							CC0				http://opengameart.org/content/skill-magic-spell-icons
 data/spells/inferno/symbol.tga
@@ -2241,3 +2247,30 @@ data/spells/pindown/symbol.tga								GPLv3				http://opengameart.org/content/42
 data/cursors/circle1_disabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
 data/cursors/circle1_enabled.tga							CC-BY 3.0			http://opengameart.org/content/colored-summoning-circles
 data/spells/phantomstrike/symbol.tga							GPLv3				http://opengameart.org/content/painterly-spell-icons-part-1
+data/sound/spellcast.ogg
+data/interface/LoadingScreen/SilverForest.tga
+data/interface/Portrait/bar_small.tga
+data/interface/Portrait/base.tga
+data/interface/Portrait/Liche.tga
+data/interface/Portrait/Warrior.tga
+data/interface/Portrait/bar.tga
+data/interface/Portrait/Ranger.tga
+data/items/Eye1.tga
+data/items/Fang1.tga
+data/items/Mushroom1.tga
+data/items/Web1.tga
+data/items/Skin1.tga
+data/items/Meat1.tga
+data/items/Tooth1.tga
+data/items/Meat2.tga
+data/tile_solid.tga
+data/circle.tga
+data/spells/electrocute/symbol.tga
+data/spells/flamingarrow/flamingarrow.ogg
+data/spells/lightning/lightning.ogg
+data/spells/rabidbite/rabidbite.ogg
+data/spells/venomspit/venomspit.ogg
+data/spells/melee/melee_swing.ogg
+data/spells/melee/melee_hit.ogg
+data/spells/shoot/shoot.ogg
+data/spells/terrify/terrify.ogg
