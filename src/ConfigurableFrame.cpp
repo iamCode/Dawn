@@ -24,6 +24,7 @@ ConfigurableFrame::ConfigurableFrame(  int contentX, int contentY, int contentWi
 
 void ConfigurableFrame::draw( int mouseX, int mouseY )
 {
+	glColor4f(1,1,1,1);
 	Frames::drawFrame( getPosX(), getPosY(), blocksX, blocksY, usedBlockWidth, usedBlockHeight );
 	glTranslatef( usedBlockWidth, usedBlockHeight, 0 );
 	FramesBase::draw( mouseX-usedBlockWidth, mouseY-usedBlockHeight );
@@ -63,7 +64,7 @@ int ConfigurableFrame::getHeight() const
 	return (2+blocksY) * usedBlockHeight;
 }
 
-void ConfigurableFrame::addChildFrame( int relPosX, int relPosY, FramesBase *newChild )
+void ConfigurableFrame::addChildFrame( int relPosX, int relPosY, std::auto_ptr<FramesBase> newChild )
 {
 	FramesBase::addChildFrame( relPosX, relPosY, newChild );
 	applyLayout();

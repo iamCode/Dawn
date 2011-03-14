@@ -47,6 +47,14 @@ FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint
 		posY = Configuration::screenHeight - frameHeight - frameOffsetY;
 }
 
+FramesBase::~FramesBase()
+{
+	for ( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr ) {
+		delete childFrames[ curChildNr ];
+	}
+	childFrames.resize( 0 );
+}
+
 void FramesBase::addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY )
 {
     moveableFrame = true;
@@ -227,10 +235,10 @@ void FramesBase::addToParent( int posOffsetX, int posOffsetY, FramesBase *parent
 	setPosition( posOffsetX, posOffsetY );
 }
 
-void FramesBase::addChildFrame( int posOffsetX, int posOffsetY, FramesBase *newChild )
+void FramesBase::addChildFrame( int posOffsetX, int posOffsetY, std::auto_ptr<FramesBase> newChild )
 {
 	newChild->addToParent( posOffsetX, posOffsetY, this );
-	childFrames.push_back( newChild );
+	childFrames.push_back( newChild.release() );
 }
 
 int FramesBase::getPosX() const

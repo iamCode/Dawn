@@ -86,6 +86,7 @@
 #include "configuration.h"
 #include "ConfigurableFrame.h"
 #include "Frames.h"
+#include "GameLoopHandler.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -148,6 +149,14 @@ std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
 std::auto_ptr<LogWindow> logWindow;
+std::auto_ptr<ConfigurableFrame> optionsFrame( new ConfigurableFrame( 100, 100, 100, 100 ) );
+std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+
+std::auto_ptr<GameLoopHandler> mainMenuHandler( new MainMenuHandler() );
+
+GameLoopHandler *currentGameLoopHandler = NULL;
+GameLoopHandler *nextGameLoopHandler = NULL;
 
 namespace Globals
 {
@@ -223,6 +232,11 @@ namespace DawnInterface
 		CZone *newCurZone = Globals::allZones[ zoneName ];
 		Globals::setCurrentZone( newCurZone );
 	}
+}
+
+void deactivateCurrentGameLoopHandler()
+{
+	currentGameLoopHandler->setDone();
 }
 
 void DrawScene()
@@ -772,8 +786,8 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to set resolution");
 
 		SoundEngine::initSound();
-
 		SoundEngine::playMusic("data/music/loading.ogg", true);
+
         glEnable( GL_TEXTURE_2D );
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -792,14 +806,11 @@ bool dawn_init(int argc, char** argv)
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
+		currentGameLoopHandler = mainMenuHandler.get();
+		
         /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
 		Frames::initFrameTextures();
 		DrawFunctions::initDrawTextures();
-
-		bool quit = false;
-
-		std::auto_ptr<ConfigurableFrame> optionsFrame( new ConfigurableFrame( 100, 100, 100, 100 ) );
-		std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
 
 		// setup options menu frame
 		optionsFrame->setAutoresize();
@@ -813,9 +824,6 @@ bool dawn_init(int argc, char** argv)
 		std::auto_ptr<Label> optionsFrameFullscreenLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Fullscreen" ));
 		optionsFrameFullscreenLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		optionsFrameFullscreenLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
-		optionsFrame->addChildFrame( 10, 0, optionsFrameBackLabel.get() );
-		optionsFrame->addChildFrame( 10, 22, optionsFrameFullscreenLabel.get() );
-		optionsFrame->addChildFrame( 0, 70, optionsFrameLabel.get() );
 		optionsFrame->setVisible( false );
 
 		if ( ! Configuration::fullscreenenabled )
@@ -840,8 +848,7 @@ bool dawn_init(int argc, char** argv)
 				}
 		};
 
-		ToggleFrameFunction optionsScreenBackFunc( optionsFrame.get(), mainMenuFrame.get() );
-		optionsFrameBackLabel->setOnClicked( &optionsScreenBackFunc );
+		optionsFrameBackLabel->setOnClicked( new ToggleFrameFunction(optionsFrame.get(), mainMenuFrame.get()) );
 
 		class ToggleFullscreenFunction : public SimpleFunctionObject
 		{
@@ -883,16 +890,19 @@ bool dawn_init(int argc, char** argv)
 													  SDL_OPENGL | SDL_FULLSCREEN);
 						}
 					}
-					if ( fullscreen )
+					if ( Configuration::fullscreenenabled )
 						fullscreenLabel->setText("Fullscreen");
 					else
 						fullscreenLabel->setText("Windowed");
 				}
 		};
 
-		ToggleFullscreenFunction optionsFrameFullscreenFunc( optionsFrameFullscreenLabel.get(), Configuration::fullscreenenabled );
-		optionsFrameFullscreenLabel->setOnClicked( &optionsFrameFullscreenFunc );
+		optionsFrameFullscreenLabel->setOnClicked( new ToggleFullscreenFunction( optionsFrameFullscreenLabel.get(), Configuration::fullscreenenabled ) );
 
+		optionsFrame->addChildFrame( 10, 0, std::auto_ptr<FramesBase>(optionsFrameBackLabel.release()) );
+		optionsFrame->addChildFrame( 10, 22, std::auto_ptr<FramesBase>(optionsFrameFullscreenLabel.release()) );
+		optionsFrame->addChildFrame( 0, 70, std::auto_ptr<FramesBase>(optionsFrameLabel.release()) );
+		
 		// setup main menu frame
 		mainMenuFrame->setAutoresize();
 		mainMenuFrame->setCenteringLayout();
@@ -907,37 +917,21 @@ bool dawn_init(int argc, char** argv)
 		newGameLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		newGameLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
 
-		class NewGameFunction : public SimpleFunctionObject
-		{
-			private:
-				bool &quitLoop;
-			public:
-				NewGameFunction( bool & quitLoop_ ) : quitLoop( quitLoop_ )
-				{
-				}
-				void operator() ()
-				{
-					quitLoop=true;
-				}
-		} myNewGameFunction( quit );
-
-		ToggleFrameFunction myOptionsFunction( mainMenuFrame.get(), optionsFrame.get() );
-
 		class QuitGameFunction : public SimpleFunctionObject
 		{
 			void operator() ()
 			{
 				exit(0);
 			}
-		} myQuitGameFunction;
+		};
+		
+		optionsLabel->setOnClicked( new ToggleFrameFunction( mainMenuFrame.get(), optionsFrame.get() ) );
+		newGameLabel->setOnClicked( new ToggleFrameFunction( mainMenuFrame.get(), chooseClassFrame.get() ) );
+		quitLabel->setOnClicked( new QuitGameFunction() );
 
-		quitLabel->setOnClicked( &myQuitGameFunction );
-		optionsLabel->setOnClicked( &myOptionsFunction );
-		newGameLabel->setOnClicked( &myNewGameFunction );
-
-		mainMenuFrame->addChildFrame( 0, 0, quitLabel.get() );
-		mainMenuFrame->addChildFrame( 0, 10, optionsLabel.get() );
-		mainMenuFrame->addChildFrame( 0, 30, newGameLabel.get() );
+		mainMenuFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(quitLabel.release()) );
+		mainMenuFrame->addChildFrame( 0, 10, std::auto_ptr<FramesBase>(optionsLabel.release()) );
+		mainMenuFrame->addChildFrame( 0, 30, std::auto_ptr<FramesBase>(newGameLabel.release()) );
 
 		activeFrames.push_back( mainMenuFrame.get() );
 		mainMenuFrame->setVisible( true );
@@ -949,44 +943,6 @@ bool dawn_init(int argc, char** argv)
         mainMenu->addMenuItem( "About", MenuItemType::MENU );
         mainMenu->addMenuItem( "Quit", MenuItemType::FUNCTION );
 */
-		bool mouseButtonDown = false;
-		while ( ! quit )
-        {
-            SDL_Event event;
-            SDL_PollEvent(&event);
-
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
-				if ( ! mouseButtonDown )
-				{
-					mouseButtonDown = true;
-					// iterate through all our active frames and click on them if mouse is over.
-					for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
-					{
-						if ( activeFrames[ curFrame ]->isMouseOnFrame( event.motion.x, Configuration::screenHeight - event.motion.y - 1 ) )
-						{
-							activeFrames[ curFrame ]->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
-						}
-					}
-				}
-            }
-			else
-			{
-				mouseButtonDown = false;
-			}
-			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			glColor4d( 1.0, 1.0, 1.0, 1.0 );
-			glLoadIdentity();
-			for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
-			{
-				activeFrames[curFrame]->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
-			}
-			SDL_GL_SwapBuffers();
-        }
-		
-		activeFrames.clear();
-
-		std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
 		chooseClassFrame->setAutoresize();
 		chooseClassFrame->setCenteringLayout();
 		chooseClassFrame->setCenterOnScreen();
@@ -1001,58 +957,40 @@ bool dawn_init(int argc, char** argv)
 		std::auto_ptr<Label> warriorLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Warrior" ) );
 		warriorLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		warriorLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
-
-		quit = false;
+		std::auto_ptr<Label> backLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Back" ) );
+		backLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+		backLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
 
 		class ChooseClassFunction : public SimpleFunctionObject
 		{
 			private:
 				CharacterClass::CharacterClass characterClass;
-				bool &quitLoop;
 			public:
-				ChooseClassFunction( CharacterClass::CharacterClass characterClass_, bool & quitLoop_ )
-					: characterClass( characterClass_ ),
-					  quitLoop( quitLoop_ )
+				ChooseClassFunction( CharacterClass::CharacterClass characterClass_ )
+					: characterClass( characterClass_ )
 				{
 				}
 
 				void operator() ()
 				{
+					// activate next handler
 					Globals::getPlayer()->setClass( characterClass );
-					quitLoop=true;
+					deactivateCurrentGameLoopHandler();
 				}
 		};
 
-		ChooseClassFunction chooseLiche( CharacterClass::Liche, quit );
-		ChooseClassFunction chooseRanger( CharacterClass::Ranger, quit );
-		ChooseClassFunction chooseWarrior( CharacterClass::Warrior, quit );
-		licheLabel->setOnClicked( &chooseLiche );
-		rangerLabel->setOnClicked( &chooseRanger );
-		warriorLabel->setOnClicked( &chooseWarrior );
+		licheLabel->setOnClicked( new ChooseClassFunction( CharacterClass::Liche ) );
+		rangerLabel->setOnClicked( new ChooseClassFunction( CharacterClass::Ranger ) );
+		warriorLabel->setOnClicked( new ChooseClassFunction( CharacterClass::Warrior ) );
+		backLabel->setOnClicked( new ToggleFrameFunction( chooseClassFrame.get(), mainMenuFrame.get() ) );
 
-		chooseClassFrame->addChildFrame( 0, 0, warriorLabel.get() );
-		chooseClassFrame->addChildFrame( 0, 0, rangerLabel.get() );
-		chooseClassFrame->addChildFrame( 0, 0, licheLabel.get() );
-		chooseClassFrame->addChildFrame( 0, 0, captionLabel.get() );
+		chooseClassFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(backLabel.release()) );
+		chooseClassFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(warriorLabel.release()) );
+		chooseClassFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(rangerLabel.release()) );
+		chooseClassFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(licheLabel.release()) );
+		chooseClassFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(captionLabel.release()) );
 
-		while ( ! quit )
-		{
-            SDL_Event event;
-            SDL_PollEvent(&event);
-
-			if (event.type == SDL_MOUSEBUTTONDOWN) {
-				chooseClassFrame->clicked( event.motion.x, Configuration::screenHeight - event.motion.y - 1, event.button.button );
-			}
-			glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-			glColor4d( 1.0, 1.0, 1.0, 1.0 );
-			glLoadIdentity();
-			chooseClassFrame->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
-			SDL_GL_SwapBuffers();
-		}
-		glLoadIdentity();
-		glColor4d( 1.0, 1.0, 1.0, 1.0 );
-
+		/*
 		initStartTicks = SDL_GetTicks();
 		imgLoadTime = 0;
 		sdlLoadTime = 0;
@@ -1114,7 +1052,7 @@ bool dawn_init(int argc, char** argv)
 		characterInfoScreen->initFonts();
         actionBar->initFonts();
         GUI.initFonts();
-        logWindow->clear();
+        logWindow->clear(); */
 		return true;
 }
 
@@ -1123,7 +1061,7 @@ void setQuitGame()
 	done = 1;
 }
 
-void game_loop()
+void game_loop_old()
 {
 	// TODO: Break this down into subroutines
 
@@ -1534,6 +1472,36 @@ player->cleanupActiveSpells();
 		focus.updateFocus();
 	}
 	std::cout << "numTexturesDrawn:   " << numTexturesDrawn << std::endl;
+}
+
+void game_loop()
+{
+	SDL_Event lastEvent;
+	// activate first game loop handler
+	if ( currentGameLoopHandler != NULL ) {
+		currentGameLoopHandler->activate( &lastEvent );
+	}
+	
+	while ( currentGameLoopHandler != NULL ) {
+		currentGameLoopHandler->handleEvents();
+		currentGameLoopHandler->updateScene();
+
+		// reset drawing context
+		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		glClear( GL_COLOR_BUFFER_BIT );
+		glLoadIdentity(); // reset view to 0,0
+
+		currentGameLoopHandler->drawScene();
+		SDL_GL_SwapBuffers();
+
+		if ( currentGameLoopHandler->isDone() ) {
+			currentGameLoopHandler->finish();
+			currentGameLoopHandler = nextGameLoopHandler;
+			if ( currentGameLoopHandler != NULL ) {
+				currentGameLoopHandler->activate( &lastEvent );
+			}
+		}
+	}
 }
 
 int main(int argc, char* argv[])

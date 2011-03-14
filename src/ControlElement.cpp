@@ -16,6 +16,12 @@ Label::Label( GLFT_Font *font_, std::string text_ )
 	onClickedFunc = NULL;
 }
 
+Label::~Label()
+{
+	if ( onClickedFunc != NULL )
+		delete onClickedFunc;
+}
+
 void Label::setText( std::string newText )
 {
 	text = newText;
@@ -28,6 +34,9 @@ void Label::setFont( GLFT_Font *newFont )
 
 void Label::setOnClicked( SimpleFunctionObject* onClickedFunc )
 {
+	if ( this->onClickedFunc ) {
+		delete this->onClickedFunc;
+	}
 	this->onClickedFunc = onClickedFunc;
 }
 

@@ -19,6 +19,7 @@ class Label : public FramesBase
 {
 	public:
 		Label( GLFT_Font *font = NULL, std::string text = "" );
+		~Label();
 		virtual void setText( std::string newText );
 		virtual void setFont( GLFT_Font *font );
 

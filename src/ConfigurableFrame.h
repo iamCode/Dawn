@@ -15,7 +15,7 @@ class ConfigurableFrame : public FramesBase //, public ControlElement
 		void setCenteringLayout();
 		void setCenterOnScreen();
 
-		virtual void addChildFrame( int relPosX, int relPosY, FramesBase *newChild );
+		virtual void addChildFrame( int relPosX, int relPosY, std::auto_ptr<FramesBase> newChild );
 		virtual int getWidth() const;
 		virtual int getHeight() const;
 
