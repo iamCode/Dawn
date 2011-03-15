@@ -32,15 +32,31 @@ class MainMenuHandler : public GameLoopHandler
 	bool mouseButtonDown;
 };
 
-/*
+class LoadingManager;
+class LoadingScreen;
+
 class LoadingScreenHandler : public GameLoopHandler
 {
   public:
+	LoadingScreenHandler( LoadingScreen *loadingScreen, LoadingManager *loadingManager );
+	~LoadingScreenHandler();
+	virtual void activate( SDL_Event *lastEvent );
 	virtual void drawScene();
 	virtual void handleEvents();
-	virtual void updateScene();	
+	virtual void updateScene();
+	virtual void finish();
+
+  private:
+	LoadingManager *loadingManager;
+	LoadingScreen *loadingScreen;
+	uint32_t lastTicks;
+	uint32_t curTicks;
+	
+	uint32_t drawingTime;
+	uint32_t initStartTicks;
 };
 
+/*
 class GameScreenHandler : public GameLoopHandler
 {
   public:
