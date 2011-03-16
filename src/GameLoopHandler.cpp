@@ -32,9 +32,8 @@ void MainMenuHandler::drawScene()
 	glClear( GL_COLOR_BUFFER_BIT );
 	glLoadIdentity(); // reset view to 0,0
 
-	SDL_Event &event = *lastEvent;
 	for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
-		activeFrames[curFrame]->draw( event.motion.x, Configuration::screenHeight - event.motion.y - 1 );
+		activeFrames[curFrame]->draw( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1 );
 	}
 	
 	SDL_GL_SwapBuffers();
@@ -65,6 +64,7 @@ void MainMenuHandler::updateScene()
 
 void MainMenuHandler::finish()
 {
+	activeFrames.clear();
 }
 
 // LoadingScreenHandler
@@ -86,6 +86,8 @@ extern uint32_t debugOutputTime;
 extern GLFT_Font *fpsFont;
 extern CMessage message;
 
+void setNextGameLoopHandler( GameLoopHandler *nextHandler );
+
 LoadingScreenHandler::LoadingScreenHandler( LoadingScreen *loadingScreen, LoadingManager *loadingManager )
 {
 	this->loadingScreen = loadingScreen;
@@ -95,6 +97,9 @@ LoadingScreenHandler::LoadingScreenHandler( LoadingScreen *loadingScreen, Loadin
 void LoadingScreenHandler::activate( SDL_Event *lastEvent )
 {
 	this->lastEvent = lastEvent;
+	
+	finishMe = false;
+	
 	lastTicks = SDL_GetTicks();
 	curTicks = lastTicks;
 	
@@ -133,7 +138,7 @@ void LoadingScreenHandler::drawScene()
 
 void LoadingScreenHandler::handleEvents()
 {
-	// just ignore the events
+	// just ignore the lastEvents
 	while (SDL_PollEvent(lastEvent) ) {
 		// do nothing
 	}
@@ -174,6 +179,15 @@ void LoadingScreenHandler::finish()
 	std::cout << "included are " << debugOutputTime << " ms for debug output" << std::endl;
 	std::cout << "included are " << drawingTime << " ms for menu drawing" << std::endl;
 	std::cout << "total submeasures cover >= " << (100*(imgLoadTime+debugOutputTime+drawingTime)/initTime) << "% of init time" << std::endl;
+
+	if ( nextHandler != NULL ) {
+		setNextGameLoopHandler( nextHandler );
+	}
+}
+
+void LoadingScreenHandler::setFollowHandler( GameLoopHandler *nextHandler )
+{
+	this->nextHandler = nextHandler;
 }
 
 void processTextureInOpenGLThread( CTexture *texture, std::string textureFile, int textureIndex, int textureOffsetX, int textureOffsetY )
@@ -186,3 +200,442 @@ void processFontInOpenGLThread( GLFT_Font *font, const std::string &filename, un
 	curTextureProcessor->setCurrentFontToProcess( font, filename, size );
 }
 
+// GameScreenHandler
+
+#include "interactionpoint.h"
+#include "interactionregion.h"
+#include "textwindow.h"
+#include "utils.h"
+
+extern std::vector<TextWindow*> allTextWindows;
+extern cameraFocusHandler focus;
+
+bool KP_interrupt = false;
+bool KP_select_next = false;
+bool KP_screenshot = false;
+bool KP_toggle_showCharacterInfo = false;
+bool KP_toggle_showInventory = false;
+bool KP_toggle_showSpellbook = false;
+bool KP_toggle_showQuestWindow = false;
+bool KP_toggle_showOptionsWindow = false;
+
+#ifdef _WIN32
+	#define TOOLTIP_KEY SDLK_LALT
+#else
+	// there ALT + mouseclick seems to be moving windows under X or at least KDE
+	#define TOOLTIP_KEY SDLK_LCTRL
+#endif
+
+void GameScreenHandler::activate( SDL_Event *lastEvent )
+{
+	this->lastEvent = lastEvent;
+	
+	finishMe = false;
+	
+	lastTicks = SDL_GetTicks();
+	curTicks  = lastTicks;
+	ticksDiff = 0;
+	
+	Player *player = Globals::getPlayer();
+	focus.setFocus(player);
+	
+	GLfloat white[] = { 1.0f, 1.0f, 1.0f };
+	DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );	
+}
+
+void GameScreenHandler::handleEvents()
+{
+	if (Editor.isEnabled()) {
+		Editor.HandleKeys();
+		lastTicks = SDL_GetTicks();
+		curTicks  = lastTicks;
+		ticksDiff = 0;
+		return;
+	}
+	
+	Player *player = Globals::getPlayer();
+
+	while (SDL_PollEvent(lastEvent)) {
+		if (lastEvent->type == SDL_QUIT)  {
+			done = 1;
+		}
+		
+		std::pair<int,int> mouseDownXY;
+
+		if (lastEvent->type == SDL_MOUSEBUTTONDOWN) {
+			mouseDownXY = std::pair<int,int>( mouseX, mouseY );
+
+			bool clickedInFrame = false;
+
+			// iterate through all our active frames and click on them if mouse is over.
+			for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+			{
+				if ( activeFrames[ curFrame ]->isMouseOnFrame( mouseX, mouseY ) )
+				{
+					// check if mouse is over closebutton (if any) and then we try and close the frame
+					if ( activeFrames[ curFrame ]->isMouseOnCloseButton( mouseX, mouseY ) == true )
+					{
+						activeFrames[ curFrame ]->toggle();
+						clickedInFrame = true;
+						break;
+					}
+
+					// check to see if mouse is over titlebar, then we try to move the frame.
+					if ( activeFrames[ curFrame ]->isMouseOnTitlebar( mouseX, mouseY ) == true )
+					{
+						activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+						activeFrames[ curFrame ]->setOnTop();
+						clickedInFrame = true;
+						break;
+					}
+
+					activeFrames[ curFrame ]->clicked( mouseX, mouseY, lastEvent->button.button );
+					activeFrames[ curFrame ]->setOnTop();
+					clickedInFrame = true;
+					break;
+				}
+			}
+
+			// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
+			if ( clickedInFrame == false )
+			{
+				actionBar->clicked( mouseX, mouseY );
+				buffWindow->clicked( mouseX, mouseY, lastEvent->button.button );
+				if ( shopWindow->hasFloatingSelection() )
+				{
+					shopWindow->clicked( mouseX, mouseY, lastEvent->button.button );
+				}
+
+				if ( inventoryScreen->hasFloatingSelection() )
+				{
+					inventoryScreen->clicked( mouseX, mouseY, lastEvent->button.button );
+				}
+
+				if ( spellbook->hasFloatingSpell() )
+				{
+					spellbook->clicked( mouseX, mouseY, lastEvent->button.button );
+				}
+
+				switch (lastEvent->button.button) {
+					case SDL_BUTTON_LEFT:
+					{
+						CZone *curZone = Globals::getCurrentZone();
+						curZone->getGroundLoot()->searchForItems( world_x + mouseX, world_y + mouseY );
+
+						if ( inventoryScreen->isVisible() ) {
+							InventoryItem *floatingSelection = curZone->getGroundLoot()->getFloatingSelection( world_x + mouseX, world_y + mouseY );
+							if ( floatingSelection != NULL ) {
+								inventoryScreen->setFloatingSelection( floatingSelection );
+							}
+						}
+
+					    std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
+					    for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+					        CNPC *curNPC = zoneNPCs[x];
+					        if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+					            if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
+					                if( !player->hasTarget( curNPC ) )
+					                    player->setTarget( curNPC, curNPC->getAttitude() );
+					                else
+					                    player->setTarget( NULL );
+					                break;
+					            }
+					        }
+					    }
+					}
+					break;
+
+					case SDL_BUTTON_RIGHT:
+					{
+						// look for interactionpoints when right-clicking.
+						std::vector<InteractionPoint*> zoneInteractionPoints = Globals::getCurrentZone()->getInteractionPoints();
+						for ( size_t curInteractionNr=0; curInteractionNr < zoneInteractionPoints.size(); ++curInteractionNr ) {
+							InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+							if ( curInteraction->isMouseOver( mouseX, mouseY ) ) {
+								curInteraction->startInteraction( player->getXPos(), player->getYPos() );
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+
+		if (lastEvent->type == SDL_MOUSEMOTION) {
+			mouseX = lastEvent->motion.x;
+			mouseY = Configuration::screenHeight - lastEvent->motion.y - 1;
+
+            // we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
+			if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && lastEvent->button.button == SDL_BUTTON_LEFT && !actionBar->isPreparingAoESpell() ) {
+						actionBar->dragSpell();
+			}
+
+			for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
+				if ( activeFrames[ curFrame ]->isMovingFrame() == true ) {
+					activeFrames[ curFrame ]->moveFrame( mouseX, mouseY );
+					break;
+				}
+			}
+		}
+
+		if (lastEvent->type == SDL_MOUSEBUTTONUP) {
+			if( actionBar->isPreparingAoESpell() )
+				actionBar->makeReadyToCast( mouseX+world_x, mouseY+world_y );
+
+			actionBar->executeSpellQueue();
+			for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
+				if ( activeFrames[ curFrame ]->isMovingFrame() == true ) {
+					activeFrames[ curFrame ]->stopMovingFrame( mouseX, mouseY );
+					break;
+				}
+			}
+		}
+	}
+}
+
+void GameScreenHandler::updateScene()
+{
+	Player *player = Globals::getPlayer();
+	
+	// close and possibly delete closed windows
+	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
+		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
+		if ( curTextWindow->canBeClosed() ) {
+				curTextWindow->close();
+				curTextWindow->toggle();
+				if ( curTextWindow->destroyAfterClose() )
+				{
+						delete curTextWindow;
+						allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
+				}
+		}
+	}
+
+	Uint8 *keys = SDL_GetKeyState(NULL);
+
+	curTicks  = SDL_GetTicks();
+	ticksDiff = curTicks - lastTicks;
+	lastTicks = curTicks;
+
+	player->giveMovePoints( ticksDiff );
+	player->Move();
+	player->regenerateLifeManaFatigue( ticksDiff );
+
+	std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+	for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+		CNPC *curNPC = zoneNPCs[x];
+		if ( curNPC->isAlive() ) {
+				curNPC->giveMovePoints( ticksDiff );
+				curNPC->Move();
+				curNPC->regenerateLifeManaFatigue( ticksDiff );
+		}
+		curNPC->Respawn();
+		curNPC->Wander();
+
+		// check all active spells for inEffects on our NPCs.
+		curNPC->cleanupActiveSpells();
+		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
+		for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+				activeSpellActions[ curActiveSpellNr ].first->inEffect();
+		}
+	}
+
+	// check all active AoE spells and see they're finished and look for inEffects and process 'em
+	for ( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i) {
+		Globals::getCurrentZone()->MagicMap[i]->process();
+		Globals::getCurrentZone()->MagicMap[i]->getSpell()->inEffect();
+		Globals::cleanupActiveAoESpells();
+
+		if ( Globals::getCurrentZone()->MagicMap[i]->isDone() )
+			Globals::getCurrentZone()->MagicMap.erase(Globals::getCurrentZone()->MagicMap.begin()+i);
+	}
+
+	// making sure our target is still alive, not invisible and still in range while stealthed. if not well set our target to NULL.
+	if (player->getTarget()) {
+		double distance = sqrt( pow((player->getTarget()->getXPos()+player->getTarget()->getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
+											+pow((player->getTarget()->getYPos()+player->getTarget()->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
+		if ( player->getTarget()->isAlive() == false
+			|| ( player->getTarget()->isInvisible() == true && player->canSeeInvisible() == false )
+			|| ( player->getTarget()->isSneaking() == true && distance > 260 && player->canSeeSneaking() == false ) ) {
+				player->setTarget(NULL);
+		}
+	}
+
+	// check all active spells for inEffects on our player.
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
+	for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+		activeSpellActions[ curActiveSpellNr ].first->inEffect();
+	}
+	player->cleanupActiveSpells();
+
+	std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
+	for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
+		InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionRegionNr ];
+		curInteractionRegion->interactWithPlayer( player );
+	}
+
+	Globals::getCurrentZone()->cleanupNPCList();
+	Globals::getCurrentZone()->cleanupInteractionList();
+	Globals::getCurrentZone()->cleanupInteractionRegionList();
+
+	// something more like key handling (should it go to the handleEvents?)
+	if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
+			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
+					if ( zoneNPCs[x]->isAlive() ) {
+							zoneNPCs[x]->Die();
+					}
+			}
+	}
+
+	if (lastEvent->key.keysym.sym == SDLK_PRINT && !KP_screenshot) {
+			KP_screenshot = true;
+			utils::takeScreenshot();
+	}
+
+	if (lastEvent->key.keysym.sym != SDLK_PRINT) {
+			KP_screenshot = false;
+	}
+
+	if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
+			Editor.setEditZone( Globals::getCurrentZone() );
+			LuaFunctions::executeLuaFile( "data/tileAdjacency.lua" );
+			Editor.setEnabled( true );
+			Editor.initFocus( &focus );
+			Editor.KP_toggle_editor = true;
+	}
+
+	if (!keys[SDLK_l]) {
+			Editor.KP_toggle_editor = false;
+	}
+
+	if (keys[SDLK_TAB] && !KP_select_next) {
+		KP_select_next = true;
+		bool FoundNewTarget = false;
+		std::vector <CNPC*> NPClist;
+		// select next npc on screen
+		std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+		for ( size_t curNPCNr = 0; curNPCNr < zoneNPCs.size(); ++curNPCNr ) {
+			// if NPC is in on screen (might be changed to line of sight or something)
+			// this makes a list of all visible NPCs, easier to select next target this way.
+			// also makes sure the NPC isn't invisible or sneaking outside of our vision range.
+			CNPC *curNPC = zoneNPCs[curNPCNr];
+			double distance = sqrt( pow((curNPC->getXPos()+curNPC->getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
+									 +pow((curNPC->getYPos()+curNPC->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
+
+			if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
+					&& curNPC->isAlive()
+					&& ( curNPC->isInvisible() == false || ( curNPC->isInvisible() == true && player->canSeeInvisible() == true ) )
+					&& ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && ( distance < 260 || player->canSeeSneaking() == true ) ) ) ) {
+				NPClist.push_back(curNPC);
+			}
+		}
+		// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
+		for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
+			if (!player->getTarget()) {
+				player->setTarget(NPClist[0], NPClist[0]->getAttitude());
+			}
+
+			if ( player->getTarget() == NPClist[curNPC] ) {
+				if ( curNPC+1 == NPClist.size() ) {
+					player->setTarget(NPClist[0], NPClist[0]->getAttitude());
+				} else {
+					player->setTarget(NPClist[curNPC+1], NPClist[curNPC+1]->getAttitude());
+				}
+				FoundNewTarget = true;
+				break;
+			}
+		}
+
+		if ( !FoundNewTarget && NPClist.size() > 0) {
+			player->setTarget(NPClist[0], NPClist[0]->getAttitude());
+		}
+	}
+
+	if (keys[TOOLTIP_KEY]) {
+		Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
+	}
+
+	if (!keys[TOOLTIP_KEY]) {
+		Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
+	}
+
+	if (!keys[SDLK_TAB]) {
+		KP_select_next = false;
+	}
+
+	if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
+		KP_toggle_showOptionsWindow = true;
+		optionsWindow->toggle();
+	}
+
+	if ( !keys[SDLK_ESCAPE] ) {
+		KP_toggle_showOptionsWindow = false;
+	}
+
+	if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
+		KP_toggle_showCharacterInfo = true;
+		characterInfoScreen->toggle();
+	}
+
+	if ( !keys[SDLK_c] ) {
+		KP_toggle_showCharacterInfo = false;
+	}
+
+	if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
+		KP_toggle_showSpellbook = true;
+		spellbook->toggle();
+	}
+
+	if ( !keys[SDLK_b] ) {
+		KP_toggle_showSpellbook = false;
+	}
+
+	if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
+		KP_toggle_showInventory = true;
+		inventoryScreen->toggle();
+	}
+
+	if ( !keys[SDLK_i] ) {
+		KP_toggle_showInventory = false;
+	}
+
+	if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
+		KP_toggle_showQuestWindow = true;
+		questWindow->toggle();
+	}
+
+	if ( !keys[SDLK_q] ) {
+		KP_toggle_showQuestWindow = false;
+	}
+
+	actionBar->handleKeys();
+
+	if (keys[SDLK_5] && !KP_interrupt) {
+		KP_interrupt = true;
+		player->CastingInterrupted();
+	}
+
+	if (!keys[SDLK_5]) {
+		KP_interrupt = false;
+	}
+
+	//	if (keys[SDLK_BACKSPACE] && player->getTarget() != NULL) {
+	//		GLfloat color[] = {255, 255, 255, 255};
+	//		DawnInterface::addTextToLogWindow(color, "TarX:%d TarY:%d", player->getTarget()->getXPos(), player->getTarget()->getYPos());
+	//	}
+
+	focus.updateFocus();	
+}
+
+void DrawScene();
+
+void GameScreenHandler::drawScene()
+{
+	DrawScene();
+}
+
+void GameScreenHandler::finish()
+{
+}
