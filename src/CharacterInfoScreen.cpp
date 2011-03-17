@@ -25,7 +25,7 @@
 #include "GLFT_Font.h"
 
 CharacterInfoScreen::CharacterInfoScreen( Player *player )
-    :   FramesBase( 25, 100, 434, 492, 13, 15 )
+	:   FramesBase( 25, 100, 434, 492, 13, 15 )
 {
 	// add moveability to the frame, allwoing to drag the frame by the title
 	addMoveableFrame( 434, 21, 13, 486 );

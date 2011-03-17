@@ -91,9 +91,9 @@ void addInventoryScreenSlot( InventoryScreenSlot **mySlots, ItemSlot::ItemSlot s
 
 InventoryScreen::InventoryScreen( Player *player_ ) : FramesBase( 0, 80, 469, 654, 15, 17 )
 	{
-	    addMoveableFrame( 454, 21, 15, 650 );
+		addMoveableFrame( 454, 21, 15, 650 );
 
-	    addCloseButton( 22, 22, 447, 650 );
+		addCloseButton( 22, 22, 447, 650 );
 
         player = player_;
         floatingSelection = NULL;

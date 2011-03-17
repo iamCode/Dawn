@@ -123,10 +123,9 @@ class itemTooltip : public Tooltip
 		void drawCoinsLine( int x, int y, int frameWidth, sTooltipText *tooltipText );
 };
 
-namespace Frames
+namespace DrawFunctions
 {
-	void initFrameTextures();
-	void drawFrame( int topX, int topY, int numBlocksX, int numBlocksY, int blockWidth, int blockHeight );
+	void initDrawTextures();
 	void drawCoin( int x, int y, int coin );
 }
 
