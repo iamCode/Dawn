@@ -44,40 +44,24 @@
 #include "GLFT_Font.h"
 #include "pnglite/pnglite.h"
 
-#include "MenuBase.h"
-#include "CTexture.h"
 #include "CZone.h"
 #include "CInterface.h"
-#include "CCharacter.h"
 #include "CEditor.h"
-#include "CMessage.h"
 #include "InventoryScreen.h"
-#include "cameraFocusHandler.h"
 #include "utils.h"
-#include "tooltip.h"
 #include "ActionBar.h"
-#include "Spellbook.h"
 #include "BuffWindow.h"
 #include "shop.h"
-#include "GroundLoot.h"
-#include "CLuaFunctions.h"
-#include "CSpell.h"
 #include "debug.h"
-#include "CharacterInfoScreen.h"
-#include "item.h"
 #include "interactionpoint.h"
-#include "interactionregion.h"
 #include "textwindow.h"
 #include "questwindow.h"
 #include "optionswindow.h"
 #include "loadingscreen.h"
 #include "globals.h"
-#include "FramesBase.h"
 #include "LogWindow.h"
-#include "textureframe.h"
 #include "soundengine.h"
 #include "configuration.h"
-#include "ConfigurableFrame.h"
 #include "Frames.h"
 #include "GameLoopHandler.h"
 #include "ConfiguredFrames.h"
@@ -450,15 +434,6 @@ bool dawn_init(int argc, char** argv)
 
 		activeFrames.push_back( mainMenuFrame.get() );
 		mainMenuFrame->setVisible( true );
-		/*
-		std::auto_ptr<MenuBase> mainMenu( new MenuBase() );
-        mainMenu->addMenuItem( "New game", MenuItemType::MENU );
-        mainMenu->addMenuItem( "Load game", MenuItemType::MENU );
-        mainMenu->addMenuItem( "Options", MenuItemType::MENU );
-        mainMenu->addMenuItem( "About", MenuItemType::MENU );
-        mainMenu->addMenuItem( "Quit", MenuItemType::FUNCTION );
-*/
-
 
 		loadingScreen = std::auto_ptr<LoadingScreen>(new LoadingScreen());
 		return true;
