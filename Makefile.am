@@ -39,8 +39,14 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CNPC.h \
 	src/commonsounds.cpp \
 	src/commonsounds.h \
+	src/ConfigurableFrame.h \
+	src/ConfigurableFrame.cpp \
+	src/ConfiguredFrames.h \
+	src/ConfiguredFrames.cpp \
 	src/configuration.cpp \
 	src/configuration.h \
+	src/ControlElement.h \
+	src/ControlElement.cpp \
 	src/CSpell.cpp \
 	src/CSpell.h \
 	src/CTexture.cpp \
@@ -51,10 +57,14 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
+	src/Frames.h \
+	src/Frames.cpp \
 	src/FramesBase.cpp \
 	src/FramesBase.h \
 	src/fontcache.cpp \
 	src/fontcache.h \
+	src/GameLoopHandler.h \
+	src/GameLoopHandler.cpp \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
 	src/globals.cpp \
@@ -71,13 +81,12 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/InventoryScreen.h \
 	src/item.cpp \
 	src/item.h \
+	src/LoadingManager.h \
 	src/loadingscreen.cpp \
 	src/loadingscreen.h \
 	src/LogWindow.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
-	src/MenuBase.cpp \
-	src/MenuBase.h \
 	src/musiccache.cpp \
 	src/musiccache.h \
 	src/optionswindow.cpp \

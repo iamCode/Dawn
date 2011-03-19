@@ -1,3 +1,21 @@
+/**
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+
 #ifndef GAMELOOPHANDLER_H
 #define GAMELOOPHANDLER_H
 
@@ -27,7 +45,7 @@ class MainMenuHandler : public GameLoopHandler
 	virtual void handleEvents();
 	virtual void updateScene();
 	virtual void finish();
-	
+
   private:
 	bool mouseButtonDown;
 };
@@ -46,16 +64,16 @@ class LoadingScreenHandler : public GameLoopHandler
 	virtual void finish();
 
 	void setFollowHandler( GameLoopHandler *nextHandler );
-	
+
   private:
 	LoadingManager *loadingManager;
 	LoadingScreen *loadingScreen;
 	uint32_t lastTicks;
 	uint32_t curTicks;
-	
+
 	uint32_t drawingTime;
 	uint32_t initStartTicks;
-	
+
 	GameLoopHandler *nextHandler;
 };
 

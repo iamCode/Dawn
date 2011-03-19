@@ -55,21 +55,22 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	CharacterInfoScreen.$(OBJEXT) CInterface.$(OBJEXT) \
 	CLuaFunctions.$(OBJEXT) CLuaInterfaceGenerated.$(OBJEXT) \
 	CMagic.$(OBJEXT) CMessage.$(OBJEXT) CNPC.$(OBJEXT) \
-	commonsounds.$(OBJEXT) configuration.$(OBJEXT) \
-	CSpell.$(OBJEXT) CTexture.$(OBJEXT) CZone.$(OBJEXT) \
-	debug.$(OBJEXT) elements.$(OBJEXT) FramesBase.$(OBJEXT) \
-	fontcache.$(OBJEXT) GLFT_Font.$(OBJEXT) globals.$(OBJEXT) \
-	GroundLoot.$(OBJEXT) interactionpoint.$(OBJEXT) \
-	interactionregion.$(OBJEXT) inventory.$(OBJEXT) \
-	InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
+	commonsounds.$(OBJEXT) ConfigurableFrame.$(OBJEXT) \
+	ConfiguredFrames.$(OBJEXT) configuration.$(OBJEXT) \
+	ControlElement.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
+	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
+	Frames.$(OBJEXT) FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
+	GameLoopHandler.$(OBJEXT) GLFT_Font.$(OBJEXT) \
+	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
+	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
+	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
-	MenuBase.$(OBJEXT) musiccache.$(OBJEXT) \
-	optionswindow.$(OBJEXT) Player.$(OBJEXT) questwindow.$(OBJEXT) \
-	shop.$(OBJEXT) soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
-	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
-	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
-	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
-	Thread.$(OBJEXT)
+	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
+	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
+	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
+	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
+	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
+	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -249,8 +250,14 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/CNPC.h \
 	src/commonsounds.cpp \
 	src/commonsounds.h \
+	src/ConfigurableFrame.h \
+	src/ConfigurableFrame.cpp \
+	src/ConfiguredFrames.h \
+	src/ConfiguredFrames.cpp \
 	src/configuration.cpp \
 	src/configuration.h \
+	src/ControlElement.h \
+	src/ControlElement.cpp \
 	src/CSpell.cpp \
 	src/CSpell.h \
 	src/CTexture.cpp \
@@ -261,10 +268,14 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
+	src/Frames.h \
+	src/Frames.cpp \
 	src/FramesBase.cpp \
 	src/FramesBase.h \
 	src/fontcache.cpp \
 	src/fontcache.h \
+	src/GameLoopHandler.h \
+	src/GameLoopHandler.cpp \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
 	src/globals.cpp \
@@ -281,13 +292,12 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/InventoryScreen.h \
 	src/item.cpp \
 	src/item.h \
+	src/LoadingManager.h \
 	src/loadingscreen.cpp \
 	src/loadingscreen.h \
 	src/LogWindow.cpp \
 	src/LogWindow.h \
 	src/main.cpp \
-	src/MenuBase.cpp \
-	src/MenuBase.h \
 	src/musiccache.cpp \
 	src/musiccache.h \
 	src/optionswindow.cpp \
@@ -426,14 +436,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CTexture.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CZone.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CharacterInfoScreen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConfigurableFrame.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConfiguredFrames.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ControlElement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EventClass.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frames.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FramesBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLFT_Font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLee.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GameLoopHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GroundLoot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryScreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogWindow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
@@ -702,6 +716,34 @@ commonsounds.obj: src/commonsounds.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o commonsounds.obj `if test -f 'src/commonsounds.cpp'; then $(CYGPATH_W) 'src/commonsounds.cpp'; else $(CYGPATH_W) '$(srcdir)/src/commonsounds.cpp'; fi`
 
+ConfigurableFrame.o: src/ConfigurableFrame.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConfigurableFrame.o -MD -MP -MF $(DEPDIR)/ConfigurableFrame.Tpo -c -o ConfigurableFrame.o `test -f 'src/ConfigurableFrame.cpp' || echo '$(srcdir)/'`src/ConfigurableFrame.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ConfigurableFrame.Tpo $(DEPDIR)/ConfigurableFrame.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ConfigurableFrame.cpp' object='ConfigurableFrame.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConfigurableFrame.o `test -f 'src/ConfigurableFrame.cpp' || echo '$(srcdir)/'`src/ConfigurableFrame.cpp
+
+ConfigurableFrame.obj: src/ConfigurableFrame.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConfigurableFrame.obj -MD -MP -MF $(DEPDIR)/ConfigurableFrame.Tpo -c -o ConfigurableFrame.obj `if test -f 'src/ConfigurableFrame.cpp'; then $(CYGPATH_W) 'src/ConfigurableFrame.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ConfigurableFrame.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ConfigurableFrame.Tpo $(DEPDIR)/ConfigurableFrame.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ConfigurableFrame.cpp' object='ConfigurableFrame.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConfigurableFrame.obj `if test -f 'src/ConfigurableFrame.cpp'; then $(CYGPATH_W) 'src/ConfigurableFrame.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ConfigurableFrame.cpp'; fi`
+
+ConfiguredFrames.o: src/ConfiguredFrames.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConfiguredFrames.o -MD -MP -MF $(DEPDIR)/ConfiguredFrames.Tpo -c -o ConfiguredFrames.o `test -f 'src/ConfiguredFrames.cpp' || echo '$(srcdir)/'`src/ConfiguredFrames.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ConfiguredFrames.Tpo $(DEPDIR)/ConfiguredFrames.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ConfiguredFrames.cpp' object='ConfiguredFrames.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConfiguredFrames.o `test -f 'src/ConfiguredFrames.cpp' || echo '$(srcdir)/'`src/ConfiguredFrames.cpp
+
+ConfiguredFrames.obj: src/ConfiguredFrames.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConfiguredFrames.obj -MD -MP -MF $(DEPDIR)/ConfiguredFrames.Tpo -c -o ConfiguredFrames.obj `if test -f 'src/ConfiguredFrames.cpp'; then $(CYGPATH_W) 'src/ConfiguredFrames.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ConfiguredFrames.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ConfiguredFrames.Tpo $(DEPDIR)/ConfiguredFrames.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ConfiguredFrames.cpp' object='ConfiguredFrames.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConfiguredFrames.obj `if test -f 'src/ConfiguredFrames.cpp'; then $(CYGPATH_W) 'src/ConfiguredFrames.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ConfiguredFrames.cpp'; fi`
+
 configuration.o: src/configuration.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT configuration.o -MD -MP -MF $(DEPDIR)/configuration.Tpo -c -o configuration.o `test -f 'src/configuration.cpp' || echo '$(srcdir)/'`src/configuration.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/configuration.Tpo $(DEPDIR)/configuration.Po
@@ -715,6 +757,20 @@ configuration.obj: src/configuration.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/configuration.cpp' object='configuration.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o configuration.obj `if test -f 'src/configuration.cpp'; then $(CYGPATH_W) 'src/configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/src/configuration.cpp'; fi`
+
+ControlElement.o: src/ControlElement.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ControlElement.o -MD -MP -MF $(DEPDIR)/ControlElement.Tpo -c -o ControlElement.o `test -f 'src/ControlElement.cpp' || echo '$(srcdir)/'`src/ControlElement.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ControlElement.Tpo $(DEPDIR)/ControlElement.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ControlElement.cpp' object='ControlElement.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ControlElement.o `test -f 'src/ControlElement.cpp' || echo '$(srcdir)/'`src/ControlElement.cpp
+
+ControlElement.obj: src/ControlElement.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ControlElement.obj -MD -MP -MF $(DEPDIR)/ControlElement.Tpo -c -o ControlElement.obj `if test -f 'src/ControlElement.cpp'; then $(CYGPATH_W) 'src/ControlElement.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ControlElement.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/ControlElement.Tpo $(DEPDIR)/ControlElement.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/ControlElement.cpp' object='ControlElement.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ControlElement.obj `if test -f 'src/ControlElement.cpp'; then $(CYGPATH_W) 'src/ControlElement.cpp'; else $(CYGPATH_W) '$(srcdir)/src/ControlElement.cpp'; fi`
 
 CSpell.o: src/CSpell.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CSpell.o -MD -MP -MF $(DEPDIR)/CSpell.Tpo -c -o CSpell.o `test -f 'src/CSpell.cpp' || echo '$(srcdir)/'`src/CSpell.cpp
@@ -786,6 +842,20 @@ elements.obj: src/elements.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o elements.obj `if test -f 'src/elements.cpp'; then $(CYGPATH_W) 'src/elements.cpp'; else $(CYGPATH_W) '$(srcdir)/src/elements.cpp'; fi`
 
+Frames.o: src/Frames.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Frames.o -MD -MP -MF $(DEPDIR)/Frames.Tpo -c -o Frames.o `test -f 'src/Frames.cpp' || echo '$(srcdir)/'`src/Frames.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Frames.Tpo $(DEPDIR)/Frames.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Frames.cpp' object='Frames.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Frames.o `test -f 'src/Frames.cpp' || echo '$(srcdir)/'`src/Frames.cpp
+
+Frames.obj: src/Frames.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Frames.obj -MD -MP -MF $(DEPDIR)/Frames.Tpo -c -o Frames.obj `if test -f 'src/Frames.cpp'; then $(CYGPATH_W) 'src/Frames.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Frames.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Frames.Tpo $(DEPDIR)/Frames.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Frames.cpp' object='Frames.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Frames.obj `if test -f 'src/Frames.cpp'; then $(CYGPATH_W) 'src/Frames.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Frames.cpp'; fi`
+
 FramesBase.o: src/FramesBase.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT FramesBase.o -MD -MP -MF $(DEPDIR)/FramesBase.Tpo -c -o FramesBase.o `test -f 'src/FramesBase.cpp' || echo '$(srcdir)/'`src/FramesBase.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/FramesBase.Tpo $(DEPDIR)/FramesBase.Po
@@ -813,6 +883,20 @@ fontcache.obj: src/fontcache.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/fontcache.cpp' object='fontcache.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fontcache.obj `if test -f 'src/fontcache.cpp'; then $(CYGPATH_W) 'src/fontcache.cpp'; else $(CYGPATH_W) '$(srcdir)/src/fontcache.cpp'; fi`
+
+GameLoopHandler.o: src/GameLoopHandler.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GameLoopHandler.o -MD -MP -MF $(DEPDIR)/GameLoopHandler.Tpo -c -o GameLoopHandler.o `test -f 'src/GameLoopHandler.cpp' || echo '$(srcdir)/'`src/GameLoopHandler.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/GameLoopHandler.Tpo $(DEPDIR)/GameLoopHandler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/GameLoopHandler.cpp' object='GameLoopHandler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GameLoopHandler.o `test -f 'src/GameLoopHandler.cpp' || echo '$(srcdir)/'`src/GameLoopHandler.cpp
+
+GameLoopHandler.obj: src/GameLoopHandler.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GameLoopHandler.obj -MD -MP -MF $(DEPDIR)/GameLoopHandler.Tpo -c -o GameLoopHandler.obj `if test -f 'src/GameLoopHandler.cpp'; then $(CYGPATH_W) 'src/GameLoopHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GameLoopHandler.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/GameLoopHandler.Tpo $(DEPDIR)/GameLoopHandler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/GameLoopHandler.cpp' object='GameLoopHandler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GameLoopHandler.obj `if test -f 'src/GameLoopHandler.cpp'; then $(CYGPATH_W) 'src/GameLoopHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/GameLoopHandler.cpp'; fi`
 
 GLFT_Font.o: src/GLFT_Font.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLFT_Font.o -MD -MP -MF $(DEPDIR)/GLFT_Font.Tpo -c -o GLFT_Font.o `test -f 'src/GLFT_Font.cpp' || echo '$(srcdir)/'`src/GLFT_Font.cpp
@@ -967,20 +1051,6 @@ main.obj: src/main.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/main.cpp' object='main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
-
-MenuBase.o: src/MenuBase.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MenuBase.o -MD -MP -MF $(DEPDIR)/MenuBase.Tpo -c -o MenuBase.o `test -f 'src/MenuBase.cpp' || echo '$(srcdir)/'`src/MenuBase.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/MenuBase.Tpo $(DEPDIR)/MenuBase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/MenuBase.cpp' object='MenuBase.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MenuBase.o `test -f 'src/MenuBase.cpp' || echo '$(srcdir)/'`src/MenuBase.cpp
-
-MenuBase.obj: src/MenuBase.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MenuBase.obj -MD -MP -MF $(DEPDIR)/MenuBase.Tpo -c -o MenuBase.obj `if test -f 'src/MenuBase.cpp'; then $(CYGPATH_W) 'src/MenuBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MenuBase.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/MenuBase.Tpo $(DEPDIR)/MenuBase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/MenuBase.cpp' object='MenuBase.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MenuBase.obj `if test -f 'src/MenuBase.cpp'; then $(CYGPATH_W) 'src/MenuBase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MenuBase.cpp'; fi`
 
 musiccache.o: src/musiccache.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT musiccache.o -MD -MP -MF $(DEPDIR)/musiccache.Tpo -c -o musiccache.o `test -f 'src/musiccache.cpp' || echo '$(srcdir)/'`src/musiccache.cpp

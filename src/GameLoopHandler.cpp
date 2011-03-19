@@ -1,3 +1,21 @@
+/**
+    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+
+    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+
 #include "GameLoopHandler.h"
 
 void GameLoopHandler::setDone()
@@ -35,7 +53,7 @@ void MainMenuHandler::drawScene()
 	for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
 		activeFrames[curFrame]->draw( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1 );
 	}
-	
+
 	SDL_GL_SwapBuffers();
 }
 
@@ -97,12 +115,12 @@ LoadingScreenHandler::LoadingScreenHandler( LoadingScreen *loadingScreen, Loadin
 void LoadingScreenHandler::activate( SDL_Event *lastEvent )
 {
 	this->lastEvent = lastEvent;
-	
+
 	finishMe = false;
-	
+
 	lastTicks = SDL_GetTicks();
 	curTicks = lastTicks;
-	
+
 	initStartTicks = SDL_GetTicks();
 	drawingTime = 0;
 
@@ -110,10 +128,10 @@ void LoadingScreenHandler::activate( SDL_Event *lastEvent )
 	sdlLoadTime = 0;
 	imgInversionTime = 0;
 	debugOutputTime = 0;
-	
+
 	initPhase = true;
 	textureFrame = new TextureFrame();
-	
+
 	loadingManager->startBackgroundThread();
 }
 
@@ -123,7 +141,7 @@ void LoadingScreenHandler::drawScene()
 	if ( curTicks-lastTicks >= 200 )
 	{
 		lastTicks = curTicks;
-		
+
 		loadingScreen->setCurrentText( loadingManager->getActivityText() );
 		loadingScreen->setProgress( loadingManager->getProgress() );
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -157,21 +175,21 @@ void LoadingScreenHandler::finish()
 {
 	textureFrame->finishFrame();
 	delete textureFrame;
-	
+
 	loadingManager->finish();
 
 	initPhase = false;
-	
+
 	optionsWindow->setTextureDependentPositions();
 	inventoryScreen->setTextureDependentPositions();
-	
+
 	fpsFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
 	message.initFonts();
 	Editor.initFonts();
 	characterInfoScreen->initFonts();
     actionBar->initFonts();
     GUI.initFonts();
-    logWindow->clear(); 
+    logWindow->clear();
 
 	uint32_t initTime = SDL_GetTicks()-initStartTicks;
 	std::cout << "initialization took " << initTime << " ms" << std::endl;
@@ -229,18 +247,18 @@ bool KP_toggle_showOptionsWindow = false;
 void GameScreenHandler::activate( SDL_Event *lastEvent )
 {
 	this->lastEvent = lastEvent;
-	
+
 	finishMe = false;
-	
+
 	lastTicks = SDL_GetTicks();
 	curTicks  = lastTicks;
 	ticksDiff = 0;
-	
+
 	Player *player = Globals::getPlayer();
 	focus.setFocus(player);
-	
+
 	GLfloat white[] = { 1.0f, 1.0f, 1.0f };
-	DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );	
+	DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );
 }
 
 void GameScreenHandler::handleEvents()
@@ -252,14 +270,14 @@ void GameScreenHandler::handleEvents()
 		ticksDiff = 0;
 		return;
 	}
-	
+
 	Player *player = Globals::getPlayer();
 
 	while (SDL_PollEvent(lastEvent)) {
 		if (lastEvent->type == SDL_QUIT)  {
 			done = 1;
 		}
-		
+
 		std::pair<int,int> mouseDownXY;
 
 		if (lastEvent->type == SDL_MOUSEBUTTONDOWN) {
@@ -397,7 +415,7 @@ void GameScreenHandler::handleEvents()
 void GameScreenHandler::updateScene()
 {
 	Player *player = Globals::getPlayer();
-	
+
 	// close and possibly delete closed windows
 	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
 		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
@@ -626,7 +644,7 @@ void GameScreenHandler::updateScene()
 	//		DawnInterface::addTextToLogWindow(color, "TarX:%d TarY:%d", player->getTarget()->getXPos(), player->getTarget()->getYPos());
 	//	}
 
-	focus.updateFocus();	
+	focus.updateFocus();
 }
 
 void DrawScene();
