@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "shop.h"
 #include "item.h"
+#include "Quest.h"
 
 namespace DawnInterface
 {
@@ -58,9 +59,9 @@ namespace DawnInterface
     MeleeDamageAction* copySpell( MeleeDamageAction *other );
     RangedDamageAction* copySpell( RangedDamageAction *other );
     void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
-	void addQuest( std::string questName, std::string questDescription );
-	void removeQuest( std::string questName );
-	void changeQuestDescription( std::string questName, std::string newDescription );
+	Quest* addQuest( std::string questName, std::string questDescription );
+	void finishQuest( Quest *quest );
+	void changeQuestDescription( Quest *quest, std::string newDescription );
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );

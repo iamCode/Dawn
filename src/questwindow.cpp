@@ -32,19 +32,21 @@ namespace DawnInterface
 {
     void addTextToLogWindow( GLfloat color[], const char *text, ... );
 
-	void addQuest( std::string questName, std::string questDescription )
+	Quest* addQuest( std::string questName, std::string questDescription )
 	{
-		questWindow->addQuest( questName, questDescription );
+		Quest *newQuest = new Quest( questName, questDescription );
+		questWindow->addQuest( newQuest );
+		return newQuest;
 	}
 
-	void removeQuest( std::string questName )
+	void finishQuest( Quest *quest )
 	{
-		questWindow->removeQuest( questName );
+		questWindow->finishQuest( quest );
 	}
 
-	void changeQuestDescription( std::string questName, std::string newDescription )
+	void changeQuestDescription( Quest *quest, std::string newDescription )
 	{
-		questWindow->changeQuestDescription( questName, newDescription );
+		questWindow->changeQuestDescription( quest, newDescription );
 	}
 
 	std::string getQuestSaveText()
@@ -85,13 +87,13 @@ void QuestWindow::draw( int mouseX, int mouseY )
 	int textY = world_y + posY + frameHeight - 24 - font->getHeight();
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	for ( size_t curQuestNameNr = 0; curQuestNameNr<questNames.size(); ++curQuestNameNr ) {
+	for ( size_t curQuestNameNr = 0; curQuestNameNr<quests.size(); ++curQuestNameNr ) {
 		if ( static_cast<int>(curQuestNameNr) == selectedQuestNr ) {
 			// draw selected text in yellow
 			glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
 		}
 
-		font->drawText( textX, textY, questNames[ curQuestNameNr ] );
+		font->drawText( textX, textY, quests[ curQuestNameNr ]->getName() );
 
 		if ( static_cast<int>(curQuestNameNr) == selectedQuestNr ) {
 			// reset color after drawing selected text
@@ -114,33 +116,33 @@ void QuestWindow::draw( int mouseX, int mouseY )
 	}
 }
 
-void QuestWindow::addQuest( std::string name, std::string description )
+void QuestWindow::addQuest( Quest *quest )
 {
-	questNames.push_back( name );
+	quests.push_back( quest );
 	size_t newQuestNr = questDescriptions.size();
 	questDescriptions.push_back( std::vector<std::string>() );
-	formatMultilineText( description, questDescriptions[ newQuestNr ], frameWidth - 88, font );
+	formatMultilineText( quest->getDescription(), questDescriptions[ newQuestNr ], frameWidth - 88, font );
 
     GLfloat green[] = { 0.15f, 1.0f, 0.15f };
-    DawnInterface::addTextToLogWindow( green, "Quest accepted: %s.", name.c_str() );
+    DawnInterface::addTextToLogWindow( green, "Quest accepted: %s.", quest->getName().c_str() );
 
-	if ( selectedQuestNr == -1 && questNames.size() > 0) {
+	if ( selectedQuestNr == -1 && quests.size() > 0) {
 		selectedQuestNr = 0;
 	}
 }
 
-void QuestWindow::removeQuest( std::string name )
+void QuestWindow::finishQuest( Quest *quest )
 {
 	size_t foundQuestNr = 0;
-	for ( foundQuestNr=0; foundQuestNr<questNames.size(); ++foundQuestNr ) {
-		if ( questNames[ foundQuestNr ] == name ) {
+	for ( foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
+		if ( quests[ foundQuestNr ] == quest ) {
 			break;
 		}
 	}
 
-	if ( foundQuestNr < questNames.size() ) {
+	if ( foundQuestNr < quests.size() ) {
 		// found the quest
-		questNames.erase( questNames.begin() + foundQuestNr );
+		quests.erase( quests.begin() + foundQuestNr );
 		questDescriptions.erase( questDescriptions.begin() + foundQuestNr );
 		if ( selectedQuestNr == static_cast<int>(foundQuestNr) ) {
 			selectedQuestNr = -1;
@@ -149,37 +151,37 @@ void QuestWindow::removeQuest( std::string name )
 		}
 
 		GLfloat green[] = { 0.15f, 1.0f, 0.15f };
-        DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", name.c_str() );
+        DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", quest->getName().c_str() );
 	}
 
-	if ( selectedQuestNr == -1 && questNames.size() > 0 ) {
+	if ( selectedQuestNr == -1 && quests.size() > 0 ) {
 		selectedQuestNr = 0;
 	}
 }
 
 void QuestWindow::removeAllQuests()
 {
-	questNames.clear();
+	quests.clear();
 	questDescriptions.clear();
 	selectedQuestNr = -1;
 }
 
-void QuestWindow::changeQuestDescription( std::string name, std::string newDescription )
+void QuestWindow::changeQuestDescription( Quest *quest, std::string newDescription )
 {
 	size_t foundQuestNr = 0;
-	for ( foundQuestNr=0; foundQuestNr<questNames.size(); ++foundQuestNr ) {
-		if ( questNames[ foundQuestNr ] == name ) {
+	for ( foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
+		if ( quests[ foundQuestNr ] == quest ) {
 			break;
 		}
 	}
 
-	if ( foundQuestNr < questNames.size() ) {
+	if ( foundQuestNr < quests.size() ) {
 		// found the quest
 		questDescriptions[ foundQuestNr ].clear();
 		formatMultilineText( newDescription, questDescriptions[ foundQuestNr ], frameWidth - 88, font );
 
 		GLfloat green[] = { 0.15f, 1.0f, 0.15f };
-        DawnInterface::addTextToLogWindow( green, "Quest updated: %s.", name.c_str() );
+        DawnInterface::addTextToLogWindow( green, "Quest updated: %s.", quest->getName().c_str() );
 	}
 }
 
@@ -190,7 +192,7 @@ void QuestWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	}
 
 	size_t curEntryNr = (posY + frameHeight - 24 - mouseY) / (font->getHeight() * 1.5);
-	if ( curEntryNr < questNames.size() ) {
+	if ( curEntryNr < quests.size() ) {
 		selectedQuestNr = curEntryNr;
 	}
 }
@@ -198,8 +200,8 @@ void QuestWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 std::string QuestWindow::getReloadScriptText() const
 {
 	std::ostringstream oss;
-	for ( size_t curQuestNr=0; curQuestNr<questNames.size(); ++curQuestNr ) {
-		oss << "DawnInterface.addQuest( '" << questNames[ curQuestNr ] << "', '";
+	for ( size_t curQuestNr=0; curQuestNr<quests.size(); ++curQuestNr ) {
+		oss << "DawnInterface.addQuest( '" << quests[ curQuestNr ] << "', '";
 		for ( size_t curQuestDescriptionNr=0; curQuestDescriptionNr<questDescriptions[curQuestNr].size(); ++curQuestDescriptionNr ) {
 			oss << questDescriptions[curQuestNr][curQuestDescriptionNr];
 			if ( curQuestDescriptionNr < questDescriptions[curQuestNr].size() - 1 ) {

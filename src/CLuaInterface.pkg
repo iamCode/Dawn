@@ -528,6 +528,14 @@ class RangedDamageAction : public ConfigurableAction
 	void setAnimationTexture( int num, std::string filename );
 };
 
+class Quest
+{
+	addRequiredItemForCompletion( Item* requiredItem, int quantity );
+	void setExperienceReward( int experienceReward );
+	void setCoinReward( int coinReward );
+	void setItemReward( Item* itemReward );
+};
+
 namespace DawnInterface
 {
   CCharacter* createNewMobType( std::string typeID );
@@ -566,9 +574,9 @@ namespace DawnInterface
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 	void removeInteractionRegion( InteractionRegion *regionToRemove );
 	LuaCallIndirection* createEventHandler();
-	void addQuest( std::string questName, std::string questDescription );
-	void removeQuest( std::string questName );
-	void changeQuestDescription( std::string questName, std::string newDescription );
+	Quest* addQuest( std::string questName, std::string questDescription );
+	void finishQuest( Quest *questName );
+	void changeQuestDescription( Quest *quest, std::string newDescription );
 	Shop *addShop();
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();

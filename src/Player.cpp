@@ -144,7 +144,6 @@ void Player::Move()
 
 	CCharacter::Move();
 
-	GLfloat white[] = { 255, 255, 255, 255 };
 	dx = getXPos()-oldX;
 	dy = getYPos()-oldY;
 

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on 03/10/11 21:45:52.
+** Generated automatically by tolua++-1.0.92 on 03/21/11 22:19:46.
 */
 
 #ifndef __cplusplus
@@ -26,6 +26,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Item");
  tolua_usertype(tolua_S,"GeneralHealingSpell");
  tolua_usertype(tolua_S,"AdjacencyEquivalenceClass");
+ tolua_usertype(tolua_S,"Quest");
  tolua_usertype(tolua_S,"RangedDamageAction");
  tolua_usertype(tolua_S,"LuaCallIndirection");
  tolua_usertype(tolua_S,"MeleeDamageAction");
@@ -5044,6 +5045,140 @@ static int tolua_CLuaInterface_RangedDamageAction_setAnimationTexture00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: addRequiredItemForCompletion of class  Quest */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Quest_addRequiredItemForCompletion00
+static int tolua_CLuaInterface_Quest_addRequiredItemForCompletion00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Item",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Quest* self = (Quest*)  tolua_tousertype(tolua_S,1,0);
+  Item* requiredItem = ((Item*)  tolua_tousertype(tolua_S,2,0));
+  int quantity = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addRequiredItemForCompletion'",NULL);
+#endif
+  {
+   self->addRequiredItemForCompletion(requiredItem,quantity);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addRequiredItemForCompletion'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setExperienceReward of class  Quest */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Quest_setExperienceReward00
+static int tolua_CLuaInterface_Quest_setExperienceReward00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Quest* self = (Quest*)  tolua_tousertype(tolua_S,1,0);
+  int experienceReward = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setExperienceReward'",NULL);
+#endif
+  {
+   self->setExperienceReward(experienceReward);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setExperienceReward'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setCoinReward of class  Quest */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Quest_setCoinReward00
+static int tolua_CLuaInterface_Quest_setCoinReward00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Quest* self = (Quest*)  tolua_tousertype(tolua_S,1,0);
+  int coinReward = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCoinReward'",NULL);
+#endif
+  {
+   self->setCoinReward(coinReward);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setCoinReward'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setItemReward of class  Quest */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Quest_setItemReward00
+static int tolua_CLuaInterface_Quest_setItemReward00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Item",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Quest* self = (Quest*)  tolua_tousertype(tolua_S,1,0);
+  Item* itemReward = ((Item*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setItemReward'",NULL);
+#endif
+  {
+   self->setItemReward(itemReward);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setItemReward'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: DawnInterface::createNewMobType */
 #ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_createNewMobType00
 static int tolua_CLuaInterface_DawnInterface_createNewMobType00(lua_State* tolua_S)
@@ -5842,10 +5977,11 @@ static int tolua_CLuaInterface_DawnInterface_addQuest00(lua_State* tolua_S)
   std::string questName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
   std::string questDescription = ((std::string)  tolua_tocppstring(tolua_S,2,0));
   {
-   DawnInterface::addQuest(questName,questDescription);
+   Quest* tolua_ret = (Quest*)  DawnInterface::addQuest(questName,questDescription);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Quest");
   }
  }
- return 0;
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'addQuest'.",&tolua_err);
@@ -5854,29 +5990,29 @@ static int tolua_CLuaInterface_DawnInterface_addQuest00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* function: DawnInterface::removeQuest */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_removeQuest00
-static int tolua_CLuaInterface_DawnInterface_removeQuest00(lua_State* tolua_S)
+/* function: DawnInterface::finishQuest */
+#ifndef TOLUA_DISABLE_tolua_CLuaInterface_DawnInterface_finishQuest00
+static int tolua_CLuaInterface_DawnInterface_finishQuest00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  std::string questName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  Quest* questName = ((Quest*)  tolua_tousertype(tolua_S,1,0));
   {
-   DawnInterface::removeQuest(questName);
+   DawnInterface::finishQuest(questName);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'removeQuest'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'finishQuest'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5889,7 +6025,7 @@ static int tolua_CLuaInterface_DawnInterface_changeQuestDescription00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_iscppstring(tolua_S,1,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"Quest",0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -5897,10 +6033,10 @@ static int tolua_CLuaInterface_DawnInterface_changeQuestDescription00(lua_State*
  else
 #endif
  {
-  std::string questName = ((std::string)  tolua_tocppstring(tolua_S,1,0));
+  Quest* quest = ((Quest*)  tolua_tousertype(tolua_S,1,0));
   std::string newDescription = ((std::string)  tolua_tocppstring(tolua_S,2,0));
   {
-   DawnInterface::changeQuestDescription(questName,newDescription);
+   DawnInterface::changeQuestDescription(quest,newDescription);
   }
  }
  return 0;
@@ -7572,6 +7708,13 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"setNumAnimations",tolua_CLuaInterface_RangedDamageAction_setNumAnimations00);
    tolua_function(tolua_S,"setAnimationTexture",tolua_CLuaInterface_RangedDamageAction_setAnimationTexture00);
   tolua_endmodule(tolua_S);
+  tolua_cclass(tolua_S,"Quest","Quest","",NULL);
+  tolua_beginmodule(tolua_S,"Quest");
+   tolua_function(tolua_S,"addRequiredItemForCompletion",tolua_CLuaInterface_Quest_addRequiredItemForCompletion00);
+   tolua_function(tolua_S,"setExperienceReward",tolua_CLuaInterface_Quest_setExperienceReward00);
+   tolua_function(tolua_S,"setCoinReward",tolua_CLuaInterface_Quest_setCoinReward00);
+   tolua_function(tolua_S,"setItemReward",tolua_CLuaInterface_Quest_setItemReward00);
+  tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"DawnInterface",0);
   tolua_beginmodule(tolua_S,"DawnInterface");
    tolua_function(tolua_S,"createNewMobType",tolua_CLuaInterface_DawnInterface_createNewMobType00);
@@ -7603,7 +7746,7 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"removeInteractionRegion",tolua_CLuaInterface_DawnInterface_removeInteractionRegion00);
    tolua_function(tolua_S,"createEventHandler",tolua_CLuaInterface_DawnInterface_createEventHandler00);
    tolua_function(tolua_S,"addQuest",tolua_CLuaInterface_DawnInterface_addQuest00);
-   tolua_function(tolua_S,"removeQuest",tolua_CLuaInterface_DawnInterface_removeQuest00);
+   tolua_function(tolua_S,"finishQuest",tolua_CLuaInterface_DawnInterface_finishQuest00);
    tolua_function(tolua_S,"changeQuestDescription",tolua_CLuaInterface_DawnInterface_changeQuestDescription00);
    tolua_function(tolua_S,"addShop",tolua_CLuaInterface_DawnInterface_addShop00);
    tolua_function(tolua_S,"enterZone",tolua_CLuaInterface_DawnInterface_enterZone00);

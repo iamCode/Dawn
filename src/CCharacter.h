@@ -181,9 +181,6 @@ namespace CharacterStates
             case CharacterStates::Stunned:
                 return true;
             break;
-            default:
-                false;
-            break;
 	    }
 	}
 }
