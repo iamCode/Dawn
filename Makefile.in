@@ -66,11 +66,12 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
-	questwindow.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
-	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
-	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
-	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
-	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
+	Quest.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
+	soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
+	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
+	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
+	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
+	Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -304,6 +305,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/optionswindow.h \
 	src/Player.cpp \
 	src/Player.h \
+	src/Quest.cpp \
+	src/Quest.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
 	src/shop.cpp \
@@ -450,6 +453,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Quest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StatsSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
@@ -1093,6 +1097,20 @@ Player.obj: src/Player.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Player.cpp' object='Player.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Player.obj `if test -f 'src/Player.cpp'; then $(CYGPATH_W) 'src/Player.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Player.cpp'; fi`
+
+Quest.o: src/Quest.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Quest.o -MD -MP -MF $(DEPDIR)/Quest.Tpo -c -o Quest.o `test -f 'src/Quest.cpp' || echo '$(srcdir)/'`src/Quest.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Quest.Tpo $(DEPDIR)/Quest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Quest.cpp' object='Quest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Quest.o `test -f 'src/Quest.cpp' || echo '$(srcdir)/'`src/Quest.cpp
+
+Quest.obj: src/Quest.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Quest.obj -MD -MP -MF $(DEPDIR)/Quest.Tpo -c -o Quest.obj `if test -f 'src/Quest.cpp'; then $(CYGPATH_W) 'src/Quest.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Quest.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Quest.Tpo $(DEPDIR)/Quest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Quest.cpp' object='Quest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Quest.obj `if test -f 'src/Quest.cpp'; then $(CYGPATH_W) 'src/Quest.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Quest.cpp'; fi`
 
 questwindow.o: src/questwindow.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT questwindow.o -MD -MP -MF $(DEPDIR)/questwindow.Tpo -c -o questwindow.o `test -f 'src/questwindow.cpp' || echo '$(srcdir)/'`src/questwindow.cpp
