@@ -7,22 +7,22 @@ end
 function quest_thesylphirantidote.init()
 	-- this quest is initialized from zone zone1
 	--quest_thesylphirantidote.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", -1510, 500, 1, 0 );
-	quest_thesylphirantidote.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", 510, 500, 1, 0 );
-    quest_thesylphirantidote.effreyLongback:setAttitude( Attitude.FRIENDLY );
-    quest_thesylphirantidote.effreyLongback:setWanderRadius(50);
-    quest_thesylphirantidote.effreyLongback:setName( "Effrey Longback" );
-	quest_thesylphirantidote.effreyLongbackInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.effreyLongback );
-	quest_thesylphirantidote.effreyLongbackInteraction:setInteractionType( InteractionType.Quest );
-	quest_thesylphirantidote.effreyLongbackInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithEffrey()" );
+	--quest_thesylphirantidote.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", 510, 500, 1, 0 );
+    --quest_thesylphirantidote.effreyLongback:setAttitude( Attitude.FRIENDLY );
+    --quest_thesylphirantidote.effreyLongback:setWanderRadius(50);
+    --quest_thesylphirantidote.effreyLongback:setName( "Effrey Longback" );
+	--quest_thesylphirantidote.effreyLongbackInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.effreyLongback );
+	--quest_thesylphirantidote.effreyLongbackInteraction:setInteractionType( InteractionType.Quest );
+	--quest_thesylphirantidote.effreyLongbackInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithEffrey()" );
 
 	--quest_thesylphirantidote.jemma = DawnInterface.addMobSpawnPoint( "Human", -2162, -4580, 1, 0 );
-	quest_thesylphirantidote.jemma = DawnInterface.addMobSpawnPoint( "Spider", 462, 580, 1, 0 );
-	quest_thesylphirantidote.jemma:setAttitude( Attitude.FRIENDLY );
-    quest_thesylphirantidote.jemma:setWanderRadius(50);
-	quest_thesylphirantidote.jemma:setName( "Jemma" );
-	quest_thesylphirantidote.jemmaInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.jemma );
-	quest_thesylphirantidote.jemmaInteraction:setInteractionType( InteractionType.Quest );
-    quest_thesylphirantidote.jemmaInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithJemma()" );
+	--quest_thesylphirantidote.jemma = DawnInterface.addMobSpawnPoint( "Spider", 462, 580, 1, 0 );
+	--quest_thesylphirantidote.jemma:setAttitude( Attitude.FRIENDLY );
+    --quest_thesylphirantidote.jemma:setWanderRadius(50);
+	--quest_thesylphirantidote.jemma:setName( "Jemma" );
+	--quest_thesylphirantidote.jemmaInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.jemma );
+	--quest_thesylphirantidote.jemmaInteraction:setInteractionType( InteractionType.Quest );
+    --quest_thesylphirantidote.jemmaInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithJemma()" );
 
 	local sylphirwoodsEnter = DawnInterface.addInteractionRegion();
 	sylphirwoodsEnter:setPosition( -1215, -1000, 100, 360 );
