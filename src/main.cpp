@@ -65,6 +65,7 @@
 #include "Frames.h"
 #include "GameLoopHandler.h"
 #include "ConfiguredFrames.h"
+#include "resolution.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -388,15 +389,41 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
+		
+		if(!utils::file_exists("resolutions.lua")) {
+			dawn_debug_info("file \"resolutions.lua\" not found. Scanning for possible resolutions...");
+			Resolution::scanPossibleResolutions();
+			Resolution::writePossibleResolutionsToFile("resolutions.lua");
+			Resolution::clearPossibleResolutions();
+		}
+				
+		Resolution configResolution(Configuration::screenWidth,
+									Configuration::screenHeight,
+									Configuration::bpp,
+									Configuration::fullscreenenabled);
+		
+		bool configResolutionWorks = Resolution::checkResolution( configResolution );
+		
+		if ( configResolutionWorks ) {
+			Configuration::addPossibleResolution( configResolution.width, configResolution.height, configResolution.bpp, configResolution.fullscreen );
+		}
+		
+		dawn_debug_info("loading possible resolutions from \"resolutions.lua\"");
+		Resolution::loadResolutionsFromFile("resolutions.lua");
 
-		if (Configuration::fullscreenenabled)
-			screen = SDL_SetVideoMode(Configuration::screenWidth,
-			                          Configuration::screenHeight, Configuration::bpp,
-			                          SDL_OPENGL | SDL_FULLSCREEN);
-		else
-			screen = SDL_SetVideoMode(Configuration::screenWidth,
-			                          Configuration::screenHeight, Configuration::bpp,
-			                          SDL_OPENGL);
+		if ( ! configResolutionWorks ) {
+			dawn_debug_warn( "configured resolution does not work. Trying to use another resolution." );
+		    if ( Resolution::getPossibleResolutions().size() == 0 ) {
+				dawn_debug_fatal("no working resolution found!");		        
+			}
+		    configResolution = Resolution::getBestResolution( Configuration::fullscreenenabled );
+		    Configuration::screenWidth = configResolution.width;
+		    Configuration::screenHeight = configResolution.height;
+		    Configuration::bpp = configResolution.bpp;
+		    Configuration::fullscreenenabled = configResolution.fullscreen;
+		}
+
+		Resolution::setResolution( screen, configResolution );
 
 		if ( !screen )
 			dawn_debug_fatal("Unable to set resolution");
