@@ -66,8 +66,8 @@ am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
-	Quest.$(OBJEXT) questwindow.$(OBJEXT) shop.$(OBJEXT) \
-	soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
+	Quest.$(OBJEXT) questwindow.$(OBJEXT) resolution.$(OBJEXT) \
+	shop.$(OBJEXT) soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
 	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
 	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
 	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
@@ -309,6 +309,8 @@ dawn_rpg_SOURCES = src/ActionBar.cpp \
 	src/Quest.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/resolution.cpp \
+	src/resolution.h \
 	src/shop.cpp \
 	src/shop.h \
 	src/soundengine.cpp \
@@ -475,6 +477,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/optionswindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnglite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/questwindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resolution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
@@ -1125,6 +1128,20 @@ questwindow.obj: src/questwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/questwindow.cpp' object='questwindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o questwindow.obj `if test -f 'src/questwindow.cpp'; then $(CYGPATH_W) 'src/questwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/questwindow.cpp'; fi`
+
+resolution.o: src/resolution.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT resolution.o -MD -MP -MF $(DEPDIR)/resolution.Tpo -c -o resolution.o `test -f 'src/resolution.cpp' || echo '$(srcdir)/'`src/resolution.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/resolution.Tpo $(DEPDIR)/resolution.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/resolution.cpp' object='resolution.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o resolution.o `test -f 'src/resolution.cpp' || echo '$(srcdir)/'`src/resolution.cpp
+
+resolution.obj: src/resolution.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT resolution.obj -MD -MP -MF $(DEPDIR)/resolution.Tpo -c -o resolution.obj `if test -f 'src/resolution.cpp'; then $(CYGPATH_W) 'src/resolution.cpp'; else $(CYGPATH_W) '$(srcdir)/src/resolution.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/resolution.Tpo $(DEPDIR)/resolution.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/resolution.cpp' object='resolution.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o resolution.obj `if test -f 'src/resolution.cpp'; then $(CYGPATH_W) 'src/resolution.cpp'; else $(CYGPATH_W) '$(srcdir)/src/resolution.cpp'; fi`
 
 shop.o: src/shop.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT shop.o -MD -MP -MF $(DEPDIR)/shop.Tpo -c -o shop.o `test -f 'src/shop.cpp' || echo '$(srcdir)/'`src/shop.cpp
