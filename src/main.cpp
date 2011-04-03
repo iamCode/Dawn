@@ -390,13 +390,7 @@ bool dawn_init(int argc, char** argv)
 
 		atexit(SDL_Quit);
 		
-		if(!utils::file_exists("resolutions.lua")) {
-			dawn_debug_info("file \"resolutions.lua\" not found. Scanning for possible resolutions...");
-			Resolution::scanPossibleResolutions();
-			Resolution::writePossibleResolutionsToFile("resolutions.lua");
-			Resolution::clearPossibleResolutions();
-		}
-				
+		dawn_debug_info("checking configured and possible resolutions");
 		Resolution configResolution(Configuration::screenWidth,
 									Configuration::screenHeight,
 									Configuration::bpp,
@@ -408,9 +402,8 @@ bool dawn_init(int argc, char** argv)
 			Configuration::addPossibleResolution( configResolution.width, configResolution.height, configResolution.bpp, configResolution.fullscreen );
 		}
 		
-		dawn_debug_info("loading possible resolutions from \"resolutions.lua\"");
-		Resolution::loadResolutionsFromFile("resolutions.lua");
-
+		Resolution::scanPossibleResolutions();
+		
 		if ( ! configResolutionWorks ) {
 			dawn_debug_warn( "configured resolution does not work. Trying to use another resolution." );
 		    if ( Resolution::getPossibleResolutions().size() == 0 ) {

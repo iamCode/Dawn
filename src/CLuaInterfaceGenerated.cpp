@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sat Apr  2 20:37:25 2011.
+** Generated automatically by tolua++-1.0.92 on Sun Apr  3 18:34:22 2011.
 */
 
 #ifndef __cplusplus
@@ -267,40 +267,6 @@ static int tolua_CLuaInterface_Configuration_showWarningMessages00(lua_State* to
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'showWarningMessages'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* function: Configuration::addPossibleResolution */
-#ifndef TOLUA_DISABLE_tolua_CLuaInterface_Configuration_addPossibleResolution00
-static int tolua_CLuaInterface_Configuration_addPossibleResolution00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isnumber(tolua_S,1,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,5,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  int width = ((int)  tolua_tonumber(tolua_S,1,0));
-  int height = ((int)  tolua_tonumber(tolua_S,2,0));
-  int bpp = ((int)  tolua_tonumber(tolua_S,3,0));
-  bool fullscreen = ((bool)  tolua_toboolean(tolua_S,4,0));
-  {
-   Configuration::addPossibleResolution(width,height,bpp,fullscreen);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'addPossibleResolution'.",&tolua_err);
  return 0;
 #endif
 }
@@ -7342,7 +7308,6 @@ TOLUA_API int tolua_CLuaInterface_open (lua_State* tolua_S)
    tolua_function(tolua_S,"showDebugFileout",tolua_CLuaInterface_Configuration_showDebugFileout00);
    tolua_function(tolua_S,"showInfoMessages",tolua_CLuaInterface_Configuration_showInfoMessages00);
    tolua_function(tolua_S,"showWarningMessages",tolua_CLuaInterface_Configuration_showWarningMessages00);
-   tolua_function(tolua_S,"addPossibleResolution",tolua_CLuaInterface_Configuration_addPossibleResolution00);
   tolua_endmodule(tolua_S);
   tolua_constant(tolua_S,"STOP",STOP);
   tolua_constant(tolua_S,"N",N);

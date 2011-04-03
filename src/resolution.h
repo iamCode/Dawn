@@ -35,11 +35,10 @@ public:
 	Resolution( int width, int height, int bpp, bool fullscreen );
 	
 	static void scanPossibleResolutions();
-	static void writePossibleResolutionsToFile( std::string filename );
 	static void clearPossibleResolutions();
-	static void loadResolutionsFromFile( std::string filename );
 	static std::vector< Resolution > getPossibleResolutions();	
 	static bool checkResolution( Resolution checkRes );
+	static bool checkResolutionAndAdjustBpp( Resolution &checkRes );
 	static Resolution getBestResolution( bool fullscreenPreferred );
 	static void setResolution( SDL_Surface *&screen, Resolution setRes );
 };

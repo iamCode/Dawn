@@ -35,73 +35,30 @@ Resolution::Resolution( int width_, int height_, int bpp_, bool fullscreen_ )
 {
 }
 
-std::vector< Resolution > getResolutionsToCheck()
-{
-	std::vector< Resolution > potentialResolutions;
-	potentialResolutions.push_back( Resolution( 1024, 768, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1024, 768, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1024, 600, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1024, 600, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1152, 864, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1152, 864, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1280, 800, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1280, 800, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1280, 1024, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1280, 1024, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1366, 768, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1366, 768, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1440, 900, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1440, 900, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1600, 900, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1600, 900, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1680, 1050, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1680, 1050, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1920, 1080, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1920, 1080, 32, true ) );
-	potentialResolutions.push_back( Resolution( 1920, 1200, 24, true ) );
-	potentialResolutions.push_back( Resolution( 1920, 1200, 32, true ) );
-
-	potentialResolutions.push_back( Resolution( 1024, 768, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1024, 768, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1024, 600, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1024, 600, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1152, 864, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1152, 864, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1280, 800, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1280, 800, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1280, 1024, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1280, 1024, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1366, 768, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1366, 768, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1440, 900, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1440, 900, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1600, 900, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1600, 900, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1680, 1050, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1680, 1050, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1920, 1080, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1920, 1080, 32, false ) );
-	potentialResolutions.push_back( Resolution( 1920, 1200, 24, false ) );
-	potentialResolutions.push_back( Resolution( 1920, 1200, 32, false ) );
-
-	return potentialResolutions;
-}
-
 bool Resolution::checkResolution( Resolution checkRes )
 {
 	Uint32 flags = SDL_OPENGL;
 	if ( checkRes.fullscreen ) {
 		flags |= SDL_FULLSCREEN;
 	}
-	SDL_Surface *testScreen = SDL_SetVideoMode( checkRes.width, checkRes.height, checkRes.bpp, flags );
-	
-	bool success = (testScreen != NULL);
-	
-	if ( testScreen != NULL ) {
-		SDL_FreeSurface( testScreen );
+	int suggestedBpp = SDL_VideoModeOK( checkRes.width, checkRes.height, checkRes.bpp, flags );
+	return suggestedBpp != 0;
+}
+
+bool Resolution::checkResolutionAndAdjustBpp( Resolution &checkRes )
+{
+	Uint32 flags = SDL_OPENGL;
+	if ( checkRes.fullscreen ) {
+		flags |= SDL_FULLSCREEN;
 	}
-	
-	return success;
+	int suggestedBpp = SDL_VideoModeOK( checkRes.width, checkRes.height, checkRes.bpp, flags );
+	if ( suggestedBpp >= 24 ) {
+		dawn_debug_info("Changing bpp to %d instead of %d for resolution %dx%d", suggestedBpp, checkRes.bpp, checkRes.width, checkRes.height );
+		checkRes.bpp = suggestedBpp;
+	} else {
+		dawn_debug_warn("Given bpp %d for resolution %dx%d probably don't work. Will try anyway since SDL suggested small bpp value of %d.", checkRes.bpp, checkRes.width, checkRes.height, suggestedBpp );
+	}
+	return suggestedBpp >= 24;
 }
 
 Resolution Resolution::getBestResolution( bool fullscreenPreferred )
@@ -128,47 +85,36 @@ void Resolution::setResolution( SDL_Surface *&screen, Resolution setRes )
 		SDL_FreeSurface( screen );
 	}
 
+	checkResolutionAndAdjustBpp( setRes );
+	
 	Uint32 flags = SDL_OPENGL;
 	if ( setRes.fullscreen ) {
 		flags |= SDL_FULLSCREEN;
 	}
+	
 	screen = SDL_SetVideoMode( setRes.width, setRes.height, setRes.bpp, flags );
 	assert( screen != NULL );
 }
 
 void Resolution::scanPossibleResolutions()
 {
-	std::vector< Resolution > resolutionToCheck = getResolutionsToCheck();
-	possibleResolutions.clear();
+	SDL_Rect** modes = SDL_ListModes(NULL, SDL_OPENGL|SDL_FULLSCREEN);
 	
-	// try each resolution in turn and set in resultvector if it works
-	for ( std::vector<Resolution>::iterator it=resolutionToCheck.begin(); it!=resolutionToCheck.end(); ++it ) {
-		Resolution &curRes = *it;
-
-		if ( Resolution::checkResolution( curRes ) ) {		
-			dawn_debug_info( "found supported resolution %dx%d, bpp %d, fullscreen %d", curRes.width, curRes.height, curRes.bpp, curRes.fullscreen );
-			possibleResolutions.push_back( curRes );
+	for ( int curModeNr=0; modes[curModeNr]; ++curModeNr ) {
+		Resolution tryRes = Resolution( modes[curModeNr]->w, modes[curModeNr]->h, 24, true );
+		if ( checkResolutionAndAdjustBpp( tryRes ) ) {
+			if ( tryRes.width >= 800 && tryRes.height >= 600 ) {
+				possibleResolutions.push_back( tryRes );
+				tryRes.fullscreen = false;
+				possibleResolutions.push_back( tryRes );				
+			}
 		}
-	}
-}
-
-void Resolution::writePossibleResolutionsToFile( std::string filename )
-{
-	std::ofstream ofs( filename.c_str() );
-	for ( std::vector<Resolution>::iterator it=possibleResolutions.begin(); it!=possibleResolutions.end(); ++it ) {
-		Resolution &curRes = *it;
-		ofs << "Configuration.addPossibleResolution( " << curRes.width << ", " << curRes.height << ", " << curRes.bpp << ", " << std::boolalpha << curRes.fullscreen << " );" << std::endl;
 	}
 }
 
 void Resolution::clearPossibleResolutions()
 {
 	possibleResolutions.clear();
-}
-
-void Resolution::loadResolutionsFromFile( std::string filename )
-{
-	LuaFunctions::executeLuaFile( filename );
 }
 
 std::vector< Resolution > Resolution::getPossibleResolutions()
