@@ -18,6 +18,10 @@
 
 #include "configuration.h"
 
+#include "CLuaFunctions.h"
+
+#include <fstream>
+
 namespace Configuration
 {
     void setResolution( uint16_t screenWidth, uint16_t screenHeight )
@@ -60,6 +64,24 @@ namespace Configuration
     {
         Configuration::show_warn_messages = show_warn_messages;
     }
+	
+	void writeConfigurationToFile()
+	{
+		std::ofstream oss("settings.lua");
+		oss << "setfenv(1, Configuration);" << std::endl;
+		oss << "setResolution( " << int(screenWidth) << ", " << int(screenHeight) << " );" << std::endl;
+		oss << "setBpp( " << int(bpp) << " );" << std::endl;
+		oss << "useFullscreen( " << std::boolalpha << fullscreenenabled << " );" << std::endl;
+		oss << "showDebugStdout( " << std::boolalpha <<  debug_stdout << " );" << std::endl;
+		oss << "showDebugFileout( " << std::boolalpha << debug_fileout << " );" << std::endl;
+		oss << "showInfoMessages( " << std::boolalpha << show_info_messages << " );" << std::endl;
+		oss << "showWarningMessages( " << std::boolalpha << show_warn_messages << " );" << std::endl;
+	}
+
+	void loadConfigurationFromFile()
+	{
+		LuaFunctions::executeLuaFile("settings.lua");
+	}
 
     uint16_t screenWidth = 1024;
     uint16_t screenHeight = 768;

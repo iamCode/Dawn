@@ -33,6 +33,9 @@ namespace Configuration
     void showInfoMessages( bool show_info_messages );
     void showWarningMessages( bool show_warn_messages );
 	void addPossibleResolution( int width, int height, int bpp, bool fullscreen );
+	
+	void writeConfigurationToFile();
+	void loadConfigurationFromFile();
 
 	extern uint16_t screenWidth;
     extern uint16_t screenHeight;

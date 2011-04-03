@@ -33,6 +33,13 @@ class SimpleFunctionObject
 		virtual void operator()() = 0;
 };
 
+template <class ArgumentType>
+class SingleArgumentCallback
+{
+	public:
+		virtual void operator()( ArgumentType arg ) = 0;	
+};
+
 class Label : public FramesBase
 {
 	public:
@@ -57,6 +64,42 @@ class Label : public FramesBase
 		float selectColorRed, selectColorGreen, selectColorBlue, selectColorAlpha;
 		std::string text;
 		mutable SimpleFunctionObject *onClickedFunc;
+};
+
+class SelectionBox : public FramesBase
+{
+	public:
+		SelectionBox( GLFT_Font *font, GLFT_Font *selectFont );
+		~SelectionBox();
+		virtual void setFont( GLFT_Font *font );
+		virtual void setSelectFont( GLFT_Font *selectFont );
+		virtual void setEntries( std::vector<std::string> entries, int initialSelected );
+		virtual int getSelected() const;
+		virtual void setSelected( int selected );
+
+		virtual void draw( int mouseX, int mouseY );
+		virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
+		
+		typedef SingleArgumentCallback<int> CallbackType;
+		void setOnSelected( CallbackType *onSelectedFunc );
+	
+		virtual int getWidth() const;
+		virtual int getHeight() const;
+
+		virtual void setBaseColor( float red, float green, float blue, float alpha );
+		virtual void setSelectColor( float red, float green, float blue, float alpha );
+
+	private:
+		GLFT_Font *font;
+		GLFT_Font *selectFont;
+		float baseColorRed, baseColorGreen, baseColorBlue, baseColorAlpha;
+		float selectColorRed, selectColorGreen, selectColorBlue, selectColorAlpha;
+		std::vector<std::string> entries;
+		int selected;
+		int maxWidth;
+		int maxSelectedWidth;
+		enum State { OPEN, CLOSED } state;
+		mutable CallbackType *onSelectedFunc;
 };
 
 #endif // CONTROLELEMENT_H

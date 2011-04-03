@@ -65,9 +65,7 @@ void MainMenuHandler::handleEvents()
 				mouseButtonDown = true;
 				// iterate through all our active frames and click on them if mouse is over.
 				for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
-					if ( activeFrames[ curFrame ]->isMouseOnFrame( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1 ) ) {
-						activeFrames[ curFrame ]->clicked( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1, lastEvent->button.button );
-					}
+					activeFrames[ curFrame ]->clicked( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1, lastEvent->button.button );
 				}
 			}
 		} else {

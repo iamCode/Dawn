@@ -24,6 +24,8 @@
 
 #include "debug.h"
 #include "CLuaFunctions.h"
+#include "configuration.h"
+#include "CDrawingHelpers.h"
 
 static std::vector<Resolution> possibleResolutions;
 
@@ -52,11 +54,13 @@ bool Resolution::checkResolutionAndAdjustBpp( Resolution &checkRes )
 		flags |= SDL_FULLSCREEN;
 	}
 	int suggestedBpp = SDL_VideoModeOK( checkRes.width, checkRes.height, checkRes.bpp, flags );
-	if ( suggestedBpp >= 24 ) {
-		dawn_debug_info("Changing bpp to %d instead of %d for resolution %dx%d", suggestedBpp, checkRes.bpp, checkRes.width, checkRes.height );
-		checkRes.bpp = suggestedBpp;
-	} else {
-		dawn_debug_warn("Given bpp %d for resolution %dx%d probably don't work. Will try anyway since SDL suggested small bpp value of %d.", checkRes.bpp, checkRes.width, checkRes.height, suggestedBpp );
+	if ( suggestedBpp != checkRes.bpp )  {
+		if ( suggestedBpp >= 24 ) {
+			dawn_debug_info("Changing bpp to %d instead of %d for resolution %dx%d", suggestedBpp, checkRes.bpp, checkRes.width, checkRes.height );
+			checkRes.bpp = suggestedBpp;
+		} else {
+			dawn_debug_warn("Given bpp %d for resolution %dx%d probably don't work. Will try anyway since SDL suggested small bpp value of %d.", checkRes.bpp, checkRes.width, checkRes.height, suggestedBpp );
+		}
 	}
 	return suggestedBpp >= 24;
 }
@@ -94,6 +98,11 @@ void Resolution::setResolution( SDL_Surface *&screen, Resolution setRes )
 	
 	screen = SDL_SetVideoMode( setRes.width, setRes.height, setRes.bpp, flags );
 	assert( screen != NULL );
+	Configuration::screenWidth = setRes.width;
+	Configuration::screenHeight = setRes.height;
+	Configuration::bpp = setRes.bpp;
+	Configuration::fullscreenenabled = setRes.fullscreen;
+	glViewport( 0, 0, Configuration::screenWidth, Configuration::screenHeight );
 }
 
 void Resolution::scanPossibleResolutions()

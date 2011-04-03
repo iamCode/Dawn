@@ -23,8 +23,10 @@
 #include "fontcache.h"
 #include "Player.h"
 #include "globals.h"
+#include "resolution.h"
 
 #include "SDL/SDL.h"
+#include <sstream>
 
 extern SDL_Surface *screen;
 extern std::auto_ptr<ConfigurableFrame> optionsFrame;
@@ -52,51 +54,39 @@ class ToggleFrameFunction : public SimpleFunctionObject
 		}
 };
 
-class ToggleFullscreenFunction : public SimpleFunctionObject
+class ResolutionSelectionFunction : public SelectionBox::CallbackType
 {
-	private:
-		Label *fullscreenLabel;
-		bool fullscreen;
-	public:
-		ToggleFullscreenFunction( Label *fullscreenLabel_, bool initialValue )
-			: fullscreenLabel( fullscreenLabel_ ),
-			  fullscreen( initialValue )
-		{
-		}
-		void operator() ()
-		{
-			Configuration::fullscreenenabled = !Configuration::fullscreenenabled;
-			if (Configuration::fullscreenenabled)
-			{
-				screen = SDL_SetVideoMode(Configuration::screenWidth,
-										  Configuration::screenHeight, Configuration::bpp,
-										  SDL_OPENGL | SDL_FULLSCREEN);
-				if ( screen == NULL )
-				{
-					Configuration::fullscreenenabled = false;
-					screen = SDL_SetVideoMode(Configuration::screenWidth,
-											  Configuration::screenHeight, Configuration::bpp,
-											  SDL_OPENGL);
-				}
-			}
-			else
-			{
-				screen = SDL_SetVideoMode(Configuration::screenWidth,
-										  Configuration::screenHeight, Configuration::bpp,
-										  SDL_OPENGL);
-				if ( screen == NULL )
-				{
-					Configuration::fullscreenenabled = true;
-					screen = SDL_SetVideoMode(Configuration::screenWidth,
-											  Configuration::screenHeight, Configuration::bpp,
-											  SDL_OPENGL | SDL_FULLSCREEN);
-				}
-			}
-			if ( Configuration::fullscreenenabled )
-				fullscreenLabel->setText("Fullscreen");
-			else
-				fullscreenLabel->setText("Windowed");
-		}
+  private:
+	std::vector<Resolution> resolutions;
+
+  public:
+	void setResolutions( std::vector<Resolution> resolutions )
+	{
+		this->resolutions = resolutions;
+	}
+	
+	virtual void operator()( int selected )
+	{
+		assert( selected >= 0 && selected < resolutions.size() );
+		uint16_t saveScreenWidth = Configuration::screenWidth;
+	    uint16_t saveScreenHeight = Configuration::screenHeight;
+	    uint8_t saveBpp = Configuration::bpp;
+		bool saveFullscreen = Configuration::fullscreenenabled;
+		
+		Resolution setRes = resolutions[selected];
+		Configuration::screenWidth = setRes.width;
+		Configuration::screenHeight = setRes.height;
+		Configuration::bpp = setRes.bpp;
+		Configuration::fullscreenenabled = setRes.fullscreen;
+		
+		// write new configuration so it will take effect on next start
+		Configuration::writeConfigurationToFile();
+		
+		Configuration::screenWidth = saveScreenWidth;
+		Configuration::screenHeight = saveScreenHeight;
+		Configuration::bpp = saveBpp;
+		Configuration::fullscreenenabled = saveFullscreen;
+	}
 };
 
 class QuitGameFunction : public SimpleFunctionObject
@@ -131,27 +121,60 @@ namespace ConfiguredFrames
 void fillOptionsFrame( ConfigurableFrame *optionsFrame )
 {
 	optionsFrame->setAutoresize();
-	optionsFrame->setCenteringLayout();
+	//optionsFrame->setCenteringLayout();
 	optionsFrame->setCenterOnScreen();
 	std::auto_ptr<Label> optionsFrameLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Select Options" ));
 	optionsFrameLabel->setBaseColor( 1.0f, 0.0f, 0.0f, 1.0f );
 	std::auto_ptr<Label> optionsFrameBackLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Back" ));
 	optionsFrameBackLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	optionsFrameBackLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
-	std::auto_ptr<Label> optionsFrameFullscreenLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Fullscreen" ));
-	optionsFrameFullscreenLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
-	optionsFrameFullscreenLabel->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
+	std::auto_ptr<Label> optionsFrameResolutionLabel( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), "Resolution:" ));
+	optionsFrameResolutionLabel->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	std::auto_ptr<Label> optionsFrameWarningLabel0( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 12 ), "Note:" ));
+	optionsFrameWarningLabel0->setBaseColor( 0.9f, 0.5f, 0.1f, 1.0f );
+	std::auto_ptr<Label> optionsFrameWarningLabel1( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 12 ), "Changes in graphics options take place" ));
+	optionsFrameWarningLabel1->setBaseColor( 0.9f, 0.5f, 0.1f, 1.0f );
+	std::auto_ptr<Label> optionsFrameWarningLabel2( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 12 ), "only after restarting Dawn" ));
+	optionsFrameWarningLabel2->setBaseColor( 0.9f, 0.5f, 0.1f, 1.0f );
+	
+	std::auto_ptr<SelectionBox> optionsFrameResolutionSelection( new SelectionBox( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), FontCache::getFontFromCache( "data/verdana.ttf", 10 ) ) );
+	optionsFrameResolutionSelection->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	optionsFrameResolutionSelection->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
 	optionsFrame->setVisible( false );
-
-	if ( ! Configuration::fullscreenenabled )
-		optionsFrameFullscreenLabel->setText( "Windowed" );
-
 	optionsFrameBackLabel->setOnClicked( new ToggleFrameFunction(optionsFrame, mainMenuFrame.get()) );
-	optionsFrameFullscreenLabel->setOnClicked( new ToggleFullscreenFunction( optionsFrameFullscreenLabel.get(), Configuration::fullscreenenabled ) );
+	std::vector<Resolution> possibleResolutions = Resolution::getPossibleResolutions();
+	std::vector<std::string> resTexts;
+	int selected = -1;
+	for ( size_t curResNr=0; curResNr<possibleResolutions.size(); ++curResNr ) {
+		Resolution &curRes = possibleResolutions[ curResNr ];
+		std::ostringstream oss;
+		oss << curRes.width << "x" << curRes.height << " ";
+		if ( curRes.fullscreen ) {
+			oss << "F";
+		} else {
+			oss << "W";
+		}
+		resTexts.push_back( oss.str() );
+		
+		if ( curRes.width == Configuration::screenWidth && curRes.height == Configuration::screenHeight 
+		     && curRes.bpp == Configuration::bpp && curRes.fullscreen == Configuration::fullscreenenabled ) {
+			selected = curResNr;
+		}
+		dawn_debug_info( "possible resolution: %s", oss.str().c_str() );
+	}
+	
+	optionsFrameResolutionSelection->setEntries( resTexts, selected );
+	std::auto_ptr<ResolutionSelectionFunction> resolutionSelectionFunction( new ResolutionSelectionFunction() );
+	resolutionSelectionFunction->setResolutions( possibleResolutions );
+	optionsFrameResolutionSelection->setOnSelected( resolutionSelectionFunction.release() );
 
-	optionsFrame->addChildFrame( 10, 0, std::auto_ptr<FramesBase>(optionsFrameBackLabel.release()) );
-	optionsFrame->addChildFrame( 10, 22, std::auto_ptr<FramesBase>(optionsFrameFullscreenLabel.release()) );
-	optionsFrame->addChildFrame( 0, 70, std::auto_ptr<FramesBase>(optionsFrameLabel.release()) );
+	optionsFrame->addChildFrame( 0, 10+optionsFrameBackLabel->getHeight() + 20+optionsFrameResolutionSelection->getHeight()+20+optionsFrameWarningLabel2->getHeight()+optionsFrameWarningLabel1->getHeight()+optionsFrameWarningLabel0->getHeight()+20, std::auto_ptr<FramesBase>(optionsFrameLabel.release()) );
+	optionsFrame->addChildFrame( 0, 10+optionsFrameBackLabel->getHeight() + 20+optionsFrameResolutionSelection->getHeight()+20+optionsFrameWarningLabel2->getHeight()+optionsFrameWarningLabel1->getHeight(), std::auto_ptr<FramesBase>(optionsFrameWarningLabel0.release()) );
+	optionsFrame->addChildFrame( 0, 10+optionsFrameBackLabel->getHeight() + 20+optionsFrameResolutionSelection->getHeight()+20+optionsFrameWarningLabel2->getHeight(), std::auto_ptr<FramesBase>(optionsFrameWarningLabel1.release()) );
+	optionsFrame->addChildFrame( 0, 10+optionsFrameBackLabel->getHeight() + 20+optionsFrameResolutionSelection->getHeight()+20, std::auto_ptr<FramesBase>(optionsFrameWarningLabel2.release()) );
+	optionsFrame->addChildFrame( 10 + optionsFrameResolutionLabel->getWidth() + 10, 10 + optionsFrameBackLabel->getHeight() + 20, std::auto_ptr<FramesBase>(optionsFrameResolutionSelection.release()) );
+	optionsFrame->addChildFrame( 10, 10 + optionsFrameBackLabel->getHeight() + 20, std::auto_ptr<FramesBase>(optionsFrameResolutionLabel.release()) );
+	optionsFrame->addChildFrame( 10, 10, std::auto_ptr<FramesBase>(optionsFrameBackLabel.release()) );
 }
 
 void fillMainMenuFrame( ConfigurableFrame *mainMenuFrame )

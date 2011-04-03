@@ -129,7 +129,7 @@ void ConfigurableFrame::applyLayout()
 		int curY = skipPerElement;
 		for ( size_t curChild = 0; curChild < childFrames.size(); ++curChild )
 		{
-			std::cout << "setting element " << curChild << " to (" << (blocksX*usedBlockWidth - maxChildWidth) / 2 << "," << curY << ")" << std::endl;
+			// std::cout << "setting element " << curChild << " to (" << (blocksX*usedBlockWidth - maxChildWidth) / 2 << "," << curY << ")" << std::endl;
 			childFrames[curChild]->setPosition( (blocksX*usedBlockWidth - maxChildWidth) / 2, curY );
 			curY += skipPerElement + childFrames[curChild]->getHeight();
 		}
@@ -138,10 +138,10 @@ void ConfigurableFrame::applyLayout()
 
 void ConfigurableFrame::resize( int width, int height )
 {
-	std::cout << "(width,height) = "<< width << "," << height << std::endl;
+	// std::cout << "(width,height) = "<< width << "," << height << std::endl;
 	blocksX = Frames::calculateNeededBlockWidth( width, usedBlockWidth );
 	blocksY = Frames::calculateNeededBlockHeight( height, usedBlockHeight );
-	std::cout << "(blocksX,blocksY) = " << blocksX << "," << blocksY << std::endl;
+	// std::cout << "(blocksX,blocksY) = " << blocksX << "," << blocksY << std::endl;
 	recalculatePosition();
 }
 
