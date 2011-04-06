@@ -1018,6 +1018,22 @@ bool hasIntersection( int r1_l, int r1_r, int r1_b, int r1_t, int r2_l, int r2_r
 	return ( ! ( (r1_t < r2_b) || (r1_b > r2_t ) || (r1_l > r2_r) || (r1_r < r2_l) ) );
 }
 
+bool isFree( int px, int py, int w, int h )
+{
+	CZone *curZone = Globals::getCurrentZone();
+
+	for (unsigned int t=0;t<curZone->CollisionMap.size();t++) {
+		int other_l = curZone->CollisionMap[t].CR.x, other_r = curZone->CollisionMap[t].CR.x+curZone->CollisionMap[t].CR.w;
+		int other_b = curZone->CollisionMap[t].CR.y, other_t = curZone->CollisionMap[t].CR.y+curZone->CollisionMap[t].CR.h;
+		if ( hasIntersection( other_l, other_r, other_b, other_t,
+		                      px, px+w, py, py+h )) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 int CCharacter::CheckForCollision(int x_pos, int y_pos)
 {
 	CZone *curZone = Globals::getCurrentZone();
