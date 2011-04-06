@@ -530,7 +530,7 @@ class RangedDamageAction : public ConfigurableAction
 
 class Quest
 {
-	addRequiredItemForCompletion( Item* requiredItem, int quantity );
+	void addRequiredItemForCompletion( Item* requiredItem, int quantity );
 	void setExperienceReward( int experienceReward );
 	void setCoinReward( int coinReward );
 	void setItemReward( Item* itemReward );

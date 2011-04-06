@@ -63,7 +63,7 @@ function quest_thesylphirantidote.speakWithEffrey()
 			quest_thesylphirantidote.gotReward = false;
 			quest_thesylphirantidote.gotAntidote = false;
 			quest_thesylphirantidote.gotInstructionFromJemma = false;
-			DawnInterface.addQuest( "The Sylphir antidote", "Effrey Longback's daughter was bitten by a Sylphir spider. Search out Jemma the alchemist in the southern part of the Sylphir woods and obtain an antidote for Effrey." );
+			quest_thesylphirantidote.quest = DawnInterface.addQuest( "The Sylphir antidote", "Effrey Longback's daughter was bitten by a Sylphir spider. Search out Jemma the alchemist in the southern part of the Sylphir woods and obtain an antidote for Effrey." );
 			quest_thesylphirantidote.showJeffreyText( 1 );
 		elseif ( quest_thesylphirantidote.added == true and quest_thesylphirantidote.completed == false and quest_thesylphirantidote.gotAntidote == false )
 		then
@@ -138,5 +138,3 @@ then
 	quest_thesylphirantidote.inited = true;
 	quest_thesylphirantidote.init();
 end
-
-

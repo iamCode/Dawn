@@ -17,6 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "Quest.h"
+#include "globals.h"
+#include "shop.h"
+#include "CLuaInterface.h"
 
 Quest::Quest( std::string name, std::string description )
     :   name( name ),
@@ -89,4 +92,25 @@ std::string Quest::getDescription() const
 std::string Quest::getName() const
 {
     return name;
+}
+
+bool Quest::finishQuest() const
+{
+    Player* ourPlayer = Globals::getPlayer();
+    // we will try to finish the quest here. Depending on what the quest require of us.
+    // for now we will assume that every item is gathered, boss or npc is killed, etc..
+
+    // reward the player with experience, items and coins.
+    if ( getExperienceReward() > 0 ) {
+        ourPlayer->gainExperience( getExperienceReward() );
+    }
+    if ( getCoinReward() > 0 ) {
+        ourPlayer->giveCoins( getCoinReward() );
+        GLfloat blue[] = { 0.4f, 0.4f, 0.8f };
+        DawnInterface::addTextToLogWindow( blue, "You received %s.",currency::getLongTextString( getCoinReward() ).c_str() );
+    }
+    if ( getItemReward() != NULL ) {
+        DawnInterface::giveItemToPlayer( getItemReward() );
+    }
+    return true;
 }

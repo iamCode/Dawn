@@ -66,7 +66,7 @@ function quest_hexmaster.showStartText( part )
 		-- DawnInterface.removeInteractionRegion( quest_hexmaster.questStartRegion );
 		-- quest_hexmaster.questStartRegion = nil;
 
-		DawnInterface.addQuest(	"The Hexmaster", "Explore the catacombs underneath the town of Arinox and report back any trace of Jorni to Ornad Saidor." );
+		quest_hexmaster.quest = DawnInterface.addQuest(	"The Hexmaster", "Explore the catacombs underneath the town of Arinox and report back any trace of Jorni to Ornad Saidor." );
 		quest_hexmaster.questGiven = true;
 	end
 	if ( part == 3 )
@@ -100,7 +100,7 @@ function quest_hexmaster.showStartText( part )
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("The townspeople wanted to execute him right away, but this is a lawful town and he was imprisoned to be judged in the morning. During night some townspeople wanted to kill him in prison but somehow he escaped in the tumult and ran to the dungeons beneath the city. Even though that seems to confirm his guilt he must have his labratories there so no one dared to enter the dungeons, yet. The mages guild is probably willing to help, but they say they need to wait for a high protector from the church to shield them during the operation. My master doesn't want to wait that long and I for myself find the quick investigations of the guild somewhat suspicious. However, to continue into the dungeons you will probably need the help of some mages since what you describe sounds very much like a magical lock. Since Jorni seems to have been an outsider in the guild it shouldn't be hard to find someone among them who will help you break the lock.");
 		quest_hexmaster.toldWholeStory = true
-		DawnInterface.changeQuestDescription("The Hexmaster", "Ornad Saidor thinks you need magical help from the mages guild to open the dungeon door and continue to search for Jorni");
+		DawnInterface.changeQuestDescription( quest_hexmaster.quest, "Ornad Saidor thinks you need magical help from the mages guild to open the dungeon door and continue to search for Jorni");
 	end
 	if ( part == 7 )
 	then
@@ -140,7 +140,7 @@ function quest_hexmaster.showNoviceText( part )
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("Whatever you might have heard, I can't believe he is a hexmaster. The daughter and Jorni were in love with each other. That's why he had personal items of her. I understand that the guild leaders were pressed to name someone given the hatred of the townspeople, but it was wrong. Jorni was distant the last weeks and even told us - his only friends - just that he had a very bad suspicion and was looking for proof. I can't believe he is a hexmaster, but that he is a victim. We will help you to open the lock, but can't do more since we have orders from the guild leaders to stay away from the catacombs so even that little help might have dire consequences for us. Show us the door and we will break it.")
 		quest_hexmaster.novicesOfferedHelp = true
-		DawnInterface.changeQuestDescription("The Hexmaster", "Lead the novice mages to the locked dungeon door so they can try to spell it open")
+		DawnInterface.changeQuestDescription( quest_hexmaster.quest, "Lead the novice mages to the locked dungeon door so they can try to spell it open")
 	end
 end
 
@@ -162,7 +162,7 @@ function quest_hexmaster.showMagicDoorText( part )
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("At the end of the corridor you see a closed door. When you go close to it you notice a torn piece of novice robe is caught in the door. You try to open the door, but it is locked and won't open. Maybe the strange glowing runes drawn around the frame have something to do with it.");
-		DawnInterface.changeQuestDescription("The Hexmaster", "Tell Ornad Saidor in Arinox that you have found a locked door and within the piece of a robe.");
+		DawnInterface.changeQuestDescription( quest_hexmaster.quest, "Tell Ornad Saidor in Arinox that you have found a locked door and within the piece of a robe.");
 		quest_hexmaster.doorTextRead = true;
 	end
 	if ( part == 2 )
@@ -197,7 +197,7 @@ function quest_hexmaster.showMagicDoorText( part )
 		textWindow:setText("This door is open now. But be careful when you enter this room. We underestimated that lock. The magic that was worked there was unknown to us, but very powerful. It felt dead and evil and nearly killed us. Now I really believe some hexmaster has come to terrorize our town. Good luck to you")
 		quest_hexmaster.magicDoorOpened = true
 
-		DawnInterface.changeQuestDescription("The Hexmaster", "Explore the depth of the Arinox dungeon and find Jorni.");
+		DawnInterface.changeQuestDescription( quest_hexmaster.quest, "Explore the depth of the Arinox dungeon and find Jorni.");
 	end
 end
 

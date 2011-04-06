@@ -142,16 +142,19 @@ void QuestWindow::finishQuest( Quest *quest )
 
 	if ( foundQuestNr < quests.size() ) {
 		// found the quest
-		quests.erase( quests.begin() + foundQuestNr );
-		questDescriptions.erase( questDescriptions.begin() + foundQuestNr );
-		if ( selectedQuestNr == static_cast<int>(foundQuestNr) ) {
-			selectedQuestNr = -1;
-		} else if ( selectedQuestNr > static_cast<int>(foundQuestNr) ) {
-			--selectedQuestNr;
-		}
+		if ( quest->finishQuest() == true ) { // we were able to finish the quest, delete it from our questwindow
+		    quests.erase( quests.begin() + foundQuestNr );
+            questDescriptions.erase( questDescriptions.begin() + foundQuestNr );
+            if ( selectedQuestNr == static_cast<int>(foundQuestNr) ) {
+                selectedQuestNr = -1;
+            } else if ( selectedQuestNr > static_cast<int>(foundQuestNr) ) {
+                --selectedQuestNr;
+            }
 
-		GLfloat green[] = { 0.15f, 1.0f, 0.15f };
-        DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", quest->getName().c_str() );
+            GLfloat green[] = { 0.15f, 1.0f, 0.15f };
+            DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", quest->getName().c_str() );
+            delete quest;
+        }
 	}
 
 	if ( selectedQuestNr == -1 && quests.size() > 0 ) {
@@ -161,6 +164,10 @@ void QuestWindow::finishQuest( Quest *quest )
 
 void QuestWindow::removeAllQuests()
 {
+	for ( size_t questIndex = 0; questIndex < quests.size(); questIndex++ ) {
+	    delete quests[ questIndex ];
+	}
+
 	quests.clear();
 	questDescriptions.clear();
 	selectedQuestNr = -1;

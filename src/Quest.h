@@ -23,13 +23,13 @@
 #include <stdint.h>
 #include "item.h"
 
-class Player;
-
 class Quest
 {
     public:
         Quest( std::string name, std::string description );
         ~Quest();
+
+        bool finishQuest() const;
 
         void addRequiredItemForCompletion( Item *requiredItem, uint8_t quantity );
         bool isItemRequiredInQuest( Item *item ) const;
