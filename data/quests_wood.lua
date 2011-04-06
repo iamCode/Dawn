@@ -84,7 +84,7 @@ end
 
 function quest_playHideAndSeek.onKilledQuestMonster()
 	james = DawnInterface.addInteractionPoint();
-	james:setPosition( 850, 270, 64, 64 );
+	james:setPosition( 3783,640, 64, 64 );
 	james:setBackgroundTexture( "data/character/James.tga" );
 	james:setInteractionType( InteractionType.Quest );
 	james:setInteractionCode( "quest_playHideAndSeek.onActivateJames()" );
