@@ -208,7 +208,7 @@ std::string QuestWindow::getReloadScriptText() const
 {
 	std::ostringstream oss;
 	for ( size_t curQuestNr=0; curQuestNr<quests.size(); ++curQuestNr ) {
-		oss << "DawnInterface.addQuest( '" << quests[ curQuestNr ] << "', '";
+		oss << "DawnInterface.addQuest( '" << quests[ curQuestNr ]->getName() << "', '";
 		for ( size_t curQuestDescriptionNr=0; curQuestDescriptionNr<questDescriptions[curQuestNr].size(); ++curQuestDescriptionNr ) {
 			oss << questDescriptions[curQuestNr][curQuestDescriptionNr];
 			if ( curQuestDescriptionNr < questDescriptions[curQuestNr].size() - 1 ) {
