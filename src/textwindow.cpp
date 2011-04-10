@@ -58,9 +58,10 @@ char *strtok_r(char *str, const char *delim, char **nextp)
     return ret;
 }
 
-void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font )
+void formatMultilineText( std::string textIn, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font )
 {
 	// for strtok_r
+	std::string text = std::string("").append(textIn);
 	char *some_ptr = NULL;
 	char **save_ptr = &some_ptr;
 	std::string delim = " ";
