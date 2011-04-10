@@ -44,6 +44,8 @@ function printValue( surroundingName, varname, value )
 	then
 		local restoreString = DawnInterface.getItemReferenceRestore( value );
 		io.write( prefix..varname.."="..restoreString..'\n' );
+		local furtherReinitializationString = DawnInterface.getReinitialisationString( prefix..varname, value );
+		io.write( furtherReinitializationString );
 	end
 end
 
@@ -61,7 +63,6 @@ function saveGame( fileprefix )
 			printValue(nil,varname,value)
 		end
 	end
-	io.write( DawnInterface.getQuestSaveText() );
 	io.write( DawnInterface.getInventorySaveText() );
 	local player = DawnInterface.getPlayer();
 	io.write( player:getSaveText() );

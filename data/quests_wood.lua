@@ -59,9 +59,9 @@ function quest_playHideAndSeek.onActivateJohn()
 			onDieEventHandler:setExecuteText( "quest_playHideAndSeek.onKilledQuestMonster()" );
 			quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );
 			quest_playHideAndSeek.quest = DawnInterface.addQuest("hide and seek", "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
-            quest_playHideAndSeek.quest:setExperienceReward( 150 );
-            quest_playHideAndSeek.quest:setCoinReward( 821 );
-            quest_playHideAndSeek.quest:setItemReward( itemDatabase["ringofdefense"] );
+			quest_playHideAndSeek.quest:setExperienceReward( 150 );
+			quest_playHideAndSeek.quest:setCoinReward( 821 );
+			quest_playHideAndSeek.quest:setItemReward( itemDatabase["ringofdefense"] );
 		end
 		local textWindow = DawnInterface.createTextWindow( true );
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
@@ -79,6 +79,7 @@ function quest_playHideAndSeek.onActivateJohn()
 		john = nil;
 		james = nil;
 		DawnInterface.finishQuest(quest_playHideAndSeek.quest);
+		quest_playHideAndSeek.quest = nil;
 	end
 end
 
@@ -107,7 +108,11 @@ function quest_playHideAndSeek.onActivateJames()
 		textWindow:setAutocloseTime( 10000 );
 		james:setPosition( 800, 200, 64, 64 );
 		quest_playHideAndSeek.fulfilled = true;
+<<<<<<< .mine
+		DawnInterface.changeQuestDescription(quest_playHideAndSeek.questObject, "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
+=======
 		DawnInterface.changeQuestDescription(quest_playHideAndSeek.quest, "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
+>>>>>>> .r848
 	end
 end
 

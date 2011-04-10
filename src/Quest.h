@@ -23,6 +23,9 @@
 #include <stdint.h>
 #include "item.h"
 
+class Quest;
+namespace DawnInterface { std::string getReinitialisationString( std::string fullVarName, Quest *quest ); }
+
 class Quest
 {
     public:
@@ -58,6 +61,7 @@ class Quest
 
         std::string name;
         std::string description;
+        friend std::string DawnInterface::getReinitialisationString( std::string fullVarName, Quest *quest );
 };
 
 #endif

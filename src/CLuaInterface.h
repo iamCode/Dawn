@@ -85,7 +85,10 @@ namespace DawnInterface
 	std::string getItemReferenceRestore( InteractionRegion *interactionRegion );
 	std::string getItemReferenceRestore( Shop *shop );
 	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( Quest *quest );
 	std::string getItemReferenceRestore( TextWindow *textWindow );
+	std::string getReinitialisationString( std::string fullVarName, Quest *quest );
+	std::string getReinitialisationString( std::string fullVarName, void *ignore );
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
 	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
 	InteractionRegion* restoreInteractionRegionReference( std::string zoneName, int posInArray );

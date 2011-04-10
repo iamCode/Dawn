@@ -40,8 +40,6 @@ class QuestWindow : public FramesBase
 		void changeQuestDescription( Quest *quest, std::string newDescription );
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-		std::string getReloadScriptText() const;
-
 	private:
 		std::vector<Quest*> quests;
 		/// \brief For each quest the description. Formatted for multiline output.

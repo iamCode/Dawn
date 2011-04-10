@@ -728,6 +728,16 @@ namespace DawnInterface
 		dawn_debug_fatal( "could not find event handler in any of the zones" );
 		abort();
 	}
+	
+	std::string getItemReferenceRestore( Quest *quest )
+	{
+		if ( quest == NULL ) {
+			return "nil;";
+		}
+		std::ostringstream oss;
+		oss << "DawnInterface.addQuest( '" << quest->getName() << "', '" << quest->getDescription() << "' );";
+		return oss.str();
+	}
 
 	std::string getItemReferenceRestore( Shop *shop )
 	{
@@ -738,6 +748,34 @@ namespace DawnInterface
 	{
 		return "DawnInterface.createTextWindow(); -- text windows are not restored";
 	}
+	
+	std::string getReinitialisationString( std::string fullVarName, Quest *quest )
+	{
+		if ( quest == NULL ) {
+			return "";
+		}
+		std::ostringstream oss;
+		if ( quest->getExperienceReward() > 0 ) {
+			oss << fullVarName << ":setExperienceReward( " << static_cast<int>(quest->getExperienceReward()) << " );" << std::endl;
+		}
+		if ( quest->getCoinReward() > 0 ) {
+			oss << fullVarName << ":setCoinReward( " << static_cast<int>(quest->getCoinReward()) << " );" << std::endl;			
+		}
+		if ( quest->getItemReward() != NULL ) {
+			oss << fullVarName << ":setItemReward( itemDatabase[\"" << quest->getItemReward()->getID() << "\"] );" << std::endl;
+		}
+		for ( size_t curReqItemNr=0; curReqItemNr<quest->requiredItems.size(); ++curReqItemNr ) {
+			const std::pair< Item*, uint8_t > &curReqItem = quest->requiredItems[curReqItemNr];
+			oss << fullVarName << ":addRequiredItemForCompletion( itemDatabase[\"" << curReqItem.first->getID() << "\"], " << static_cast<int>(curReqItem.second) << " );" << std::endl;
+		}
+		
+		return oss.str();
+	}
+
+	std::string getReinitialisationString( std::string fullVarName, void *ignore )
+	{
+		return "";
+	}	
 
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
 	{

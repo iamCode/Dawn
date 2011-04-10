@@ -586,7 +586,6 @@ namespace DawnInterface
 	Player *getPlayer();
 
 	// functions used for loading only
-	std::string getQuestSaveText();
 	std::string getInventorySaveText();
 	std::string getSpellbookSaveText();
 	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, int stackSize = 1 );
@@ -601,7 +600,12 @@ namespace DawnInterface
 	std::string getItemReferenceRestore( InteractionRegion *interactionRegion );
 	std::string getItemReferenceRestore( Shop *shop );
 	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( Quest *quest );
 	std::string getItemReferenceRestore( TextWindow *textWindow );
+	// Note: void* interface for ignoring must be the last since tolua resolves overloading from last to first function, 
+	//       taking any function where conversion is successful
+	std::string getReinitialisationString( std::string fullVarName, void *ignore );
+	std::string getReinitialisationString( std::string fullVarName, Quest *quest );
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
 	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
 	InteractionRegion* restoreInteractionRegionReference( std::string zoneName, int posInArray );

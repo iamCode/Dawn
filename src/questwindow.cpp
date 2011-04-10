@@ -48,11 +48,6 @@ namespace DawnInterface
 	{
 		questWindow->changeQuestDescription( quest, newDescription );
 	}
-
-	std::string getQuestSaveText()
-	{
-		return questWindow->getReloadScriptText();
-	}
 }
 
 QuestWindow::QuestWindow() : FramesBase( 20, 100, 375, 376, 20, 20 )
@@ -175,6 +170,7 @@ void QuestWindow::removeAllQuests()
 
 void QuestWindow::changeQuestDescription( Quest *quest, std::string newDescription )
 {
+	quest->setDescription( newDescription );
 	size_t foundQuestNr = 0;
 	for ( foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
 		if ( quests[ foundQuestNr ] == quest ) {
@@ -202,20 +198,4 @@ void QuestWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	if ( curEntryNr < quests.size() ) {
 		selectedQuestNr = curEntryNr;
 	}
-}
-
-std::string QuestWindow::getReloadScriptText() const
-{
-	std::ostringstream oss;
-	for ( size_t curQuestNr=0; curQuestNr<quests.size(); ++curQuestNr ) {
-		oss << "DawnInterface.addQuest( '" << quests[ curQuestNr ]->getName() << "', '";
-		for ( size_t curQuestDescriptionNr=0; curQuestDescriptionNr<questDescriptions[curQuestNr].size(); ++curQuestDescriptionNr ) {
-			oss << questDescriptions[curQuestNr][curQuestDescriptionNr];
-			if ( curQuestDescriptionNr < questDescriptions[curQuestNr].size() - 1 ) {
-				oss << " ";
-			}
-		}
-		oss << "' );" << std::endl;
-	}
-	return oss.str();
 }
