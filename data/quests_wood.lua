@@ -108,11 +108,7 @@ function quest_playHideAndSeek.onActivateJames()
 		textWindow:setAutocloseTime( 10000 );
 		james:setPosition( 800, 200, 64, 64 );
 		quest_playHideAndSeek.fulfilled = true;
-<<<<<<< .mine
-		DawnInterface.changeQuestDescription(quest_playHideAndSeek.questObject, "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
-=======
 		DawnInterface.changeQuestDescription(quest_playHideAndSeek.quest, "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
->>>>>>> .r848
 	end
 end
 
