@@ -8,7 +8,9 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/
 bin_PROGRAMS = dawn-rpg
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
-dawn_rpg_SOURCES = src/ActionBar.cpp \
+dawn_rpg_SOURCES = src/a_star.cpp \
+	src/a_star.h \
+	src/ActionBar.cpp \
 	src/ActionBar.h \
 	src/BuffWindow.cpp \
 	src/BuffWindow.h \

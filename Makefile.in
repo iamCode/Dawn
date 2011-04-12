@@ -49,17 +49,18 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(dawndatadir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_dawn_rpg_OBJECTS = ActionBar.$(OBJEXT) BuffWindow.$(OBJEXT) \
-	callindirection.$(OBJEXT) cameraFocusHandler.$(OBJEXT) \
-	CCharacter.$(OBJEXT) CEditor.$(OBJEXT) \
-	CharacterInfoScreen.$(OBJEXT) CInterface.$(OBJEXT) \
-	CLuaFunctions.$(OBJEXT) CLuaInterfaceGenerated.$(OBJEXT) \
-	CMagic.$(OBJEXT) CMessage.$(OBJEXT) CNPC.$(OBJEXT) \
-	commonsounds.$(OBJEXT) ConfigurableFrame.$(OBJEXT) \
-	ConfiguredFrames.$(OBJEXT) configuration.$(OBJEXT) \
-	ControlElement.$(OBJEXT) CSpell.$(OBJEXT) CTexture.$(OBJEXT) \
-	CZone.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
-	Frames.$(OBJEXT) FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
+am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
+	BuffWindow.$(OBJEXT) callindirection.$(OBJEXT) \
+	cameraFocusHandler.$(OBJEXT) CCharacter.$(OBJEXT) \
+	CEditor.$(OBJEXT) CharacterInfoScreen.$(OBJEXT) \
+	CInterface.$(OBJEXT) CLuaFunctions.$(OBJEXT) \
+	CLuaInterfaceGenerated.$(OBJEXT) CMagic.$(OBJEXT) \
+	CMessage.$(OBJEXT) CNPC.$(OBJEXT) commonsounds.$(OBJEXT) \
+	ConfigurableFrame.$(OBJEXT) ConfiguredFrames.$(OBJEXT) \
+	configuration.$(OBJEXT) ControlElement.$(OBJEXT) \
+	CSpell.$(OBJEXT) CTexture.$(OBJEXT) CZone.$(OBJEXT) \
+	debug.$(OBJEXT) elements.$(OBJEXT) Frames.$(OBJEXT) \
+	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
 	GameLoopHandler.$(OBJEXT) GLFT_Font.$(OBJEXT) \
 	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
@@ -220,7 +221,9 @@ AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/GLee -I/usr/include/freetype2 -I/usr/include/GL -I/usr/include/lua5.1
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
-dawn_rpg_SOURCES = src/ActionBar.cpp \
+dawn_rpg_SOURCES = src/a_star.cpp \
+	src/a_star.h \
+	src/ActionBar.cpp \
 	src/ActionBar.h \
 	src/BuffWindow.cpp \
 	src/BuffWindow.h \
@@ -459,6 +462,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StatsSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a_star.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callindirection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cameraFocusHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/commonsounds.Po@am__quote@
@@ -526,6 +530,20 @@ pnglite.obj: src/pnglite/pnglite.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+a_star.o: src/a_star.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT a_star.o -MD -MP -MF $(DEPDIR)/a_star.Tpo -c -o a_star.o `test -f 'src/a_star.cpp' || echo '$(srcdir)/'`src/a_star.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/a_star.Tpo $(DEPDIR)/a_star.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/a_star.cpp' object='a_star.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o a_star.o `test -f 'src/a_star.cpp' || echo '$(srcdir)/'`src/a_star.cpp
+
+a_star.obj: src/a_star.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT a_star.obj -MD -MP -MF $(DEPDIR)/a_star.Tpo -c -o a_star.obj `if test -f 'src/a_star.cpp'; then $(CYGPATH_W) 'src/a_star.cpp'; else $(CYGPATH_W) '$(srcdir)/src/a_star.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/a_star.Tpo $(DEPDIR)/a_star.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/a_star.cpp' object='a_star.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o a_star.obj `if test -f 'src/a_star.cpp'; then $(CYGPATH_W) 'src/a_star.cpp'; else $(CYGPATH_W) '$(srcdir)/src/a_star.cpp'; fi`
 
 ActionBar.o: src/ActionBar.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ActionBar.o -MD -MP -MF $(DEPDIR)/ActionBar.Tpo -c -o ActionBar.o `test -f 'src/ActionBar.cpp' || echo '$(srcdir)/'`src/ActionBar.cpp
