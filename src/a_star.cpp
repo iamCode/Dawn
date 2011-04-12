@@ -47,7 +47,7 @@ int maxValue = 0;
 // this is the step-width for neighbours in pixels. 
 // A bigger value makes the value slightly suboptimal (and no path may be found through very narrow passages)
 // but the heuristics gets *much* faster.
-const int distanceSkip = 10;
+int distanceSkip = 10;
 
 SearchListStruct popMinimumElement( std::list<SearchListStruct> & list )
 {
@@ -70,18 +70,18 @@ SearchListStruct popMinimumElement( std::list<SearchListStruct> & list )
 
 bool isFree( int px, int py, int w, int h );
 
+SearchListStruct closestNodeFound( Point(0,0), 0, 0, STOP );
+int numIterations;
+
 void expandNode( SearchListStruct &currentNode, const Point &end, int width, int height )
 {
-	//if ( currentNode.value > maxValue ) {
-	//	maxValue = currentNode.value;
-	//	std::cout << "new max v: " << maxValue << std::endl;
-	//}
+	++numIterations;
 	//std::cout << "expanding node ( (" << currentNode.p.x<< "," << currentNode.p.y << "), v: " << currentNode.value  << ", f: " << currentNode.estimatedF << ", dir: " << currentNode.predDir << ")" << std::endl;
 	
 	for ( int curDirection=1; curDirection<=8; ++curDirection ) {
 		SearchListStruct successor( Point( currentNode.p.x+offsetX[curDirection]*distanceSkip, currentNode.p.y+offsetY[curDirection]*distanceSkip ), 0, 0, STOP );
 		
-		if ( !isFree( successor.p.x, successor.p.y, width-1+distanceSkip, height-1+distanceSkip ) ) {
+		if ( !isFree( successor.p.x, successor.p.y, width, height ) ) {
 			continue;
 		}
 		
@@ -106,6 +106,9 @@ void expandNode( SearchListStruct &currentNode, const Point &end, int width, int
 			sucOpenIt->predDir = successor.predDir;
 			sucOpenIt->value = successor.value;
 			sucOpenIt->estimatedF = f;
+			if ( std::pow(closestNodeFound.p.x-end.x,2)+std::pow(closestNodeFound.p.x-end.x,2)
+			     > std::pow(sucOpenIt->p.x-end.x,2)+std::pow(sucOpenIt->p.y-end.y,2))
+				closestNodeFound = *sucOpenIt;
 		} else {
 			successor.estimatedF = f;
 			openList.push_front( successor );
@@ -113,27 +116,35 @@ void expandNode( SearchListStruct &currentNode, const Point &end, int width, int
 	}
 }
 
-std::vector<Point> aStar( const Point &start, const Point &end, int width, int height )
+std::vector<Point> aStar( const Point &start, const Point &end, int width, int height, int granularity )
 {
 	openList.clear();
 	closedList.clear();
-	openList.push_back( SearchListStruct( start, 0, 0, STOP ) );
+	openList.push_back( SearchListStruct( start, 0, std::numeric_limits<int>::max(), STOP ) );
 	counter = 0;
+	closestNodeFound = SearchListStruct( start, 0, std::numeric_limits<int>::max(), STOP );
+	numIterations = 0;
+	distanceSkip = granularity;
 	
 	while ( openList.size() > 0 ) {
 		SearchListStruct currentNode = popMinimumElement( openList );
 		
-		if ( std::pow(currentNode.p.x-end.x,2)+std::pow(currentNode.p.y-end.y,2) < std::pow(distanceSkip,2) ) {
+		if ( numIterations >= 1000 || (std::pow(currentNode.p.x-end.x,2)+std::pow(currentNode.p.y-end.y,2) < distanceSkip*14) ) {
+			if ( numIterations >= 1000 ) {
+				currentNode = closestNodeFound;
+			}
 			// Return NodeList
 			std::vector<Point> nodeList;
-			nodeList.push_back(end);
+			nodeList.push_back(currentNode.p);
 			while ( ! (currentNode == start) ) {
-				Point predNode( currentNode.p.x+offsetX[currentNode.predDir]*10, currentNode.p.y+offsetY[currentNode.predDir]*10 );
+				Point predNode( currentNode.p.x+offsetX[currentNode.predDir]*distanceSkip, currentNode.p.y+offsetY[currentNode.predDir]*distanceSkip );
 				nodeList.push_back( predNode );
 				std::list<SearchListStruct>::iterator it = std::find( closedList.begin(), closedList.end(), SearchListStruct( predNode, 0, 0, STOP ) );
 				assert( it != closedList.end() );
 				currentNode = *it;
 			}
+			nodeList.push_back(start);
+			
 			return nodeList;
 		}
 		

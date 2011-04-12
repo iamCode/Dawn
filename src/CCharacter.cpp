@@ -1238,6 +1238,38 @@ void CCharacter::giveMovePoints( uint32_t movePoints )
 	remainingMovePoints += movePoints;
 }
 
+Direction CCharacter::getDirectionTowardsWaypointAt( int x_pos, int y_pos ) const
+{
+	int dx = x_pos - this->x_pos;
+	int dy = y_pos - this->y_pos;
+	
+	if ( dx > 0 ) {
+		if ( dy > 0 ) {
+			return NE;
+		} else if ( dy < 0 ) {
+			return SE;
+		} else {
+			return E;
+		}
+	} else if ( dx < 0 ) {
+		if ( dy > 0 ) {
+			return NW;
+		} else if ( dy < 0 ) {
+			return SW;
+		} else {
+			return W;
+		}
+	} else {
+		if ( dy > 0 ) {
+			return N;
+		} else if ( dy < 0 ) {
+			return S;
+		} else {
+			return STOP;
+		}
+	}
+}
+
 Direction CCharacter::getDirectionTowards( int x_pos, int y_pos ) const
 {
 	int dx = x_pos - (this->x_pos + this->getWidth()) / 2;

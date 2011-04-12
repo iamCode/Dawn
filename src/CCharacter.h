@@ -287,6 +287,7 @@ class CCharacter
 		void setPosition( int xpos, int ypos );
 
 		virtual Direction GetDirection() = 0;
+		Direction getDirectionTowardsWaypointAt( int x_pos, int y_pos ) const;
 		Direction getDirectionTowards( int x_pos, int y_pos ) const;
 		ActivityType::ActivityType getCurActivity() const;
 

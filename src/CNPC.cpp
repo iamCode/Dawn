@@ -21,6 +21,7 @@
 #include "CLuaInterface.h"
 #include "callindirection.h"
 #include "globals.h"
+#include <cmath>
 
 CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn ) {
 	Init( x_spawn_pos, y_spawn_pos );
@@ -40,6 +41,7 @@ CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_re
 	chasingPlayer = false;
 	setTarget( NULL );
 	markedAsDeleted = false;
+	lastPathCalculated = 0;
 }
 
 CNPC::~CNPC()
@@ -63,7 +65,14 @@ Direction CNPC::GetDirection()
 {
 	Player *player = Globals::getPlayer();
 	if ( chasingPlayer == true ) {
-		return getDirectionTowards( (player->x_pos + player->getWidth()) / 2, (player->y_pos + player->getHeight()) / 2 );
+		if ( waypoints.size() > 0 ) {
+			// follow waypoints
+			Point nextWP = waypoints.back();
+			return getDirectionTowardsWaypointAt( nextWP.x, nextWP.y );
+		} else {
+			// run directly towards the player
+			return getDirectionTowards( (player->x_pos + player->getWidth()) / 2, (player->y_pos + player->getHeight()) / 2 );
+		}
 	}
 	if ( wandering ) {
 		return WanderDirection;
@@ -75,7 +84,42 @@ Direction CNPC::GetDirection()
 void CNPC::chasePlayer( CCharacter *player )
 {
     chasingPlayer = true;
-    setTarget( player );
+	setTarget( player );
+	
+	// This can be used to deactivate pathfinding, because it might cause performance problems
+	bool dontUsePathfinding = false;
+	if ( ! dontUsePathfinding ) {
+		// check whether we need to calculate a path for this NPC
+		// if so calculate the path and set a list of waypoints
+		
+		// don't calculate a path too often
+		bool neverCalculatePath = dontUsePathfinding || ( SDL_GetTicks()-lastPathCalculated < 2000 );
+		// don't calculate a path if we are very close to the player
+		int rawDistance = ((std::sqrt(std::pow(getXPos()+getWidth()/2-(player->getXPos()+player->getWidth()/2),2)
+		                             + std::pow(getYPos()+getHeight()/2-(player->getYPos()+player->getHeight()/2),2)))
+						  - std::sqrt(std::pow((getWidth()+player->getWidth())/2,2)
+		                              + std::pow((getHeight()+player->getHeight())/2,2)));
+		if ( rawDistance < 50 ) {
+			waypoints.clear();
+			neverCalculatePath = true;
+		}
+		bool calculatePath = ( waypoints.size() == 0 );
+		// recalculate the path if the player has moved too far from the endpoint of the path
+		if ( ! calculatePath && ! neverCalculatePath ) {
+			Point lastPoint = waypoints.front();
+			if ( std::pow(lastPoint.x-player->getXPos(),2)+std::pow(lastPoint.y-player->getYPos(),2) > std::max(waypoints.size()*100,static_cast<size_t>(1000)) ) {
+				calculatePath = true;
+			}
+		}
+		if ( calculatePath && ! neverCalculatePath ) {
+		
+			waypoints = aStar( Point(getXPos(),getYPos()), Point(player->getXPos()+player->getWidth()/2, player->getYPos()+player->getHeight()/2), getWidth(), getHeight() );
+			if ( waypoints.size() > 0 ) {
+				waypoints.pop_back();
+				lastPathCalculated = SDL_GetTicks();
+			}  
+	    }
+	}
 }
 
 bool CNPC::canBeDamaged() const
@@ -162,6 +206,7 @@ void CNPC::Respawn()
 			setTarget( NULL );
 			alive = true;
 			chasingPlayer = false;
+			waypoints.clear();
 			x_pos = x_spawn_pos;
 			y_pos = y_spawn_pos;
 			respawn_thisframe = 0.0f;
@@ -333,7 +378,19 @@ void CNPC::Move()
             }
         }
     }
+	// another call to chasePlayer is necessary in order to (re-) calculate waypoints for moving.
+	// Note: The system of moving with the standard move function towards waypoints only works good
+	//       if almost every move is only 1 pixel (or 0), i.e. it should work well on all computers
+	//       that have a decent fps.
+	if ( chasingPlayer )
+		chasePlayer( player );
 	CCharacter::Move();
+	if ( waypoints.size() > 0 ) {
+		Point nextWP = waypoints.back();
+		if ( getXPos() == nextWP.x && getYPos() == nextWP.y ) {
+			waypoints.pop_back();
+		}
+	}
 }
 
 void CNPC::markAsDeleted()
