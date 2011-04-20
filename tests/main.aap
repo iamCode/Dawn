@@ -1,0 +1,20 @@
+@from subprocess import *
+@SDL_INCLUDES=Popen(["sdl-config", "--cflags"], stdout=PIPE).communicate()[0]
+@SDL_LIBS=Popen(["sdl-config", "--libs"], stdout=PIPE).communicate()[0]
+@FREETYPE_INCLUDES=Popen(["freetype-config", "--cflags"], stdout=PIPE).communicate()[0]
+@FREETYPE_LIBS=Popen(["freetype-config", "--libs"], stdout=PIPE).communicate()[0]
+@LUA_INCLUDES=Popen(["pkg-config", "--cflags", "lua5.1"], stdout=PIPE).communicate()[0]
+@LUA_LIBS=Popen(["pkg-config", "--libs", "lua5.1"], stdout=PIPE).communicate()[0]
+
+OPTIMIZE = 0
+CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -IthreadObject -ggdb -Wall -I../src
+LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lSDL_mixer -lm -rdynamic -lpthread -lrt -lGLU
+
+# rule for generation tolua-headers from package files 
+# (only enable if you are working on the .pkg file because it would be checked too often otherwise)
+# :rule %Generated.cpp %Generated.h : %.pkg
+#     :sys tolua++ -o $(target[0]) -H $(target[1]) $source
+
+:program test_random : 
+        test_random.cpp ../src/random.cpp
+
