@@ -29,7 +29,7 @@ void initRNG( unsigned int seed )
 
 size_t randomSizeT( size_t min, size_t max )
 {
-	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
+	return min + ( static_cast<size_t>((max - min + 1) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0)) );
 }
 
 int randomInt( int min, int max )
