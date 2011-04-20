@@ -3,6 +3,7 @@
 #include <cassert>
 #include <ctime>
 
+#include <limits>
 #include <map>
 using std::map;
 
@@ -18,7 +19,7 @@ void generateSizeTValuesAndStoreInMap( size_t numValues, size_t min, size_t max,
 void testGenerationOfCompleteRange( size_t generateCount, size_t min, size_t max, map<size_t,size_t> &counterMap )
 {
 	size_t numValuesInRange = 0;
-	for ( size_t curValue=min; curValue<=max; ++curValue ) {
+	for ( size_t curValue=min; curValue>=min && curValue<=max; ++curValue ) {
 		numValuesInRange += counterMap[curValue];
 		// check that the value was generated
 		size_t curCount = counterMap[curValue];
@@ -31,7 +32,7 @@ void testGenerationOfCompleteRange( size_t generateCount, size_t min, size_t max
 void testEqualGenerationOfValues( size_t generateCount, size_t min, size_t max, map<size_t,size_t> &counter, double allowedDeviation )
 {
 	double expectedCount = static_cast<double>(generateCount) / (max - min + 1);
-	for ( size_t curValue = min; curValue <= max; ++curValue ) {
+	for ( size_t curValue = min; curValue >= min && curValue <= max; ++curValue ) {
 		size_t curCount = counter[curValue];
 		double curRatio = static_cast<double>(curCount)/expectedCount;
 		assert( curRatio >= (1.0-allowedDeviation) );
@@ -49,6 +50,18 @@ void test_randomSizeT()
 	size_t generateCount = 10000;
 	size_t minValue = 6;
 	size_t maxValue = 10;
+	generateSizeTValuesAndStoreInMap( generateCount, minValue, maxValue, counterMap );
+	
+	// ensure all values where generated
+	testGenerationOfCompleteRange( generateCount, minValue, maxValue, counterMap );
+	// ensure each value was generated about the expected number
+	testEqualGenerationOfValues( generateCount, minValue, maxValue, counterMap, 0.05 );
+
+
+	// same test, but with range at upper limit
+	counterMap.clear();
+	maxValue = std::numeric_limits<size_t>::max();
+	minValue = maxValue - 4;
 	generateSizeTValuesAndStoreInMap( generateCount, minValue, maxValue, counterMap );
 	
 	// ensure all values where generated
