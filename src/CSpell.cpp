@@ -30,21 +30,12 @@
 #include "soundengine.h"
 #include "globals.h"
 #include "CLuaFunctions.h"
+#include "random.h"
 
 #include <cassert>
 
 namespace DawnInterface {
     void addTextToLogWindow( GLfloat color[], const char *text, ... );
-}
-
-size_t randomSizeT( size_t min, size_t max )
-{
-	return min + ( static_cast<size_t>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
-}
-
-double randomDouble( double min, double max )
-{
-	return min + ( (max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX) );
 }
 
 /// Implementation of class CSpellActionBase
@@ -668,7 +659,7 @@ void GeneralDamageSpell::dealDirectDamage()
             SoundEngine::playSound( soundSpellHit );
         }
 
-        int damage = getDirectDamageMin() + rand() % ( getDirectDamageMax() - getDirectDamageMin() );
+        int damage = getDirectDamageMin() + RNG::randomInt( 0, getDirectDamageMax() - getDirectDamageMin() );
 	    double fatigueDamageFactor = 1.0;
 
         // here we recalculate the damage if we're a fighter class with high fatigue
@@ -685,7 +676,7 @@ void GeneralDamageSpell::dealDirectDamage()
         double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( getDirectDamageElement() ), creator->getLevel() );
         double realDamage = damage * damageFactor * fatigueDamageFactor * (1-resist);
         double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), target->getLevel() );
-        bool criticalHit = randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
+        bool criticalHit = RNG::randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000;
         if ( criticalHit == true ) {
             int criticalDamageMultiplier = 2;
             realDamage *= criticalDamageMultiplier;
@@ -701,7 +692,7 @@ double GeneralDamageSpell::calculateContinuousDamage( uint64_t timePassed )
 {
 	double secondsPassed = (timePassed) / 1000.0;
 
-	double curRandDamage = randomDouble( minContinuousDamagePerSecond * secondsPassed, maxContinuousDamagePerSecond * secondsPassed );
+	double curRandDamage = RNG::randomDouble( minContinuousDamagePerSecond * secondsPassed, maxContinuousDamagePerSecond * secondsPassed );
 
 	double damageFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
 	double resist = StatsSystem::getStatsSystem()->complexGetResistElementChance( target->getLevel(), target->getModifiedResistElementModifierPoints( elementContinuous ), creator->getLevel() );
@@ -825,14 +816,14 @@ void GeneralRayDamageSpell::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1046,14 +1037,14 @@ void GeneralAreaDamageSpell::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1213,14 +1204,14 @@ void GeneralBoltDamageSpell::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1368,7 +1359,7 @@ double GeneralHealingSpell::calculateContinuousHealing( uint64_t timePassed )
 {
 	double secondsPassed = (timePassed) / 1000.0;
 
-	double curRandHealing = randomDouble( minContinuousHealingPerSecond * secondsPassed, maxContinuousHealingPerSecond * secondsPassed );
+	double curRandHealing = RNG::randomDouble( minContinuousHealingPerSecond * secondsPassed, maxContinuousHealingPerSecond * secondsPassed );
 
 	double healingFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( elementContinuous ), target->getLevel() );
 	double realHealing = curRandHealing * healingFactor;
@@ -1385,7 +1376,7 @@ void GeneralHealingSpell::startEffect()
     effectStart = SDL_GetTicks();
 	lastEffect = effectStart;
 
-	int healing = randomSizeT( healEffectMin, healEffectMax );
+	int healing = RNG::randomSizeT( healEffectMin, healEffectMax );
 
     // only do a heal if we've set a healing value to the spell.
 	if ( ( healEffectMin + healEffectMax ) > 0 )
@@ -1393,7 +1384,7 @@ void GeneralHealingSpell::startEffect()
 	    double healingFactor = StatsSystem::getStatsSystem()->complexGetSpellEffectElementModifier( creator->getLevel(), creator->getModifiedSpellEffectElementModifierPoints( healEffectElement ), creator->getLevel() );
         double realHealing = healing * healingFactor;
         double spellCriticalChance = StatsSystem::getStatsSystem()->complexGetSpellCriticalStrikeChance( creator->getLevel(), creator->getModifiedSpellCriticalModifierPoints(), creator->getLevel() );
-        if ( randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= spellCriticalChance * 10000 ) {
             int criticalEffectMultiplier = 2;
             realHealing *= criticalEffectMultiplier;
         }
@@ -1451,14 +1442,14 @@ void GeneralHealingSpell::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1615,14 +1606,14 @@ void GeneralBuffSpell::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1687,7 +1678,7 @@ void MeleeDamageAction::dealDamage()
 
     double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
     double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
-    int damage = randomSizeT( minDamage, maxDamage ) * damageBonus;
+    int damage = RNG::randomSizeT( minDamage, maxDamage ) * damageBonus;
 
     double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
     double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
@@ -1696,12 +1687,12 @@ void MeleeDamageAction::dealDamage()
     double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
     double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
 
-    bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
-    bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
+    bool hasHit = RNG::randomSizeT( 0, 10000 ) <= hitChance * 10000;
+    bool criticalHit = RNG::randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
     int criticalHitFactor = 2;
-    bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
-    bool targetParried = randomSizeT( 0, 10000 ) <= targetParryChance * 10000;
-    bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
+    bool targetEvaded = RNG::randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
+    bool targetParried = RNG::randomSizeT( 0, 10000 ) <= targetParryChance * 10000;
+    bool targetBlocked = RNG::randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
     double blockFactor = 0.5;
 
     if ( hasHit && !targetEvaded && !targetParried ) {
@@ -1765,14 +1756,14 @@ void MeleeDamageAction::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1912,14 +1903,14 @@ void RangedDamageAction::finishEffect()
 
     // do we have an additional spell that perhaps should be cast on our target?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnTarget.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnTarget[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnTarget[ additionalSpell ].first, target );
         }
     }
 
     // do we have an additional spell that perhaps should be cast on our creator?
     for ( size_t additionalSpell = 0; additionalSpell < additionalSpellsOnCreator.size(); additionalSpell++ ) {
-        if ( randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
+        if ( RNG::randomSizeT( 0, 10000 ) <= additionalSpellsOnCreator[ additionalSpell ].second * 10000 ) {
             creator->executeSpellWithoutCasting( additionalSpellsOnCreator[ additionalSpell ].first, creator );
         }
     }
@@ -1992,7 +1983,7 @@ void RangedDamageAction::dealDamage()
 
     double minDamage = creator->getModifiedMinDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
     double maxDamage = creator->getModifiedMaxDamage() * statsSystem->complexGetDamageModifier( creator->getLevel(), creator->getModifiedDamageModifierPoints(), target->getLevel() );
-    int damage = randomSizeT( minDamage, maxDamage ) * damageBonus;
+    int damage = RNG::randomSizeT( minDamage, maxDamage ) * damageBonus;
 
     double hitChance = statsSystem->complexGetHitChance( creator->getLevel(), creator->getModifiedHitModifierPoints(), target->getLevel() );
     double criticalHitChance = statsSystem->complexGetMeleeCriticalStrikeChance( creator->getLevel(), creator->getModifiedMeleeCriticalModifierPoints(), target->getLevel() );
@@ -2000,11 +1991,11 @@ void RangedDamageAction::dealDamage()
     double targetBlockChance = statsSystem->complexGetBlockChance( target->getLevel(), target->getModifiedBlockModifierPoints(), creator->getLevel() );
     double damageReduction = statsSystem->complexGetDamageReductionModifier( target->getLevel(), target->getModifiedArmor(), creator->getLevel() );
 
-    bool hasHit = randomSizeT( 0, 10000 ) <= hitChance * 10000;
-    bool criticalHit = randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
+    bool hasHit = RNG::randomSizeT( 0, 10000 ) <= hitChance * 10000;
+    bool criticalHit = RNG::randomSizeT( 0, 10000 ) <= criticalHitChance * 10000;
     int criticalHitFactor = 2;
-    bool targetEvaded = randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
-    bool targetBlocked = randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
+    bool targetEvaded = RNG::randomSizeT( 0, 10000 ) <= targetEvadeChance * 10000;
+    bool targetBlocked = RNG::randomSizeT( 0, 10000 ) <= targetBlockChance * 10000;
     double blockFactor = 0.5;
 
     if ( hasHit && !targetEvaded ) {

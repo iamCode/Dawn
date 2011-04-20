@@ -99,6 +99,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/Quest.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/random.cpp \
+	src/random.h \
 	src/resolution.cpp \
 	src/resolution.h \
 	src/shop.cpp \

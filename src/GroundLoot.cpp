@@ -22,6 +22,7 @@
 #include "item.h"
 #include "shop.h"
 #include "CDrawingHelpers.h"
+#include "random.h"
 #include <algorithm>
 
 class Player;
@@ -30,7 +31,6 @@ namespace DawnInterface {
     void addTextToLogWindow( GLfloat color[], const char *text, ... );
 }
 
-extern size_t randomSizeT( size_t min, size_t max );
 extern int mouseX, mouseY, world_x, world_y;
 
 void sGroundItems::loadTooltip()
@@ -221,7 +221,7 @@ InventoryItem *GroundLoot::getFloatingSelection( int x, int y )
 void GroundLoot::addItem( int x, int y, Item *newItem )
 {
     /// we dont want items to be dropped at the exact the same position, therefor we do a little random here aswell.
-    groundItems.push_back( sGroundItems( x + randomSizeT(-20,20), y + randomSizeT(-20,20), newItem, font->calcStringWidth( newItem->getName() ) ) );
+    groundItems.push_back( sGroundItems( x + RNG::randomSizeT(-20,20), y + RNG::randomSizeT(-20,20), newItem, font->calcStringWidth( newItem->getName() ) ) );
 
     if ( dynamic_cast<GoldHeap*>( newItem ) != NULL )
     {

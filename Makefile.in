@@ -67,12 +67,12 @@ am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
-	Quest.$(OBJEXT) questwindow.$(OBJEXT) resolution.$(OBJEXT) \
-	shop.$(OBJEXT) soundengine.$(OBJEXT) Spellbook.$(OBJEXT) \
-	StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
-	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
-	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
-	Thread.$(OBJEXT)
+	Quest.$(OBJEXT) questwindow.$(OBJEXT) random.$(OBJEXT) \
+	resolution.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
+	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
+	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
+	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
+	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -312,6 +312,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/Quest.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
+	src/random.cpp \
+	src/random.h \
 	src/resolution.cpp \
 	src/resolution.h \
 	src/shop.cpp \
@@ -481,6 +483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/optionswindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnglite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/questwindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resolution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
@@ -1146,6 +1149,20 @@ questwindow.obj: src/questwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/questwindow.cpp' object='questwindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o questwindow.obj `if test -f 'src/questwindow.cpp'; then $(CYGPATH_W) 'src/questwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/questwindow.cpp'; fi`
+
+random.o: src/random.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT random.o -MD -MP -MF $(DEPDIR)/random.Tpo -c -o random.o `test -f 'src/random.cpp' || echo '$(srcdir)/'`src/random.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/random.Tpo $(DEPDIR)/random.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/random.cpp' object='random.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o random.o `test -f 'src/random.cpp' || echo '$(srcdir)/'`src/random.cpp
+
+random.obj: src/random.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT random.obj -MD -MP -MF $(DEPDIR)/random.Tpo -c -o random.obj `if test -f 'src/random.cpp'; then $(CYGPATH_W) 'src/random.cpp'; else $(CYGPATH_W) '$(srcdir)/src/random.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/random.Tpo $(DEPDIR)/random.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/random.cpp' object='random.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o random.obj `if test -f 'src/random.cpp'; then $(CYGPATH_W) 'src/random.cpp'; else $(CYGPATH_W) '$(srcdir)/src/random.cpp'; fi`
 
 resolution.o: src/resolution.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT resolution.o -MD -MP -MF $(DEPDIR)/resolution.Tpo -c -o resolution.o `test -f 'src/resolution.cpp' || echo '$(srcdir)/'`src/resolution.cpp

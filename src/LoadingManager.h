@@ -20,6 +20,7 @@
 #define LOADINGMANAGER_H
 
 #include "threadObject/Thread.h"
+#include "random.h"
 
 #include <string>
 
@@ -393,11 +394,6 @@ public:
 		newZone->LoadZone("data/zone1");
 
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
-
-		// initialize random number generator
-		setProgress( 0.99 );
-		progressString = "Initializing Random Number Generator";
-		srand( time( 0 ) );
 
 		accessMutex.Lock();
 		finished = true;

@@ -29,6 +29,7 @@
 #include "Player.h"
 #include "configuration.h"
 #include "globals.h"
+#include "random.h"
 
 #include <map>
 #include <string>
@@ -38,8 +39,6 @@
 #include <iostream>
 
 std::map< std::string, CCharacter* > allMobTypes;
-
-extern size_t randomSizeT( size_t min, size_t max );
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -1181,7 +1180,7 @@ void CCharacter::Move()
 	/// if we are feared (fleeing) we run at a random direction. Only choose a direction once for each fear effect.
 	if ( isFeared() == true ) {
 	    if ( hasChoosenFearDirection == false ) {
-	        fearDirection = static_cast<Direction>( randomSizeT( 1, 8 ) );
+	        fearDirection = static_cast<Direction>( RNG::randomSizeT( 1, 8 ) );
 	        hasChoosenFearDirection = true;
 	    }
 	    movingDirection = fearDirection;
@@ -1530,7 +1529,7 @@ void CCharacter::startSpellAction()
                 if ( triggerSpells[ curSpell ]->getTriggerType() == TriggerType::EXECUTING_ACTION ) {
                     /// found one, check to see if we manages to trigger the spell.
 
-                    if ( ( randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
+                    if ( ( RNG::randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
                         /// we triggered this spell, now we cast it based on if it's a self-cast spell or a cast on our target spell.
                         if ( triggerSpells[ curSpell ]->getCastOnSelf() == true ) {
                             /// cast spell on self
@@ -1637,7 +1636,7 @@ bool CCharacter::canBeDamaged() const
 void CCharacter::Damage( int amount, bool criticalHit )
 {
     if ( isFeared() == true ) { // if we're feared and taking damage, we have a 20% chance to break from the fear
-        if ( randomSizeT( 0, 100 ) <= 20 ) {
+        if ( RNG::randomSizeT( 0, 100 ) <= 20 ) {
             removeSpellsWithCharacterState( CharacterStates::Feared );
         }
     }
@@ -1669,7 +1668,7 @@ void CCharacter::Damage( int amount, bool criticalHit )
                 if ( triggerSpells[ curSpell ]->getTriggerType() == TriggerType::TAKING_DAMAGE ) {
                     /// found one, check to see if we manages to trigger the spell.
 
-                    if ( ( randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
+                    if ( ( RNG::randomSizeT( 0, 10000 ) <= triggerSpells[ curSpell ]->getChanceToTrigger() * 10000 ) == true ) {
                         /// we triggered this spell, now we cast it based on if it's a self-cast spell or a cast on our target spell.
                         if ( triggerSpells[ curSpell ]->getCastOnSelf() == true ) {
                             /// cast spell on self
@@ -1722,7 +1721,7 @@ void CCharacter::dropItems()
 
     for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
     {
-        double dropChance = (double)rand()/(double)RAND_MAX;
+        double dropChance = RNG::randomDouble(0,1);;
         if ( dropChance <= lootTable[tableID].dropChance )
         {
             curZone->getGroundLoot()->addItem( getXPos(), getYPos(), lootTable[tableID].item );
@@ -1730,9 +1729,9 @@ void CCharacter::dropItems()
     }
 
     {
-    	double dropChance = (double)rand()/(double)RAND_MAX;
+    	double dropChance = RNG::randomDouble(0,1);
     	if ( dropChance <= coinDropChance ) {
-    		curZone->getGroundLoot()->addItem( getXPos(), getYPos(), new GoldHeap( randomSizeT( minCoinDrop, maxCoinDrop ) ) );
+    		curZone->getGroundLoot()->addItem( getXPos(), getYPos(), new GoldHeap( RNG::randomSizeT( minCoinDrop, maxCoinDrop ) ) );
     	}
     }
 }

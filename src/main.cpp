@@ -495,6 +495,10 @@ void game_loop()
 
 int main(int argc, char* argv[])
 {
+	// init random number generator
+	RNG::initRNG( time(0) );
+
+	// load settings
 	LuaFunctions::executeLuaFile("settings.lua");
 	
 	if(dawn_init(argc, argv))

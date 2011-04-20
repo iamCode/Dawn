@@ -21,6 +21,7 @@
 #include "CLuaInterface.h"
 #include "callindirection.h"
 #include "globals.h"
+#include "random.h"
 #include <cmath>
 
 CNPC::CNPC ( int _x_spawn_pos, int _y_spawn_pos, int _NPC_id, int _seconds_to_respawn, int _do_respawn ) {
@@ -241,8 +242,8 @@ void CNPC::Wander()
 		wander_thisframe = SDL_GetTicks();
 		if ((wander_thisframe-wander_lastframe) > (wander_every_seconds*1000)) {
 			wandering = true;
-			wander_points_left = rand() % 50 + 10;  // how far will the NPC wander?
-			WanderDirection = static_cast<Direction>( rand() % 8 + 1 );  // random at which direction NPC will go.
+			wander_points_left = RNG::randomSizeT(10,59);  // how far will the NPC wander?
+			WanderDirection = static_cast<Direction>( RNG::randomSizeT(1,8) );  // random at which direction NPC will go.
 		}
 	}
 }

@@ -23,6 +23,7 @@
 #include "CZone.h"
 #include "Player.h"
 #include "CDrawingHelpers.h"
+#include "random.h"
 #include <vector>
 
 namespace DawnInterface {
@@ -176,7 +177,7 @@ void CInterface::addCombatText( int amount, bool critical, uint8_t damageType, i
     int damageNumber;
     int rand_x = 0;
 
-    rand_x = (rand() % + 64) - 32;
+    rand_x = RNG::randomInt(-32,32);
 
     int characterSpace = 16;
 

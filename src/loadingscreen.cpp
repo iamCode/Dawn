@@ -23,8 +23,7 @@
 #include "GLFT_Font.h"
 #include "fontcache.h"
 #include "configuration.h"
-
-extern size_t randomSizeT( size_t min, size_t max );
+#include "random.h"
 
 LoadingScreen::LoadingScreen()
 {
@@ -39,8 +38,7 @@ LoadingScreen::LoadingScreen()
 	progressTexture->LoadIMG( "data/lifebar.tga", 0 );
 
     // randomly choose background and calculate positions for the background
-    srand( time( 0 ) );
-    backgroundToDraw = rand() % backgroundTexture->getTexture().size() + 0;
+    backgroundToDraw = RNG::randomSizeT( 0, backgroundTexture->getTexture().size()-1 );
     width = backgroundTexture->getTexture( backgroundToDraw ).width;
     height = backgroundTexture->getTexture( backgroundToDraw ).height;
 	posX = (Configuration::screenWidth - width) / 2;
