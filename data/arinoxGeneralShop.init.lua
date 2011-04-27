@@ -31,7 +31,7 @@ then
 end
 
 function arinoxGeneralShop.onEnterMap(x,y)
-	local textWindow = DawnInterface.createTextWindow( true );
+	local textWindow = DawnInterface.createTextWindow();
 	textWindow:setPosition( PositionType.CENTER, 512, 382 );
 	textWindow:setText( "Arinox general shop" );
 	textWindow:setAutocloseTime( 1000 );

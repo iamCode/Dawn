@@ -1,6 +1,6 @@
 /*
 ** Lua binding: CLuaInterface
-** Generated automatically by tolua++-1.0.92 on Sun Apr 10 22:29:34 2011.
+** Generated automatically by tolua++-1.0.93 on Wed Apr 27 19:10:58 2011.
 */
 
 #ifndef __cplusplus
@@ -5854,16 +5854,14 @@ static int tolua_CLuaInterface_DawnInterface_createTextWindow00(lua_State* tolua
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isboolean(tolua_S,1,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isnoobj(tolua_S,1,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  bool destroyAfterClose = ((bool)  tolua_toboolean(tolua_S,1,0));
   {
-   TextWindow* tolua_ret = (TextWindow*)  DawnInterface::createTextWindow(destroyAfterClose);
+   TextWindow* tolua_ret = (TextWindow*)  DawnInterface::createTextWindow();
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"TextWindow");
   }
  }

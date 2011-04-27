@@ -9,7 +9,7 @@ function quest_playHideAndSeek.enterTown()
 	then
 		DawnInterface.setSavingAllowed( true );
 
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "The town of Arinox." );
 		textWindow:setAutocloseTime( 1000 );
@@ -24,7 +24,7 @@ function quest_playHideAndSeek.leaveTown()
 end
 
 function quest_playHideAndSeek.testInteractionRegionLeave()
-	local textWindow = DawnInterface.createTextWindow( true );
+	local textWindow = DawnInterface.createTextWindow();
 	textWindow:setPosition( PositionType.CENTER, 512, 382 );
 	textWindow:setText( "Left test region." );
 	textWindow:setAutocloseTime( 1000 );
@@ -63,13 +63,13 @@ function quest_playHideAndSeek.onActivateJohn()
 			quest_playHideAndSeek.quest:setCoinReward( 821 );
 			quest_playHideAndSeek.quest:setItemReward( itemDatabase["ringofdefense"] );
 		end
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 		textWindow:setAutocloseTime( 3000 );
 	elseif ( quest_playHideAndSeek.fulfilled and not quest_playHideAndSeek.rewardGot )
 	then
-		local textWindow = DawnInterface.createTextWindow( false );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Thank you for looking after my brother. We will leave for home now. Take this ring for your effords." );
 		textWindow:setAutocloseTime( 5000 );
@@ -96,13 +96,13 @@ end
 function quest_playHideAndSeek.onActivateJames()
 	if ( quest_playHideAndSeek == nil or quest_playHideAndSeek.fulfilled )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "This forest is so exciting." );
 		textWindow:setAutocloseTime( 2000 );
 	elseif ( not quest_playHideAndSeek.fulfilled )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Thank you for helping me. I walked through this wonderful forest when suddenly I saw this huge wolf. Then I hid in the trees and hoped it would get away, but it didn't. I was so afraid. I'll better hurry to my brother John now." );
 		textWindow:setAutocloseTime( 10000 );

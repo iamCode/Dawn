@@ -417,14 +417,12 @@ void GameScreenHandler::updateScene()
 	// close and possibly delete closed windows
 	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
 		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
-		if ( curTextWindow->canBeClosed() ) {
-				curTextWindow->close();
-				curTextWindow->toggle();
-				if ( curTextWindow->destroyAfterClose() )
-				{
-						delete curTextWindow;
-						allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
-				}
+		if ( curTextWindow->canBeDeleted() == true ) {
+            curTextWindow->close();
+            curTextWindow->toggle();
+
+            delete curTextWindow;
+            allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
 		}
 	}
 

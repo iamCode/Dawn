@@ -570,7 +570,7 @@ namespace DawnInterface
 	InteractionPoint* addInteractionPoint();
 	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
 	InteractionRegion* addInteractionRegion();
-	TextWindow *createTextWindow( bool destroyAfterClose );
+	TextWindow *createTextWindow(); 
 	void removeInteractionPoint( InteractionPoint *pointToRemove );
 	void removeInteractionRegion( InteractionRegion *regionToRemove );
 	LuaCallIndirection* createEventHandler();

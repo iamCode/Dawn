@@ -99,7 +99,7 @@ void initTextWindowFont()
 	textWindowFont = FontCache::getFontFromCache("data/verdana.ttf", 14);
 }
 
-TextWindow::TextWindow( bool destroyOnClose_ )
+TextWindow::TextWindow()
 	:	FramesBase( 0, 0, 0, 0, 0, 0 ),
 		positionType( PositionType::CENTER ),
 		x( 0 ),
@@ -107,7 +107,6 @@ TextWindow::TextWindow( bool destroyOnClose_ )
 		autocloseTime( 1 ),
 		creationTime( 0 ),
 		executeTextOnClose( "" ),
-		destroyOnClose( destroyOnClose_ ),
 		explicitClose( false )
 {
 	updateFramesPosition();
@@ -123,7 +122,7 @@ void TextWindow::setText( std::string text )
 	const int lineWidth = 416;
 
 	formatMultilineText( text, textLines, lineWidth, textWindowFont );
-	
+
 	updateFramesPosition();
 }
 
@@ -138,7 +137,7 @@ void TextWindow::setPosition( PositionType::PositionType positionType, int x, in
 	this->positionType = positionType;
 	this->x = x;
 	this->y = y;
-	
+
 	updateFramesPosition();
 }
 
@@ -191,16 +190,16 @@ void TextWindow::updateFramesPosition()
 			bottomY = y;
 		break;
 	}
-	
+
 	FramesBase::posX = leftX;
 	FramesBase::posY = bottomY;
 	FramesBase::frameWidth  = (neededInnerBlocksX + 2) * blockSizeX;
 	FramesBase::frameHeight = (neededInnerBlocksY + 2) * blockSizeY;
 }
 
-bool TextWindow::canBeClosed() const
+bool TextWindow::canBeDeleted() const
 {
-	return ( explicitClose || ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) );
+    return ( explicitClose || ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) );
 }
 
 void TextWindow::close()
@@ -208,11 +207,6 @@ void TextWindow::close()
 	if ( executeTextOnClose != "" ) {
 		LuaFunctions::executeLuaScript( executeTextOnClose );
 	}
-}
-
-bool TextWindow::destroyAfterClose() const
-{
-	return destroyOnClose;
 }
 
 void TextWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
@@ -294,9 +288,9 @@ std::vector<TextWindow*> allTextWindows;
 
 namespace DawnInterface
 {
-	TextWindow *createTextWindow( bool destroyAfterClose )
+	TextWindow *createTextWindow()
 	{
-		TextWindow *newTextWindow = new TextWindow( destroyAfterClose );
+		TextWindow *newTextWindow = new TextWindow();
 		allTextWindows.push_back( newTextWindow );
 		newTextWindow->toggle();
 		return newTextWindow;

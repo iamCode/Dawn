@@ -30,7 +30,7 @@ function quest_thesylphirantidote.init()
 end
 
 function quest_thesylphirantidote.enterWoods()
-	local textWindow = DawnInterface.createTextWindow( true );
+	local textWindow = DawnInterface.createTextWindow();
 	textWindow:setPosition( PositionType.CENTER, 512, 382 );
 	textWindow:setText( "The Sylphir woods." );
 	textWindow:setAutocloseTime( 1300 );	
@@ -78,7 +78,7 @@ end
 function quest_thesylphirantidote.showJeffreyText( part )
 	if ( part == 1 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "My daughter was bitten by a spider this morning. She is really sick and I am fearing the worst. I don't know if she went playing near the Sylphir woods... She knows it's forbidden! It's only getting worse and if I don't get an antidote to cure her I don't know what I will do. I have heard about an alchemist named Jemma in the southern part of the Sylphir woods. I would go myself but I cannot leave my little girl. You look like you could make it to Jemma's house unharmed." );
 		textWindow:setAutocloseTime( 0 );
@@ -86,14 +86,14 @@ function quest_thesylphirantidote.showJeffreyText( part )
 	end
 	if ( part == 2 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Could you visit Jemma and bring me back an antidote? I'm no rich man, but I do have some pieces of equipment I could trade in return for the antidote. Please hurry!" );
 		textWindow:setAutocloseTime( 0 );
 	end
 	if ( part == 3 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Please seek out Jemma down in the southern part of the Sylphir woods. My daugher is really sick!" );
 		textWindow:setAutocloseTime( 0 );
@@ -103,14 +103,14 @@ end
 function quest_thesylphirantidote.showJemmaText( part )
 	if ( part == 1 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "I am Jemma. Not many people dare to wander down here due to the spiders around. Don't you know these woods are dangerous? Sylphirs are growing stronger these days. Beware of the small ones. They may not look tough, but they can give you quite a bite..." );
 		textWindow:setAutocloseTime( 7000 );
 	end
 	if ( part == 2 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Someone got bitten? Well, you shouldn't wander out in the woods unless you are prepared to face off against those pesky spiders. Lucky for you I know just what you need... " );
 		textWindow:setAutocloseTime( 0 );
@@ -118,14 +118,14 @@ function quest_thesylphirantidote.showJemmaText( part )
 	end
 	if ( part == 3 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "To make this antidote I will require five fangs from the small spiderlings. Also, three pristine spidersilks from the Webweavers. Bring me this and I have enough to make your antidote. We can discuss my fee when you return." );
 		textWindow:setAutocloseTime( 0 );
 	end
 	if ( part == 4 )
 	then
-		local textWindow = DawnInterface.createTextWindow( true );
+		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "How is the gathering coming along? Remember, I need spidersilks in pristine condition!" );
 		textWindow:setAutocloseTime( 0 );

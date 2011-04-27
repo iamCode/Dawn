@@ -40,7 +40,7 @@ class TextWindow;
 
 namespace DawnInterface
 {
-	TextWindow *createTextWindow( bool destroyAfterClose );
+	TextWindow *createTextWindow();
 }
 
 class TextWindow : public FramesBase
@@ -50,17 +50,16 @@ class TextWindow : public FramesBase
 		void setAutocloseTime( int autocloseTime );
 		void setPosition( PositionType::PositionType, int x, int y );
 		void setOnCloseText( std::string onCloseText );
-		bool canBeClosed() const;
+		bool canBeDeleted() const;
 		void close();
-		bool destroyAfterClose() const;
 
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
 		void draw( int mouseX, int mouseY );
 
 	private:
-		friend TextWindow* DawnInterface::createTextWindow( bool destroyAfterClose );
+		friend TextWindow* DawnInterface::createTextWindow();
 
-		TextWindow( bool destroyOnClose );
+		TextWindow();
 
 		void updateFramesPosition();
 
@@ -71,7 +70,6 @@ class TextWindow : public FramesBase
 		uint32_t creationTime;
 		std::vector<std::string> textLines;
 		std::string executeTextOnClose;
-		bool destroyOnClose;
 		bool explicitClose;
 };
 
