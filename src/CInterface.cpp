@@ -151,10 +151,10 @@ void CInterface::DrawInterface()
 	if (player->continuePreparing()) {
 		// draw backdrop first.
         glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+512,100,world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+Configuration::screenWidth/2-50,100,world_y+100,20);
 		// then the actual castbar
         glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+512,100*player->getPreparationPercentage(),world_y+100,20);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+Configuration::screenWidth/2-50,100*player->getPreparationPercentage(),world_y+100,20);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
 

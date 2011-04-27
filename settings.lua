@@ -1,7 +1,7 @@
 setfenv(1, Configuration);
-setResolution( 1024, 768 );
+setResolution( 1600, 900 );
 setBpp( 32 );
-useFullscreen( true );
+useFullscreen( false );
 showDebugStdout( true );
 showDebugFileout( true );
 showInfoMessages( true );
