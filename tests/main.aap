@@ -5,10 +5,12 @@
 @FREETYPE_LIBS=Popen(["freetype-config", "--libs"], stdout=PIPE).communicate()[0]
 @LUA_INCLUDES=Popen(["pkg-config", "--cflags", "lua5.1"], stdout=PIPE).communicate()[0]
 @LUA_LIBS=Popen(["pkg-config", "--libs", "lua5.1"], stdout=PIPE).communicate()[0]
+@GOOGLE_TEST_INCLUDES="-I/home/zaldron/download/googletest/gtest-1.6.0/include"
+@GOOGLE_TEST_LIBS="-L/home/zaldron/download/googletest/gtest-1.6.0/lib/.libs -lgtest"
 
 OPTIMIZE = 0
-CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES -IthreadObject -ggdb -Wall -I../src
-LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -ltolua++ -lGL -lglut -lSDL_image -lSDL_mixer -lm -rdynamic -lpthread -lrt -lGLU
+CXXFLAGS +=-I/usr/include/GL $SDL_INCLUDES $FREETYPE_INCLUDES $LUA_INCLUDES $GOOGLE_TEST_INCLUDES -IthreadObject -ggdb -Wall -I../src
+LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS $GOOGLE_TEST_LIBS -ltolua++ -lGL -lglut -lSDL_image -lSDL_mixer -lm -rdynamic -lpthread -lrt -lGLU
 
 # rule for generation tolua-headers from package files 
 # (only enable if you are working on the .pkg file because it would be checked too often otherwise)

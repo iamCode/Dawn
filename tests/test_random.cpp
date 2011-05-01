@@ -1,6 +1,7 @@
 #include "random.h"
 
-#include <cassert>
+#include "gtest/gtest.h"
+
 #include <ctime>
 
 #include <limits>
@@ -23,10 +24,11 @@ void testGenerationOfCompleteRange( size_t generateCount, size_t min, size_t max
 		numValuesInRange += counterMap[curValue];
 		// check that the value was generated
 		size_t curCount = counterMap[curValue];
-		assert( curCount > 0 && curCount <= generateCount );
+		EXPECT_GT( curCount, 0u );
+		EXPECT_LE( curCount, generateCount );
 	}
 	// check that all values generated where in the given range
-	assert( numValuesInRange == generateCount );
+	EXPECT_EQ( numValuesInRange, generateCount );
 }
 
 void testEqualGenerationOfValues( size_t generateCount, size_t min, size_t max, map<size_t,size_t> &counter, double allowedDeviation )
@@ -35,13 +37,13 @@ void testEqualGenerationOfValues( size_t generateCount, size_t min, size_t max, 
 	for ( size_t curValue = min; curValue >= min && curValue <= max; ++curValue ) {
 		size_t curCount = counter[curValue];
 		double curRatio = static_cast<double>(curCount)/expectedCount;
-		assert( curRatio >= (1.0-allowedDeviation) );
-		assert( curRatio <= (1.0+allowedDeviation) );
+		EXPECT_GE( curRatio, (1.0-allowedDeviation) );
+		EXPECT_LE( curRatio, (1.0+allowedDeviation) );
 	}
 }
 
 // the the function randomSizeT
-void test_randomSizeT()
+TEST( randomSizeT, generatesCompleteRangeAndRangeIsEquallyDistributed )
 {
 	std::map<size_t,size_t> counterMap;
 	// test for small range of values
@@ -54,8 +56,8 @@ void test_randomSizeT()
 	
 	// ensure all values where generated
 	testGenerationOfCompleteRange( generateCount, minValue, maxValue, counterMap );
-	// ensure each value was generated about the expected number
-	testEqualGenerationOfValues( generateCount, minValue, maxValue, counterMap, 0.05 );
+	// ensure each value was generated about the expected number (a deviation of 10% should pass every time)
+	testEqualGenerationOfValues( generateCount, minValue, maxValue, counterMap, 0.1 );
 
 
 	// same test, but with range at upper limit
@@ -70,9 +72,10 @@ void test_randomSizeT()
 	testEqualGenerationOfValues( generateCount, minValue, maxValue, counterMap, 0.05 );
 }
 
-int main()
+int main( int argc, char **argv )
 {
 	// init test
 	RNG::initRNG( time(0) );
-	test_randomSizeT();
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
