@@ -63,6 +63,7 @@ class GroundLoot
         void lootItem( Item *item, size_t itemIndex );
         void addItem( int x, int y, Item *newItem );
         void removeItem( size_t pos );
+        void removeItem( Item *item );
         void sortItems();
         void draw();
         void drawTooltip();

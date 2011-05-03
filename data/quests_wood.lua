@@ -78,8 +78,7 @@ function quest_playHideAndSeek.onActivateJohn()
 		DawnInterface.removeInteractionPoint( james );
 		john = nil;
 		james = nil;
-		DawnInterface.finishQuest(quest_playHideAndSeek.quest);
-		quest_playHideAndSeek.quest = nil;
+		quest_playHideAndSeek.quest:finishQuest();
 	end
 end
 
@@ -108,7 +107,7 @@ function quest_playHideAndSeek.onActivateJames()
 		textWindow:setAutocloseTime( 10000 );
 		james:setPosition( 800, 200, 64, 64 );
 		quest_playHideAndSeek.fulfilled = true;
-		DawnInterface.changeQuestDescription(quest_playHideAndSeek.quest, "Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
+		quest_playHideAndSeek.quest:setDescription("Found James whose way was blocked by a huge wolf. He is on his way back to John now.");
 	end
 end
 

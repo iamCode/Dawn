@@ -1,88 +1,113 @@
 -- init quest namespace so different quests / zones don't conflict in names
-if ( quest_thesylphirantidote == nil )
+if ( quest_venomousveins == nil )
 then
-	quest_thesylphirantidote = {}
+	quest_venomousveins = {}
 end
 
-function quest_thesylphirantidote.init()
+function quest_venomousveins.init()
 	-- this quest is initialized from zone zone1
-	--quest_thesylphirantidote.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", -1510, 500, 1, 0 );
-	--quest_thesylphirantidote.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", 510, 500, 1, 0 );
-    --quest_thesylphirantidote.effreyLongback:setAttitude( Attitude.FRIENDLY );
-    --quest_thesylphirantidote.effreyLongback:setWanderRadius(50);
-    --quest_thesylphirantidote.effreyLongback:setName( "Effrey Longback" );
-	--quest_thesylphirantidote.effreyLongbackInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.effreyLongback );
-	--quest_thesylphirantidote.effreyLongbackInteraction:setInteractionType( InteractionType.Quest );
-	--quest_thesylphirantidote.effreyLongbackInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithEffrey()" );
+	quest_venomousveins.effreyLongback = DawnInterface.addMobSpawnPoint( "Human", -1510, 500, 1, 0 );
+    quest_venomousveins.effreyLongback:setAttitude( Attitude.FRIENDLY );
+    quest_venomousveins.effreyLongback:setWanderRadius(50);
+    quest_venomousveins.effreyLongback:setName( "Effrey Longback" );
+	quest_venomousveins.effreyLongbackInteraction = DawnInterface.addCharacterInteractionPoint( quest_venomousveins.effreyLongback );
+	quest_venomousveins.effreyLongbackInteraction:setInteractionType( InteractionType.Quest );
+	quest_venomousveins.effreyLongbackInteraction:setInteractionCode( "quest_venomousveins.speakWithEffrey()" );
 
-	--quest_thesylphirantidote.jemma = DawnInterface.addMobSpawnPoint( "Human", -2162, -4580, 1, 0 );
-	--quest_thesylphirantidote.jemma = DawnInterface.addMobSpawnPoint( "Spider", 462, 580, 1, 0 );
-	--quest_thesylphirantidote.jemma:setAttitude( Attitude.FRIENDLY );
-    --quest_thesylphirantidote.jemma:setWanderRadius(50);
-	--quest_thesylphirantidote.jemma:setName( "Jemma" );
-	--quest_thesylphirantidote.jemmaInteraction = DawnInterface.addCharacterInteractionPoint( quest_thesylphirantidote.jemma );
-	--quest_thesylphirantidote.jemmaInteraction:setInteractionType( InteractionType.Quest );
-    --quest_thesylphirantidote.jemmaInteraction:setInteractionCode( "quest_thesylphirantidote.speakWithJemma()" );
+	quest_venomousveins.jemma = DawnInterface.addMobSpawnPoint( "Human", -2162, -4580, 1, 0 );
+	quest_venomousveins.jemma:setAttitude( Attitude.FRIENDLY );
+    quest_venomousveins.jemma:setWanderRadius(50);
+	quest_venomousveins.jemma:setName( "Jemma" );
+	quest_venomousveins.jemmaInteraction = DawnInterface.addCharacterInteractionPoint( quest_venomousveins.jemma );
+	quest_venomousveins.jemmaInteraction:setInteractionType( InteractionType.Quest );
+    quest_venomousveins.jemmaInteraction:setInteractionCode( "quest_venomousveins.speakWithJemma()" );
 
 	local sylphirwoodsEnter = DawnInterface.addInteractionRegion();
 	sylphirwoodsEnter:setPosition( -1215, -1000, 100, 360 );
-	sylphirwoodsEnter:setOnEnterText( "quest_thesylphirantidote.enterWoods()" );
+	sylphirwoodsEnter:setOnEnterText( "quest_venomousveins.enterWoods()" );
 end
 
-function quest_thesylphirantidote.enterWoods()
+function quest_venomousveins.enterWoods()
 	local textWindow = DawnInterface.createTextWindow();
 	textWindow:setPosition( PositionType.CENTER, 512, 382 );
 	textWindow:setText( "The Sylphir woods." );
 	textWindow:setAutocloseTime( 1300 );	
 end
 
-function quest_thesylphirantidote.speakWithJemma()
-	if ( not quest_thesylphirantidote.completed )
-	then 
-		if ( quest_thesylphirantidote.added == nil )
-		then 
-			quest_thesylphirantidote.showJemmaText( 1 );
-		elseif ( quest_thesylphirantidote.added == true and quest_thesylphirantidote.completed == false and quest_thesylphirantidote.gotInstructionFromJemma == false )
-		then
-			quest_thesylphirantidote.showJemmaText( 2 );
-			quest_thesylphirantidote.gotInstructionFromJemma = true;
-		elseif ( quest_thesylphirantidote.added == true and quest_thesylphirantidote.completed == false and quest_thesylphirantidote.gotInstrunctionFromJemma == true )
-		then
-			quest_thesylphirantidote.showJemmaText( 4 );
-		end
-	end 
+function quest_venomousveins.speakWithJemma()
+	if ( quest_venomousveins.quest_one and not quest_venomousveins.gotAntidote )
+    then
+        -- try to finish the quest if possible.
+        if ( quest_venomousveins.quest_one:finishQuest() == true )
+        then
+            quest_venomousveins.gotAntidote = true;
+            quest_venomousveins.showJemmaText( 5 );
+            quest_venomousveins.quest_two = DawnInterface.addQuest( "Sylphir antidote", "Deliver the antidote to Effrey's daughter before it's too late!");
+            quest_venomousveins.quest_two:addRequiredItemForCompletion( itemDatabase["sylphirantidote"], 1 );
+            quest_venomousveins.quest_two:setExperienceReward( 350 );
+            quest_venomousveins.quest_two:setItemReward( itemDatabase["ringofdefense"] );
+        end
+        
+        if ( not quest_venomousveins.completed and not quest_venomousveins.gotAntidote )
+        then 
+            if ( quest_venomousveins.added == true and quest_venomousveins.completed == false and quest_venomousveins.gotInstructionFromJemma == false )
+            then
+                quest_venomousveins.showJemmaText( 2 );
+                quest_venomousveins.gotInstructionFromJemma = true;
+                quest_venomousveins.quest_one:setDescription( "Jemma requires five fangs from the small spiderlings and three pristine spidersilks from the Webweaves in order to make an antidote." );
+                quest_venomousveins.quest_one:addRequiredItemForCompletion( itemDatabase["pristinesylphirsilk"], 3 );
+                quest_venomousveins.quest_one:addRequiredItemForCompletion( itemDatabase["sylphirfang"], 5 );
+            elseif ( quest_venomousveins.added == true and quest_venomousveins.completed == false and quest_venomousveins.gotInstructionFromJemma == true )
+            then
+                quest_venomousveins.showJemmaText( 4 );
+            end
+        end
+	else
+        quest_venomousveins.showJemmaText( 1 );
+    end 
 end
 
-function quest_thesylphirantidote.speakWithEffrey()
-	if ( not quest_thesylphirantidote.completed )
-	then
-		if ( quest_thesylphirantidote.added == nil )
-		then
-			quest_thesylphirantidote.added = true;
-			quest_thesylphirantidote.completed = false;
-			quest_thesylphirantidote.gotReward = false;
-			quest_thesylphirantidote.gotAntidote = false;
-			quest_thesylphirantidote.gotInstructionFromJemma = false;
-			quest_thesylphirantidote.quest = DawnInterface.addQuest( "The Sylphir antidote", "Effrey Longback's daughter was bitten by a Sylphir spider. Search out Jemma the alchemist in the southern part of the Sylphir woods and obtain an antidote for Effrey." );
-			quest_thesylphirantidote.showJeffreyText( 1 );
-		elseif ( quest_thesylphirantidote.added == true and quest_thesylphirantidote.completed == false and quest_thesylphirantidote.gotAntidote == false )
-		then
-			quest_thesylphirantidote.showJeffreyText( 3 );
-		elseif ( quest_thesylphirantidote.added == true and quest_thesylphirantidote.completed == false and quest_thesylphirantidote.gotAntidote == true )
-		then
-			quest_thesylphirantidote.showJeffreyText( 999 );
-		end
-	end
+
+function quest_venomousveins.speakWithEffrey()
+	if ( quest_venomousveins.quest_two )
+    then
+        if ( quest_venomousveins.quest_two:finishQuest() == true )
+        then
+            quest_venomousveins.completed = true;
+            quest_venomousveins.showJeffreyText( 4 );
+        end
+    end
+    
+    if ( not quest_venomousveins.completed )
+    then
+        if ( quest_venomousveins.added == nil )
+        then
+            quest_venomousveins.added = true;
+            quest_venomousveins.completed = false;
+            quest_venomousveins.gotReward = false;
+            quest_venomousveins.gotAntidote = false;
+            quest_venomousveins.gotInstructionFromJemma = false;
+            quest_venomousveins.quest_one = DawnInterface.addQuest( "Venomous veins", "Effrey Longback's daughter was bitten by a Sylphir spider. Search out Jemma the alchemist in the southern part of the Sylphir woods and obtain an antidote for Effrey." );
+            quest_venomousveins.quest_one:setItemReward( itemDatabase["sylphirantidote"] );
+            quest_venomousveins.showJeffreyText( 1 );
+        elseif ( quest_venomousveins.added == true and quest_venomousveins.completed == false and quest_venomousveins.gotAntidote == false )
+        then
+            quest_venomousveins.showJeffreyText( 3 );
+        elseif ( quest_venomousveins.added == true and quest_venomousveins.completed == false and quest_venomousveins.gotAntidote == true )
+        then
+            quest_venomousveins.showJeffreyText( 999 );
+        end
+    end
 end
 
-function quest_thesylphirantidote.showJeffreyText( part )
+function quest_venomousveins.showJeffreyText( part )
 	if ( part == 1 )
 	then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "My daughter was bitten by a spider this morning. She is really sick and I am fearing the worst. I don't know if she went playing near the Sylphir woods... She knows it's forbidden! It's only getting worse and if I don't get an antidote to cure her I don't know what I will do. I have heard about an alchemist named Jemma in the southern part of the Sylphir woods. I would go myself but I cannot leave my little girl. You look like you could make it to Jemma's house unharmed." );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setOnCloseText( "quest_thesylphirantidote.showJeffreyText( 2 )" );
+		textWindow:setOnCloseText( "quest_venomousveins.showJeffreyText( 2 )" );
 	end
 	if ( part == 2 )
 	then
@@ -98,9 +123,16 @@ function quest_thesylphirantidote.showJeffreyText( part )
 		textWindow:setText( "Please seek out Jemma down in the southern part of the Sylphir woods. My daugher is really sick!" );
 		textWindow:setAutocloseTime( 0 );
 	end
+	if ( part == 4 )
+	then
+		local textWindow = DawnInterface.createTextWindow();
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setText( "Thank you so much brave one! You have saved my daughters life! I know I can't repay you for this, but here.. take this armor. Does more use with you than with me." );
+		textWindow:setAutocloseTime( 0 );
+	end
 end
 
-function quest_thesylphirantidote.showJemmaText( part )
+function quest_venomousveins.showJemmaText( part )
 	if ( part == 1 )
 	then
 		local textWindow = DawnInterface.createTextWindow();
@@ -114,7 +146,7 @@ function quest_thesylphirantidote.showJemmaText( part )
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Someone got bitten? Well, you shouldn't wander out in the woods unless you are prepared to face off against those pesky spiders. Lucky for you I know just what you need... " );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setOnCloseText( "quest_thesylphirantidote.showJemmaText( 3 )" );
+		textWindow:setOnCloseText( "quest_venomousveins.showJemmaText( 3 )" );
 	end
 	if ( part == 3 )
 	then
@@ -130,11 +162,26 @@ function quest_thesylphirantidote.showJemmaText( part )
 		textWindow:setText( "How is the gathering coming along? Remember, I need spidersilks in pristine condition!" );
 		textWindow:setAutocloseTime( 0 );
 	end
+	if ( part == 5 )
+	then
+		local textWindow = DawnInterface.createTextWindow();
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setText( "Excellent! I hope it wasn't too much trouble getting all this." );
+		textWindow:setAutocloseTime( 0 );
+        textWindow:setOnCloseText( "quest_venomousveins.showJemmaText( 6 )" );
+	end
+	if ( part == 6 )
+	then
+		local textWindow = DawnInterface.createTextWindow();
+		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:setText( "I have already finished the potion in the waiting of your arrival. You better hurry up, you might not have that much time left. Now remember, you are in my debt. I will call upon you to do me a favor once the time is right." );
+		textWindow:setAutocloseTime( 0 );
+	end
 end
 
 -- init quest if this has not been done yet
-if ( quest_thesylphirantidote.inited == nil )
+if ( quest_venomousveins.inited == nil )
 then
-	quest_thesylphirantidote.inited = true;
-	quest_thesylphirantidote.init();
+	quest_venomousveins.inited = true;
+	quest_venomousveins.init();
 end

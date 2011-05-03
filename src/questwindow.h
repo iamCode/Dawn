@@ -22,11 +22,11 @@
 #include <string>
 #include <vector>
 #include "FramesBase.h"
-#include "Quest.h"
 #include "Player.h"
 
 class CTexture;
 class GLFT_Font;
+class Quest;
 
 class QuestWindow : public FramesBase
 {
@@ -34,8 +34,11 @@ class QuestWindow : public FramesBase
 		QuestWindow();
 		~QuestWindow();
 		void draw( int mouseX, int mouseY );
+		bool anyQuestNeedThis( Item *item ) const;
 		void addQuest( Quest *quest );
-		void finishQuest( Quest *quest );
+		void addQuestToBeRemoved( Quest *quest );
+		void tryToPurgeQuests();
+		void removeQuest( Quest *quest );
 		void removeAllQuests();
 		void changeQuestDescription( Quest *quest, std::string newDescription );
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
@@ -44,6 +47,7 @@ class QuestWindow : public FramesBase
 		std::vector<Quest*> quests;
 		/// \brief For each quest the description. Formatted for multiline output.
 		std::vector< std::vector< std::string > > questDescriptions;
+		std::vector< Quest* > questsToBeRemoved;
 		int selectedQuestNr;
 		CTexture *backgroundTexture;
 		GLFT_Font *font;

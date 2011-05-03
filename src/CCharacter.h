@@ -97,6 +97,8 @@ namespace CharacterClass
             break;
             default:
                 dawn_debug_fatal("getCharacterClassPortrait() was called without a valid playable class. Shoult not be. Exiting!");
+                return "";
+            break;
         }
     }
 }
@@ -180,6 +182,9 @@ namespace CharacterStates
             break;
             case CharacterStates::Stunned:
                 return true;
+            break;
+            case CharacterStates::NOEFFECT:
+                return false;
             break;
 	    }
 	}

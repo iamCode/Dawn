@@ -414,6 +414,9 @@ void GameScreenHandler::updateScene()
 {
 	Player *player = Globals::getPlayer();
 
+	// update our quests, or remove any quest that was finished
+	questWindow->tryToPurgeQuests();
+
 	// close and possibly delete closed windows
 	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
 		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];

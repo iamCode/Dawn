@@ -248,6 +248,16 @@ void GroundLoot::removeItem( size_t pos )
     sortItems();
 }
 
+void GroundLoot::removeItem( Item *item )
+{
+    for ( size_t itemIndex = 0; itemIndex < groundItems.size(); itemIndex++ ) {
+        if ( groundItems[ itemIndex ].item == item ) {
+            groundItems.erase( groundItems.begin() + itemIndex );
+            sortItems();
+        }
+    }
+}
+
 bool groundItemYPosCompareFunction( const sGroundItems &item1, const sGroundItems &item2 )
 {
 	if ( item1.tooltipYpos != item2.tooltipYpos ) {

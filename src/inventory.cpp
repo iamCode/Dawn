@@ -350,6 +350,17 @@ std::vector<InventoryItem*> Inventory::getIdenticalItemsFromBackpack( Item *item
 	return ourItems;
 }
 
+bool Inventory::doesItemExistInBackpack( Item *item, int quantity ) const
+{
+    for ( size_t curBackpackItemNr=0; curBackpackItemNr<backpackItems.size(); ++curBackpackItemNr ) {
+		if ( backpackItems[ curBackpackItemNr ]->getItem() == item
+            && backpackItems[ curBackpackItemNr ]->getCurrentStackSize() >= quantity ) {
+                return true;
+		}
+	}
+	return false;
+}
+
 bool Inventory::containsItem( InventoryItem *inventoryItem ) const
 {
 	for ( size_t curBackpackItemNr=0; curBackpackItemNr<backpackItems.size(); ++curBackpackItemNr ) {
@@ -371,6 +382,15 @@ void Inventory::removeItem( InventoryItem *inventoryItem )
 			}
 			backpackItems[ curBackpackItemNr ] = backpackItems[ backpackItems.size() - 1 ];
 			backpackItems.resize( backpackItems.size() - 1 );
+		}
+	}
+}
+
+void Inventory::removeItem( Item *item )
+{
+    for ( size_t curBackpackItemNr=0; curBackpackItemNr<backpackItems.size(); ++curBackpackItemNr ) {
+		if ( backpackItems[ curBackpackItemNr ]->getItem() == item ) {
+			removeItem( backpackItems[ curBackpackItemNr ] );
 		}
 	}
 }

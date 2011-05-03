@@ -17,16 +17,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "Quest.h"
+#include "CZone.h"
 #include "globals.h"
 #include "shop.h"
 #include "CLuaInterface.h"
 
-Quest::Quest( std::string name, std::string description )
+Quest::Quest( std::string name, std::string description, QuestWindow *questHandler )
     :   name( name ),
+        questHandler( questHandler ),
         description( description ),
         experienceReward( 0 ),
         itemReward( NULL ),
-        coinReward( 0 )
+        coinReward( 0 ),
+        questFinished( false )
 {
 }
 
@@ -34,9 +37,9 @@ Quest::~Quest()
 {
 }
 
-void Quest::addRequiredItemForCompletion( Item *requiredItem, uint8_t quantity )
+void Quest::addRequiredItemForCompletion( Item *requiredItem, int quantity )
 {
-    requiredItems.push_back( std::pair<Item*,uint8_t> ( requiredItem, quantity ) );
+    requiredItems.push_back( std::pair<Item*,int8_t> ( requiredItem, quantity ) );
 }
 
 bool Quest::isItemRequiredInQuest( Item *item ) const
@@ -81,7 +84,7 @@ Item* Quest::getItemReward() const
 
 void Quest::setDescription( std::string description )
 {
-    this->description = description;
+    questHandler->changeQuestDescription( this, description );
 }
 
 std::string Quest::getDescription() const
@@ -94,11 +97,17 @@ std::string Quest::getName() const
     return name;
 }
 
-bool Quest::finishQuest() const
+bool Quest::finishQuest()
 {
-    Player* ourPlayer = Globals::getPlayer();
     // we will try to finish the quest here. Depending on what the quest require of us.
-    // for now we will assume that every item is gathered, boss or npc is killed, etc..
+    Player* ourPlayer = Globals::getPlayer();
+
+    // make sure we have all items required in the quest, if not we return false and doesn't finish the quest.
+    for ( size_t requiredItemIndex = 0; requiredItemIndex < requiredItems.size(); requiredItemIndex++ ) {
+        if ( ourPlayer->getInventory()->doesItemExistInBackpack( requiredItems[ requiredItemIndex ].first, requiredItems[ requiredItemIndex ].second ) == false ) {
+            return false;
+        }
+    }
 
     // reward the player with experience, items and coins.
     if ( getExperienceReward() > 0 ) {
@@ -112,5 +121,16 @@ bool Quest::finishQuest() const
     if ( getItemReward() != NULL ) {
         DawnInterface::giveItemToPlayer( getItemReward() );
     }
+
+    // remove all quest items from the game that was needed for this quest.
+
+    for ( size_t requiredItemIndex = 0; requiredItemIndex < requiredItems.size(); requiredItemIndex++ ) {
+        ourPlayer->getInventory()->removeItem( requiredItems[ requiredItemIndex ].first );
+        CZone *curZone = Globals::getCurrentZone();
+        curZone->getGroundLoot()->removeItem( requiredItems[ requiredItemIndex ].first );
+    }
+
+    questHandler->addQuestToBeRemoved( this );
+
     return true;
 }

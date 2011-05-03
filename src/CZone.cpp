@@ -759,7 +759,7 @@ namespace DawnInterface
 			oss << fullVarName << ":setExperienceReward( " << static_cast<int>(quest->getExperienceReward()) << " );" << std::endl;
 		}
 		if ( quest->getCoinReward() > 0 ) {
-			oss << fullVarName << ":setCoinReward( " << static_cast<int>(quest->getCoinReward()) << " );" << std::endl;			
+			oss << fullVarName << ":setCoinReward( " << static_cast<int>(quest->getCoinReward()) << " );" << std::endl;
 		}
 		if ( quest->getItemReward() != NULL ) {
 			oss << fullVarName << ":setItemReward( itemDatabase[\"" << quest->getItemReward()->getID() << "\"] );" << std::endl;
@@ -775,7 +775,7 @@ namespace DawnInterface
 	std::string getReinitialisationString( std::string fullVarName, void *ignore )
 	{
 		return "";
-	}	
+	}
 
 	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray )
 	{

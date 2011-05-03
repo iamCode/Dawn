@@ -24,6 +24,7 @@
 #include "GroundLoot.h"
 #include "StatsSystem.h"
 #include "CZone.h"
+#include "QuestWindow.h"
 
 #include "CNPC.h"
 #include "Player.h"
@@ -39,6 +40,7 @@
 #include <iostream>
 
 std::map< std::string, CCharacter* > allMobTypes;
+extern std::auto_ptr<QuestWindow> questWindow;
 
 // Dawn LUA Interface
 namespace DawnInterface
@@ -1029,7 +1031,7 @@ bool isFree( int px, int py, int w, int h )
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1241,7 +1243,7 @@ Direction CCharacter::getDirectionTowardsWaypointAt( int x_pos, int y_pos ) cons
 {
 	int dx = x_pos - this->x_pos;
 	int dy = y_pos - this->y_pos;
-	
+
 	if ( dx > 0 ) {
 		if ( dy > 0 ) {
 			return NE;
@@ -1721,6 +1723,14 @@ void CCharacter::dropItems()
 
     for ( size_t tableID = 0; tableID < lootTable.size(); ++tableID )
     {
+        // if the item in the table is a questitem, we first need to see if we have a quest which will generate such a drop
+        if ( lootTable[ tableID ].item->getItemType() == ItemType::QUESTITEM ) {
+            if ( questWindow->anyQuestNeedThis( lootTable[ tableID ].item ) == false ) {
+                // yes, it's a quest item, but not needed in any quest so aborting here.
+                break;
+            }
+        }
+
         double dropChance = RNG::randomDouble(0,1);;
         if ( dropChance <= lootTable[tableID].dropChance )
         {

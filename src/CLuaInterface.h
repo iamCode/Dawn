@@ -60,8 +60,6 @@ namespace DawnInterface
     RangedDamageAction* copySpell( RangedDamageAction *other );
     void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	Quest* addQuest( std::string questName, std::string questDescription );
-	void finishQuest( Quest *quest );
-	void changeQuestDescription( Quest *quest, std::string newDescription );
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );

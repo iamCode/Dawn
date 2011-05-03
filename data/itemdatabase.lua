@@ -221,3 +221,15 @@ curItem:setValue( 276 );
 curItem:setStats( StatsType.Wisdom, 2 );
 curItem:setStats( StatsType.Intellect, 1 );
 
+itemDatabase["pristinesylphirsilk"]=DawnInterface.createNewItem( "Pristine Sylphir spidersilk", 1, 1, "data/items/Web1.tga", ItemQuality.ENHANCED, EquipPosition.NONE, ItemType.QUESTITEM, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["pristinesylphirsilk"];
+curItem:setMaxStackSize( 20 );
+
+itemDatabase["sylphirfang"]=DawnInterface.createNewItem( "Sylphir fang", 1, 1, "data/items/Fang1.tga", ItemQuality.NORMAL, EquipPosition.NONE, ItemType.QUESTITEM, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["sylphirfang"];
+curItem:setMaxStackSize( 20 );
+
+itemDatabase["sylphirantidote"]=DawnInterface.createNewItem( "Sylphir antidote", 1, 1, "data/items/Potion3.tga", ItemQuality.ENHANCED, EquipPosition.NONE, ItemType.QUESTITEM, ArmorType.NO_ARMOR, WeaponType.NO_WEAPON );
+curItem = itemDatabase["sylphirantidote"];
+curItem:setMaxStackSize( 1 );
+curItem:setDescription( "Brewed by Jemma the Wicked." );

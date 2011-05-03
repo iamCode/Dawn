@@ -81,6 +81,7 @@ class Inventory
 		bool isPositionFree( size_t invPosX, size_t invPosY ) const;
 		InventoryItem* getItemAt( size_t invPosX, size_t invPosY );
         std::vector<InventoryItem*> getIdenticalItemsFromBackpack( Item *item ) const;
+        bool doesItemExistInBackpack( Item *item, int quantity ) const;
 
 		bool isWieldingTwoHandedWeapon() const;
 		WeaponType::WeaponType getWeaponTypeBySlot( ItemSlot::ItemSlot itemSlot) const;
@@ -88,6 +89,7 @@ class Inventory
 		InventoryItem* insertItemWithExchangeAt( InventoryItem *inventoryItem, size_t invPosX, size_t invPosY );
 		bool containsItem( InventoryItem *inventoryItem ) const;
 		void removeItem( InventoryItem *inventoryItem );
+        void removeItem( Item *item );
 		std::string getReloadText();
 
 		void clear();

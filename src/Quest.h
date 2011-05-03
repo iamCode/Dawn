@@ -22,6 +22,7 @@
 #include <iostream>
 #include <stdint.h>
 #include "item.h"
+#include "QuestWindow.h"
 
 class Quest;
 namespace DawnInterface { std::string getReinitialisationString( std::string fullVarName, Quest *quest ); }
@@ -29,12 +30,13 @@ namespace DawnInterface { std::string getReinitialisationString( std::string ful
 class Quest
 {
     public:
-        Quest( std::string name, std::string description );
+        Quest( std::string name, std::string description, QuestWindow *questHandler );
         ~Quest();
 
-        bool finishQuest() const;
+        bool finishQuest();
+        bool isQuestFinished() const;
 
-        void addRequiredItemForCompletion( Item *requiredItem, uint8_t quantity );
+        void addRequiredItemForCompletion( Item *requiredItem, int quantity );
         bool isItemRequiredInQuest( Item *item ) const;
 
         void setExperienceReward( uint16_t experienceReward );
@@ -52,12 +54,15 @@ class Quest
         std::string getName() const;
 
     private:
+        QuestWindow *questHandler;
 
         uint16_t experienceReward;
         uint16_t coinReward;
         Item *itemReward;
 
-        std::vector< std::pair< Item*, uint8_t > > requiredItems;
+        bool questFinished;
+
+        std::vector< std::pair< Item*, int8_t > > requiredItems;
 
         std::string name;
         std::string description;

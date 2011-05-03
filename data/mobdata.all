@@ -276,6 +276,7 @@ spiderlingbase:setClass( CharacterClass.Ranger );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["sylphiricacid"] );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderlingbase:addItemToLootTable( itemDatabase["sylphirfang"], 0.25 );
 spiderlingbase:setExperienceValue( 30 );
 
 spiderbase = DawnInterface.createNewMobType("Spider")
@@ -351,6 +352,7 @@ spiderbase:setClass( CharacterClass.Warrior );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["spiderbite"] );
 spiderbase:inscribeSpellInSpellbook( spellDatabase["venomweave"] );
 spiderbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
+spiderbase:addItemToLootTable( itemDatabase["pristinesylphirsilk"], 0.20 );
 spiderbase:setExperienceValue( 27 );
 
 skeletonbase = DawnInterface.createNewMobType("Skeleton")

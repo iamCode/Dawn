@@ -23,6 +23,7 @@
 #include <memory>
 #include "fontcache.h"
 #include "FramesBase.h"
+#include "Quest.h"
 
 void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );
 
@@ -34,19 +35,9 @@ namespace DawnInterface
 
 	Quest* addQuest( std::string questName, std::string questDescription )
 	{
-		Quest *newQuest = new Quest( questName, questDescription );
+		Quest *newQuest = new Quest( questName, questDescription, questWindow.get() );
 		questWindow->addQuest( newQuest );
 		return newQuest;
-	}
-
-	void finishQuest( Quest *quest )
-	{
-		questWindow->finishQuest( quest );
-	}
-
-	void changeQuestDescription( Quest *quest, std::string newDescription )
-	{
-		questWindow->changeQuestDescription( quest, newDescription );
 	}
 }
 
@@ -111,6 +102,16 @@ void QuestWindow::draw( int mouseX, int mouseY )
 	}
 }
 
+bool QuestWindow::anyQuestNeedThis( Item *item ) const
+{
+    for ( size_t curQuest = 0; curQuest < quests.size(); curQuest++ ) {
+        if ( quests[ curQuest ]->isItemRequiredInQuest( item ) == true ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void QuestWindow::addQuest( Quest *quest )
 {
 	quests.push_back( quest );
@@ -126,19 +127,23 @@ void QuestWindow::addQuest( Quest *quest )
 	}
 }
 
-void QuestWindow::finishQuest( Quest *quest )
+void QuestWindow::tryToPurgeQuests()
 {
-	size_t foundQuestNr = 0;
-	for ( foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
-		if ( quests[ foundQuestNr ] == quest ) {
-			break;
-		}
-	}
+    for ( size_t curQuest = 0; curQuest < questsToBeRemoved.size(); curQuest++ ) {
+	    removeQuest( questsToBeRemoved[ curQuest ] );
+    }
+}
 
-	if ( foundQuestNr < quests.size() ) {
-		// found the quest
-		if ( quest->finishQuest() == true ) { // we were able to finish the quest, delete it from our questwindow
-		    quests.erase( quests.begin() + foundQuestNr );
+void QuestWindow::addQuestToBeRemoved( Quest *quest )
+{
+    questsToBeRemoved.push_back( quest );
+}
+
+void QuestWindow::removeQuest( Quest *quest )
+{
+	for ( size_t foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
+	    if ( quests[ foundQuestNr ] == quest ) {
+			quests.erase( quests.begin() + foundQuestNr );
             questDescriptions.erase( questDescriptions.begin() + foundQuestNr );
             if ( selectedQuestNr == static_cast<int>(foundQuestNr) ) {
                 selectedQuestNr = -1;
@@ -149,11 +154,11 @@ void QuestWindow::finishQuest( Quest *quest )
             GLfloat green[] = { 0.15f, 1.0f, 0.15f };
             DawnInterface::addTextToLogWindow( green, "Quest completed: %s.", quest->getName().c_str() );
             delete quest;
-        }
-	}
 
-	if ( selectedQuestNr == -1 && quests.size() > 0 ) {
-		selectedQuestNr = 0;
+            if ( selectedQuestNr == -1 && quests.size() > 0 ) {
+                selectedQuestNr = 0;
+            }
+		}
 	}
 }
 
@@ -170,7 +175,6 @@ void QuestWindow::removeAllQuests()
 
 void QuestWindow::changeQuestDescription( Quest *quest, std::string newDescription )
 {
-	quest->setDescription( newDescription );
 	size_t foundQuestNr = 0;
 	for ( foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr ) {
 		if ( quests[ foundQuestNr ] == quest ) {
