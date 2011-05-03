@@ -24,7 +24,7 @@
 #include "GroundLoot.h"
 #include "StatsSystem.h"
 #include "CZone.h"
-#include "QuestWindow.h"
+#include "questwindow.h"
 
 #include "CNPC.h"
 #include "Player.h"

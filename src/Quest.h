@@ -22,7 +22,7 @@
 #include <iostream>
 #include <stdint.h>
 #include "item.h"
-#include "QuestWindow.h"
+#include "questwindow.h"
 
 class Quest;
 namespace DawnInterface { std::string getReinitialisationString( std::string fullVarName, Quest *quest ); }
