@@ -26,4 +26,4 @@ function zone1.onEnterMap(x,y)
 end
 
 dofile("data/quests_hexmaster.lua");
-dofile("data/quests_thesylphirantidote.lua");
+dofile("data/quests_venomousveins.lua");
