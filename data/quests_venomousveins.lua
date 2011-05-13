@@ -14,7 +14,7 @@ function quest_venomousveins.init()
 	quest_venomousveins.effreyLongbackInteraction:setInteractionType( InteractionType.Quest );
 	quest_venomousveins.effreyLongbackInteraction:setInteractionCode( "quest_venomousveins.speakWithEffrey()" );
 
-	quest_venomousveins.jemma = DawnInterface.addMobSpawnPoint( "Human", -2162, -4580, 1, 0 );
+	quest_venomousveins.jemma = DawnInterface.addMobSpawnPoint( "Witch", -2162, -4580, 1, 0 );
 	quest_venomousveins.jemma:setAttitude( Attitude.FRIENDLY );
     quest_venomousveins.jemma:setWanderRadius(50);
 	quest_venomousveins.jemma:setName( "Jemma" );

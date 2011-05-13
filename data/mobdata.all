@@ -103,6 +103,57 @@ giantwolf:setWanderRadius( 50 )
 giantwolf:setLevel( 5 )
 giantwolf:setExperienceValue( 40 );
 
+witchbase = DawnInterface.createNewMobType("Witch")
+witchbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
+for index=0,7,1 do
+	witchbase:setMoveTexture( ActivityType.Walking, N, index, "data/character/witch/walking n000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, NW, index, "data/character/witch/walking nw000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, W, index, "data/character/witch/walking w000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, SW, index, "data/character/witch/walking sw000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, S, index, "data/character/witch/walking s000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, SE, index, "data/character/witch/walking se000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, E, index, "data/character/witch/walking e000"..index..".tga" );
+	witchbase:setMoveTexture( ActivityType.Walking, NE, index, "data/character/witch/walking ne000"..index..".tga" );
+end
+
+witchbase:setNumMoveTexturesPerDirection( ActivityType.Dying, 8 );
+for index=0,7,1 do
+	witchbase:setMoveTexture( ActivityType.Dying, N, index, "data/character/witch/walking n000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, NW, index, "data/character/witch/walking nw000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, W, index, "data/character/witch/walking w000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, SW, index, "data/character/witch/walking sw000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, S, index, "data/character/witch/walking s000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, SE, index, "data/character/witch/walking se000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, E, index, "data/character/witch/walking e000"..index..".tga", -16, -16 );
+	witchbase:setMoveTexture( ActivityType.Dying, NE, index, "data/character/witch/walking ne000"..index..".tga", -16, -16 );
+end
+
+witchbase:setBoundingBox( 18, 20, 64, 64 );
+witchbase:setUseBoundingBox( true );
+
+witchbase:setStrength( 15 )
+witchbase:setDexterity( 25 )
+witchbase:setVitality( 15 )
+witchbase:setIntellect( 10 )
+witchbase:setWisdom( 10 )
+witchbase:setMaxHealth( 250 )
+witchbase:setMaxMana( 500 )
+witchbase:setMaxFatigue( 100 )
+witchbase:setHealthRegen( 0 )
+witchbase:setManaRegen( 50 )
+witchbase:setFatigueRegen( 25 )
+witchbase:setMinDamage( 5 )
+witchbase:setMaxDamage( 10 )
+witchbase:setArmor( 20 )
+witchbase:setDamageModifierPoints( 0 )
+witchbase:setHitModifierPoints( 0 )
+witchbase:setEvadeModifierPoints( 0 )
+witchbase:setName("A witch")
+witchbase:setWanderRadius( 250 )
+witchbase:setLevel( 2 )
+witchbase:setClass( CharacterClass.Warrior );
+witchbase:setExperienceValue( 25 );
+
 humanbase = DawnInterface.createNewMobType("Human")
 humanbase:setNumMoveTexturesPerDirection( ActivityType.Walking, 8 );
 for index=0,7,1 do
