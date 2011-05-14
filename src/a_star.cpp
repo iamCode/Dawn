@@ -89,7 +89,7 @@ void expandNode( SearchListStruct &currentNode, const Point &end, int width, int
 			continue;
 		}
 		
-		int tentative_g = currentNode.value + movePoints[ curDirection ]*10;
+		int tentative_g = currentNode.value + movePoints[ curDirection ]*distanceSkip;
 		
 		std::list<SearchListStruct>::iterator sucOpenIt = std::find( openList.begin(), openList.end(), successor );
 		if ( sucOpenIt != openList.end() && tentative_g >= sucOpenIt->value ) {
@@ -116,7 +116,7 @@ void expandNode( SearchListStruct &currentNode, const Point &end, int width, int
 	}
 }
 
-std::vector<Point> aStar( const Point &start, const Point &end, int width, int height, int granularity )
+std::vector<Point> aStar( const Point &start, const Point &end, int width, int height, int granularity, int maxIterations )
 {
 	openList.clear();
 	closedList.clear();
@@ -129,8 +129,8 @@ std::vector<Point> aStar( const Point &start, const Point &end, int width, int h
 	while ( openList.size() > 0 ) {
 		SearchListStruct currentNode = popMinimumElement( openList );
 		
-		if ( numIterations >= 1000 || (std::pow(currentNode.p.x-end.x,2)+std::pow(currentNode.p.y-end.y,2) < distanceSkip*14) ) {
-			if ( numIterations >= 1000 ) {
+		if ( numIterations >= maxIterations || (std::pow(currentNode.p.x-end.x,2)+std::pow(currentNode.p.y-end.y,2) < distanceSkip*14) ) {
+			if ( numIterations >= maxIterations ) {
 				currentNode = closestNodeFound;
 			}
 			// Return NodeList

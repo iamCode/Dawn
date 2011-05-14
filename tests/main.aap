@@ -18,3 +18,6 @@ LIBS += $SDL_LIBS $FREETYPE_LIBS $LUA_LIBS -lgtest -ltolua++ -lGL -lglut -lSDL_i
 :program test_random : 
         test_random.cpp ../src/random.cpp
 
+:program test_pathfinding : 
+        test_pathfinding.cpp ../src/a_star.cpp
+
