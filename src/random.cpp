@@ -19,6 +19,7 @@
 #include "random.h"
 
 #include <cstdlib>
+#include <cmath>
 
 namespace RNG
 {
@@ -34,7 +35,7 @@ size_t randomSizeT( size_t min, size_t max )
 
 int randomInt( int min, int max )
 {
-	return min + ( static_cast<int>((max - min) * static_cast<double>(rand())/static_cast<double>(RAND_MAX + 1.0) - 0.5 ) );
+	return randomSizeT( 0, max - min ) + min;
 }
 
 double randomDouble( double min, double max )

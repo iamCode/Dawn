@@ -141,6 +141,8 @@ TEST_F( RandomSizeTGenerationTest_10000_valuesBetweenMinSizeTAnd10, similarAmoun
 	testEqualGenerationOfValues( 0.1f );
 }
 
+/*
+// LARGE SCALE TEST. Usually not executed
 class RandomSizeTGenerationTest_1000000_valuesBetween0And100 : public RandomSizeTGenerationTest
 {
 public:
@@ -164,6 +166,7 @@ TEST_F( RandomSizeTGenerationTest_1000000_valuesBetween0And100, similarAmountOfV
 	// 10% deviation should not be exceeded.
 	testEqualGenerationOfValues( 0.05f );
 }
+*/
 
 class RandomIntGenerationTest : public ::testing::Test
 {
@@ -198,8 +201,8 @@ class RandomIntGenerationTest : public ::testing::Test
 		for ( int curValue=minValue; curValue>=minValue && curValue<=maxValue; ++curValue ) {
 			// check that the value was generated
 			size_t curCount = occuranceCounter[curValue];
-			//EXPECT_GT( curCount, 0u );
-			//EXPECT_LE( curCount, numValuesGenerated );
+			EXPECT_GT( curCount, 0u );
+			EXPECT_LE( curCount, numValuesGenerated );
 		}
 	}
 
@@ -211,7 +214,7 @@ class RandomIntGenerationTest : public ::testing::Test
 			size_t curCount = occuranceCounter[curValue];
 			inRangeCount += curCount;
 		}
-		//EXPECT_EQ( numValuesGenerated, inRangeCount );
+		EXPECT_EQ( numValuesGenerated, inRangeCount );
 	}
 
 	void testEqualGenerationOfValues( double allowedDeviation )
@@ -220,31 +223,31 @@ class RandomIntGenerationTest : public ::testing::Test
 		for ( int curValue = minValue; curValue >= minValue && curValue <= maxValue; ++curValue ) {
 			size_t curCount = occuranceCounter[curValue];
 			double curRatio = static_cast<double>(curCount)/expectedCountPerKey;
-			//EXPECT_GE( curRatio, (1.0-allowedDeviation) );
-			//EXPECT_LE( curRatio, (1.0+allowedDeviation) );
+			EXPECT_GE( curRatio, (1.0-allowedDeviation) );
+			EXPECT_LE( curRatio, (1.0+allowedDeviation) );
 		}
 	}
 };
 
-class RandomIntGenerationTest_10000_valuesBetween_Minus10_and_10 : public RandomIntGenerationTest
+class RandomIntGenerationTest_20000_valuesBetween_Minus5_and_5 : public RandomIntGenerationTest
 {
 public:
-	RandomIntGenerationTest_10000_valuesBetween_Minus10_and_10()
-		: RandomIntGenerationTest( 10000, -10, 10 )
+	RandomIntGenerationTest_20000_valuesBetween_Minus5_and_5()
+		: RandomIntGenerationTest( 20000, -10, 10 )
 	{}
 };
 
-TEST_F( RandomIntGenerationTest_10000_valuesBetween_Minus10_and_10, completeRangeIsGenerated )
+TEST_F( RandomIntGenerationTest_20000_valuesBetween_Minus5_and_5, completeRangeIsGenerated )
 {
 	testCompleteRangeIsGenerated();
 }
 
-TEST_F( RandomIntGenerationTest_10000_valuesBetween_Minus10_and_10, noValuesOutOfRangeAreGenerated )
+TEST_F( RandomIntGenerationTest_20000_valuesBetween_Minus5_and_5, noValuesOutOfRangeAreGenerated )
 {
 	testNoValuesOutOfRangeAreGenerated();
 }
 
-TEST_F( RandomIntGenerationTest_10000_valuesBetween_Minus10_and_10, similarAmountOfValuesIsGeneratedForEachKey )
+TEST_F( RandomIntGenerationTest_20000_valuesBetween_Minus5_and_5, similarAmountOfValuesIsGeneratedForEachKey )
 {
 	// 10% deviation should not be exceeded.
 	testEqualGenerationOfValues( 0.1f );
@@ -298,35 +301,38 @@ TEST_F( RandomIntGenerationTest_10000_valuesBetweenMinIntAndMinIntPlus10, simila
 	testEqualGenerationOfValues( 0.1f );
 }
 
-class RandomIntGenerationTest_1000000_valuesBetweenMinus100And100 : public RandomIntGenerationTest
+/*
+// LARGE Scale test. Usually not executed
+class RandomIntGenerationTest_2000000_valuesBetweenMinus100And100 : public RandomIntGenerationTest
 {
 public:
-	RandomIntGenerationTest_1000000_valuesBetweenMinus100And100()
-		: RandomIntGenerationTest( 1000000, -100, 100 )
+	RandomIntGenerationTest_2000000_valuesBetweenMinus100And100()
+		: RandomIntGenerationTest( 2000000, -100, 100 )
 	{}
 };
 
-TEST_F( RandomIntGenerationTest_1000000_valuesBetweenMinus100And100, completeRangeIsGenerated )
+TEST_F( RandomIntGenerationTest_2000000_valuesBetweenMinus100And100, completeRangeIsGenerated )
 {
 	testCompleteRangeIsGenerated();
 }
 
-TEST_F( RandomIntGenerationTest_1000000_valuesBetweenMinus100And100, noValuesOutOfRangeAreGenerated )
+TEST_F( RandomIntGenerationTest_2000000_valuesBetweenMinus100And100, noValuesOutOfRangeAreGenerated )
 {
 	testNoValuesOutOfRangeAreGenerated();
 }
 
-TEST_F( RandomIntGenerationTest_1000000_valuesBetweenMinus100And100, similarAmountOfValuesIsGeneratedForEachKey )
+TEST_F( RandomIntGenerationTest_2000000_valuesBetweenMinus100And100, similarAmountOfValuesIsGeneratedForEachKey )
 {
 	// 10% deviation should not be exceeded.
 	testEqualGenerationOfValues( 0.05f );
 }
+*/
 
 
 int main( int argc, char **argv )
 {
 	// init test
-	RNG::initRNG( time(0) );
+	RNG::initRNG( 12345678 );
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
