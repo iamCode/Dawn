@@ -308,9 +308,6 @@ std::vector<Region*> createArrayOfFreeRegions( std::vector<Region*> obstacles, i
 	for ( size_t curObstacleNr=0; curObstacleNr<obstacles.size(); ++curObstacleNr ) {
 		Region *curObstacle = obstacles[curObstacleNr];
 		
-		std::cout << "obstacle " << curObstacleNr << ": (" << curObstacle->x << ", " << curObstacle->y << ") - ("
-		          << curObstacle->x+curObstacle->w << ", " << curObstacle->y + curObstacle->h << ")" << std::endl;
-		
 		totalObstacleSize += (static_cast<unsigned long>(curObstacle->w+addWidth))*(static_cast<unsigned long>(curObstacle->h+addHeight));
 		
 		size_t numRegions = createdRegions.size();
@@ -328,53 +325,28 @@ std::vector<Region*> createArrayOfFreeRegions( std::vector<Region*> obstacles, i
 				deleteRegions.push_back( curRegionNr );
 				if ( needLeft ) {
 					createdRegions.push_back( new Region( curRegion->x, curRegion->y, curObstacle->x-addWidth-curRegion->x, curRegion->h ) );
-					Region *curRegion = createdRegions[ createdRegions.size()-1 ];
-					std::cout << "new left region: (" << curRegion->x << ", " << curRegion->y << ") - ("
-					          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
 				}
 				if ( needRight ) {
 					createdRegions.push_back( new Region( curObstacle->x + curObstacle->w, curRegion->y, curRegion->x+curRegion->w-curObstacle->x-curObstacle->w, curRegion->h) );
-					Region *curRegion = createdRegions[ createdRegions.size()-1 ];
-					std::cout << "new right region: (" << curRegion->x << ", " << curRegion->y << ") - ("
-					          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
 				}
 				if ( needBottom ) {
 					createdRegions.push_back( new Region( std::max(curRegion->x, curObstacle->x-addWidth), curRegion->y,
 														   std::min(curRegion->x+curRegion->w, curObstacle->x+curObstacle->w)-std::max(curRegion->x, curObstacle->x-addWidth), curObstacle->y-addHeight-curRegion->y ) );
-					Region *curRegion = createdRegions[ createdRegions.size()-1 ];
-					std::cout << "new bottom region: (" << curRegion->x << ", " << curRegion->y << ") - ("
-					          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
 				}
 				if ( needTop ) {
 					createdRegions.push_back( new Region( std::max(curRegion->x, curObstacle->x-addWidth), curObstacle->y+curObstacle->h,
 					                                     std::min(curRegion->x+curRegion->w, curObstacle->x+curObstacle->w)-std::max(curRegion->x, curObstacle->x-addWidth), curRegion->y+curRegion->h-curObstacle->y-curObstacle->h ) );
-					Region *curRegion = createdRegions[ createdRegions.size()-1 ];
-					std::cout << "new top region: (" << curRegion->x << ", " << curRegion->y << ") - ("
-					          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
 				}
 			}
 		}
 		for ( size_t curIndex=0; curIndex<deleteRegions.size(); ++curIndex ) {
 			size_t deleteIndex = deleteRegions[ deleteRegions.size()-curIndex-1 ];
-			Region *curRegion = createdRegions[ deleteIndex ];
-			std::cout << "deleted region: (" << curRegion->x << ", " << curRegion->y << ") - ("
-			          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
 			
 			delete createdRegions[ deleteIndex ];
 			createdRegions[ deleteIndex ] = createdRegions[ createdRegions.size()-1 ];
 			createdRegions.resize( createdRegions.size()-1 );
 		}
 		
-		totalRegionSize = 0;
-		for ( size_t curRegionNr = 0; curRegionNr<createdRegions.size(); ++curRegionNr ) {
-			Region *curRegion = createdRegions[ curRegionNr ];
-			totalRegionSize += (static_cast<unsigned long>(curRegion->w))*(static_cast<unsigned long>(curRegion->h));
-			//std::cout << "size of region " << curRegionNr << ": " << ((static_cast<unsigned long>(curRegion->w))*(static_cast<unsigned long>(curRegion->h))) << std::endl;
-		}
-		unsigned long totalSum = totalRegionSize+totalObstacleSize;
-		//std::cout << "max ulong: " << std::numeric_limits<unsigned long>::max() << std::endl;
-		std::cout << "totalObstacleSize: " << totalObstacleSize << ", totalRegionSize: " << totalRegionSize << ", totalSum: " << totalSum << std::endl;
-		assert( totalSum >= static_cast<unsigned long>(20000) * static_cast<unsigned long>(20000) );
 	}
 	
 	return createdRegions;
@@ -528,12 +500,6 @@ int main()
 	allObstacles = addObstacles();
 	//allObstacles = simpleObstacles();
 
-	/*
-	for ( size_t curObsNr=0; curObsNr<allObstacles.size(); ++curObsNr ) {
-		Region* curObs = allObstacles[curObsNr];
-		std::cout << "obstacle " << curObsNr << ": " << curObs->x << ", " << curObs->y << ", " << curObs->w << ", " << curObs->h << std::endl;
-	}*/
-	
 	uint32_t initStart = SDL_GetTicks();
 	std::vector<Region*> regionDecomposition = createArrayOfFreeRegions( allObstacles, 64, 64 );
 	std::vector<GraphNode*> connectionGraph = createConnectionGraph( regionDecomposition );
