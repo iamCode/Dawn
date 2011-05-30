@@ -24,6 +24,12 @@ class Region
 	
 };
 
+std::ostream& operator << ( std::ostream &input, const Region &print )
+{
+	input << "[ ( " << print.x << ", " << print.y << " ) - ( " << print.x+print.w << ", " << print.y+print.h << " ) ]";
+	return input;
+}
+
 class GraphNode;
 class RegionChangeNode;
 
@@ -73,9 +79,18 @@ class GraphNode
 
 void connectNodes( GraphNode *first, GraphNode*second, bool horizontal, int start, int size, int otherCoordinate )
 {
+	size_t bigBorder = 100;
 	RegionChange *firstToSecond = new RegionChange( horizontal, start, size, otherCoordinate, first, second );
 	first->addOpening( firstToSecond );
 	second->addOpening( firstToSecond );
+	if ( size > bigBorder ) {
+		RegionChange *border1 = new RegionChange( horizontal, start, 1, otherCoordinate, first, second );
+		first->addOpening( border1 );
+		second->addOpening( border1 );
+		RegionChange *border2 = new RegionChange( horizontal, start+size-1, 1, otherCoordinate, first, second );
+		first->addOpening( border2 );
+		second->addOpening( border2 );
+	}
 }
 
 std::vector<GraphNode*> createConnectionGraph( std::vector<Region*> &regionDecomposition )
@@ -146,20 +161,29 @@ class RegionChangeNode
 		addAllNeighboursViaRegion( change->regionOne );
 		addAllNeighboursViaRegion( change->regionTwo );
 	}
+	
+	Point getPointRepresentation() const
+	{
+		Point p;
+		if ( change->horizontal ) {
+			p.x = change->start + change->size/2;
+			p.y = change->otherCoordinate;
+		} else {
+			p.x = change->otherCoordinate;
+			p.y = change->start + change->size/2;
+		}
+		return p;
+	}
 };
 
 std::ostream& operator << ( std::ostream &input, const RegionChangeNode &output )
 {
-	Point p;
-	RegionChange *change = output.change;
-	if ( change->horizontal ) {
-		p.x = change->start + change->size/2;
-		p.y = change->otherCoordinate;
-	} else {
-		p.x = change->otherCoordinate;
-		p.y = change->start + change->size/2;
-	}
+	Region *regionOne = output.change->regionOne->region;
+	Region *regionTwo = output.change->regionTwo->region;
+	Point p = output.getPointRepresentation();
 	input << "(" << p.x << ", " << p.y << ")";
+	std::cout << ": " << *regionOne;
+	std::cout << " - " << *regionTwo;
 	return input;
 }
 
@@ -173,28 +197,10 @@ class RegionChangeEdge
 	RegionChangeEdge( RegionChangeNode *one_, RegionChangeNode *two_ )
 		: one( one_ ), two( two_ )
 	{
-		size_t x1, x2, y1, y2;
-		if ( one->change->horizontal )
-		{
-			x1 = one->change->start + one->change->size / 2;
-			y1 = one->change->otherCoordinate;
-		}
-		else
-		{
-			x1 = one->change->otherCoordinate;
-			y1 = one->change->start + one->change->size / 2;
-		}
-		if ( two->change->horizontal )
-		{
-			x2 = two->change->start + two->change->size / 2;
-			y2 = two->change->otherCoordinate;
-		}
-		else
-		{
-			x2 = two->change->otherCoordinate;
-			y2 = two->change->start + two->change->size / 2;
-		}
-		distance = std::sqrt( ((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)) );
+		Point p1 = one->getPointRepresentation();
+		Point p2 = two->getPointRepresentation();
+		
+		distance = std::sqrt( std::pow(p1.x-p2.x,2)+std::pow(p1.y-p2.y,2) );
 		if ( distance == 0 ) {
 			distance = 1;
 		}
@@ -301,9 +307,9 @@ std::vector<Region*> createArrayOfFreeRegions( std::vector<Region*> obstacles, i
 	std::vector<Region*> createdRegions;
 	// create an initial region
 	createdRegions.push_back( new Region(-10000, -10000, 20000, 20000 ) );
+	//createdRegions.push_back( new Region(-2000, -2000, 4000, 4000 ) );
 	
 	unsigned long totalObstacleSize = 0;
-	unsigned long totalRegionSize = 0;
 	
 	for ( size_t curObstacleNr=0; curObstacleNr<obstacles.size(); ++curObstacleNr ) {
 		Region *curObstacle = obstacles[curObstacleNr];
@@ -348,7 +354,7 @@ std::vector<Region*> createArrayOfFreeRegions( std::vector<Region*> obstacles, i
 		}
 		
 	}
-	
+
 	return createdRegions;
 }
 
@@ -392,7 +398,7 @@ void distance_update( std::list<RegionChangeNode*> &distanceQueue, RegionChangeN
 	}
 }
   
-void pathfind_dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, RegionChangeNode *start, RegionChangeNode *end )
+std::vector<Point> pathfind_dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, RegionChangeNode *start, RegionChangeNode *end )
 {
 	std::list<RegionChangeNode*> distanceQueue;
 	init_dijkstra( regionChangeGraph, start,  distanceQueue);
@@ -413,8 +419,10 @@ void pathfind_dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, Regio
 			}
 		}
 	}
+	
+	std::vector<Point> foundPath;
 	RegionChangeNode* curNode = end;
-	std::cout << *curNode << std::endl;
+	foundPath.push_back( curNode->getPointRepresentation() );
 	while ( curNode != start )
 	{
 		for ( std::vector<RegionChangeEdge*>::iterator it = curNode->neighbourChanges.begin(); it != curNode->neighbourChanges.end(); ++it ) {
@@ -425,11 +433,14 @@ void pathfind_dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, Regio
 				break;
 			}
 		}
-		std::cout << *curNode << std::endl;
+		foundPath.push_back( curNode->getPointRepresentation() );
+		if ( foundPath.size() > 100 )
+			break;
 	}
+	return foundPath;
 }
 
-void dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, std::vector<GraphNode*> &connectionGraph, Point &start, Point &end )
+std::vector<Point> dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, std::vector<GraphNode*> &connectionGraph, Point &start, Point &end )
 {
 	// find region containing start and end
 	GraphNode *startRegion = NULL;
@@ -455,44 +466,105 @@ void dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, std::vector<Gr
 	
 	if ( startRegion == NULL ) {
 		std::cout << "start point not valid" << std::endl;
-		return;
+		return std::vector<Point>();
 	}
 	if ( endRegion == NULL ) {
 		std::cout << "end point not valid" << std::endl;
-		return;
+		return std::vector<Point>();
 	}
 	if ( startRegion == endRegion ) {
 		std::cout << "startRegion == endRegion. Nothing to do, direct path is free" << std::endl;
-		return;
+		std::vector<Point> path;
+		path.push_back( end );
+		path.push_back( start);
+		return path;
 	}
 	
 	// TODO: Check here whether the two regions are in the same connection part of the graph...
 	
-	// determine any exit as start node for pathfinding (this should be improved by adding start point to graph)
-	RegionChangeNode *startNode = NULL;
-	RegionChangeNode *endNode = NULL;
-	if ( startRegion->openings.size() > 0 ) {
-		startNode = startRegion->openings[0]->changeNode;
+	// add start and end node to graph
+	for ( size_t curNodeNr=0; curNodeNr<regionChangeGraph.size(); ++curNodeNr ) {
+		regionChangeGraph[curNodeNr]->visited = false;
 	}
-	if ( endRegion->openings.size() > 0 ) {
-		endNode = endRegion->openings[0]->changeNode;
-	}
-	
-	if ( startNode == NULL ) {
-		std::cout << "start region is not connected" << std::endl;
-		return;
-	}
-	if ( endNode == NULL ) {
-		std::cout << "end region is not connected" << std::endl;
-		return;
-	}
+	Region *virtualStartRegion = new Region( start.x, start.y, 1, 1 );
+	Region *virtualEndRegion = new Region( end.x, end.y, 1, 1 );
+	GraphNode *startRegionNode = new GraphNode( virtualStartRegion );
+	GraphNode *endRegionNode = new GraphNode( virtualEndRegion );
+	RegionChange *startChange = new RegionChange( true, start.x, 1, start.y, startRegionNode, startRegion );
+	startRegionNode->addOpening( startChange );
+	RegionChange *endChange = new RegionChange( true, end.x, 1, end.y, endRegionNode, endRegion );
+	endRegionNode->addOpening( endChange );
+	RegionChangeNode *startNode = new RegionChangeNode( startChange );
+	startNode->addAllNeighboursViaRegion( startRegion );
+	RegionChangeNode *endNode = new RegionChangeNode( endChange );
+	endNode->addAllNeighboursViaRegion( endRegion );
 	
 	std::cout << "start node is in region (" << startRegion->region->x << ", " << startRegion->region->y << ") - ("
-			  << startRegion->region->x+startRegion->region->w << ", " << startRegion->region->y+startRegion->region->w << ")" << std::endl;
+			  << startRegion->region->x+startRegion->region->w << ", " << startRegion->region->y+startRegion->region->h << ")" << std::endl;
 	std::cout << "end node is in region (" << endRegion->region->x << ", " << endRegion->region->y << ") - ("
-			  << endRegion->region->x+endRegion->region->w << ", " << endRegion->region->y+endRegion->region->w << ")" << std::endl;
+			  << endRegion->region->x+endRegion->region->w << ", " << endRegion->region->y+endRegion->region->h << ")" << std::endl;
+	std::cout << "startNode: " << *startNode << std::endl;
+	std::cout << "endNode: " << *endNode << std::endl;
 	
-	pathfind_dijkstra( regionChangeGraph, startNode, endNode );
+	std::vector<Point> path = pathfind_dijkstra( regionChangeGraph, startNode, endNode );
+
+	// return temporary nodes from graph
+	for ( size_t curRegionChangeEdgeNr=0; curRegionChangeEdgeNr<startNode->neighbourChanges.size(); ++curRegionChangeEdgeNr ) {
+		RegionChangeEdge *curEdge = startNode->neighbourChanges[ curRegionChangeEdgeNr ];
+		RegionChangeNode *otherEnd = curEdge->otherEnd( startNode );
+		for ( size_t curChangeNr=0; curChangeNr < otherEnd->neighbourChanges.size(); ++curChangeNr ) {
+			if ( otherEnd->neighbourChanges[curChangeNr] == curEdge ) {
+				otherEnd->neighbourChanges[curChangeNr] = otherEnd->neighbourChanges[ otherEnd->neighbourChanges.size() ];
+				break;
+			}
+		}
+		delete curEdge;
+	}
+	for ( size_t curRegionChangeEdgeNr=0; curRegionChangeEdgeNr<endNode->neighbourChanges.size(); ++curRegionChangeEdgeNr ) {
+		RegionChangeEdge *curEdge = endNode->neighbourChanges[ curRegionChangeEdgeNr ];
+		RegionChangeNode *otherEnd = curEdge->otherEnd( endNode );
+		for ( size_t curChangeNr=0; curChangeNr < otherEnd->neighbourChanges.size(); ++curChangeNr ) {
+			if ( otherEnd->neighbourChanges[curChangeNr] == curEdge ) {
+				otherEnd->neighbourChanges[curChangeNr] = otherEnd->neighbourChanges[ otherEnd->neighbourChanges.size() ];
+				break;
+			}
+		}
+		delete curEdge;
+	}
+	
+	delete startNode;
+	delete startChange;
+	delete startRegionNode;
+	delete virtualStartRegion;
+	delete endNode;
+	delete endChange;
+	delete endRegionNode;
+	delete virtualEndRegion;
+	
+	return path;
+}
+
+double getPathLength( const std::vector<Point> &path )
+{
+	if ( path.size() == 0 )
+		return std::numeric_limits<double>::max();
+	
+	double length = 0.0;
+	Point prevWP = path[0];
+	for ( size_t curWPNr=0; curWPNr<path.size(); ++curWPNr ) {
+		Point curWP = path[curWPNr];
+		length += std::sqrt( std::pow(curWP.x-prevWP.x, 2)+std::pow(curWP.y-prevWP.y,2) );
+		prevWP = curWP;
+	}
+	return length;
+}
+
+void printPath( const std::vector<Point> &path )
+{
+	for ( size_t curWPNr=0; curWPNr<path.size(); ++curWPNr ) {
+		Point curWP = path[curWPNr];
+		std::cout << "( " << curWP.x << ", " << curWP.y << " )" << std::endl;
+	}
 }
 
 int main()
@@ -510,89 +582,34 @@ int main()
 	std::vector<RegionChangeNode*> regionChangeGraph = createRegionChangeGraph( connectionGraph );
 	// TODO: Connect adjacent regions. This might strongly reduce the number of nodes
 	uint32_t initEnd = SDL_GetTicks();
-	
-	//NEXT: * Generate graph structure
-	//      * Generate arrays of connected regions (to reduce pathfinding overhead for non-connected regions)
-	//	  * Do pathfinding from every exit in this region to every exit of target region + offsets for reaching targets
-	//        (OR: add start and end as nodes and do complete pathfinding node to node, needs copy / modification of graph structure)
-	//      * for the start just from nearest exit to nearest exit and if the way goes along different exits of start/target region end the path there
-	
-	/*
-	for ( size_t curRegionNr=0; curRegionNr<regionDecomposition.size(); ++curRegionNr ) {
-		Region *curRegion = regionDecomposition[ curRegionNr ];
-		std::cout << "free region " << curRegionNr << ": (" << curRegion->x << ", " << curRegion->y << ") - ("
-		          << curRegion->x+curRegion->w << ", " << curRegion->y + curRegion->h << ")" << std::endl;
-	}
-	*/
-	/*for ( size_t curNodeNr=0; curNodeNr<connectionGraph.size(); ++curNodeNr ) {
-		GraphNode *curNode = connectionGraph[ curNodeNr ];
-		for ( size_t curConnectionNr=0; curConnectionNr<curNode->openings.size(); ++curConnectionNr ) {
-			RegionChange *curConnection = curNode->openings[ curConnectionNr ];
-			std::cout << "connection between regions " << curConnection->regionOne->label << " and " << curConnection->regionTwo->label << std::endl; 			
-		}
-	}*/
-	
-	/*
-	size_t equalSize = 0;
-	for ( size_t curOpeningNr=0; curOpeningNr<regionChangeGraph.size(); ++curOpeningNr ) {
-		RegionChangeNode* curOpening = regionChangeGraph[ curOpeningNr ];
-		if ( curOpening->change->horizontal && curOpening->change->regionOne->region->x == curOpening->change->regionTwo->region->x
-											&& curOpening->change->regionOne->region->w == curOpening->change->regionTwo->region->w ) {
-			equalSize++;
-		}
-		else if ( (!curOpening->change->horizontal) && curOpening->change->regionOne->region->y == curOpening->change->regionTwo->region->y
-													&& curOpening->change->regionOne->region->h == curOpening->change->regionTwo->region->h ) {
-			equalSize++;
-		}
-		for ( size_t curRegionConnectionNr=0; curRegionConnectionNr<curOpening->neighbourChanges.size(); ++curRegionConnectionNr ) {
-			RegionChangeEdge *curRegionConnection = curOpening->neighbourChanges[ curRegionConnectionNr ];
-			RegionChangeNode *other = curRegionConnection->two;
-			if ( other == curOpening ) {
-				other = curRegionConnection->one;
-			}
-			std::cout << "(" << curOpening->change->regionOne->label << "->" << curOpening->change->regionTwo->label << ") -> "
-			          << "(" << other->change->regionOne->label << "->" << other->change->regionTwo->label << ") : "
-			          << curRegionConnection->distance << std::endl;
-		}
-	}
-	*/
 
 	//Point start( 0, 300 );
 	//Point end( 350, 500 );
 	Point start( 100, 1400 );
-	Point end( 300, 1500 );
+	Point end( 300, 1500 );	
 	
 	// NOTE: dijkstra is used for the testing since it is easier to implement than A*, even though not much
 	uint32_t startTicksD, endTicksD;
 	startTicksD = SDL_GetTicks();
-	dijkstra( regionChangeGraph, connectionGraph, start, end );
+	std::vector<Point> pathD = dijkstra( regionChangeGraph, connectionGraph, start, end );
 	endTicksD = SDL_GetTicks();
-	
+
 	uint32_t startTicksA, endTicksA;
 	startTicksA = SDL_GetTicks();
-	std::vector<Point> path = aStar( start, end, 64, 64, 10, 4000 );
+	std::vector<Point> pathA = aStar( start, end, 64, 64, 10, 4000 );
 	endTicksA = SDL_GetTicks();
 	
 	std::cout << "dijkstra init " << (initEnd-initStart) << "ms" << std::endl;
 	std::cout << "dijkstra took " << (endTicksD-startTicksD) << "ms" << std::endl;
 	std::cout << "old A*   took " << (endTicksA-startTicksA) << "ms" << std::endl;
 	
-	/*
-	for ( size_t curWPNr=0; curWPNr<path.size(); ++curWPNr ) {
-		std::cout << "WP " << curWPNr+1 << ": (" << path[curWPNr].x << "," << path[curWPNr].y << ")" << std::endl;
-	}*/
+	std::cout << "dijkstra length " << getPathLength( pathD ) << std::endl;
+	std::cout << "astar    length " << getPathLength( pathA ) << std::endl;	
 	
-	/*
-	for ( size_t curRegionNr=0; curRegionNr<regionDecomposition.size(); ++curRegionNr ) {
-		Region *curRegion = regionDecomposition[ curRegionNr ];
-		std::cout << "freeRegions.push_back( sCollisionMap( " << curRegion->x << ", " << curRegion->y << ", "
-		          << curRegion->h << ", " << curRegion->w << ") );" << std::endl;
-	}
-	std::cout << "total regions generated: " << regionDecomposition.size() << std::endl;
-
-	// look for regions that could be put together
-	std::cout << equalSize << " regions might be combined (at most)" << std::endl;
-	*/
+	std::cout << "path astar" << std::endl;
+	printPath( pathA );
+	std::cout << "path dijkstra" << std::endl;
+	printPath( pathD );
 	
 	return 0;
 }
