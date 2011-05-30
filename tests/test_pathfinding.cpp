@@ -440,6 +440,50 @@ std::vector<Point> pathfind_dijkstra( std::vector<RegionChangeNode*> &regionChan
 	return foundPath;
 }
 
+class TemporaryGraphNode
+{
+  private:
+	Region *temporaryRegion;
+	GraphNode *temporaryRegionNode;
+	RegionChange *temporaryChange;
+  public:
+	RegionChangeNode *temporaryChangeNode;
+
+	TemporaryGraphNode( Point nodePos, GraphNode *containingRegion )
+	{
+		// mark all openings as unvisited
+		for ( size_t curOpeningNr=0; curOpeningNr<containingRegion->openings.size(); ++curOpeningNr ) {
+			containingRegion->openings[ curOpeningNr ]->changeNode->visited = false;
+		}
+		temporaryRegion = new Region( nodePos.x, nodePos.y, 0, 0 );
+		temporaryRegionNode = new GraphNode( temporaryRegion );
+		temporaryChange = new RegionChange( true, nodePos.x, 0, nodePos.y, temporaryRegionNode, containingRegion );
+		temporaryRegionNode->addOpening( temporaryChange );
+		temporaryChangeNode = new RegionChangeNode( temporaryChange );
+		temporaryChangeNode->addAllNeighboursViaRegion( containingRegion );
+	}
+	
+	~TemporaryGraphNode()
+	{
+		for ( size_t curRegionChangeEdgeNr=0; curRegionChangeEdgeNr<temporaryChangeNode->neighbourChanges.size(); ++curRegionChangeEdgeNr ) {
+			RegionChangeEdge *curEdge = temporaryChangeNode->neighbourChanges[ curRegionChangeEdgeNr ];
+			RegionChangeNode *otherEnd = curEdge->otherEnd( temporaryChangeNode );
+			for ( size_t curChangeNr=0; curChangeNr < otherEnd->neighbourChanges.size(); ++curChangeNr ) {
+				if ( otherEnd->neighbourChanges[curChangeNr] == curEdge ) {
+					otherEnd->neighbourChanges[curChangeNr] = otherEnd->neighbourChanges[ otherEnd->neighbourChanges.size() ];
+					break;
+				}
+			}
+			delete curEdge;
+		}
+		
+		delete temporaryChangeNode;
+		delete temporaryChange;
+		delete temporaryRegionNode;
+		delete temporaryRegion;
+	}
+};
+
 std::vector<Point> dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, std::vector<GraphNode*> &connectionGraph, Point &start, Point &end )
 {
 	// find region containing start and end
@@ -486,62 +530,16 @@ std::vector<Point> dijkstra( std::vector<RegionChangeNode*> &regionChangeGraph, 
 	for ( size_t curNodeNr=0; curNodeNr<regionChangeGraph.size(); ++curNodeNr ) {
 		regionChangeGraph[curNodeNr]->visited = false;
 	}
-	Region *virtualStartRegion = new Region( start.x, start.y, 1, 1 );
-	Region *virtualEndRegion = new Region( end.x, end.y, 1, 1 );
-	GraphNode *startRegionNode = new GraphNode( virtualStartRegion );
-	GraphNode *endRegionNode = new GraphNode( virtualEndRegion );
-	RegionChange *startChange = new RegionChange( true, start.x, 1, start.y, startRegionNode, startRegion );
-	startRegionNode->addOpening( startChange );
-	RegionChange *endChange = new RegionChange( true, end.x, 1, end.y, endRegionNode, endRegion );
-	endRegionNode->addOpening( endChange );
-	RegionChangeNode *startNode = new RegionChangeNode( startChange );
-	startNode->addAllNeighboursViaRegion( startRegion );
-	RegionChangeNode *endNode = new RegionChangeNode( endChange );
-	endNode->addAllNeighboursViaRegion( endRegion );
+	
+	TemporaryGraphNode startGraphNode( start, startRegion );
+	TemporaryGraphNode endGraphNode( end, endRegion );
 	
 	std::cout << "start node is in region (" << startRegion->region->x << ", " << startRegion->region->y << ") - ("
 			  << startRegion->region->x+startRegion->region->w << ", " << startRegion->region->y+startRegion->region->h << ")" << std::endl;
 	std::cout << "end node is in region (" << endRegion->region->x << ", " << endRegion->region->y << ") - ("
 			  << endRegion->region->x+endRegion->region->w << ", " << endRegion->region->y+endRegion->region->h << ")" << std::endl;
-	std::cout << "startNode: " << *startNode << std::endl;
-	std::cout << "endNode: " << *endNode << std::endl;
 	
-	std::vector<Point> path = pathfind_dijkstra( regionChangeGraph, startNode, endNode );
-
-	// return temporary nodes from graph
-	for ( size_t curRegionChangeEdgeNr=0; curRegionChangeEdgeNr<startNode->neighbourChanges.size(); ++curRegionChangeEdgeNr ) {
-		RegionChangeEdge *curEdge = startNode->neighbourChanges[ curRegionChangeEdgeNr ];
-		RegionChangeNode *otherEnd = curEdge->otherEnd( startNode );
-		for ( size_t curChangeNr=0; curChangeNr < otherEnd->neighbourChanges.size(); ++curChangeNr ) {
-			if ( otherEnd->neighbourChanges[curChangeNr] == curEdge ) {
-				otherEnd->neighbourChanges[curChangeNr] = otherEnd->neighbourChanges[ otherEnd->neighbourChanges.size() ];
-				break;
-			}
-		}
-		delete curEdge;
-	}
-	for ( size_t curRegionChangeEdgeNr=0; curRegionChangeEdgeNr<endNode->neighbourChanges.size(); ++curRegionChangeEdgeNr ) {
-		RegionChangeEdge *curEdge = endNode->neighbourChanges[ curRegionChangeEdgeNr ];
-		RegionChangeNode *otherEnd = curEdge->otherEnd( endNode );
-		for ( size_t curChangeNr=0; curChangeNr < otherEnd->neighbourChanges.size(); ++curChangeNr ) {
-			if ( otherEnd->neighbourChanges[curChangeNr] == curEdge ) {
-				otherEnd->neighbourChanges[curChangeNr] = otherEnd->neighbourChanges[ otherEnd->neighbourChanges.size() ];
-				break;
-			}
-		}
-		delete curEdge;
-	}
-	
-	delete startNode;
-	delete startChange;
-	delete startRegionNode;
-	delete virtualStartRegion;
-	delete endNode;
-	delete endChange;
-	delete endRegionNode;
-	delete virtualEndRegion;
-	
-	return path;
+	return pathfind_dijkstra( regionChangeGraph, startGraphNode.temporaryChangeNode, endGraphNode.temporaryChangeNode );
 }
 
 double getPathLength( const std::vector<Point> &path )
