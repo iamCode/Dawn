@@ -34,6 +34,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = dawn-rpg$(EXEEXT) $(am__EXEEXT_1)
+
+# if configure is run with --with-testsuite we also need to build the testsuite program
 @TESTSUITE_TRUE@am__append_1 = testsuite
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
@@ -82,8 +84,6 @@ am__testsuite_SOURCES_DIST = tests/testsuite.cpp tests/testsuite.h
 @TESTSUITE_TRUE@am_testsuite_OBJECTS = testsuite.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_LDADD = $(LDADD)
-testsuite_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	$(testsuite_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -229,7 +229,6 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/GLee -I/usr/include/freetype2 -I/usr/include/GL -I/usr/include/lua5.1
 @TESTSUITE_TRUE@testsuite_SOURCES = tests/testsuite.cpp tests/testsuite.h
-@TESTSUITE_TRUE@testsuite_LDFLAGS = 
 
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
@@ -441,7 +440,7 @@ dawn-rpg$(EXEEXT): $(dawn_rpg_OBJECTS) $(dawn_rpg_DEPENDENCIES)
 	$(CXXLINK) $(dawn_rpg_OBJECTS) $(dawn_rpg_LDADD) $(LIBS)
 testsuite$(EXEEXT): $(testsuite_OBJECTS) $(testsuite_DEPENDENCIES) 
 	@rm -f testsuite$(EXEEXT)
-	$(testsuite_LINK) $(testsuite_OBJECTS) $(testsuite_LDADD) $(LIBS)
+	$(CXXLINK) $(testsuite_OBJECTS) $(testsuite_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

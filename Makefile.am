@@ -9,8 +9,8 @@ bin_PROGRAMS = dawn-rpg
 
 # if configure is run with --with-testsuite we also need to build the testsuite program
 if TESTSUITE
-	bin_PROGRAMS += testsuite
-	testsuite_SOURCES = tests/testsuite.cpp tests/testsuite.h
+    bin_PROGRAMS += testsuite
+    testsuite_SOURCES = tests/testsuite.cpp tests/testsuite.h
 endif
 
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
