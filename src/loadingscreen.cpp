@@ -34,6 +34,7 @@ LoadingScreen::LoadingScreen()
 	font = FontCache::getFontFromCache("data/verdana.ttf", 20);
 	backgroundTexture = new CTexture();
 	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/SilverForest.tga", 0 );
+	backgroundTexture->LoadIMG( "data/interface/LoadingScreen/BelemarMountains.tga", 1 );
 	progressTexture = new CTexture();
 	progressTexture->LoadIMG( "data/lifebar.tga", 0 );
 
