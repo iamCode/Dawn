@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ([2.64])
-AC_INIT([dawn], [0.0.43], [dawn-rpg-bugreports@lists.sourceforge.net])
+AC_INIT([dawn], [0.0.46], [dawn-rpg-bugreports@lists.sourceforge.net])
 AM_INIT_AUTOMAKE
 
 # Checks for programs.
@@ -82,6 +82,14 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([atexit floor memset pow putenv sqrt strcspn strspn])
+
+# Handles --with-testsuite flag
+AC_ARG_WITH([testsuite],
+	AC_HELP_STRING([--with-testsuite], [Adds support for the testsuite and compiles it]))
+
+AS_IF([test "x$with_testsuite" = "xyes"],
+	[AC_DEFINE([TESTINTERFACE])])
+AM_CONDITIONAL([TESTSUITE], [test "x$with_testsuite" = "xyes"])
 
 AC_OUTPUT(Makefile)
 

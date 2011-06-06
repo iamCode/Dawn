@@ -33,7 +33,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = dawn-rpg$(EXEEXT)
+bin_PROGRAMS = dawn-rpg$(EXEEXT) $(am__EXEEXT_1)
+@TESTSUITE_TRUE@am__append_1 = testsuite
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure depcomp \
@@ -47,6 +48,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+@TESTSUITE_TRUE@am__EXEEXT_1 = testsuite$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(dawndatadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
@@ -69,12 +71,19 @@ am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
 	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
 	Quest.$(OBJEXT) questwindow.$(OBJEXT) random.$(OBJEXT) \
 	resolution.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
-	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) textwindow.$(OBJEXT) \
-	tileset.$(OBJEXT) tooltip.$(OBJEXT) utils.$(OBJEXT) \
-	GLee.$(OBJEXT) pnglite.$(OBJEXT) EventClass.$(OBJEXT) \
-	MutexClass.$(OBJEXT) Thread.$(OBJEXT)
+	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) \
+	TestInterface.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
+	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
+	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
+	Thread.$(OBJEXT)
 dawn_rpg_OBJECTS = $(am_dawn_rpg_OBJECTS)
 dawn_rpg_LDADD = $(LDADD)
+am__testsuite_SOURCES_DIST = tests/testsuite.cpp tests/testsuite.h
+@TESTSUITE_TRUE@am_testsuite_OBJECTS = testsuite.$(OBJEXT)
+testsuite_OBJECTS = $(am_testsuite_OBJECTS)
+testsuite_LDADD = $(LDADD)
+testsuite_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(testsuite_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -88,8 +97,8 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(dawn_rpg_SOURCES)
-DIST_SOURCES = $(dawn_rpg_SOURCES)
+SOURCES = $(dawn_rpg_SOURCES) $(testsuite_SOURCES)
+DIST_SOURCES = $(dawn_rpg_SOURCES) $(am__testsuite_SOURCES_DIST)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -219,6 +228,9 @@ top_srcdir = @top_srcdir@
 # do not check for files README, TODO, etc
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/GLee -I/usr/include/freetype2 -I/usr/include/GL -I/usr/include/lua5.1
+@TESTSUITE_TRUE@testsuite_SOURCES = tests/testsuite.cpp tests/testsuite.h
+@TESTSUITE_TRUE@testsuite_LDFLAGS = 
+
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
 dawn_rpg_SOURCES = src/a_star.cpp \
@@ -325,6 +337,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/stats.h \
 	src/StatsSystem.cpp \
 	src/StatsSystem.h \
+	src/TestInterface.cpp \
+	src/TestInterface.h \
 	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
@@ -425,6 +439,9 @@ clean-binPROGRAMS:
 dawn-rpg$(EXEEXT): $(dawn_rpg_OBJECTS) $(dawn_rpg_DEPENDENCIES) 
 	@rm -f dawn-rpg$(EXEEXT)
 	$(CXXLINK) $(dawn_rpg_OBJECTS) $(dawn_rpg_LDADD) $(LIBS)
+testsuite$(EXEEXT): $(testsuite_OBJECTS) $(testsuite_DEPENDENCIES) 
+	@rm -f testsuite$(EXEEXT)
+	$(testsuite_LINK) $(testsuite_OBJECTS) $(testsuite_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -463,6 +480,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Quest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StatsSystem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestInterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a_star.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callindirection.Po@am__quote@
@@ -487,6 +505,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resolution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testsuite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tileset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tooltip.Po@am__quote@
@@ -1234,6 +1253,20 @@ StatsSystem.obj: src/StatsSystem.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StatsSystem.obj `if test -f 'src/StatsSystem.cpp'; then $(CYGPATH_W) 'src/StatsSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/src/StatsSystem.cpp'; fi`
 
+TestInterface.o: src/TestInterface.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TestInterface.o -MD -MP -MF $(DEPDIR)/TestInterface.Tpo -c -o TestInterface.o `test -f 'src/TestInterface.cpp' || echo '$(srcdir)/'`src/TestInterface.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/TestInterface.Tpo $(DEPDIR)/TestInterface.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/TestInterface.cpp' object='TestInterface.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestInterface.o `test -f 'src/TestInterface.cpp' || echo '$(srcdir)/'`src/TestInterface.cpp
+
+TestInterface.obj: src/TestInterface.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TestInterface.obj -MD -MP -MF $(DEPDIR)/TestInterface.Tpo -c -o TestInterface.obj `if test -f 'src/TestInterface.cpp'; then $(CYGPATH_W) 'src/TestInterface.cpp'; else $(CYGPATH_W) '$(srcdir)/src/TestInterface.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/TestInterface.Tpo $(DEPDIR)/TestInterface.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/TestInterface.cpp' object='TestInterface.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestInterface.obj `if test -f 'src/TestInterface.cpp'; then $(CYGPATH_W) 'src/TestInterface.cpp'; else $(CYGPATH_W) '$(srcdir)/src/TestInterface.cpp'; fi`
+
 textwindow.o: src/textwindow.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT textwindow.o -MD -MP -MF $(DEPDIR)/textwindow.Tpo -c -o textwindow.o `test -f 'src/textwindow.cpp' || echo '$(srcdir)/'`src/textwindow.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/textwindow.Tpo $(DEPDIR)/textwindow.Po
@@ -1345,6 +1378,20 @@ Thread.obj: src/threadObject/Thread.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/threadObject/Thread.cpp' object='Thread.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Thread.obj `if test -f 'src/threadObject/Thread.cpp'; then $(CYGPATH_W) 'src/threadObject/Thread.cpp'; else $(CYGPATH_W) '$(srcdir)/src/threadObject/Thread.cpp'; fi`
+
+testsuite.o: tests/testsuite.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT testsuite.o -MD -MP -MF $(DEPDIR)/testsuite.Tpo -c -o testsuite.o `test -f 'tests/testsuite.cpp' || echo '$(srcdir)/'`tests/testsuite.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/testsuite.Tpo $(DEPDIR)/testsuite.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/testsuite.cpp' object='testsuite.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o testsuite.o `test -f 'tests/testsuite.cpp' || echo '$(srcdir)/'`tests/testsuite.cpp
+
+testsuite.obj: tests/testsuite.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT testsuite.obj -MD -MP -MF $(DEPDIR)/testsuite.Tpo -c -o testsuite.obj `if test -f 'tests/testsuite.cpp'; then $(CYGPATH_W) 'tests/testsuite.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/testsuite.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/testsuite.Tpo $(DEPDIR)/testsuite.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/testsuite.cpp' object='testsuite.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o testsuite.obj `if test -f 'tests/testsuite.cpp'; then $(CYGPATH_W) 'tests/testsuite.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/testsuite.cpp'; fi`
 install-dawndataDATA: $(dawndata_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(dawndatadir)" || $(MKDIR_P) "$(DESTDIR)$(dawndatadir)"

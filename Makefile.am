@@ -6,8 +6,17 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/threadObject -I$(top_srcdir)/
 
 
 bin_PROGRAMS = dawn-rpg
+
+# if configure is run with --with-testsuite we also need to build the testsuite program
+if TESTSUITE
+	bin_PROGRAMS += testsuite
+	testsuite_SOURCES = tests/testsuite.cpp tests/testsuite.h
+endif
+
 #todo: Data should be installed in $(pkgdatadir) which is .../share/dawn
 dawndatadir = $(bindir)/data
+
+
 dawn_rpg_SOURCES = src/a_star.cpp \
 	src/a_star.h \
 	src/ActionBar.cpp \
@@ -112,6 +121,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/stats.h \
 	src/StatsSystem.cpp \
 	src/StatsSystem.h \
+	src/TestInterface.cpp \
+	src/TestInterface.h \
 	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
