@@ -54,13 +54,19 @@ void TestCase::setResult( int result )
 int main()
 {
 	std::vector<TestCase*> testCases;
+	std::string dawnExecutable;
+	#ifdef _WIN32 // if we're on windows, we try to execute Dawn.exe
+		dawnExecutable = "Dawn.exe";
+	#else 			// and on Linux, ./dawn-rpg
+		dawnExecutable = "./dawn-rpg";
+	#endif
 	
 	testCases.push_back( new TestCase( "StartQuitDawn", "Starts Dawn and then quits.", "tests/start_quit.lua" ) );	
 	testCases.push_back( new TestCase( "SaveLoadGame", "Save a game and then load it", "tests/save_load.lua" ) );		
 	
 	for (int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
 	{	
-		testCases[curTestCase]->setResult( system("./dawn-rpg") );
+		testCases[curTestCase]->setResult( system( dawnExecutable ) );
 	}
 
 	for (int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
