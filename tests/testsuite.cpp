@@ -64,12 +64,12 @@ int main()
 	testCases.push_back( new TestCase( "StartQuitDawn", "Starts Dawn and then quits.", "tests/start_quit.lua" ) );	
 	testCases.push_back( new TestCase( "SaveLoadGame", "Save a game and then load it", "tests/save_load.lua" ) );		
 	
-	for (int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
+	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
 	{	
-		testCases[curTestCase]->setResult( system( dawnExecutable ) );
+		testCases[curTestCase]->setResult( system( dawnExecutable.c_str() ) );
 	}
 
-	for (int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
+	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
 	{
 		std::cout << "Test: " << testCases[curTestCase]->getName() << " ==> ";
 		if ( testCases[curTestCase]->getResult() != 0 ) {
