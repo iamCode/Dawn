@@ -4,7 +4,7 @@ namespace DawnState
 {
 	enum DawnState
 	{
-		NoState,
+	NoState,
         MainMenu,
         ChooseClass,
         LoadingScreen,
@@ -28,12 +28,12 @@ namespace CharacterClass
 namespace TestInterface
 {
 	void quitDawn( int returnValue );
-    DawnState::DawnState getDawnState();
+	DawnState::DawnState getDawnState();
 	void chooseClass( CharacterClass::CharacterClass characterClass );
 	void clickOnNewGame();
-    void saveGame();
-    void loadGame();
-    void getQuest( Quest *quest );
-    void finishQuest( Quest *quest );
+	void saveGame();
+	void loadGame();
+	void getQuest( Quest *quest );
+	void finishQuest( Quest *quest );
 }
 
