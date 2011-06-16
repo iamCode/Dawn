@@ -184,7 +184,7 @@ namespace LuaFunctions
             if ( retcode != 0 ) {
                 // there is some error in the lua code
                 std::cout << "error in lua file: " << lua_tostring(lState, -1) << std::endl;
-                abort();
+                exit(-1);
             }
         }
     #endif /// END OF TESTINTERFACE
