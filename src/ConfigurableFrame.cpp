@@ -27,7 +27,7 @@
 static const size_t usedBlockWidth = 64;
 static const size_t usedBlockHeight = 64;
 
-ConfigurableFrame::ConfigurableFrame(  int contentX, int contentY, int contentWidth, int contentHeight )
+ConfigurableFrame::ConfigurableFrame(  int contentX, int contentY, int contentWidth, int contentHeight, DawnState::DawnState dawnState )
 	: FramesBase( contentX-usedBlockWidth, contentY-usedBlockHeight,
 				  Frames::calculateNeededBlockWidth( contentWidth, usedBlockWidth ) * usedBlockWidth,
 				  Frames::calculateNeededBlockHeight( contentHeight, usedBlockHeight ) * usedBlockHeight, 0, 0 ),
@@ -38,6 +38,7 @@ ConfigurableFrame::ConfigurableFrame(  int contentX, int contentY, int contentWi
 	  centerOnScreen( false )
 {
 	setPosition( contentX, contentY );
+	setFramesDawnState( dawnState );
 }
 
 void ConfigurableFrame::draw( int mouseX, int mouseY )

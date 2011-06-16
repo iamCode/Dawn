@@ -1,0 +1,44 @@
+TESTSUITE:
+
+A testsuite is available for Dawn.
+Some steps are required to add this functionality. Also, you could download the pre-built testsuite at the nightly build repository.
+''' Please note that you do require tolua++5.1 on your system for this. '''
+
+For building it on Linux:
+./configure --with-testsuite
+cd scripts
+sh run_tolua.sh --with-testsuite
+cd ..
+make
+
+For building it on Windows:
+cd scripts
+run_tolua.bat --with-testsuite
+compile dawn with your favorite compiler / IDE.
+You need to pass -DTESTINTERFACE to your compiler.
+compile the testsuite located at tests/testsuite.cpp + h
+
+You can now execute specific tests for dawn running just Dawn.exe or ./dawn-rpg with the --test flag.
+Example:
+./dawn-rpg --test tests/start_quit.lua
+
+or you can execute the testsuite which will run all tests and evaluate the result.
+Execute the testsuite from the dawn root.
+
+---------------------------------------------------
+ -------- TestInterface API ---------
+ TestInterface.getDawnState()
+    Returns the state Dawn is in right now.
+    Check src/DawnState.h DawnState enum for return value. First value in enum is 0.
+    
+ TestInterface.clickOnNewGame()
+    Clicks on the "New Game" button in the main menu.
+    
+ TestInterface.chooseClass( CharacterClass::CharacterClass class )
+    Chooses a class to play as.
+
+ TestInterface.quitDawn( int returnValue )
+    Exits Dawn with a specified return value.
+
+ TestInterface.dawnSleep( int seconds )
+    Sleeps for the specified duration.

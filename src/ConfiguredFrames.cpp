@@ -24,7 +24,7 @@
 #include "Player.h"
 #include "globals.h"
 #include "resolution.h"
-
+#include "TestInterface.h"
 #include "SDL/SDL.h"
 #include <sstream>
 
@@ -64,7 +64,7 @@ class ResolutionSelectionFunction : public SelectionBox::CallbackType
 	{
 		this->resolutions = resolutions;
 	}
-	
+
 	virtual void operator()( int selected )
 	{
 		assert( selected >= 0 && selected < resolutions.size() );
@@ -72,16 +72,16 @@ class ResolutionSelectionFunction : public SelectionBox::CallbackType
 	    uint16_t saveScreenHeight = Configuration::screenHeight;
 	    uint8_t saveBpp = Configuration::bpp;
 		bool saveFullscreen = Configuration::fullscreenenabled;
-		
+
 		Resolution setRes = resolutions[selected];
 		Configuration::screenWidth = setRes.width;
 		Configuration::screenHeight = setRes.height;
 		Configuration::bpp = setRes.bpp;
 		Configuration::fullscreenenabled = setRes.fullscreen;
-		
+
 		// write new configuration so it will take effect on next start
 		Configuration::writeConfigurationToFile();
-		
+
 		Configuration::screenWidth = saveScreenWidth;
 		Configuration::screenHeight = saveScreenHeight;
 		Configuration::bpp = saveBpp;
@@ -136,7 +136,7 @@ void fillOptionsFrame( ConfigurableFrame *optionsFrame )
 	optionsFrameWarningLabel1->setBaseColor( 0.9f, 0.5f, 0.1f, 1.0f );
 	std::auto_ptr<Label> optionsFrameWarningLabel2( new Label( FontCache::getFontFromCache( "data/verdana.ttf", 12 ), "only after restarting Dawn" ));
 	optionsFrameWarningLabel2->setBaseColor( 0.9f, 0.5f, 0.1f, 1.0f );
-	
+
 	std::auto_ptr<SelectionBox> optionsFrameResolutionSelection( new SelectionBox( FontCache::getFontFromCache( "data/verdana.ttf", 20 ), FontCache::getFontFromCache( "data/verdana.ttf", 10 ) ) );
 	optionsFrameResolutionSelection->setBaseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	optionsFrameResolutionSelection->setSelectColor( 1.0f, 1.0f, 0.0f, 1.0f );
@@ -155,14 +155,14 @@ void fillOptionsFrame( ConfigurableFrame *optionsFrame )
 			oss << "W";
 		}
 		resTexts.push_back( oss.str() );
-		
-		if ( curRes.width == Configuration::screenWidth && curRes.height == Configuration::screenHeight 
+
+		if ( curRes.width == Configuration::screenWidth && curRes.height == Configuration::screenHeight
 		     && curRes.bpp == Configuration::bpp && curRes.fullscreen == Configuration::fullscreenenabled ) {
 			selected = curResNr;
 		}
 		dawn_debug_info( "possible resolution: %s", oss.str().c_str() );
 	}
-	
+
 	optionsFrameResolutionSelection->setEntries( resTexts, selected );
 	std::auto_ptr<ResolutionSelectionFunction> resolutionSelectionFunction( new ResolutionSelectionFunction() );
 	resolutionSelectionFunction->setResolutions( possibleResolutions );
@@ -196,6 +196,11 @@ void fillMainMenuFrame( ConfigurableFrame *mainMenuFrame )
 	optionsLabel->setOnClicked( new ToggleFrameFunction( mainMenuFrame, optionsFrame.get() ) );
 	newGameLabel->setOnClicked( new ToggleFrameFunction( mainMenuFrame, chooseClassFrame.get() ) );
 	quitLabel->setOnClicked( new QuitGameFunction() );
+
+    #ifdef TESTINTERFACE  // if we compile with the testinterface, we need to export the newgame and options menu labels.
+        TestInterface::publishChooseClass( newGameLabel.get() );
+        TestInterface::publishOptions( optionsLabel.get() );
+    #endif
 
 	mainMenuFrame->addChildFrame( 0, 0, std::auto_ptr<FramesBase>(quitLabel.release()) );
 	mainMenuFrame->addChildFrame( 0, 10, std::auto_ptr<FramesBase>(optionsLabel.release()) );

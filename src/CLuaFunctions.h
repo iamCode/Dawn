@@ -45,6 +45,12 @@ namespace LuaFunctions
 	/// caution: This works only with the original instances that were put in the lua table. Any copies (new instances)
 	///          created from them will not work so this should only be used with objects that exist only exactly once.
 	std::string getIDFromLuaTable(const std::string &tableName, const void *value );
+
+	#ifdef TESTINTERFACE
+	    lua_State* getGlobalLuaTestState();
+	    void executeLuaTestFile( std::string filename );
+	#endif
+
 } // namespace LuaFunctions
 
 #endif // LUAFUNCTIONS_H

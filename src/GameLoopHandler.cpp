@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "GameLoopHandler.h"
+#include "DawnState.h"
 
 void GameLoopHandler::setDone()
 {
@@ -53,7 +54,6 @@ void MainMenuHandler::drawScene()
 	for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
 		activeFrames[curFrame]->draw( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1 );
 	}
-
 	SDL_GL_SwapBuffers();
 }
 
@@ -131,6 +131,7 @@ void LoadingScreenHandler::activate( SDL_Event *lastEvent )
 	textureFrame = new TextureFrame();
 
 	loadingManager->startBackgroundThread();
+//	DawnState::setDawnState( DawnState::LoadingScreen );
 }
 
 void LoadingScreenHandler::drawScene()
@@ -257,6 +258,7 @@ void GameScreenHandler::activate( SDL_Event *lastEvent )
 
 	GLfloat white[] = { 1.0f, 1.0f, 1.0f };
 	DawnInterface::addTextToLogWindow( white, "Welcome %s to the world of Dawn!", player->getName().c_str() );
+	DawnState::setDawnState( DawnState::InGame );
 }
 
 void GameScreenHandler::handleEvents()

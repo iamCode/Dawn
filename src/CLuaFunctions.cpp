@@ -157,5 +157,37 @@ namespace LuaFunctions
 		return foundKey;
 	}
 
+	#ifdef TESTINTERFACE /// BEGINNING OF TESTINTERFACE
+		static lua_State *globalLuaTestState = NULL;
+
+       	static void cleanupLuaTestState()
+        {
+            if ( globalLuaTestState != NULL ) {
+                lua_close( globalLuaTestState );
+                globalLuaTestState = NULL;
+            }
+	    }
+
+	    lua_State* getGlobalLuaTestState()
+        {
+            if ( globalLuaTestState == NULL ) {
+                globalLuaTestState = createAndInitNewLuaState();
+                atexit( cleanupLuaTestState );
+            }
+            return globalLuaTestState;
+        }
+
+        void executeLuaTestFile( std::string filename )
+        {
+            lua_State *lState = getGlobalLuaTestState();
+            int retcode = luaL_dofile( lState, filename.c_str() );
+            if ( retcode != 0 ) {
+                // there is some error in the lua code
+                std::cout << "error in lua file: " << lua_tostring(lState, -1) << std::endl;
+                abort();
+            }
+        }
+    #endif /// END OF TESTINTERFACE
+
 } // namespace LuaFunctions
 

@@ -16,15 +16,111 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifdef TESTINTERFACE // TESTINTERFACE BEGIN̈́
+#ifdef TESTINTERFACE // TESTINTERFACE BEGIN
 
 #include "TestInterface.h"
+#include "globals.h"
+#include "DawnState.h"
+#include "CLuaFunctions.h"
+
+void deactivateCurrentGameLoopHandler();
 
 namespace TestInterface
 {
-	
-	
-	
+    static Label *testChooseClass;
+    static Label *testOptionsFrame;
+
+    TestRunner::TestRunner( std::string fileToRun )
+        : fileToRun( fileToRun ),
+          started( false )
+    {
+        SetThreadType(ThreadTypeEventDriven);
+    }
+
+    BOOL TestRunner::OnTask()
+    {
+        executeScript();
+	    return true;
+    }
+
+    void TestRunner::executeScript()
+    {
+        LuaFunctions::executeLuaTestFile( fileToRun );
+    }
+
+    TestRunner *testRunner;
+
+    void executeTest( std::string fileToRun )
+    {
+        TestInterface::testRunner = new TestRunner( fileToRun );
+        DawnSleep(1);
+        testRunner->Event();
+    }
+
+    void publishChooseClass( Label *chooseClass )
+    {
+        testChooseClass = chooseClass;
+    }
+
+    void publishOptions( Label *optionsFrame )
+    {
+        testOptionsFrame = optionsFrame;
+    }
+
+    /// begin exported functions
+
+    void dawnSleep( int seconds )
+    {
+        #ifdef _WIN32 // sleep on windows
+            Sleep( seconds * 1000 );
+        #else       // sleep on Linux
+            sleep( seconds );
+        #endif
+    }
+
+    void quitDawn( int returnValue )
+    {
+        exit( returnValue );
+    }
+
+    DawnState::DawnState getDawnState()
+    {
+        return DawnState::getDawnState();
+    }
+
+    void clickOnNewGame()
+    {
+        testChooseClass->execute();
+    }
+
+    void chooseClass( CharacterClass::CharacterClass characterClass )
+    {
+        dawnSleep( 1 ); // sleep for 1 second to allow game to catch up.
+        Globals::getPlayer()->setClass( characterClass );
+        deactivateCurrentGameLoopHandler();
+    }
+
+    void saveGame()
+    {
+
+    }
+
+    void loadGame()
+    {
+
+    }
+
+    void getQuest( Quest *quest )
+    {
+
+    }
+
+    void finishQuest( Quest *quest )
+    {
+
+    }
+
+    /// end exported functions
 }
 
 #endif // TESTINTERFACE END

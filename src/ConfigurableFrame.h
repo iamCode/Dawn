@@ -25,7 +25,7 @@
 class ConfigurableFrame : public FramesBase //, public ControlElement
 {
 	public:
-		ConfigurableFrame( int contentX, int contentY, int contentWidth, int contentHeight );
+		ConfigurableFrame( int contentX, int contentY, int contentWidth, int contentHeight, DawnState::DawnState dawnState );
 		virtual void draw( int mouseX, int mouseY );
 		virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
 

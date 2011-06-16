@@ -27,7 +27,8 @@ FramesBase::FramesBase()
     :   visible( false ),
         moveableFrame( false),
         closeButton( false ),
-        movingFrame( false )
+        movingFrame( false ),
+        framesDawnState( DawnState::NoState )
 {
 }
 
@@ -41,10 +42,12 @@ FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint
         visible( false ),
         moveableFrame( false),
         closeButton( false ),
-        movingFrame( false )
+        movingFrame( false ),
+        framesDawnState( DawnState::NoState )
 {
-	if ( posY + frameHeight + frameOffsetY > Configuration::screenHeight )
-		posY = Configuration::screenHeight - frameHeight - frameOffsetY;
+	if ( posY + frameHeight + frameOffsetY > Configuration::screenHeight ) {
+        posY = Configuration::screenHeight - frameHeight - frameOffsetY;
+	}
 }
 
 FramesBase::~FramesBase()
@@ -184,6 +187,10 @@ bool FramesBase::isVisible() const
 
 void FramesBase::setVisible( bool visible )
 {
+    // Activate the frames dawnstate, only if we have set the frame visible and it's state is
+    if ( visible == true && framesDawnState != DawnState::NoState ) {
+        DawnState::setDawnState( framesDawnState );
+    }
     this->visible = visible;
 }
 
@@ -233,6 +240,11 @@ void FramesBase::addToParent( int posOffsetX, int posOffsetY, FramesBase *parent
 {
 	this->parentFrame = parent;
 	setPosition( posOffsetX, posOffsetY );
+}
+
+void FramesBase::setFramesDawnState( DawnState::DawnState framesDawnState )
+{
+    this->framesDawnState = framesDawnState;
 }
 
 void FramesBase::addChildFrame( int posOffsetX, int posOffsetY, std::auto_ptr<FramesBase> newChild )

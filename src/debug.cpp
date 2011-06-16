@@ -105,7 +105,7 @@ void dawn_debug_info(const std::string& message ...)
 	std::va_list ap;
 
 	va_start(ap, message);
-		debug_args(message.c_str(), ap, DEBUG_INFO);
+		//debug_args(message.c_str(), ap, DEBUG_INFO);
 	va_end(ap);
 	debugOutputTime += SDL_GetTicks()-debugStartTime;
 }
@@ -116,7 +116,7 @@ void dawn_debug_warn(const std::string& message ...)
 	std::va_list ap;
 
 	va_start(ap, message);
-		debug_args(message.c_str(), ap, DEBUG_WARN);
+		//debug_args(message.c_str(), ap, DEBUG_WARN);
 	va_end(ap);
 	debugOutputTime += SDL_GetTicks()-debugStartTime;
 }

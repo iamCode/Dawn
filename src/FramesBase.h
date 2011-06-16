@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include "DawnState.h"
 
 class FramesBase
 {
@@ -58,9 +59,11 @@ class FramesBase
 
     protected:
 		void addToParent( int posOffsetX, int posOffestY, FramesBase *parent );
+		void setFramesDawnState( DawnState::DawnState framesDawnState );
 		std::vector<FramesBase*> getChildFrames();
 
         bool visible;
+        DawnState::DawnState framesDawnState;
 
         int16_t posX;
 		int16_t posY;

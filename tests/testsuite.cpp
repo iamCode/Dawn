@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "testsuite.h" 
+#include "testsuite.h"
 #include <vector>
 #include <stdlib.h>
 
@@ -46,7 +46,7 @@ int TestCase::getResult() const
 	return result;
 }
 
-void TestCase::setResult( int result ) 
+void TestCase::setResult( int result )
 {
 	this->result = result;
 }
@@ -56,17 +56,18 @@ int main()
 	std::vector<TestCase*> testCases;
 	std::string dawnExecutable;
 	#ifdef _WIN32 // if we're on windows, we try to execute Dawn.exe
-		dawnExecutable = "Dawn.exe";
+		dawnExecutable = "Dawn.exe --test ";
 	#else 			// and on Linux, ./dawn-rpg
-		dawnExecutable = "./dawn-rpg";
+		dawnExecutable = "./dawn-rpg --test ";
 	#endif
-	
-	testCases.push_back( new TestCase( "StartQuitDawn", "Starts Dawn and then quits.", "tests/start_quit.lua" ) );	
-	testCases.push_back( new TestCase( "SaveLoadGame", "Save a game and then load it", "tests/save_load.lua" ) );		
-	
+
+	testCases.push_back( new TestCase( "StartQuitDawn", "Starts Dawn and then quits.", "tests/start_quit.lua" ) );
+	testCases.push_back( new TestCase( "SaveLoadGame", "Save a game and then load it", "tests/save_load.lua" ) );
+
 	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
-	{	
-		testCases[curTestCase]->setResult( system( dawnExecutable.c_str() ) );
+	{
+	    std::string testToRun( dawnExecutable + testCases[ curTestCase ]->getLUAfile() );
+		testCases[curTestCase]->setResult( system( testToRun.c_str() ) );
 	}
 
 	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
@@ -87,6 +88,7 @@ int main()
 
 /** TODO:
 	* Add subtests to testcases.
-	* Start specific tests using commandline argument. like `./testsuite --all` or `./testsuite --StartQuitDawn --SaveLoadGame --allSpells` 
+	* Start specific tests using commandline argument. like `./testsuite --all` or `./testsuite --StartQuitDawn --SaveLoadGame --allSpells`
 		and then all those testcases would be loaded in to the vector.
+    * Add XML format output (jUnit/xUnit) for parsing in Jenkins.
 **/

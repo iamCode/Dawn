@@ -67,6 +67,7 @@
 #include "ConfiguredFrames.h"
 #include "resolution.h"
 #include "TestInterface.h"
+#include "LoadingManager.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.
@@ -111,9 +112,9 @@ std::auto_ptr<QuestWindow> questWindow;
 std::auto_ptr<OptionsWindow> optionsWindow;
 std::auto_ptr<Shop> shopWindow;
 std::auto_ptr<LogWindow> logWindow;
-std::auto_ptr<ConfigurableFrame> optionsFrame( new ConfigurableFrame( 100, 100, 100, 100 ) );
-std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
-std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0 ) );
+std::auto_ptr<ConfigurableFrame> optionsFrame( new ConfigurableFrame( 100, 100, 100, 100, DawnState::OptionsMenu ) );
+std::auto_ptr<ConfigurableFrame> mainMenuFrame( new ConfigurableFrame( 100, 100, 0, 0, DawnState::MainMenu ) );
+std::auto_ptr<ConfigurableFrame> chooseClassFrame( new ConfigurableFrame( 100, 100, 0, 0, DawnState::ChooseClass ) );
 std::auto_ptr<LoadingScreen> loadingScreen;
 
 std::auto_ptr<GameLoopHandler> mainMenuHandler( new MainMenuHandler() );
@@ -147,6 +148,11 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 			Configuration::fullscreenenabled = false;
 		} else if (currentarg == "--nosound" ) {
 			Configuration::soundenabled = false;
+        #ifdef TESTINTERFACE
+        } else if (currentarg == "-T" || currentarg == "--test") {
+            TestInterface::executeTest( argv[i+1] );
+            i++;
+        #endif
 		} else if (currentarg == "-h" || currentarg == "--help") {
 			std::cout << "Dawn-RPG Startup Parameters" <<
 			          std::endl << std::endl <<
@@ -157,6 +163,10 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 			          " --nosound                Run Dawn without sound" <<
 			          std::endl <<
 			          " -h, --help               Show this help screen" <<
+			          #ifdef TESTINTERFACE
+                          " -T, --test FILE          Run Dawn testcase" <<
+			              std::endl <<
+			          #endif
 			          std::endl;
 			run_game = false;
 		} else {
@@ -204,7 +214,7 @@ namespace DawnInterface
 
 void deactivateCurrentGameLoopHandler()
 {
-	currentGameLoopHandler->setDone();
+    currentGameLoopHandler->setDone();
 }
 
 void DrawScene()
@@ -390,25 +400,25 @@ bool dawn_init(int argc, char** argv)
 			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
 
 		atexit(SDL_Quit);
-		
+
 		dawn_debug_info("checking configured and possible resolutions");
 		Resolution configResolution(Configuration::screenWidth,
 									Configuration::screenHeight,
 									Configuration::bpp,
 									Configuration::fullscreenenabled);
-		
+
 		bool configResolutionWorks = Resolution::checkResolution( configResolution );
-		
+
 		if ( configResolutionWorks ) {
 			Configuration::addPossibleResolution( configResolution.width, configResolution.height, configResolution.bpp, configResolution.fullscreen );
 		}
-		
+
 		Resolution::scanPossibleResolutions();
-		
+
 		if ( ! configResolutionWorks ) {
 			dawn_debug_warn( "configured resolution does not work. Trying to use another resolution." );
 		    if ( Resolution::getPossibleResolutions().size() == 0 ) {
-				dawn_debug_fatal("no working resolution found!");		        
+				dawn_debug_fatal("no working resolution found!");
 			}
 		    configResolution = Resolution::getBestResolution( Configuration::fullscreenenabled );
 		    Configuration::screenWidth = configResolution.width;
@@ -444,7 +454,7 @@ bool dawn_init(int argc, char** argv)
 		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
 
 		currentGameLoopHandler = mainMenuHandler.get();
-		
+
         /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
 		Frames::initFrameTextures();
 		DrawFunctions::initDrawTextures();
@@ -473,7 +483,7 @@ void game_loop()
 	if ( currentGameLoopHandler != NULL ) {
 		currentGameLoopHandler->activate( &lastEvent );
 	}
-	
+
 	while ( currentGameLoopHandler != NULL ) {
 		currentGameLoopHandler->handleEvents();
 		currentGameLoopHandler->updateScene();
@@ -492,8 +502,6 @@ void game_loop()
 	}
 }
 
-#include "LoadingManager.h"
-
 int main(int argc, char* argv[])
 {
 	// init random number generator
@@ -501,13 +509,13 @@ int main(int argc, char* argv[])
 
 	// load settings
 	LuaFunctions::executeLuaFile("settings.lua");
-	
+
 	if(dawn_init(argc, argv))
 	{
 		std::auto_ptr<GameScreenHandler> gameLoopHandler( new GameScreenHandler() );
 		std::auto_ptr<LoadingScreenHandler> loadingScreenHandler( new LoadingScreenHandler( loadingScreen.get(), new DawnInitObject() ) );
 		loadingScreenHandler->setFollowHandler( gameLoopHandler.get() );
-		nextGameLoopHandler = loadingScreenHandler.get();		
+		nextGameLoopHandler = loadingScreenHandler.get();
 		game_loop();
 	}
 

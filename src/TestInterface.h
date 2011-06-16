@@ -21,11 +21,43 @@
 #ifndef __TESTINTERFACE_H__
 #define __TESTINTERFACE_H__
 
+#include "threadObject/Thread.h"
+#include "CCharacter.h"
+#include "DawnState.h"
+#include "Quest.h"
+#include "ControlElement.h"
 #include <string>
 
 namespace TestInterface
 {
+    class TestRunner : public CThread
+    {
+        public:
+            TestRunner( std::string fileToRun );
+            ~TestRunner();
+            virtual BOOL OnTask();
+            void executeScript();
 
+        private:
+            std::string fileToRun;
+            bool started;
+    };
+
+    void executeTest( std::string fileToRun );
+    void publishChooseClass( Label *chooseClass );
+    void publishOptions( Label *optionsFrame );
+
+    // Specific functions exported to LUA
+    void dawnSleep( int seconds );
+    void quitDawn( int returnValue );
+    DawnState::DawnState getDawnState();
+    void chooseClass( CharacterClass::CharacterClass characterClass );
+    void clickOnNewGame();
+    void saveGame();
+    void loadGame();
+    void getQuest( Quest *quest );
+    void finishQuest( Quest *quest );
+    // end exported functions
 }
 
 

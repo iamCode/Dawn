@@ -60,6 +60,13 @@ void Label::setOnClicked( SimpleFunctionObject* onClickedFunc )
 	this->onClickedFunc = onClickedFunc;
 }
 
+void Label::execute()
+{
+    if ( onClickedFunc != NULL ) {
+        (*onClickedFunc)();
+    }
+}
+
 void Label::draw( int mouseX, int mouseY )
 {
 	if ( font == NULL || text == "" )
@@ -79,15 +86,12 @@ void Label::draw( int mouseX, int mouseY )
 
 void Label::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
-	if ( onClickedFunc != NULL )
-	{
-		if ( mouseX > getPosX() && mouseX < getPosX() + font->calcStringWidth( text )
-				&& mouseY > getPosY() && mouseY < getPosY() + font->getHeight() )
-		{
-			(*onClickedFunc)();
-			return; // true;
-		}
-	}
+    if ( mouseX > getPosX() && mouseX < getPosX() + font->calcStringWidth( text )
+            && mouseY > getPosY() && mouseY < getPosY() + font->getHeight() )
+    {
+        execute();
+        return; // true;
+    }
 	//return false;
 }
 
@@ -177,7 +181,7 @@ void SelectionBox::setSelected( int selected )
 
 	if ( this->selected == selected )
 		return;
-	
+
 	this->selected = selected;
 	if ( onSelectedFunc != NULL ) {
 		(*onSelectedFunc)( selected );
@@ -197,7 +201,7 @@ void SelectionBox::draw( int mouseX, int mouseY )
 		if ( mouseInsideBox ) {
 			glColor4f( selectColorRed, selectColorGreen, selectColorBlue, selectColorAlpha );
 		} else {
-			glColor4f( baseColorRed, baseColorGreen, baseColorBlue, baseColorAlpha );			
+			glColor4f( baseColorRed, baseColorGreen, baseColorBlue, baseColorAlpha );
 		}
 		font->drawText( getPosX(), getPosY(), entries[selected] );
 	}
@@ -220,7 +224,7 @@ void SelectionBox::draw( int mouseX, int mouseY )
 			if ( mouseOverEntry ) {
 				glColor4f( baseColorRed, baseColorGreen, baseColorBlue, baseColorAlpha );
 			}
-			curY -= (selectFont->getHeight()*1.2);			
+			curY -= (selectFont->getHeight()*1.2);
 		}
 	}
 }

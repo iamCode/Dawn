@@ -37,7 +37,7 @@ template <class ArgumentType>
 class SingleArgumentCallback
 {
 	public:
-		virtual void operator()( ArgumentType arg ) = 0;	
+		virtual void operator()( ArgumentType arg ) = 0;
 };
 
 class Label : public FramesBase
@@ -51,6 +51,7 @@ class Label : public FramesBase
 		virtual void draw( int mouseX, int mouseY );
 		virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
 		void setOnClicked( SimpleFunctionObject* onClickedFunc );
+		void execute();
 
 		virtual int getWidth() const;
 		virtual int getHeight() const;
@@ -79,10 +80,10 @@ class SelectionBox : public FramesBase
 
 		virtual void draw( int mouseX, int mouseY );
 		virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
-		
+
 		typedef SingleArgumentCallback<int> CallbackType;
 		void setOnSelected( CallbackType *onSelectedFunc );
-	
+
 		virtual int getWidth() const;
 		virtual int getHeight() const;
 
