@@ -53,7 +53,7 @@ namespace TestInterface
     void executeTest( std::string fileToRun )
     {
         TestInterface::testRunner = new TestRunner( fileToRun );
-        DawnSleep(1);
+        dawnSleep(1);
         testRunner->Event();
     }
 
