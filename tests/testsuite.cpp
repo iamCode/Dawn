@@ -51,7 +51,17 @@ void TestCase::setResult( int result )
 	this->result = result;
 }
 
-int main()
+void handle_arguments( int argc, char *argv[] )
+{
+    for ( int index = 1; index < argc; index++ ) {
+        std::string current_arg( argv[index] );
+        if ( current_arg == "--junit-output" ) {
+            logWithJUnit = true;
+        }
+    }
+}
+
+int main( int argc, char *argv[] )
 {
 	std::vector<TestCase*> testCases;
 	std::string dawnExecutable;
@@ -60,6 +70,12 @@ int main()
 	#else 			// and on Linux, ./dawn-rpg
 		dawnExecutable = "./dawn-rpg --test ";
 	#endif
+
+	handle_arguments( argc, argv );
+
+	if ( logWithJUnit == true ) {
+	    std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><testsuite>" << std::endl;
+	}
 
 	testCases.push_back( new TestCase( "StartQuitDawn", "Starts Dawn and then quits.", "tests/start_quit.lua" ) );
 	testCases.push_back( new TestCase( "SaveLoadGame", "Save a game and then load it", "tests/save_load.lua" ) );
@@ -72,19 +88,39 @@ int main()
 
 	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
 	{
-		std::cout << "Test: " << testCases[curTestCase]->getName() << " ==> ";
-		if ( testCases[curTestCase]->getResult() != 0 ) {
-			std::cout << "FAILED" << std::endl;
-			std::cout << "Description: " << testCases[curTestCase]->getDescription() << std::endl;
+	    if ( logWithJUnit == true ) {
+	        std::cout << "<testcase name=\"" << testCases[curTestCase]->getName() << "\">" << std::endl;
 		} else {
-			std::cout << "OK" << std::endl;
+		    std::cout << "Test: " << testCases[curTestCase]->getName() << " ==> ";
 		}
-		std::cout << std::endl;
+
+		if ( testCases[curTestCase]->getResult() != 0 ) {
+			if ( logWithJUnit == true ) {
+                std::cout << "<result type=\"failure\">" << std::endl
+                << testCases[curTestCase]->getDescription()
+                << "</result>" << std::endl;
+		    } else {
+                std::cout << "FAILED" << std::endl;
+                std::cout << "Description: " << testCases[curTestCase]->getDescription() << std::endl;
+		    }
+		} else {
+			if ( logWithJUnit == false ) {
+			    std::cout << "OK" << std::endl;
+			}
+		}
+		if ( logWithJUnit == true ) {
+	        std::cout << "</testcase>" << std::endl;
+		} else {
+		    std::cout << std::endl;
+		}
+	}
+
+	if ( logWithJUnit == true ) {
+        std::cout << "</testsuite>" << std::endl;
 	}
 
 	return 0;
 }
-
 
 /** TODO:
 	* Add subtests to testcases.
