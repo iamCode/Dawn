@@ -5,6 +5,7 @@
 :: Arguments:
 :: --with-testsuite      including the testsuite interface
 ::
+@echo off
 setlocal ENABLEDELAYEDEXPANSION
 
 cd ..\src\
@@ -19,5 +20,5 @@ IF ""%1""==""--with-testsuite"" (
 
 
 :: Generate the C++ LUA interface
-..\..\tolua++5.1.exe -o CLuaInterfaceGenerated.cpp -H CLuaInterfaceGenerated.H CLuaInterface.pkg
+tolua++5.1.exe -o CLuaInterfaceGenerated.cpp -H CLuaInterfaceGenerated.H CLuaInterface.pkg
 cd ..\scripts
