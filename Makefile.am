@@ -64,6 +64,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/CTexture.h \
 	src/CZone.cpp \
 	src/CZone.h \
+	src/DawnState.h \
+	src/DawnState.cpp \
 	src/debug.cpp \
 	src/debug.h \
 	src/elements.cpp \

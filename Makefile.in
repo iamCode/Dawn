@@ -63,8 +63,8 @@ am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
 	ConfigurableFrame.$(OBJEXT) ConfiguredFrames.$(OBJEXT) \
 	configuration.$(OBJEXT) ControlElement.$(OBJEXT) \
 	CSpell.$(OBJEXT) CTexture.$(OBJEXT) CZone.$(OBJEXT) \
-	debug.$(OBJEXT) elements.$(OBJEXT) Frames.$(OBJEXT) \
-	FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
+	DawnState.$(OBJEXT) debug.$(OBJEXT) elements.$(OBJEXT) \
+	Frames.$(OBJEXT) FramesBase.$(OBJEXT) fontcache.$(OBJEXT) \
 	GameLoopHandler.$(OBJEXT) GLFT_Font.$(OBJEXT) \
 	globals.$(OBJEXT) GroundLoot.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
@@ -279,6 +279,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/CTexture.h \
 	src/CZone.cpp \
 	src/CZone.h \
+	src/DawnState.h \
+	src/DawnState.cpp \
 	src/debug.cpp \
 	src/debug.h \
 	src/elements.cpp \
@@ -465,6 +467,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConfigurableFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConfiguredFrames.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ControlElement.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DawnState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EventClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Frames.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FramesBase.Po@am__quote@
@@ -859,6 +862,20 @@ CZone.obj: src/CZone.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CZone.cpp' object='CZone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CZone.obj `if test -f 'src/CZone.cpp'; then $(CYGPATH_W) 'src/CZone.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CZone.cpp'; fi`
+
+DawnState.o: src/DawnState.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DawnState.o -MD -MP -MF $(DEPDIR)/DawnState.Tpo -c -o DawnState.o `test -f 'src/DawnState.cpp' || echo '$(srcdir)/'`src/DawnState.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/DawnState.Tpo $(DEPDIR)/DawnState.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/DawnState.cpp' object='DawnState.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DawnState.o `test -f 'src/DawnState.cpp' || echo '$(srcdir)/'`src/DawnState.cpp
+
+DawnState.obj: src/DawnState.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DawnState.obj -MD -MP -MF $(DEPDIR)/DawnState.Tpo -c -o DawnState.obj `if test -f 'src/DawnState.cpp'; then $(CYGPATH_W) 'src/DawnState.cpp'; else $(CYGPATH_W) '$(srcdir)/src/DawnState.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/DawnState.Tpo $(DEPDIR)/DawnState.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/DawnState.cpp' object='DawnState.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DawnState.obj `if test -f 'src/DawnState.cpp'; then $(CYGPATH_W) 'src/DawnState.cpp'; else $(CYGPATH_W) '$(srcdir)/src/DawnState.cpp'; fi`
 
 debug.o: src/debug.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT debug.o -MD -MP -MF $(DEPDIR)/debug.Tpo -c -o debug.o `test -f 'src/debug.cpp' || echo '$(srcdir)/'`src/debug.cpp
