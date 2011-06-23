@@ -89,16 +89,16 @@ int main( int argc, char *argv[] )
 	for (unsigned int curTestCase = 0; curTestCase <testCases.size(); curTestCase++)
 	{
 	    if ( logWithJUnit == true ) {
-	        std::cout << "<testcase name=\"" << testCases[curTestCase]->getName() << "\">" << std::endl;
+	        std::cout << "<testcase classname=\"" << testCases[curTestCase]->getName() << "\" name=\"Dawn\">" << std::endl;
 		} else {
 		    std::cout << "Test: " << testCases[curTestCase]->getName() << " ==> ";
 		}
 
 		if ( testCases[curTestCase]->getResult() != 0 ) {
 			if ( logWithJUnit == true ) {
-                std::cout << "<result type=\"failure\">" << std::endl
+                std::cout << "<failure type=\"FAIL\">" << std::endl
                 << testCases[curTestCase]->getDescription()
-                << "</result>" << std::endl;
+                << "</failure>" << std::endl;
 		    } else {
                 std::cout << "FAILED" << std::endl;
                 std::cout << "Description: " << testCases[curTestCase]->getDescription() << std::endl;
