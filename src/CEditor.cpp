@@ -31,6 +31,28 @@
 extern CMessage message;
 extern std::map< std::string, CCharacter* > allMobTypes;
 
+CEditor::CEditor()
+{
+		enabled = false;
+		tilepos_offset = 0;
+		tilepos = 0;
+		current_tilepos = 0;
+		current_object = 0;
+		objectedit_selected = -1;
+		zoneToEdit = NULL;
+		objectDescriptionFont = NULL;
+		keybindingFont = NULL;
+		tinyFont = NULL;
+		adjacencyModeEnabled = false;
+		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
+			curDirectionAdjacencySelection[ curDirection ] = 0;
+		}
+}
+
+CEditor::~CEditor()
+{
+}
+
 namespace DawnInterface {
 	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
 }

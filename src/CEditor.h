@@ -35,29 +35,11 @@ extern int mouseX, mouseY, done;
 class CEditor
 {
 	public:
-		CEditor() {
-			enabled = false;
-			tilepos_offset = 0;
-			tilepos = 0;
-			current_tilepos = 0;
-			current_object = 0;
-			objectedit_selected = -1;
-			zoneToEdit = NULL;
-			objectDescriptionFont = NULL;
-			keybindingFont = NULL;
-			tinyFont = NULL;
-			adjacencyModeEnabled = false;
-			for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
-				curDirectionAdjacencySelection[ curDirection ] = 0;
-			}
-		};
-
-		~CEditor() {
-		}
+		CEditor();
+		~CEditor();
 
 		void initFonts();
 
-		bool KP_toggle_editor;
 		void DrawEditor();
 		void SaveZone();
 		void HandleKeys();
@@ -68,6 +50,8 @@ class CEditor
 		bool isEnabled() const;
 		void setEnabled( bool enabled );
 		void loadNPCs();
+
+		bool KP_toggle_editor;
 
 	private:
 		void inc_tilepos();
