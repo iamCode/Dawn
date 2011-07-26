@@ -60,6 +60,7 @@ Player::Player()
 	:	inventory( Inventory( 10, 4, this ) )
 {
     setName("Enylyn");
+    movementSpeed = 1;
 }
 
 void Player::Draw()
@@ -142,7 +143,7 @@ void Player::Move()
 	int oldX = getXPos();
 	int oldY = getYPos();
 
-	CCharacter::Move();
+	CCharacter::MoveSpecific( movementSpeed );
 
 	dx = getXPos()-oldX;
 	dy = getYPos()-oldY;
@@ -502,4 +503,9 @@ std::string Player::getSaveText() const
 	// no current attributes are set here because after reloading the player is completely refreshed again
 
 	return oss.str();
+}
+
+void Player::setMovementSpeed( uint8_t n )
+{
+	movementSpeed = n;
 }

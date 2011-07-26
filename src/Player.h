@@ -28,6 +28,7 @@ class Player : public CCharacter
 		uint32_t ticketForItemTooltip;
 		uint32_t ticketForSpellTooltip;
 		Inventory inventory;
+		uint8_t movementSpeed;
 
 	public:
 		Player();
@@ -77,6 +78,8 @@ class Player : public CCharacter
 		bool canWearArmorType( Item *item ) const;
 
 		std::string getSaveText() const;
+
+		void setMovementSpeed( uint8_t n );
 };
 
 #endif // __PLAYER_H__

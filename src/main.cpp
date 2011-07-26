@@ -364,7 +364,7 @@ void dawn_init_signal_handlers()
 class DawnInitObject;
 bool threadedMode = false;
 
-extern int64_t numCharactersDrawn;
+//extern int64_t numCharactersDrawn;
 int64_t numTexturesDrawn = 0;
 
 

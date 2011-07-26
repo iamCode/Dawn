@@ -217,10 +217,11 @@ class CCharacter
 
 		virtual void Draw() = 0;
 		virtual void Move() = 0;
-		void MoveUp();
-		void MoveDown();
-		void MoveLeft();
-		void MoveRight();
+		void MoveSpecific( uint8_t n );
+		void MoveUp( uint8_t n );
+		void MoveDown( uint8_t n );
+		void MoveLeft( uint8_t n );
+		void MoveRight( uint8_t n );
 		void giveMovePoints( uint32_t movePoints );
 		void Init(int x, int y) {
 			x_pos = x;

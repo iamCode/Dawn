@@ -350,7 +350,7 @@ void GameScreenHandler::handleEvents()
 					    std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
 					    for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 					        CNPC *curNPC = zoneNPCs[x];
-					        if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) ) {
+					        if ( curNPC->CheckMouseOver(mouseX+world_x,mouseY+world_y) && !actionBar->isPreparingAoESpell() ) {
 					            if ( ! curNPC->getAttitude() == Attitude::FRIENDLY ) {
 					                if( !player->hasTarget( curNPC ) )
 					                    player->setTarget( curNPC, curNPC->getAttitude() );
@@ -638,6 +638,13 @@ void GameScreenHandler::updateScene()
 
 	if (!keys[SDLK_5]) {
 		KP_interrupt = false;
+	}
+
+	if( keys[SDLK_LSHIFT] ) {
+		player->setMovementSpeed( 2 );
+	}
+	else if( !keys[SDLK_LSHIFT] ) {
+		player->setMovementSpeed( 1 );
 	}
 
 	//	if (keys[SDLK_BACKSPACE] && player->getTarget() != NULL) {

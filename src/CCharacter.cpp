@@ -1122,31 +1122,31 @@ int CCharacter::CollisionCheck(Direction direction)
 	return 0;
 }
 
-void CCharacter::MoveUp()
+void CCharacter::MoveUp( uint8_t n )
 {
 	if (CollisionCheck(N) == 0) {
-		y_pos++;
+		y_pos+=n;
 	}
 }
 
-void CCharacter::MoveDown()
+void CCharacter::MoveDown( uint8_t n )
 {
 	if (CollisionCheck(S) == 0) {
-		y_pos--;
+		y_pos-=n;
 	}
 }
 
-void CCharacter::MoveLeft()
+void CCharacter::MoveLeft( uint8_t n )
 {
 	if (CollisionCheck(W) == 0) {
-		x_pos--;
+		x_pos-=n;
 	}
 }
 
-void CCharacter::MoveRight()
+void CCharacter::MoveRight( uint8_t n )
 {
 	if (CollisionCheck(E) == 0) {
-		x_pos++;
+		x_pos+=n;
 	}
 }
 
@@ -1201,32 +1201,116 @@ void CCharacter::Move()
 		remainingMovePoints -= movePerStep;
 		switch ( movingDirection ) {
 			case NW:
-				MoveLeft();
-				MoveUp();
+				MoveLeft( 1 );
+				MoveUp( 1 );
 				break;
 			case N:
-				MoveUp();
+				MoveUp( 1 );
 				break;
 			case NE:
-				MoveRight();
-				MoveUp();
+				MoveRight( 1 );
+				MoveUp( 1 );
 				break;
 			case W:
-				MoveLeft();
+				MoveLeft( 1 );
 				break;
 			case E:
-				MoveRight();
+				MoveRight( 1 );
 				break;
 			case SW:
-				MoveLeft();
-				MoveDown();
+				MoveLeft( 1 );
+				MoveDown( 1 );
 				break;
 			case S:
-				MoveDown();
+				MoveDown( 1 );
 				break;
 			case SE:
-				MoveRight();
-				MoveDown();
+				MoveRight( 1 );
+				MoveDown( 1 );
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+void CCharacter::MoveSpecific( uint8_t n )
+{
+    if ( isStunned() == true || isMesmerized() == true ) {
+        remainingMovePoints = 0;
+        return;
+    }
+
+    if ( isFeared() == false ) {
+        hasChoosenFearDirection = false;
+    }
+
+	continuePreparing();
+	if ( ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
+		if ( ! mayDoAnythingAffectingSpellActionWithAborting() ) {
+			remainingMovePoints = 0;
+			return;
+		}
+	}
+
+	Direction movingDirection = GetDirection();
+	if (( movingDirection != STOP) && ! mayDoAnythingAffectingSpellActionWithoutAborting() ) {
+		CastingAborted();
+	}
+
+	if ( movingDirection != STOP && isChanneling() == true ) {
+        removeSpellsWithCharacterState( CharacterStates::Channeling );
+    }
+
+
+	/// if we are feared (fleeing) we run at a random direction. Only choose a direction once for each fear effect.
+	if ( isFeared() == true ) {
+	    if ( hasChoosenFearDirection == false ) {
+	        fearDirection = static_cast<Direction>( RNG::randomSizeT( 1, 8 ) );
+	        hasChoosenFearDirection = true;
+	    }
+	    movingDirection = fearDirection;
+	}
+
+	unsigned int movePerStep = 10; // moves one step per movePerStep ms
+
+	// To balance moving diagonally boost, movePerStep = 10*sqrt(2)
+	if ( movingDirection == NW || movingDirection == NE || movingDirection == SW || movingDirection == SE )
+		movePerStep = 14;
+
+    // recalculate the movementpoints based on our movementspeed (spells that affect this can be immobolizing spells, snares or movement enhancer
+    remainingMovePoints *= getMovementSpeed();
+
+	while ( remainingMovePoints > movePerStep ) {
+		remainingMovePoints -= movePerStep;
+		switch ( movingDirection ) {
+			case NW:
+				MoveLeft( n );
+				MoveUp( n );
+				break;
+			case N:
+				MoveUp( n );
+				break;
+			case NE:
+				MoveRight( n );
+				MoveUp( n );
+				break;
+			case W:
+				MoveLeft( n );
+				break;
+			case E:
+				MoveRight( n );
+				break;
+			case SW:
+				MoveLeft( n );
+				MoveDown( n );
+				break;
+			case S:
+				MoveDown( n );
+				break;
+			case SE:
+				MoveRight( n );
+				MoveDown( n );
 				break;
 			default:
 				break;

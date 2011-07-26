@@ -534,6 +534,7 @@ void CEditor::HandleKeys()
 					zoneToEdit->cleanupNPCList();
 					objectedit_selected = -1;
 				}
+			break;
 		}
 	}
 
