@@ -22,15 +22,15 @@
 
 namespace DawnState
 {
-    static DawnState state;
+	static DawnState state;
 
-    DawnState::DawnState getDawnState()
-    {
-        return state;
-    }
+	DawnState::DawnState getDawnState()
+	{
+		return state;
+	}
 
-    void setDawnState( DawnState::DawnState state )
-    {
-        DawnState::state = state;
-    }
+	void setDawnState( DawnState::DawnState state )
+	{
+		DawnState::state = state;
+	}
 }

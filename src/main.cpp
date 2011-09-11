@@ -27,9 +27,9 @@
 #include <csignal>
 #include <deque>
 
-#ifdef _WIN32
-	#include <windows.h> // Nothing uses this, perhaps it could be removed?
-#endif
+//#ifdef _WIN32
+//	#include <windows.h> // Nothing uses this, perhaps it could be removed?
+//#endif
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 

@@ -149,12 +149,12 @@ public:
 
 	void processCurTexture()
 	{
-		if ( textureQueue.size() > 0 ) {
+		if( textureQueue.size() > 0 ) {
 			accessMutex.Lock();
 			TextureQueueEntry *curEntry = textureQueue.front();
 			accessMutex.Unlock();
 			dawn_debug_info( "loading texture %s\n", curEntry->textureFile.c_str());
-            curEntry->texture->LoadIMG( curEntry->textureFile, curEntry->textureIndex, true, curEntry->textureOffsetX, curEntry->textureOffsetY );
+			curEntry->texture->LoadIMG( curEntry->textureFile, curEntry->textureIndex, true, curEntry->textureOffsetX, curEntry->textureOffsetY );
 			delete curEntry;
 			accessMutex.Lock();
 			textureQueue.pop_front();
@@ -177,7 +177,7 @@ public:
 	void processCurFont()
 	{
 		accessMutex.Lock();
-		if ( curFont != NULL ) {
+		if( curFont != NULL ) {
 			dawn_debug_info( "loading font %s\n", curFontFile.c_str());
 			threadedMode = false;
 			curFont->open( curFontFile, curFontSize );

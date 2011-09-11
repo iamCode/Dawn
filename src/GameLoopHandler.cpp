@@ -420,14 +420,14 @@ void GameScreenHandler::updateScene()
 	questWindow->tryToPurgeQuests();
 
 	// close and possibly delete closed windows
-	for ( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
+	for( size_t curTextWindowNr=0; curTextWindowNr<allTextWindows.size(); ++curTextWindowNr ) {
 		TextWindow *curTextWindow = allTextWindows[ curTextWindowNr ];
-		if ( curTextWindow->canBeDeleted() == true ) {
-            curTextWindow->close();
-            curTextWindow->toggle();
+		if( curTextWindow->canBeDeleted() == true ) {
+			curTextWindow->close();
+			curTextWindow->toggle();
 
-            delete curTextWindow;
-            allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
+			delete curTextWindow;
+			allTextWindows.erase( allTextWindows.begin() + curTextWindowNr );
 		}
 	}
 
@@ -444,10 +444,10 @@ void GameScreenHandler::updateScene()
 	std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 	for (unsigned int x=0; x<zoneNPCs.size(); x++) {
 		CNPC *curNPC = zoneNPCs[x];
-		if ( curNPC->isAlive() ) {
-				curNPC->giveMovePoints( ticksDiff );
-				curNPC->Move();
-				curNPC->regenerateLifeManaFatigue( ticksDiff );
+		if( curNPC->isAlive() ) {
+		    curNPC->giveMovePoints( ticksDiff );
+		    curNPC->Move();
+		    curNPC->regenerateLifeManaFatigue( ticksDiff );
 		}
 		curNPC->Respawn();
 		curNPC->Wander();
@@ -455,41 +455,41 @@ void GameScreenHandler::updateScene()
 		// check all active spells for inEffects on our NPCs.
 		curNPC->cleanupActiveSpells();
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
-		for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-				activeSpellActions[ curActiveSpellNr ].first->inEffect();
+		for(size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+			activeSpellActions[ curActiveSpellNr ].first->inEffect();
 		}
 	}
 
 	// check all active AoE spells and see they're finished and look for inEffects and process 'em
-	for ( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i) {
+	for( unsigned int i=0; i<Globals::getCurrentZone()->MagicMap.size(); ++i) {
 		Globals::getCurrentZone()->MagicMap[i]->process();
 		Globals::getCurrentZone()->MagicMap[i]->getSpell()->inEffect();
 		Globals::cleanupActiveAoESpells();
 
-		if ( Globals::getCurrentZone()->MagicMap[i]->isDone() )
+		if( Globals::getCurrentZone()->MagicMap[i]->isDone() )
 			Globals::getCurrentZone()->MagicMap.erase(Globals::getCurrentZone()->MagicMap.begin()+i);
 	}
 
 	// making sure our target is still alive, not invisible and still in range while stealthed. if not well set our target to NULL.
 	if (player->getTarget()) {
 		double distance = sqrt( pow((player->getTarget()->getXPos()+player->getTarget()->getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
-											+pow((player->getTarget()->getYPos()+player->getTarget()->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
-		if ( player->getTarget()->isAlive() == false
-			|| ( player->getTarget()->isInvisible() == true && player->canSeeInvisible() == false )
-			|| ( player->getTarget()->isSneaking() == true && distance > 260 && player->canSeeSneaking() == false ) ) {
-				player->setTarget(NULL);
+		                       +pow((player->getTarget()->getYPos()+player->getTarget()->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
+		if( player->getTarget()->isAlive() == false ||
+		  ( player->getTarget()->isInvisible() == true && player->canSeeInvisible() == false ) ||
+		  ( player->getTarget()->isSneaking() == true && distance > 260 && player->canSeeSneaking() == false ) ) {
+			player->setTarget(NULL);
 		}
 	}
 
 	// check all active spells for inEffects on our player.
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
-	for (size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
+	for(size_t curActiveSpellNr=0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
 		activeSpellActions[ curActiveSpellNr ].first->inEffect();
 	}
 	player->cleanupActiveSpells();
 
 	std::vector<InteractionRegion*> interactionRegions = Globals::getCurrentZone()->getInteractionRegions();
-	for ( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
+	for( size_t curInteractionRegionNr=0; curInteractionRegionNr<interactionRegions.size(); ++curInteractionRegionNr ) {
 		InteractionRegion *curInteractionRegion = interactionRegions[ curInteractionRegionNr ];
 		curInteractionRegion->interactWithPlayer( player );
 	}
@@ -499,37 +499,36 @@ void GameScreenHandler::updateScene()
 	Globals::getCurrentZone()->cleanupInteractionRegionList();
 
 	// something more like key handling (should it go to the handleEvents?)
-	if (keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
-			std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
-			for (unsigned int x=0; x<zoneNPCs.size(); x++) {
-					if ( zoneNPCs[x]->isAlive() ) {
-							zoneNPCs[x]->Die();
-					}
-			}
+	if(keys[SDLK_k]) { // kill all NPCs in the zone. testing purposes.
+		std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
+		for(unsigned int x=0; x<zoneNPCs.size(); x++) {
+				if( zoneNPCs[x]->isAlive() )
+					zoneNPCs[x]->Die();
+		}
 	}
 
-	if (lastEvent->key.keysym.sym == SDLK_PRINT && !KP_screenshot) {
-			KP_screenshot = true;
-			utils::takeScreenshot();
+	if(lastEvent->key.keysym.sym == SDLK_PRINT && !KP_screenshot) {
+		KP_screenshot = true;
+		utils::takeScreenshot();
 	}
 
-	if (lastEvent->key.keysym.sym != SDLK_PRINT) {
-			KP_screenshot = false;
+	if(lastEvent->key.keysym.sym != SDLK_PRINT) {
+		KP_screenshot = false;
 	}
 
-	if (keys[SDLK_l] && !Editor.KP_toggle_editor) {
-			Editor.setEditZone( Globals::getCurrentZone() );
-			LuaFunctions::executeLuaFile( "data/tileAdjacency.lua" );
-			Editor.setEnabled( true );
-			Editor.initFocus( &focus );
-			Editor.KP_toggle_editor = true;
+	if(keys[SDLK_l] && !Editor.KP_toggle_editor) {
+		Editor.setEditZone( Globals::getCurrentZone() );
+		LuaFunctions::executeLuaFile( "data/tileAdjacency.lua" );
+		Editor.setEnabled( true );
+		Editor.initFocus( &focus );
+		Editor.KP_toggle_editor = true;
 	}
 
-	if (!keys[SDLK_l]) {
-			Editor.KP_toggle_editor = false;
+	if(!keys[SDLK_l]) {
+		Editor.KP_toggle_editor = false;
 	}
 
-	if (keys[SDLK_TAB] && !KP_select_next) {
+	if(keys[SDLK_TAB] && !KP_select_next) {
 		KP_select_next = true;
 		bool FoundNewTarget = false;
 		std::vector <CNPC*> NPClist;
@@ -541,23 +540,23 @@ void GameScreenHandler::updateScene()
 			// also makes sure the NPC isn't invisible or sneaking outside of our vision range.
 			CNPC *curNPC = zoneNPCs[curNPCNr];
 			double distance = sqrt( pow((curNPC->getXPos()+curNPC->getWidth()/2) - (player->getXPos()+player->getWidth()/2),2)
-									 +pow((curNPC->getYPos()+curNPC->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
+			                       +pow((curNPC->getYPos()+curNPC->getHeight()/2) - (player->getYPos()+player->getHeight()/2),2) );
 
-			if ( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 )
-					&& curNPC->isAlive()
-					&& ( curNPC->isInvisible() == false || ( curNPC->isInvisible() == true && player->canSeeInvisible() == true ) )
-					&& ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && ( distance < 260 || player->canSeeSneaking() == true ) ) ) ) {
-				NPClist.push_back(curNPC);
+			if( DrawingHelpers::isRectOnScreen( curNPC->x_pos, 1, curNPC->y_pos, 1 ) &&
+			                                    curNPC->isAlive() &&
+			                                    ( curNPC->isInvisible() == false || ( curNPC->isInvisible() == true && player->canSeeInvisible() == true ) ) &&
+			                                    ( curNPC->isSneaking() == false || ( curNPC->isSneaking() == true && ( distance < 260 || player->canSeeSneaking() == true ) ) ) ) {
+			NPClist.push_back(curNPC);
 			}
 		}
 		// selects next target in the list, if target = NULL, set target to first NPC on the visible list.
-		for ( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
-			if (!player->getTarget()) {
+		for( size_t curNPC = 0; curNPC < NPClist.size(); ++curNPC ) {
+			if(!player->getTarget()) {
 				player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 			}
 
-			if ( player->getTarget() == NPClist[curNPC] ) {
-				if ( curNPC+1 == NPClist.size() ) {
+			if( player->getTarget() == NPClist[curNPC] ) {
+				if( curNPC+1 == NPClist.size() ) {
 					player->setTarget(NPClist[0], NPClist[0]->getAttitude());
 				} else {
 					player->setTarget(NPClist[curNPC+1], NPClist[curNPC+1]->getAttitude());
@@ -572,71 +571,71 @@ void GameScreenHandler::updateScene()
 		}
 	}
 
-	if (keys[TOOLTIP_KEY]) {
+	if(keys[TOOLTIP_KEY]) {
 		Globals::getCurrentZone()->getGroundLoot()->enableTooltips();
 	}
 
-	if (!keys[TOOLTIP_KEY]) {
+	if(!keys[TOOLTIP_KEY]) {
 		Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
 	}
 
-	if (!keys[SDLK_TAB]) {
+	if(!keys[SDLK_TAB]) {
 		KP_select_next = false;
 	}
 
-	if (keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
+	if(keys[SDLK_ESCAPE] && !KP_toggle_showOptionsWindow ) {
 		KP_toggle_showOptionsWindow = true;
 		optionsWindow->toggle();
 	}
 
-	if ( !keys[SDLK_ESCAPE] ) {
+	if( !keys[SDLK_ESCAPE] ) {
 		KP_toggle_showOptionsWindow = false;
 	}
 
-	if ( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
+	if( keys[SDLK_c] && !KP_toggle_showCharacterInfo ) {
 		KP_toggle_showCharacterInfo = true;
 		characterInfoScreen->toggle();
 	}
 
-	if ( !keys[SDLK_c] ) {
+	if( !keys[SDLK_c] ) {
 		KP_toggle_showCharacterInfo = false;
 	}
 
-	if ( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
+	if( keys[SDLK_b] && !KP_toggle_showSpellbook ) {
 		KP_toggle_showSpellbook = true;
 		spellbook->toggle();
 	}
 
-	if ( !keys[SDLK_b] ) {
+	if( !keys[SDLK_b] ) {
 		KP_toggle_showSpellbook = false;
 	}
 
-	if ( keys[SDLK_i] && !KP_toggle_showInventory ) {
+	if( keys[SDLK_i] && !KP_toggle_showInventory ) {
 		KP_toggle_showInventory = true;
 		inventoryScreen->toggle();
 	}
 
-	if ( !keys[SDLK_i] ) {
+	if( !keys[SDLK_i] ) {
 		KP_toggle_showInventory = false;
 	}
 
-	if ( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
+	if( keys[SDLK_q] && !KP_toggle_showQuestWindow ) {
 		KP_toggle_showQuestWindow = true;
 		questWindow->toggle();
 	}
 
-	if ( !keys[SDLK_q] ) {
+	if( !keys[SDLK_q] ) {
 		KP_toggle_showQuestWindow = false;
 	}
 
 	actionBar->handleKeys();
 
-	if (keys[SDLK_5] && !KP_interrupt) {
+	if(keys[SDLK_5] && !KP_interrupt) {
 		KP_interrupt = true;
 		player->CastingInterrupted();
 	}
 
-	if (!keys[SDLK_5]) {
+	if(!keys[SDLK_5]) {
 		KP_interrupt = false;
 	}
 
