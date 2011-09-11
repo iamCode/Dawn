@@ -31,10 +31,10 @@
 
 uint32_t debugOutputTime = 0;
 
-static bool log_started = false; /* This gets set to true
-	after the first write (so that the log file is
-	cleared on the the first log) */
-
+/* This gets set to true
+ * after the first write (so that the log file is
+ * cleared on the the first log) */
+static bool log_started = false;
 
 static std::string date_time_string()
 {
@@ -81,7 +81,7 @@ static void debug_args(const char* message, std::va_list ap, debug_message_type 
 
 	if(should_output) {
 		if(!log_started) {
-			/* This will reset the file if this is the first write this session */
+			// This will reset the file if this is the first write this session
 			std::ofstream temp(Configuration::logfile.c_str());
 			log_started = true;
 			temp.close();

@@ -38,117 +38,116 @@ std::auto_ptr<TextureCache> textureCache( new TextureCache() );
 
 sTexture TextureCache::getTextureFromCache( std::string filename )
 {
-	if ( textures.count( filename ) > 0 ) {
+	if( textures.count( filename ) > 0 ) {
 		return textures[ filename ];
 	} else {
-	    uint32_t startTime = SDL_GetTicks();
-        uint32_t debugTime = 0;
-        SDL_Surface *surface;
-        GLenum texture_format;
-        GLint nOfColors;
-        if ((surface = IMG_Load(filename.c_str()))) {
-            sdlLoadTime += SDL_GetTicks() - startTime;
-            uint32_t debugStartTime = SDL_GetTicks();
-            dawn_debug_info("%s: width = %d and height = %d", filename.c_str(), surface->w, surface->h);
+		uint32_t startTime = SDL_GetTicks();
+		uint32_t debugTime = 0;
+		SDL_Surface *surface;
+		GLenum texture_format;
+		GLint nOfColors;
+		if( (surface = IMG_Load(filename.c_str())) ) {
+			sdlLoadTime += SDL_GetTicks() - startTime;
+			uint32_t debugStartTime = SDL_GetTicks();
+			dawn_debug_info( "%s: width = %d and height = %d", filename.c_str(), surface->w, surface->h );
 
-            // Check that the image's width is a power of 2
-            if ((surface->w & (surface->w - 1)) != 0) {
-                dawn_debug_warn("The width of image %s is not a"
-                          " power of 2", filename.c_str());
-            }
-            // Also check if the height is a power of 2
-            if ((surface->h & (surface->h - 1)) != 0) {
-                dawn_debug_warn("The height of image %s is not a"
-                          " power of 2", filename.c_str());
-            }
-            debugTime = SDL_GetTicks() - debugStartTime;
+			// Check that the image's width is a power of 2
+			if ((surface->w & (surface->w - 1)) != 0) {
+				dawn_debug_warn("The width of image %s is not a"
+				                " power of 2", filename.c_str() );
+			}
+			// Also check if the height is a power of 2
+			if( (surface->h & (surface->h - 1)) != 0 ) {
+				dawn_debug_warn("The height of image %s is not a"
+				                " power of 2", filename.c_str() );
+			}
+			debugTime = SDL_GetTicks() - debugStartTime;
 
-            // get the number of channels in the SDL surface
-            nOfColors = surface->format->BytesPerPixel;
-            if (nOfColors == 4) { // contains an alpha channel
-                if (surface->format->Rmask == 0x000000ff)
-                    texture_format = GL_RGBA;
-                else
-                    texture_format = GL_BGRA;
-            } else if (nOfColors == 3) {    // no alpha channel
-                if (surface->format->Rmask == 0x000000ff)
-                    texture_format = GL_RGB;
-                else
-                    texture_format = GL_BGR;
-            } else if (nOfColors < 3){
-                dawn_debug_warn("The image %s"
-                    " is not truecolor..  this will probably break", filename.c_str());
-                // this error should not go unhandled
-            }
+			// get the number of channels in the SDL surface
+			nOfColors = surface->format->BytesPerPixel;
+			if( nOfColors == 4 ) { // contains an alpha channel
+				if( surface->format->Rmask == 0x000000ff )
+					texture_format = GL_RGBA;
+				else
+					texture_format = GL_BGRA;
+			} else if( nOfColors == 3 ) { // no alpha channel
+				if( surface->format->Rmask == 0x000000ff )
+					texture_format = GL_RGB;
+				else
+					texture_format = GL_BGR;
+			} else if( nOfColors < 3 ) { // this error should not go unhandled
+				dawn_debug_warn("The image %s"
+				                " is not truecolor..  this will probably break", filename.c_str());
+			}
 
-            // invert the image
-            uint32_t inversionStartTime = SDL_GetTicks();
-            char *tmpBytes = new char[surface->pitch];
-            char *surfaceBytes = static_cast<char*>(surface->pixels);
-            for ( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
-                size_t inverseY = (surface->h - curY - 1);
-                size_t curData = (curY * surface->pitch);
-                size_t yInverseData = (inverseY * surface->pitch);
-                memcpy( tmpBytes, surfaceBytes + yInverseData, surface->pitch );
-                memcpy( surfaceBytes + yInverseData, surfaceBytes + curData, surface->pitch );
-                memcpy( surfaceBytes + curData, tmpBytes, surface->pitch );
-            }
-            delete[] tmpBytes;
-            imgInversionTime += SDL_GetTicks() - inversionStartTime;
+			// invert the image
+			uint32_t inversionStartTime = SDL_GetTicks();
+			char *tmpBytes = new char[surface->pitch];
+			char *surfaceBytes = static_cast<char*>(surface->pixels);
+			for( size_t curY=0; curY < static_cast<size_t>(surface->h/2); ++curY ) {
+				size_t inverseY = (surface->h - curY - 1);
+				size_t curData = (curY * surface->pitch);
+				size_t yInverseData = (inverseY * surface->pitch);
+				memcpy( tmpBytes, surfaceBytes + yInverseData, surface->pitch );
+				memcpy( surfaceBytes + yInverseData, surfaceBytes + curData, surface->pitch );
+				memcpy( surfaceBytes + curData, tmpBytes, surface->pitch );
+			}
+			delete[] tmpBytes;
+			imgInversionTime += SDL_GetTicks() - inversionStartTime;
 
-            // give us the size of the image's width and height and store it.
-            textures[ filename ].width = surface->w;
-            textures[ filename ].height = surface->h;
-			textures[ filename ].x1=(0.5/surface->w);
-			textures[ filename ].x2=1.0f-(0.5/surface->w);
-			textures[ filename ].y1=(0.5/surface->h);;
-			textures[ filename ].y2=1.0f-(0.5/surface->h);
+			// give us the size of the image's width and height and store it.
+			textures[ filename ].width    = surface->w;
+			textures[ filename ].height   = surface->h;
+			textures[ filename ].x1       = (0.5/surface->w);
+			textures[ filename ].x2       = 1.0f-(0.5/surface->w);
+			textures[ filename ].y1       = (0.5/surface->h);;
+			textures[ filename ].y2       = 1.0f-(0.5/surface->h);
 
-            // set the texture file name
-            textures[ filename ].textureFile = filename;
+			// set the texture file name
+			textures[ filename ].textureFile = filename;
 
-            size_t minPotX=2;
-            size_t minPotY=2;
-            while ( minPotX<surface->w ) minPotX *= 2;
-            while ( minPotY<surface->h ) minPotY *= 2;
+			size_t minPotX=2;
+			size_t minPotY=2;
+			while( minPotX<surface->w ) minPotX *= 2;
+			while( minPotY<surface->h ) minPotY *= 2;
 			bool isPOT = (surface->w==minPotX) && (surface->h==minPotY);
 
-            if ( initPhase && (! isPOT) && nOfColors==4 && texture_format==GL_BGRA && surface->w<=textureFrame->getWidth() && surface->h<=textureFrame->getHeight() ) {
-                textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
-            } else {
-                // Have OpenGL generate a texture object handle for us
-                glGenTextures(1, &textures[ filename ].texture);
+			if( initPhase && (! isPOT) && nOfColors==4 && texture_format==GL_BGRA && surface->w<=textureFrame->getWidth() && surface->h<=textureFrame->getHeight() ) {
+				textureFrame->addTexture( textures[ filename ], surfaceBytes, surface->w, surface->h );
+			} else {
+				// Have OpenGL generate a texture object handle for us
+				glGenTextures(1, &textures[ filename ].texture);
 
-                // Bind the texture object
-                glBindTexture(GL_TEXTURE_2D, textures[ filename ].texture);
+				// Bind the texture object
+				glBindTexture(GL_TEXTURE_2D, textures[ filename ].texture);
 
-                // Set the texture's stretching properties
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				// Set the texture's stretching properties
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-                uint32_t mipmapStart = SDL_GetTicks();
-                // Edit the texture object's image data using the information SDL_Surface gives us
-                if (isPOT) {
+				uint32_t mipmapStart = SDL_GetTicks();
+				// Edit the texture object's image data using the information SDL_Surface gives us
+				if(isPOT) {
 					glTexImage2D(GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-                } else {
-                    gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
-                }
-                mipmapBuildTime += SDL_GetTicks()-mipmapStart;
-            }
-        } else {
-            dawn_debug_fatal("SDL could not load %s : %s", filename.c_str(), SDL_GetError());
-        }
+				} else {
+					gluBuild2DMipmaps(GL_TEXTURE_2D, nOfColors, surface->w, surface->h, texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+				}
+				mipmapBuildTime += SDL_GetTicks()-mipmapStart;
+			}
+		} else {
+			dawn_debug_fatal("SDL could not load %s : %s", filename.c_str(), SDL_GetError());
+		}
 
-        // Free the SDL_Surface only if it was successfully created
-        if (surface) {
-            SDL_FreeSurface(surface);
-        }
+		// Free the SDL_Surface only if it was successfully created
+		if(surface) {
+			SDL_FreeSurface(surface);
+		}
 
-        int addTime = SDL_GetTicks() - startTime - debugTime;
-        if ( addTime < 0 ) addTime = 0;
-        imgLoadTime += addTime;
+		int addTime = SDL_GetTicks() - startTime - debugTime;
+		if ( addTime < 0 ) addTime = 0;
+		imgLoadTime += addTime;
 
-        return textures[ filename ];
+		return textures[ filename ];
 	}
 }
 
@@ -162,11 +161,11 @@ TextureCache::~TextureCache()
 
 sTexture& CTexture::getTexture( int index )
 {
-    if ( index >= texture.size() )
-    {
-        dawn_debug_fatal( "Trying to get an unknown / unloaded texture: %d in CTexture::getTexture().", index );
-    }
-    return texture[ index ];
+	if( index >= texture.size() )
+	{
+		dawn_debug_fatal( "Trying to get an unknown / unloaded texture: %d in CTexture::getTexture().", index );
+	}
+	return texture[ index ];
 }
 
 std::vector<sTexture>& CTexture::getTexture()
@@ -177,12 +176,12 @@ std::vector<sTexture>& CTexture::getTexture()
 void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadInThreadedMode, int textureOffsetX, int textureOffsetY )
 {
 	// we we load a texture where the index is larger than our current texture array, we need to increase it.
-	if ( texture_index >= texture.size() )
+	if( texture_index >= texture.size() )
 	{
-	    texture.resize( texture_index + 1 );
+		texture.resize( texture_index + 1 );
 	}
 
-	if ( threadedMode && ! isOpenGLThreadInThreadedMode ) {
+	if( threadedMode && ! isOpenGLThreadInThreadedMode ) {
 		processTextureInOpenGLThread( this, file, texture_index, textureOffsetX, textureOffsetY );
 		return;
 	}
@@ -195,25 +194,25 @@ void CTexture::LoadIMG(std::string file, int texture_index, bool isOpenGLThreadI
 
 void CTexture::DrawTexture(int x, int y, int draw_id, float transparency, float red, float green, float blue, float x_scale, float y_scale)
 {
-	glColor4f(red,green, blue,transparency);			// Full Brightness, 50% Alpha ( NEW )
+	glColor4f(red,green, blue,transparency); // Full Brightness, 50% Alpha ( NEW )
 
 	// if the texture is not on the screen, we need to do nothing
-	if ( ! DrawingHelpers::isRectOnScreen( x, texture[draw_id].width * x_scale,
-	                                       y, texture[draw_id].height * y_scale ) ) {
+	if( !DrawingHelpers::isRectOnScreen( x, texture[draw_id].width * x_scale,
+	                                     y, texture[draw_id].height * y_scale ) ) {
 		return;
 	}
 
 	// note: scaling together with texture binding (in mapTextureToRect)
 	//       takes a lot of time so do it only if necessary)
 	bool needToScale = (x_scale != 1.0f || y_scale != 1.0f);
-	if ( needToScale ) {
+	if( needToScale ) {
 		glPushMatrix();
 		glScalef(x_scale,y_scale,1.0f);
 	}
 	DrawingHelpers::mapTextureToRect( texture[draw_id],
 	                                  x+texture[draw_id].textureOffsetX, texture[draw_id].width,
 	                                  y+texture[draw_id].textureOffsetY, texture[draw_id].height );
-	if ( needToScale ) {
+	if( needToScale ) {
 		glPopMatrix();
 	}
 
@@ -226,7 +225,7 @@ std::string getID( std::string filename )
 {
 	std::ostringstream idstream;
 	for ( size_t curChar=5; curChar<filename.size(); ++curChar ) {
-		if ( isspace( filename[curChar] ) ) {
+		if( isspace( filename[curChar] ) ) {
 			// ignore
 		} else if ( isupper( filename[curChar] ) ) {
 			idstream << char( tolower( filename[curChar] ) );

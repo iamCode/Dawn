@@ -126,15 +126,15 @@ bool GroundLoot::PickUpLoot( Player *player_, sGroundItems groundItem, size_t cu
 		default:                                      break; //??px
 	}
 
-		// if the difference between these two points are in range you can loot
-		//       horizontal centerpoint     horizontal centerpoint    difference range
-		if( ((player_->getXPos()+playerXSize) - itemX+itemWidth/2)  < itemWidth+wDiff   &&
-			((player_->getXPos()+playerXSize) - itemX+itemWidth/2)  > itemWidth-wDiff   &&
-			((player_->getYPos()+playerYSize) - itemY+itemHeight/2) < itemHeight+hDiff  &&
-			((player_->getYPos()+playerYSize) - itemY+itemHeight/2) > itemHeight-hDiff )
-		{
-			return true;
-		}
+	// if the difference between these two points are in range you can loot
+	//       horizontal centerpoint     horizontal centerpoint    difference range
+	if( ((player_->getXPos()+playerXSize) - itemX+itemWidth/2)  < itemWidth+wDiff   &&
+	    ((player_->getXPos()+playerXSize) - itemX+itemWidth/2)  > itemWidth-wDiff   &&
+	    ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) < itemHeight+hDiff  &&
+	    ((player_->getYPos()+playerYSize) - itemY+itemHeight/2) > itemHeight-hDiff )
+	{
+		return true;
+	}
 
 	return false;
 }

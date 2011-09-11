@@ -29,12 +29,9 @@
 
 enum debug_message_type { DEBUG_INFO, DEBUG_WARN, DEBUG_FATAL };
 
-void dawn_debug_info(const std::string& message ...); /* Logs useful
-						debug data */
-void dawn_debug_warn(const std::string& message ...); /* Logs non fatal
-						problems */
-void dawn_debug_fatal(const std::string& message ...); /* Logs fatal
-						problems then quits */
+void dawn_debug_info(const std::string& message ...); // Logs useful debug data
+void dawn_debug_warn(const std::string& message ...); // Logs non fatal problems
+void dawn_debug_fatal(const std::string& message ...); // Logs fatal problems then quits
 void print_backtrace();
 
 void generalSignalHandler( int signum );

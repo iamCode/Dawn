@@ -41,22 +41,22 @@ namespace DawnInterface {
 /// Implementation of class CSpellActionBase
 
 CSpellActionBase::CSpellActionBase()
-		: boundToCreator( false ),
-		  finished( false ),
-		  instant( false ),
-		  requiredClass( CharacterClass::NOCLASS ),
-          requiredLevel( 1 ),
-		  requiredWeapons( 0 ),
-		  rank( 1 ),
-		  luaID( "" )
+	: boundToCreator( false ),
+	  finished( false ),
+	  instant( false ),
+	  requiredClass( CharacterClass::NOCLASS ),
+	  requiredLevel( 1 ),
+	  requiredWeapons( 0 ),
+	  rank( 1 ),
+	  luaID( "" )
 {
-    characterStateEffects.first = CharacterStates::NOEFFECT;
-    characterStateEffects.second = 1.0f;
+	characterStateEffects.first = CharacterStates::NOEFFECT;
+	characterStateEffects.second = 1.0f;
 }
 
 CSpellActionBase::~CSpellActionBase()
 {
-	if ( boundToCreator ) {
+	if( boundToCreator ) {
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 	}
@@ -64,24 +64,24 @@ CSpellActionBase::~CSpellActionBase()
 
 void CSpellActionBase::unbindFromCreator()
 {
-	if ( boundToCreator ) {
+	if( boundToCreator ) {
 		creator->curSpellAction = NULL;
 		creator->isPreparing = false;
 		boundToCreator = false;
 		uint16_t spellCost = getSpellCost();
 
 		// if we're confused while casting, we add 20% more to the spell cost.
-		if ( creator->isConfused() == true ) {
-				spellCost  *= 1.20;
+		if( creator->isConfused() == true ) {
+			spellCost  *= 1.20;
 		}
 
 
-		if ( creator->getArchType() == CharacterArchType::Fighter ) {
-	        creator->modifyCurrentFatigue( -spellCost );
-	    } else {
-	        creator->modifyCurrentMana( -spellCost );
-	    }
-    }
+		if( creator->getArchType() == CharacterArchType::Fighter ) {
+			creator->modifyCurrentFatigue( -spellCost );
+		} else {
+			creator->modifyCurrentMana( -spellCost );
+		}
+	}
 }
 
 bool CSpellActionBase::isBoundToCreator() const
@@ -109,14 +109,14 @@ void CSpellActionBase::drawSymbol( int left, int width, int bottom, int height )
 {
 	CTexture *texture = getSymbol();
 	if ( texture != NULL ) {
-	    DrawingHelpers::mapTextureToRect( texture->getTexture(0),
-                                        left, width, bottom, height );
+		DrawingHelpers::mapTextureToRect( texture->getTexture(0),
+		                                  left, width, bottom, height );
 	}
 }
 
 std::string CSpellActionBase::getID() const
 {
-	if ( luaID.size() == 0 )
+	if( luaID.size() == 0 )
 	{
 		luaID = LuaFunctions::getIDFromLuaTable( "spellDatabase", this );
 	}
@@ -130,136 +130,136 @@ void CSpellActionBase::unsetLuaID()
 
 void CSpellActionBase::addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute )
 {
-    additionalSpellsOnTarget.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+	additionalSpellsOnTarget.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
 }
 
 void CSpellActionBase::addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute )
 {
-    additionalSpellsOnCreator.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
+	additionalSpellsOnCreator.push_back( std::pair<CSpellActionBase*,double>( spell, chanceToExecute ) );
 }
 
 void CSpellActionBase::setRequiredClass( CharacterClass::CharacterClass requiredClass )
 {
-    this->requiredClass = requiredClass;
+	this->requiredClass = requiredClass;
 }
 
 void CSpellActionBase::addRequiredWeapon( WeaponType::WeaponType weaponType )
 {
-    requiredWeapons |= weaponType;
+	requiredWeapons |= weaponType;
 }
 
 uint32_t CSpellActionBase::getRequiredWeapons() const
 {
-    return requiredWeapons;
+	return requiredWeapons;
 }
 
 CharacterClass::CharacterClass CSpellActionBase::getRequiredClass() const
 {
-    return requiredClass;
+	return requiredClass;
 }
 
 void CSpellActionBase::setRequiredLevel( uint8_t requiredLevel )
 {
-    this->requiredLevel = requiredLevel;
+	this->requiredLevel = requiredLevel;
 }
 
 uint8_t CSpellActionBase::getRequiredLevel() const
 {
-    return requiredLevel;
+	return requiredLevel;
 }
 
 void CSpellActionBase::setRank( uint8_t rank )
 {
-    this->rank = rank;
+	this->rank = rank;
 }
 
 uint8_t CSpellActionBase::getRank() const
 {
-    return rank;
+	return rank;
 }
 
 void CSpellActionBase::setInstant( bool instant )
 {
-    this->instant = instant;
+	this->instant = instant;
 }
 
 bool CSpellActionBase::getInstant( ) const
 {
-    return instant;
+	return instant;
 }
 
 void CSpellActionBase::setSoundSpellCasting( std::string soundSpellCasting )
 {
-    this->soundSpellCasting = soundSpellCasting;
+	this->soundSpellCasting = soundSpellCasting;
 }
 
 void CSpellActionBase::setSoundSpellStart( std::string soundSpellStart )
 {
-    this->soundSpellStart = soundSpellStart;
+	this->soundSpellStart = soundSpellStart;
 }
 
 void CSpellActionBase::setSoundSpellHit( std::string soundSpellHit )
 {
-    this->soundSpellHit = soundSpellHit;
+	this->soundSpellHit = soundSpellHit;
 }
 
 void CSpellActionBase::playSoundSpellCasting()
 {
-    if ( soundSpellCasting != "" ) {
-        SoundEngine::playSound( soundSpellCasting );
-    }
+	if( soundSpellCasting != "" ) {
+		SoundEngine::playSound( soundSpellCasting );
+	}
 }
 
 void CSpellActionBase::stopSoundSpellCasting()
 {
-    if ( soundSpellCasting != "" ) {
-        SoundEngine::stopSound( soundSpellCasting );
-    }
+	if( soundSpellCasting != "" ) {
+		SoundEngine::stopSound( soundSpellCasting );
+	}
 }
 
 void CSpellActionBase::playSoundSpellStart()
 {
-    if ( soundSpellStart != "" ) {
-        SoundEngine::playSound( soundSpellStart );
-    }
+	if( soundSpellStart != "" ) {
+		SoundEngine::playSound( soundSpellStart );
+	}
 }
 
 void CSpellActionBase::stopSoundSpellStart()
 {
-    if ( soundSpellStart != "" ) {
-        SoundEngine::stopSound( soundSpellStart );
-    }
+	if( soundSpellStart != "" ) {
+		SoundEngine::stopSound( soundSpellStart );
+	}
 }
 
 void CSpellActionBase::playSoundSpellHit()
 {
-    if ( soundSpellHit != "" ) {
-        SoundEngine::playSound( soundSpellHit );
-    }
+	if( soundSpellHit != "" ) {
+		SoundEngine::playSound( soundSpellHit );
+	}
 }
 
 void CSpellActionBase::stopSoundSpellHit()
 {
-    if ( soundSpellHit != "" ) {
-        SoundEngine::stopSound( soundSpellHit );
-    }
+	if( soundSpellHit != "" ) {
+		SoundEngine::stopSound( soundSpellHit );
+	}
 }
 
 bool CSpellActionBase::isSpellHostile() const
 {
-    return hostileSpell;
+	return hostileSpell;
 }
 
 void CSpellActionBase::setCharacterState( CharacterStates::CharacterStates characterState, float value )
 {
-    characterStateEffects.first = characterState;
-    characterStateEffects.second = value;
-    hostileSpell = CharacterStates::isStateConsideredHarmfull( characterState, value );
+	characterStateEffects.first = characterState;
+	characterStateEffects.second = value;
+	hostileSpell = CharacterStates::isStateConsideredHarmfull( characterState, value );
 }
 
 std::pair<CharacterStates::CharacterStates, float> CSpellActionBase::getCharacterState() const
 {
-    return characterStateEffects;
+	return characterStateEffects;
 }
 
 /// ConfigurableSpell
@@ -328,12 +328,12 @@ uint16_t ConfigurableSpell::getCastTime() const
 
 void ConfigurableSpell::setCooldown( uint16_t newCooldown )
 {
-    cooldown = newCooldown;
+	cooldown = newCooldown;
 }
 
 uint16_t ConfigurableSpell::getCooldown() const
 {
-    return cooldown;
+	return cooldown;
 }
 
 void ConfigurableSpell::setSpellCost( uint16_t spellCost )
@@ -369,11 +369,10 @@ void ConfigurableSpell::setRange( uint16_t minRange, uint16_t maxRange )
 
 bool ConfigurableSpell::isInRange( uint16_t distance ) const
 {
-    if ( distance >= minRange && distance <= maxRange )
-    {
-      return true;
-    }
-    return false;
+	if( distance >= minRange && distance <= maxRange ) {
+		return true;
+	}
+	return false;
 }
 
 void ConfigurableSpell::setName( std::string newName )
@@ -408,9 +407,9 @@ uint16_t ConfigurableSpell::getDuration() const
 
 void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 {
-	if ( spellSymbol != NULL ) {
-    delete spellSymbol;
-  }
+	if( spellSymbol != NULL ) {
+		delete spellSymbol;
+	}
 	spellSymbol = new CTexture();
 	spellSymbol->LoadIMG( symbolFile, 0 );
 }
@@ -418,7 +417,6 @@ void ConfigurableSpell::setSpellSymbol( std::string symbolFile )
 CTexture* ConfigurableSpell::getSymbol() const {
 	return spellSymbol;
 }
-
 
 /// ConfigurableAction
 
