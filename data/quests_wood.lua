@@ -10,7 +10,7 @@ function quest_playHideAndSeek.enterTown()
 		DawnInterface.setSavingAllowed( true );
 
 		local textWindow = DawnInterface.createTextWindow();
-		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:center();
 		textWindow:setText( "The town of Arinox." );
 		textWindow:setAutocloseTime( 1000 );
 	end
@@ -64,7 +64,7 @@ function quest_playHideAndSeek.onActivateJohn()
 			quest_playHideAndSeek.quest:setItemReward( itemDatabase["ringofdefense"] );
 		end
 		local textWindow = DawnInterface.createTextWindow();
-		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:center();
 		textWindow:setText( "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 		textWindow:setAutocloseTime( 3000 );
 	elseif ( quest_playHideAndSeek.fulfilled and not quest_playHideAndSeek.rewardGot )
@@ -102,7 +102,7 @@ function quest_playHideAndSeek.onActivateJames()
 	elseif ( not quest_playHideAndSeek.fulfilled )
 	then
 		local textWindow = DawnInterface.createTextWindow();
-		textWindow:setPosition( PositionType.CENTER, 512, 382 );
+		textWindow:center();
 		textWindow:setText( "Thank you for helping me. I walked through this wonderful forest when suddenly I saw this huge wolf. Then I hid in the trees and hoped it would get away, but it didn't. I was so afraid. I'll better hurry to my brother John now." );
 		textWindow:setAutocloseTime( 10000 );
 		james:setPosition( 800, 200, 64, 64 );

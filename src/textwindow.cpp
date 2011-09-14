@@ -26,6 +26,7 @@
 #include "GLFT_Font.h"
 #include "fontcache.h"
 #include "CLuaFunctions.h"
+#include "configuration.h"
 
 GLFT_Font *textWindowFont = NULL;
 
@@ -137,6 +138,15 @@ void TextWindow::setPosition( PositionType::PositionType positionType, int x, in
 	this->positionType = positionType;
 	this->x = x;
 	this->y = y;
+
+	updateFramesPosition();
+}
+
+void TextWindow::center()
+{
+	this->positionType = PositionType::CENTER;
+	this->x = Configuration::screenWidth/2;
+	this->y = 280;
 
 	updateFramesPosition();
 }

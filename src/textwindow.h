@@ -49,6 +49,7 @@ class TextWindow : public FramesBase
 		void setText( std::string text );
 		void setAutocloseTime( int autocloseTime );
 		void setPosition( PositionType::PositionType, int x, int y );
+		void center();
 		void setOnCloseText( std::string onCloseText );
 		bool canBeDeleted() const;
 		void close();
