@@ -13,7 +13,7 @@
 //
 // REVISIONS
 // =======================================================
-// Date: 10.25.07        
+// Date: 10.25.07
 // Name: Walter E. Capers
 // Description: File creation
 //
@@ -35,12 +35,12 @@ CEventClass::CEventClass(void)
 	}
 #else
 	pthread_mutexattr_t mattr;
-	
+
 	pthread_mutexattr_init(&mattr);
 	pthread_mutex_init(&m_lock,&mattr);
 	pthread_cond_init(&m_ready,NULL);
 
-#endif	
+#endif
 }
 
 CEventClass::~CEventClass(void)

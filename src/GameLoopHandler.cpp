@@ -59,16 +59,22 @@ void MainMenuHandler::drawScene()
 
 void MainMenuHandler::handleEvents()
 {
-	while (SDL_PollEvent(lastEvent) ) {
-		if (lastEvent->type == SDL_MOUSEBUTTONDOWN) {
-			if ( ! mouseButtonDown ) {
+	while( SDL_PollEvent( lastEvent ) )
+	{
+		if(lastEvent->type == SDL_MOUSEBUTTONDOWN)
+		{
+			if( !mouseButtonDown )
+			{
 				mouseButtonDown = true;
 				// iterate through all our active frames and click on them if mouse is over.
-				for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
+				for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+				{
 					activeFrames[ curFrame ]->clicked( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1, lastEvent->button.button );
 				}
 			}
-		} else {
+		}
+		else
+		{
 			mouseButtonDown = false;
 		}
 	}
@@ -384,7 +390,7 @@ void GameScreenHandler::handleEvents()
 			mouseX = lastEvent->motion.x;
 			mouseY = Configuration::screenHeight - lastEvent->motion.y - 1;
 
-            // we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
+			// we have clicked a spell and want to drag it. we need to make sure we've dragged it far enough and are still holding in our left mouse button
 			if ( ( sqrt(pow(mouseDownXY.first-mouseX,2) + pow(mouseDownXY.second-mouseY,2)) > 25 ) && lastEvent->button.button == SDL_BUTTON_LEFT && !actionBar->isPreparingAoESpell() ) {
 						actionBar->dragSpell();
 			}

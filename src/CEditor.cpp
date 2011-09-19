@@ -33,20 +33,21 @@ extern std::map< std::string, CCharacter* > allMobTypes;
 
 CEditor::CEditor()
 {
-		enabled = false;
-		tilepos_offset = 0;
-		tilepos = 0;
-		current_tilepos = 0;
-		current_object = 0;
-		objectedit_selected = -1;
-		zoneToEdit = NULL;
-		objectDescriptionFont = NULL;
-		keybindingFont = NULL;
-		tinyFont = NULL;
-		adjacencyModeEnabled = false;
-		for ( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection ) {
-			curDirectionAdjacencySelection[ curDirection ] = 0;
-		}
+	enabled = false;
+	tilepos_offset = 0;
+	tilepos = 0;
+	current_tilepos = 0;
+	current_object = 0;
+	objectedit_selected = -1;
+	zoneToEdit = NULL;
+	objectDescriptionFont = NULL;
+	keybindingFont = NULL;
+	tinyFont = NULL;
+	adjacencyModeEnabled = false;
+	for( size_t curDirection=0; curDirection <= AdjacencyType::BOTTOM; ++curDirection )
+	{
+		curDirectionAdjacencySelection[ curDirection ] = 0;
+	}
 }
 
 CEditor::~CEditor()
@@ -106,7 +107,8 @@ void CEditor::inc_tilepos()
 
 void CEditor::dec_tilepos()
 {
-	if (current_tilepos > 0) {
+	if( current_tilepos > 0 )
+	{
 		current_tilepos--;
 		tilepos_offset++;
 	}
@@ -126,7 +128,7 @@ void CEditor::SaveZone()
 	for (size_t x=0; x<zoneToEdit->TileMap.size();x++) {
 		sTileMap &curTile = zoneToEdit->TileMap[x];
 		ofs << "EditorInterface.addGroundTile( " << curTile.x_pos << ", " << curTile.y_pos << ", "
-												 << "MapData.DontSave."
+		                                         << "MapData.DontSave."
 		                                         << getID( curTile.tile->filename ) << " );" << std::endl;
 	}
 	ofs.close();
@@ -141,7 +143,7 @@ void CEditor::SaveZone()
 	for (size_t x=0;x<zoneToEdit->EnvironmentMap.size();x++) {
 		sEnvironmentMap &curEnv = zoneToEdit->EnvironmentMap[x];
 		ofs << "EditorInterface.addEnvironment( " << curEnv.x_pos << ", " << curEnv.y_pos << ", " << curEnv.z_pos << ", "
-												  << "MapData.DontSave."
+		                                          << "MapData.DontSave."
 		                                          << getID( curEnv.tile->filename ) << " );" << std::endl;
 		if ( curEnv.transparency != 1 || curEnv.red != 1 || curEnv.green != 1 || curEnv.blue != 1 ) {
 			ofs << "EditorInterface.adjustLastRGBA( " << curEnv.red << ", " << curEnv.green << ", " << curEnv.blue << ", "
@@ -218,7 +220,8 @@ void CEditor::setEnabled( bool enabled_ )
 	loadNPCs();
 
 	// ensure a correct zone has been set
-	if ( enabled && zoneToEdit == NULL ) {
+	if( enabled && zoneToEdit == NULL )
+	{
 		std::cerr << "zone for editor not set" << std::endl;
 		abort();
 	}
@@ -262,7 +265,7 @@ void CEditor::HandleKeys()
 	keys = SDL_GetKeyState(NULL);
 	SDL_Event event;
 
-	//the hot spot for mouse scrolling, you need to press the left mouse key within this area on whatever side
+	// the hot spot for mouse scrolling, you need to press the left mouse button within this area on whatever side
 	int scrollHotSpot = 30;
 
 	while (SDL_PollEvent(&event)) {
@@ -293,7 +296,7 @@ void CEditor::HandleKeys()
 									objectedit_selected = zoneToEdit->LocateCollisionbox(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 								break;
 								case 4: // NPCs
-                                    objectedit_selected = zoneToEdit->LocateNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
+									objectedit_selected = zoneToEdit->LocateNPC(editorFocus->getX()+mouseX,editorFocus->getY()+mouseY);
 								default:
 									curAdjacentTiles.clear();
 								break;
@@ -376,10 +379,10 @@ void CEditor::HandleKeys()
 						zoneToEdit->EnvironmentMap[objectedit_selected].x_scale += 0.01f;
 					}
 				} else {
-				    if (keys[SDLK_RCTRL]) // right ctrl is held down, then we only want to move environment 1 pixel at time
+					if (keys[SDLK_RCTRL]) // right ctrl is held down, then we only want to move environment 1 pixel at time
 					{
-					    KP_moveonce = true;
-                    }
+						KP_moveonce = true;
+					}
 					if (keys[SDLK_DOWN]) {
 						zoneToEdit->EnvironmentMap[objectedit_selected].y_pos--;
 					}

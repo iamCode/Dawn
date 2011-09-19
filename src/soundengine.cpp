@@ -34,7 +34,8 @@ static size_t maxChannelsUsed = 0;
 
 static void logChannelUsage( int curChannel )
 {
-	if ( static_cast<size_t>(curChannel+1) > maxChannelsUsed ) {
+	if( static_cast<size_t>(curChannel+1) > maxChannelsUsed )
+	{
 		maxChannelsUsed = static_cast<size_t>(curChannel+1);
 		dawn_debug_info("Using a total maximum of %d channels for sound playing", maxChannelsUsed);
 	}
@@ -42,7 +43,7 @@ static void logChannelUsage( int curChannel )
 
 void SoundEngine::initSound()
 {
-	if ( ! Configuration::soundenabled )
+	if( !Configuration::soundenabled )
 		return;
 
 	// This seems to be done, but since I found it in the library documentation it might be code
@@ -56,7 +57,7 @@ void SoundEngine::initSound()
 
 	// Chunksize is 256 since this is the smallest my system can handle.
 	// Higher chunk sizes seem to make time between click and click sound noticable
-	if ( Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 256) == -1 )
+	if( Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 256) == -1 )
 	{
 		dawn_debug_fatal( "Could not open audio (Mix_OpenAudio exited with error message \"%s\")", Mix_GetError() );
 	}
@@ -69,7 +70,7 @@ void SoundEngine::initSound()
 
 void SoundEngine::cleanupSound()
 {
-	if ( ! Configuration::soundenabled )
+	if ( !Configuration::soundenabled )
 		return;
 
 	Mix_CloseAudio();
@@ -78,10 +79,10 @@ void SoundEngine::cleanupSound()
 
 void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 {
-	if ( ! Configuration::soundenabled )
+	if( !Configuration::soundenabled )
 		return;
 
-	if ( currentlyPlayedMusic == musicFile && currentMusicInLoop == playInLoop )
+	if( currentlyPlayedMusic == musicFile && currentMusicInLoop == playInLoop )
 		return;
 
 	Mix_HaltMusic(); // halts the current played music stream so we don't mix music. Perhaps should be handled in other manners.
@@ -99,12 +100,13 @@ void SoundEngine::playMusic( std::string musicFile, bool playInLoop )
 
 void SoundEngine::playSound( std::string soundFile )
 {
-	if ( ! Configuration::soundenabled )
+	if( !Configuration::soundenabled )
 		return;
 
 	Mix_Chunk *soundSample = soundCache->getSoundFromCache( soundFile );
 	int curChannel = Mix_PlayChannel( -1, soundSample, 0 );
-	if ( curChannel  == -1 ) {
+	if( curChannel  == -1 )
+	{
 		dawn_debug_fatal( "Could not play sound %s: %s", soundFile.c_str(), Mix_GetError() );
 	}
 	logChannelUsage( curChannel );
@@ -112,7 +114,7 @@ void SoundEngine::playSound( std::string soundFile )
 
 void SoundEngine::stopSound( std::string soundFile )
 {
-    if ( !Configuration::soundenabled && soundFile != "" )
+    if( !Configuration::soundenabled && soundFile != "" )
     {
         return;
     }
@@ -124,9 +126,9 @@ void SoundEngine::stopSound( std::string soundFile )
     int numOfChannelsPlaying = Mix_Playing( -1 );
 
     /// here we check all channels we have to see if they are playing our chunk we want to stop.
-    for ( int curChannel = 0; curChannel <= numOfChannelsPlaying; curChannel++ )
+    for( int curChannel = 0; curChannel <= numOfChannelsPlaying; curChannel++ )
     {
-        if ( ourSample == Mix_GetChunk( curChannel ) )
+        if( ourSample == Mix_GetChunk( curChannel ) )
         {
             Mix_HaltChannel( curChannel );
         }

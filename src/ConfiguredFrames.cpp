@@ -37,21 +37,22 @@ void deactivateCurrentGameLoopHandler();
 
 class ToggleFrameFunction : public SimpleFunctionObject
 {
-	private:
-		FramesBase *currentFrame;
-		FramesBase *nextFrame;
+private:
+	FramesBase *currentFrame;
+	FramesBase *nextFrame;
 
-	public:
-		ToggleFrameFunction( FramesBase *current, FramesBase *next )
-			: currentFrame( current ),
-			  nextFrame( next )
-		{
-		}
-		void operator() ()
-		{
-			currentFrame->toggle();
-			nextFrame->toggle();
-		}
+public:
+	ToggleFrameFunction( FramesBase *current, FramesBase *next )
+		: currentFrame( current ),
+		  nextFrame( next )
+	{
+	}
+
+	void operator() ()
+	{
+		currentFrame->toggle();
+		nextFrame->toggle();
+	}
 };
 
 class ResolutionSelectionFunction : public SelectionBox::CallbackType
@@ -69,8 +70,8 @@ class ResolutionSelectionFunction : public SelectionBox::CallbackType
 	{
 		assert( selected >= 0 && selected < resolutions.size() );
 		uint16_t saveScreenWidth = Configuration::screenWidth;
-	    uint16_t saveScreenHeight = Configuration::screenHeight;
-	    uint8_t saveBpp = Configuration::bpp;
+		uint16_t saveScreenHeight = Configuration::screenHeight;
+		uint8_t saveBpp = Configuration::bpp;
 		bool saveFullscreen = Configuration::fullscreenenabled;
 
 		Resolution setRes = resolutions[selected];
@@ -93,26 +94,26 @@ class QuitGameFunction : public SimpleFunctionObject
 {
 	void operator() ()
 	{
-		exit(0);
+		exit( 0 );
 	}
 };
 
 class ChooseClassFunction : public SimpleFunctionObject
 {
-	private:
-		CharacterClass::CharacterClass characterClass;
-	public:
-		ChooseClassFunction( CharacterClass::CharacterClass characterClass_ )
-			: characterClass( characterClass_ )
-		{
-		}
+private:
+	CharacterClass::CharacterClass characterClass;
+public:
+	ChooseClassFunction( CharacterClass::CharacterClass characterClass_ )
+		: characterClass( characterClass_ )
+	{
+	}
 
-		void operator() ()
-		{
-			// activate next handler
-			Globals::getPlayer()->setClass( characterClass );
-			deactivateCurrentGameLoopHandler();
-		}
+	void operator() ()
+	{
+		// activate next handler
+		Globals::getPlayer()->setClass( characterClass );
+		deactivateCurrentGameLoopHandler();
+	}
 };
 
 namespace ConfiguredFrames

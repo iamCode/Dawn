@@ -34,55 +34,55 @@ extern int mouseX, mouseY, done;
 
 class CEditor
 {
-	public:
-		CEditor();
-		~CEditor();
+public:
+	CEditor();
+	~CEditor();
 
-		void initFonts();
+	void initFonts();
 
-		void DrawEditor();
-		void SaveZone();
-		void HandleKeys();
-		void LoadTextures();
-		void initFocus( cameraFocusHandler *character);
+	void DrawEditor();
+	void SaveZone();
+	void HandleKeys();
+	void LoadTextures();
+	void initFocus( cameraFocusHandler *character );
 
-		void setEditZone( CZone *zoneToEdit );
-		bool isEnabled() const;
-		void setEnabled( bool enabled );
-		void loadNPCs();
+	void setEditZone( CZone *zoneToEdit );
+	bool isEnabled() const;
+	void setEnabled( bool enabled );
+	void loadNPCs();
 
-		bool KP_toggle_editor;
+	bool KP_toggle_editor;
 
-	private:
-		void inc_tilepos();
-		void dec_tilepos();
+private:
+	void inc_tilepos();
+	void dec_tilepos();
 
-		void DrawEditFrame(sEnvironmentMap *editobject);
-		bool checkAndApplyAdjacencyModification( int modification );
-		bool checkAndPlaceAdjacentTile();
-		void updateAdjacencyList();
+	void DrawEditFrame( sEnvironmentMap *editobject );
+	bool checkAndApplyAdjacencyModification( int modification );
+	bool checkAndPlaceAdjacentTile();
+	void updateAdjacencyList();
 
-		std::vector< std::pair< std::string, CCharacter* > > editorNPCs;
+	std::vector< std::pair< std::string, CCharacter* > > editorNPCs;
 
-		bool enabled;
-		int tilepos_offset, current_object, objectedit_selected;
-		size_t tilepos,current_tilepos;
-		bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce, KP_toggle_adjacencyMode;
+	bool enabled;
+	int tilepos_offset, current_object, objectedit_selected;
+	size_t tilepos,current_tilepos;
+	bool KP_increase_Zpos, KP_decrease_Zpos, KP_tile_ec, KP_tile_inc, KP_add_environment, KP_delete_environment, KP_toggle_tileset, KP_save_zone, KP_moveonce, KP_toggle_adjacencyMode;
 
-		// Keeps track of the camera positions saves the original camera
-		// to snap back to target after done editing
-		cameraFocusHandler *editorFocus, *originalFocus;
+	// Keeps track of the camera positions saves the original camera
+	// to snap back to target after done editing
+	cameraFocusHandler *editorFocus, *originalFocus;
 
-		CTexture interfacetexture;
-		GLFT_Font *objectDescriptionFont;
-		GLFT_Font *keybindingFont;
-		GLFT_Font *tinyFont;
-		CZone *zoneToEdit;
+	CTexture interfacetexture;
+	GLFT_Font *objectDescriptionFont;
+	GLFT_Font *keybindingFont;
+	GLFT_Font *tinyFont;
+	CZone *zoneToEdit;
 
-		bool adjacencyModeEnabled;
-		std::vector< std::vector<Tile*> > curAdjacentTiles;
-		std::vector< std::vector<Point> > curAdjacencyOffsets;
-		unsigned int curDirectionAdjacencySelection[AdjacencyType::BOTTOM + 1];
+	bool adjacencyModeEnabled;
+	std::vector< std::vector<Tile*> > curAdjacentTiles;
+	std::vector< std::vector<Point> > curAdjacencyOffsets;
+	unsigned int curDirectionAdjacencySelection[ AdjacencyType::BOTTOM + 1 ];
 };
 
 #endif

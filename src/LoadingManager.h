@@ -26,7 +26,7 @@
 
 class LoadingManager : public CThread
 {
-  public:
+public:
 	virtual bool isFinished() = 0;
 	virtual std::string getActivityText() = 0;
 	virtual double getProgress() = 0;

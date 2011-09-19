@@ -27,10 +27,6 @@
 #include <csignal>
 #include <deque>
 
-//#ifdef _WIN32
-//	#include <windows.h> // Nothing uses this, perhaps it could be removed?
-//#endif
-
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 
 #include <SDL/SDL.h> // SDL
@@ -99,8 +95,8 @@ CInterface GUI;
 
 std::vector<FramesBase*> activeFrames;
 
-float lastframe,thisframe;           // FPS Stuff
-int ff, fps;                         // FPS Stuff
+float lastframe,thisframe;	// FPS Stuff
+int ff, fps;	            // FPS Stuff
 
 GLFT_Font *fpsFont;
 std::auto_ptr<CharacterInfoScreen> characterInfoScreen;
@@ -130,7 +126,7 @@ void setNextGameLoopHandler( GameLoopHandler *nextHandler )
 namespace Globals
 {
 	std::map< std::string, CZone* > allZones;
-	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells;
+	std::vector< std::pair<CSpellActionBase*, uint32_t> > activeAoESpells;
 }
 
 static bool HandleCommandLineAurguments(int argc, char** argv)
@@ -140,20 +136,30 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 #ifdef _WIN32
 	freopen( "CON", "wt", stdout ); // Redirect stdout to the command line
 #endif
-	for (int i=1 ; i < argc ; ++i) {
+	for( int i=1; i < argc; ++i )
+	{
 		std::string currentarg(argv[i]);
-		if (currentarg == "-f" || currentarg == "--fullscreen") {
+		if( currentarg == "-f" || currentarg == "--fullscreen" )
+		{
 			Configuration::fullscreenenabled = true;
-		} else if (currentarg == "-w" || currentarg == "--window") {
+		}
+		else if( currentarg == "-w" || currentarg == "--window" )
+		{
 			Configuration::fullscreenenabled = false;
-		} else if (currentarg == "--nosound" ) {
+		}
+		else if( currentarg == "--nosound" )
+		{
 			Configuration::soundenabled = false;
-        #ifdef TESTINTERFACE
-        } else if (currentarg == "-T" || currentarg == "--test") {
-            TestInterface::executeTest( argv[i+1] );
-            i++;
-        #endif
-		} else if (currentarg == "-h" || currentarg == "--help") {
+		#ifdef TESTINTERFACE
+		}
+		else if( currentarg == "-T" || currentarg == "--test" )
+		{
+			TestInterface::executeTest( argv[i+1] );
+			i++;
+		#endif
+		}
+		else if( currentarg == "-h" || currentarg == "--help" )
+		{
 			std::cout << "Dawn-RPG Startup Parameters" <<
 			          std::endl << std::endl <<
 			          " -f, --fullscreen         Run Dawn in fullscreen mode" <<
@@ -169,7 +175,9 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 			          #endif
 			          std::endl;
 			run_game = false;
-		} else {
+		}
+		else
+		{
 			std::cout << std::endl <<"\"" << currentarg <<
 			          "\" is not a recognised option" << std::endl << std::endl <<
 			          "Please type \"" << executable <<
@@ -214,7 +222,7 @@ namespace DawnInterface
 
 void deactivateCurrentGameLoopHandler()
 {
-    currentGameLoopHandler->setDone();
+	currentGameLoopHandler->setDone();
 }
 
 void DrawScene()
@@ -291,49 +299,54 @@ void DrawScene()
 		}
 
 	// check our FPS and output it
-	thisframe=SDL_GetTicks();     // Count the FPS
+	thisframe=SDL_GetTicks();	// Count the FPS
 	ff++;
-	if ((thisframe-lastframe) > 1000) {
+	if( ( thisframe-lastframe ) > 1000 )
+	{
 		fps=ff;
 		ff=0;
 		lastframe=thisframe;
 	}
 
-	if (Editor.isEnabled() ) {
+	if( Editor.isEnabled() )
+	{
 		Editor.DrawEditor();
-	} else {
+	}
+	else
+	{
+		// draw tooltips if we're holding left ALT key.
+		curZone->getGroundLoot()->drawTooltip();
 
-	  // draw tooltips if we're holding left ALT key.
-    curZone->getGroundLoot()->drawTooltip();
+		for( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr )
+		{
+			InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+			if( curInteraction->isMouseOver( mouseX, mouseY ) )
+			{
+				curInteraction->drawInteractionSymbol( mouseX, mouseY, player->getXPos(), player->getYPos() );
+			}
+		}
 
-    for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
-      InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
-      if ( curInteraction->isMouseOver(mouseX, mouseY) ) {
-        curInteraction->drawInteractionSymbol( mouseX, mouseY, player->getXPos(), player->getYPos() );
-      }
-    }
-
-    actionBar->draw();
-    logWindow->draw();
-    GUI.DrawInterface();
+		actionBar->draw();
+		logWindow->draw();
+		GUI.DrawInterface();
 	}
 
 	// loop through our vector of active frames and draw them. If they are in the vector they are visible...
-	for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
+	for( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
 	{
-	    activeFrames[ curFrame ]->draw( mouseX, mouseY );
+		activeFrames[ curFrame ]->draw( mouseX, mouseY );
 	}
 
-	if ( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() && Editor.isEnabled() == false)
+	if( actionBar->isMouseOver( mouseX, mouseY ) && !spellbook->hasFloatingSpell() && Editor.isEnabled() == false)
 	{
-	    actionBar->drawSpellTooltip( mouseX, mouseY );
+		actionBar->drawSpellTooltip( mouseX, mouseY );
 	}
 
-    shopWindow->drawItemTooltip( mouseX, mouseY );
-    shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-    inventoryScreen->drawItemTooltip( mouseX, mouseY );
-    inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
-    spellbook->drawFloatingSpell( mouseX, mouseY );
+	shopWindow->drawItemTooltip( mouseX, mouseY );
+	shopWindow->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+	inventoryScreen->drawItemTooltip( mouseX, mouseY );
+	inventoryScreen->drawFloatingSelection( world_x + mouseX, world_y + mouseY );
+	spellbook->drawFloatingSpell( mouseX, mouseY );
 
 	// note: we need to cast fpsFont.getHeight to int since otherwise the whole expression would be an unsigned int
 	//       causing overflow and not drawing the font if it gets negative
@@ -341,7 +354,7 @@ void DrawScene()
 	// I've removed this text for now, just for a cleaner look. Enable it if you need some info while coding. /Arnestig
 	//fpsFont->drawText(focus.getX(), focus.getY()+Configuration::screenHeight - static_cast<int>(fpsFont->getHeight()), "FPS: %d     world_x: %2.2f, world_y: %2.2f      Xpos: %d, Ypos: %d      MouseX: %d, MouseY: %d",fps,focus.getX(),focus.getY(), character.x_pos, character.y_pos, mouseX, mouseY);
 	// Only FPS
-	fpsFont->drawText(focus.getX()+Configuration::screenWidth-100, focus.getY()+Configuration::screenHeight - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps);
+	fpsFont->drawText( focus.getX()+Configuration::screenWidth-100, focus.getY()+Configuration::screenHeight - static_cast<int>(fpsFont->getHeight()), "FPS: %d",fps );
 
 	message.DrawAll();
 	message.DeleteDecayed();
@@ -358,7 +371,7 @@ void dawn_init_signal_handlers()
 	signal( SIGSEGV, generalSignalHandler );
 	signal( SIGBUS,  generalSignalHandler );
 	signal( SIGABRT, generalSignalHandler );
-    #endif
+	#endif
 }
 
 class DawnInitObject;
@@ -368,106 +381,122 @@ bool threadedMode = false;
 int64_t numTexturesDrawn = 0;
 
 
-bool dawn_init(int argc, char** argv)
+bool dawn_init( int argc, char* argv[] )
 {
-		if(!HandleCommandLineAurguments(argc, argv))
-			return false;
+	if( !HandleCommandLineAurguments( argc, argv ) )
+		return false;
 
-		std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
-		putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
+	std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
+	putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
 
-		dawn_debug_info("Initializing...");
-		dawn_init_signal_handlers();
-		dawn_debug_info("Checking if the game data exists");
+	dawn_debug_info( "Initializing..." );
+	dawn_init_signal_handlers();
+	dawn_debug_info("Checking if the game data exists");
 
-		if(!utils::file_exists("data/spells.lua"))
-			dawn_debug_fatal("The LUA script \"spells.lua\", "
-				"Could not be found");
-		if(!utils::file_exists("data/mobdata.all"))
-			dawn_debug_fatal("The LUA script \"mobdata.all\", "
-				"Could not be found");
-		if(!utils::file_exists("data/itemdatabase.lua"))
-			dawn_debug_fatal("The LUA script \"itemdatabase.lua\", "
-				"Could not be found");
-		if(!utils::file_exists("data/gameinit.lua"))
-			dawn_debug_fatal("The LUA script \"gameinit.lua\", "
-					"Could not be found");
-		if(!utils::file_exists("data/verdana.ttf"))
-			dawn_debug_fatal("Font  \"verdana.ttf\", "
-				"Could not be found");
+	if( !utils::file_exists( "data/spells.lua" ) )
+	{
+		dawn_debug_fatal( "The LUA script \"spells.lua\"", "Could not be found" );
+	}
 
-		if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0)
-			dawn_debug_fatal("Unable to init SDL: %s", SDL_GetError());
+	if( !utils::file_exists("data/mobdata.all" ) )
+	{
+		dawn_debug_fatal( "The LUA script \"mobdata.all\"", "Could not be found" );
+	}
 
-		atexit(SDL_Quit);
+	if( !utils::file_exists( "data/itemdatabase.lua" ) )
+	{
+		dawn_debug_fatal( "The LUA script \"itemdatabase.lua\"", "Could not be found" );
+	}
 
-		dawn_debug_info("checking configured and possible resolutions");
-		Resolution configResolution(Configuration::screenWidth,
-									Configuration::screenHeight,
-									Configuration::bpp,
-									Configuration::fullscreenenabled);
+	if( !utils::file_exists( "data/gameinit.lua" ) )
+	{
+		dawn_debug_fatal( "The LUA script \"gameinit.lua\"", "Could not be found" );
+	}
 
-		bool configResolutionWorks = Resolution::checkResolution( configResolution );
+	if( !utils::file_exists( "data/verdana.ttf" ) )
+	{
+		dawn_debug_fatal( "Font  \"verdana.ttf\"", "Could not be found" );
+	}
 
-		if ( configResolutionWorks ) {
-			Configuration::addPossibleResolution( configResolution.width, configResolution.height, configResolution.bpp, configResolution.fullscreen );
+	if( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO ) < 0 )
+	{
+		dawn_debug_fatal( "Unable to init SDL: %s", SDL_GetError() );
+	}
+
+	atexit( SDL_Quit );
+
+	dawn_debug_info( "checking configured and possible resolutions" );
+	Resolution configResolution( Configuration::screenWidth,
+	                             Configuration::screenHeight,
+	                             Configuration::bpp,
+	                             Configuration::fullscreenenabled );
+
+	bool configResolutionWorks = Resolution::checkResolution( configResolution );
+
+	if( configResolutionWorks )
+	{
+		Configuration::addPossibleResolution( configResolution.width, configResolution.height, configResolution.bpp, configResolution.fullscreen );
+	}
+
+	Resolution::scanPossibleResolutions();
+
+	if( !configResolutionWorks )
+	{
+		dawn_debug_warn( "configured resolution does not work. Trying to use another resolution." );
+
+		if ( Resolution::getPossibleResolutions().size() == 0 )
+		{
+			dawn_debug_fatal("no working resolution found!");
 		}
 
-		Resolution::scanPossibleResolutions();
+		configResolution	                = Resolution::getBestResolution( Configuration::fullscreenenabled );
+		Configuration::screenWidth	        = configResolution.width;
+		Configuration::screenHeight	        = configResolution.height;
+		Configuration::bpp	                = configResolution.bpp;
+		Configuration::fullscreenenabled	= configResolution.fullscreen;
+	}
 
-		if ( ! configResolutionWorks ) {
-			dawn_debug_warn( "configured resolution does not work. Trying to use another resolution." );
-		    if ( Resolution::getPossibleResolutions().size() == 0 ) {
-				dawn_debug_fatal("no working resolution found!");
-			}
-		    configResolution = Resolution::getBestResolution( Configuration::fullscreenenabled );
-		    Configuration::screenWidth = configResolution.width;
-		    Configuration::screenHeight = configResolution.height;
-		    Configuration::bpp = configResolution.bpp;
-		    Configuration::fullscreenenabled = configResolution.fullscreen;
-		}
+	Resolution::setResolution( screen, configResolution );
 
-		Resolution::setResolution( screen, configResolution );
+	if ( !screen )
+		dawn_debug_fatal( "Unable to set resolution" );
 
-		if ( !screen )
-			dawn_debug_fatal("Unable to set resolution");
+	SoundEngine::initSound();
+	SoundEngine::playMusic( "data/music/loading.ogg", true );
 
-		SoundEngine::initSound();
-		SoundEngine::playMusic("data/music/loading.ogg", true);
+	glEnable( GL_TEXTURE_2D );
 
-        glEnable( GL_TEXTURE_2D );
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	glViewport( 0, 0, Configuration::screenWidth, Configuration::screenHeight );
 
-		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		glViewport( 0, 0, Configuration::screenWidth, Configuration::screenHeight );
+	glClear( GL_COLOR_BUFFER_BIT );
 
-		glClear( GL_COLOR_BUFFER_BIT );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity(); // reset view to 0,0
 
-		glMatrixMode( GL_PROJECTION );
-		glLoadIdentity(); // reset view to 0,0
+	glOrtho( 0.0f, Configuration::screenWidth, 0.0f, Configuration::screenHeight, -1.0f, 1.0f );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();  // reset view to 0,0
 
-		glOrtho(0.0f, Configuration::screenWidth, 0.0f, Configuration::screenHeight, -1.0f, 1.0f);
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity();  // reset view to 0,0
+	glEnable( GL_BLEND ); // enable blending
+	glBlendFunc( GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_DEPTH_TEST );	// Turn Depth Testing Off
 
-		glEnable( GL_BLEND ); // enable blending
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
+	currentGameLoopHandler = mainMenuHandler.get();
 
-		currentGameLoopHandler = mainMenuHandler.get();
+	/// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
+	Frames::initFrameTextures();
+	DrawFunctions::initDrawTextures();
 
-        /// choose class here. Will be moved later when we have a real character creation page, start page etc.. works for now.
-		Frames::initFrameTextures();
-		DrawFunctions::initDrawTextures();
+	ConfiguredFrames::fillOptionsFrame( optionsFrame.get() );
+	ConfiguredFrames::fillMainMenuFrame( mainMenuFrame.get() );
+	ConfiguredFrames::fillChooseClassFrame( chooseClassFrame.get() );
 
-		ConfiguredFrames::fillOptionsFrame( optionsFrame.get() );
-		ConfiguredFrames::fillMainMenuFrame( mainMenuFrame.get() );
-		ConfiguredFrames::fillChooseClassFrame( chooseClassFrame.get() );
+	activeFrames.push_back( mainMenuFrame.get() );
+	mainMenuFrame->setVisible( true );
 
-		activeFrames.push_back( mainMenuFrame.get() );
-		mainMenuFrame->setVisible( true );
-
-		loadingScreen = std::auto_ptr<LoadingScreen>(new LoadingScreen());
-		return true;
+	loadingScreen = std::auto_ptr<LoadingScreen>(new LoadingScreen());
+	return true;
 }
 
 void setQuitGame()
@@ -480,22 +509,26 @@ void game_loop()
 {
 	SDL_Event lastEvent;
 	// activate first game loop handler
-	if ( currentGameLoopHandler != NULL ) {
+	if( currentGameLoopHandler != NULL )
+	{
 		currentGameLoopHandler->activate( &lastEvent );
 	}
 
-	while ( currentGameLoopHandler != NULL ) {
+	while( currentGameLoopHandler != NULL )
+	{
 		currentGameLoopHandler->handleEvents();
 		currentGameLoopHandler->updateScene();
 
 		// reset drawing context
 		currentGameLoopHandler->drawScene();
 
-		if ( currentGameLoopHandler->isDone() ) {
+		if( currentGameLoopHandler->isDone() )
+		{
 			currentGameLoopHandler->finish();
 			currentGameLoopHandler = nextGameLoopHandler;
 			nextGameLoopHandler = NULL;
-			if ( currentGameLoopHandler != NULL ) {
+			if ( currentGameLoopHandler != NULL )
+			{
 				currentGameLoopHandler->activate( &lastEvent );
 			}
 		}
@@ -505,12 +538,12 @@ void game_loop()
 int main(int argc, char* argv[])
 {
 	// init random number generator
-	RNG::initRNG( time(0) );
+	RNG::initRNG( time( 0 ) );
 
 	// load settings
-	LuaFunctions::executeLuaFile("settings.lua");
+	LuaFunctions::executeLuaFile( "settings.lua" );
 
-	if(dawn_init(argc, argv))
+	if( dawn_init( argc, argv ) )
 	{
 		std::auto_ptr<GameScreenHandler> gameLoopHandler( new GameScreenHandler() );
 		std::auto_ptr<LoadingScreenHandler> loadingScreenHandler( new LoadingScreenHandler( loadingScreen.get(), new DawnInitObject() ) );

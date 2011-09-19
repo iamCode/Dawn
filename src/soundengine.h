@@ -24,23 +24,23 @@
 
 class SoundEngine
 {
-	public:
-		/// This initialized the sound engine. Everything that is needed for initializing the sound library
-		/// except the SDL_INIT_AUDIO-flag for SDL_Init
-		static void initSound();
-		/// This finishes the sound engine. Afterwards the sound engine may not be used anymore
-		static void cleanupSound();
+public:
+	/// This initialized the sound engine. Everything that is needed for initializing the sound library
+	/// except the SDL_INIT_AUDIO-flag for SDL_Init
+	static void initSound();
+	/// This finishes the sound engine. Afterwards the sound engine may not be used anymore
+	static void cleanupSound();
 
-		/// This plays a certain music file. The music file will be loaded into memory if not already done so.
-		/// The music will be stopped by another music file being played.
-		static void playMusic( std::string musicFile, bool playInLoop );
-		/// This plays a certain sound file. The sound file will be loaded into memory if not already done so.
-		static void playSound( std::string soundFile );
-		/// This attempts to stop a soundfile from being played, if it's currently being played. ;)
-		static void stopSound( std::string soundFile );
+	/// This plays a certain music file. The music file will be loaded into memory if not already done so.
+	/// The music will be stopped by another music file being played.
+	static void playMusic( std::string musicFile, bool playInLoop );
+	/// This plays a certain sound file. The sound file will be loaded into memory if not already done so.
+	static void playSound( std::string soundFile );
+	/// This attempts to stop a soundfile from being played, if it's currently being played. ;)
+	static void stopSound( std::string soundFile );
 
-		/// Whether the walking sound is to be enabled or not
-		static void useWalkingSound( bool enabled );
+	/// Whether the walking sound is to be enabled or not
+	static void useWalkingSound( bool enabled );
 };
 
 #endif // SOUNDENGINE_H

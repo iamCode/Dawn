@@ -62,9 +62,10 @@ void Label::setOnClicked( SimpleFunctionObject* onClickedFunc )
 
 void Label::execute()
 {
-    if ( onClickedFunc != NULL ) {
-        (*onClickedFunc)();
-    }
+	if( onClickedFunc != NULL )
+	{
+		(*onClickedFunc)();
+	}
 }
 
 void Label::draw( int mouseX, int mouseY )
