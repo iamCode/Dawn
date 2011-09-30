@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef _CharacterInfoScreen_h_
-#define _CharacterInfoScreen_h_
+#ifndef CHARACTER_INFO_SCREEN_H
+#define CHARACTER_INFO_SCREEN_H
 
 #include "CTexture.h"
 #include "FramesBase.h"
@@ -33,26 +33,26 @@ struct sTabs
 
 class CharacterInfoScreen : public FramesBase
 {
-	private:
-		Player *player;
-		uint8_t currentTab;
-		CTexture textures;
-		GLFT_Font *infoFont;
-		sTabs tabs[3];
+private:
+	Player* player;
+	uint8_t currentTab;
+	CTexture textures;
+	GLFT_Font* infoFont;
+	sTabs tabs[3];
 
 
-	public:
-		CharacterInfoScreen( Player *player );
-		~CharacterInfoScreen();
+public:
+	CharacterInfoScreen( Player* player );
+	~CharacterInfoScreen();
 
-		void clicked( int mouseX, int mouseY, uint8_t mouseState );
+	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-		void LoadTextures();
-		void initFonts();
+	void LoadTextures();
+	void initFonts();
 
-		void draw( int mouseX, int mouseY );
-		void drawExpBar();
-		void drawTabs();
+	void draw( int mouseX, int mouseY );
+	void drawExpBar();
+	void drawTabs();
 };
 
-#endif // _CharacterInfoScreen_h_
+#endif

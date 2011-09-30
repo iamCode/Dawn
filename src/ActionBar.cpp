@@ -151,7 +151,7 @@ void ActionBar::draw()
 	// draw the cursor if it's supposed to be drawn
 	if( isPreparingAoESpell() == true )
 	{
-		DrawingHelpers::mapTextureToRect(textures.getTexture(3), mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
+		DrawingHelpers::mapTextureToRect(textures.getTexture(2), mouseX+world_x-cursorRadius, cursorRadius*2, mouseY+world_y-cursorRadius, cursorRadius*2);
 	}
 }
 
@@ -237,7 +237,7 @@ void ActionBar::clicked( int clickX, int clickY )
 	if( buttonId >= 0 )
 	{
 		// we clicked a button which has an action and has no floating spell on the mouse (we're launching an action from the actionbar)
-		if( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() && isSpellUseable( button[buttonId].action ) )
+		if( button[buttonId].action != NULL && !spellbook->hasFloatingSpell() && isSpellUseable( button[buttonId].action ) && !isPreparingAoESpell() )
 		{
 			// AoE spell with specific position
 			if( button[ buttonId ].action->getEffectType() == EffectType::AreaTargetSpell && player->getTarget() == NULL && isSpellUseable( button[ buttonId ].action ) == true )
@@ -301,14 +301,14 @@ void ActionBar::handleKeys()
 					}
 				}
 
-					if ( curAction != NULL )
-					{
-						player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
-					}
+				if ( curAction != NULL )
+				{
+					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+				}
 			}
 		}
 
-		if ( ! keys[ button[buttonId].key ] )
+		if ( !keys[ button[buttonId].key ] )
 		{
 			button[buttonId].wasPressed = false;
 		}
@@ -411,7 +411,7 @@ void ActionBar::executeSpellQueue()
 			}
 
 			if( curAction != NULL )
-					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
+				player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 
 			spellQueue = NULL;
 		}
@@ -420,7 +420,7 @@ void ActionBar::executeSpellQueue()
 			if ( effectType == EffectType::AreaTargetSpell )
 				preparingAoESpell = true;
 		}
-    }
+	}
 }
 
 void ActionBar::dragSpell()

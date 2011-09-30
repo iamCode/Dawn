@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __C_EDITOR_
-#define __C_EDITOR_
+#ifndef C_EDITOR_H
+#define C_EDITOR_H
 
 #include "CTexture.h"
 #include "CMessage.h"
@@ -44,9 +44,9 @@ public:
 	void SaveZone();
 	void HandleKeys();
 	void LoadTextures();
-	void initFocus( cameraFocusHandler *character );
+	void initFocus( cameraFocusHandler* character );
 
-	void setEditZone( CZone *zoneToEdit );
+	void setEditZone( CZone* zoneToEdit );
 	bool isEnabled() const;
 	void setEnabled( bool enabled );
 	void loadNPCs();
@@ -57,7 +57,7 @@ private:
 	void inc_tilepos();
 	void dec_tilepos();
 
-	void DrawEditFrame( sEnvironmentMap *editobject );
+	void DrawEditFrame( sEnvironmentMap* editobject );
 	bool checkAndApplyAdjacencyModification( int modification );
 	bool checkAndPlaceAdjacentTile();
 	void updateAdjacencyList();
@@ -74,10 +74,10 @@ private:
 	cameraFocusHandler *editorFocus, *originalFocus;
 
 	CTexture interfacetexture;
-	GLFT_Font *objectDescriptionFont;
-	GLFT_Font *keybindingFont;
-	GLFT_Font *tinyFont;
-	CZone *zoneToEdit;
+	GLFT_Font* objectDescriptionFont;
+	GLFT_Font* keybindingFont;
+	GLFT_Font* tinyFont;
+	CZone* zoneToEdit;
 
 	bool adjacencyModeEnabled;
 	std::vector< std::vector<Tile*> > curAdjacentTiles;

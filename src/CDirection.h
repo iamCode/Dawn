@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __C_DIRECTION_H
-#define __C_DIRECTION_H
+#ifndef C_DIRECTION_H
+#define C_DIRECTION_H
 
 /** directions:
   8-1-2
@@ -35,5 +35,5 @@ enum Direction {
 	NW   = 8
 };
 
-#endif // __C_DIRECTION_H
+#endif
 

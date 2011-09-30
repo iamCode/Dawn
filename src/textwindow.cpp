@@ -229,7 +229,7 @@ void TextWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 extern int world_x;
 extern int world_y;
 
-void TextWindow::draw( int mouseX, int mouseY )
+void TextWindow::draw() //int mouseX, int mouseY )
 {
 	if ( explicitClose || ( autocloseTime > 0 && (SDL_GetTicks() - creationTime) > autocloseTime ) ) {
 		return;

@@ -23,24 +23,24 @@
 
 class CallIndirection
 {
-	public:
-		virtual void call() = 0;
-		virtual std::string getLuaSaveText() const = 0;
+public:
+	virtual void call() = 0;
+	virtual std::string getLuaSaveText() const = 0;
 };
 
 class LuaCallIndirection : public CallIndirection
 {
-	public:
-		LuaCallIndirection();
+public:
+	LuaCallIndirection();
 
-		virtual void call();
-		virtual std::string getLuaSaveText() const;
+	virtual void call();
+	virtual std::string getLuaSaveText() const;
 
-		void setExecuteText( std::string text );
+	void setExecuteText( std::string text );
 
-	private:
-		std::string luaText;
+private:
+	std::string luaText;
 };
 
-#endif // CALLINDIRECTION_H
+#endif
 

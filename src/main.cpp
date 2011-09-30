@@ -248,13 +248,13 @@ void DrawScene()
 	// draw items on the ground
 	curZone->getGroundLoot()->draw();
 
-	//draw AoE spells
-	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
-	for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
-		if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
-				activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
-		}
-	}
+	////draw AoE spells
+	//std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
+	//for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
+	//	if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
+	//			activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
+	//	}
+	//}
 
 	// draw the interactions on screen
 	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
@@ -284,19 +284,24 @@ void DrawScene()
 
 		// draw the spell effects for our NPCs
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
-		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-						if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
-								activeSpellActions[ curActiveSpellNr ].first->drawEffect();
-						}
-				}
+		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
+		{
+			if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() )
+			{
+				activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+			}
 		}
+	}
+
 	// draw the spell effects for our player.
-		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
-		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr ) {
-				if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() ) {
-						activeSpellActions[ curActiveSpellNr ].first->drawEffect();
-				}
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
+	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
+	{
+		if ( !activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() )
+		{
+			activeSpellActions[ curActiveSpellNr ].first->drawEffect();
 		}
+	}
 
 	// check our FPS and output it
 	thisframe=SDL_GetTicks();	// Count the FPS

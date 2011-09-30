@@ -39,17 +39,18 @@ Quest::~Quest()
 
 void Quest::addRequiredItemForCompletion( Item *requiredItem, int quantity )
 {
-    requiredItems.push_back( std::pair<Item*,int8_t> ( requiredItem, quantity ) );
+	requiredItems.push_back( std::pair<Item*,int8_t> ( requiredItem, quantity ) );
 }
 
 bool Quest::isItemRequiredInQuest( Item *item ) const
 {
-    for ( size_t curItem = 0; curItem < requiredItems.size(); curItem++ ) {
-        if ( requiredItems[ curItem ].first == item ) {
-            return true;
-        }
-    }
-    return false;
+	for( size_t curItem = 0; curItem < requiredItems.size(); curItem++ )
+	{
+		if( requiredItems[ curItem ].first == item ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Quest::setExperienceReward( uint16_t experienceReward )

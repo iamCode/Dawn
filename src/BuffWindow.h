@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __C_BUFFWINDOW_H_
-#define __C_BUFFWINDOW_H_
+#ifndef BUFFWINDOW_H
+#define BUFFWINDOW_H
 
 #include "CTexture.h"
 #include "GLFT_Font.h"
@@ -29,23 +29,22 @@ class Player;
 
 class BuffWindow : public FramesBase
 {
-    public:
-        BuffWindow( Player *player );
-        ~BuffWindow();
+public:
+	BuffWindow( Player* player );
+	~BuffWindow();
 
-        void initFonts();
-        void loadTextures();
-        void draw( int mouseX, int mouseY );
-        void clicked( int mouseX, int mouseY, uint8_t mouseState );
-        CSpellActionBase* getSpellAtMouse( int mouseX, int mouseY );
+	void initFonts();
+	void loadTextures();
+	void draw( int mouseX, int mouseY );
+	void clicked( int mouseX, int mouseY, uint8_t mouseState );
+	CSpellActionBase* getSpellAtMouse( int mouseX, int mouseY );
 
-    private:
-        Tooltip *tooltip;
-        Player *player;
-        GLFT_Font *spellFont;
-        CTexture textures;
-        std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
+private:
+	Tooltip* tooltip;
+	Player* player;
+	GLFT_Font* spellFont;
+	CTexture textures;
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpells;
 };
-
 
 #endif

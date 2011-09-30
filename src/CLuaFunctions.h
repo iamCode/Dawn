@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef LUAFUNCTIONS_H
-#define LUAFUNCTIONS_H
+#ifndef C_LUA_FUNCTIONS_H
+#define C_LUA_FUNCTIONS_H
 
 #include <string>
 
@@ -53,4 +53,4 @@ namespace LuaFunctions
 
 } // namespace LuaFunctions
 
-#endif // LUAFUNCTIONS_H
+#endif

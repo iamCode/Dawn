@@ -26,73 +26,73 @@
 
 class FramesBase
 {
-    public:
-        FramesBase();
-		FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ );
-		~FramesBase();
+public:
+	FramesBase();
+	FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ );
+	~FramesBase();
 
-        void addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY );
-        void addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY );
+	void addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY );
+	void addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY );
 
-        void moveFrame( uint16_t mouseX, uint16_t mouseY );
-        void stopMovingFrame( uint16_t mouseX, uint16_t mouseY );
-        bool isMovingFrame() const;
+	void moveFrame( uint16_t mouseX, uint16_t mouseY );
+	void stopMovingFrame( uint16_t mouseX, uint16_t mouseY );
+	bool isMovingFrame() const;
 
-        bool isMouseOnTitlebar( int mouseX, int mouseY ) const;
-        bool isMouseOnCloseButton( int mouseX, int mouseY ) const;
-        virtual bool isMouseOnFrame( int mouseX, int mouseY ) const;
-        virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
-        virtual void draw( int mouseX, int mouseY );
+	bool isMouseOnTitlebar( int mouseX, int mouseY ) const;
+	bool isMouseOnCloseButton( int mouseX, int mouseY ) const;
+	virtual bool isMouseOnFrame( int mouseX, int mouseY ) const;
+	virtual void clicked( int mouseX, int mouseY, uint8_t mouseState );
+	virtual void draw( int mouseX, int mouseY );
 
-		virtual void addChildFrame( int relPosX, int relPosY, std::auto_ptr<FramesBase> newChild );
-		virtual int getPosX() const;
-		virtual int getPosY() const;
-		virtual int getWidth() const;
-		virtual int getHeight() const;
-		void setPosition( int parentOffsetX, int parentOffsetY );
+	virtual void addChildFrame( int relPosX, int relPosY, std::auto_ptr<FramesBase> newChild );
+	virtual int getPosX() const;
+	virtual int getPosY() const;
+	virtual int getWidth() const;
+	virtual int getHeight() const;
+	void setPosition( int parentOffsetX, int parentOffsetY );
 
-        virtual void toggle();
-        void setOnTop();
+	virtual void toggle();
+	void setOnTop();
 
-        bool isVisible() const;
-        void setVisible( bool visible );
+	bool isVisible() const;
+	void setVisible( bool visible );
 
-    protected:
-		void addToParent( int posOffsetX, int posOffestY, FramesBase *parent );
-		void setFramesDawnState( DawnState::DawnState framesDawnState );
-		std::vector<FramesBase*> getChildFrames();
+protected:
+	void addToParent( int posOffsetX, int posOffestY, FramesBase *parent );
+	void setFramesDawnState( DawnState::DawnState framesDawnState );
+	std::vector<FramesBase*> getChildFrames();
 
-        bool visible;
-        DawnState::DawnState framesDawnState;
+	bool visible;
+	DawnState::DawnState framesDawnState;
 
-        int16_t posX;
-		int16_t posY;
+	int16_t posX;
+	int16_t posY;
 
-		uint16_t frameWidth;
-		uint16_t frameHeight;
-		int16_t frameOffsetX;
-		int16_t frameOffsetY;
+	uint16_t frameWidth;
+	uint16_t frameHeight;
+	int16_t frameOffsetX;
+	int16_t frameOffsetY;
 
-		uint16_t titleWidth;
-		uint16_t titleHeight;
-		int16_t titleOffsetX;
-		int16_t titleOffsetY;
+	uint16_t titleWidth;
+	uint16_t titleHeight;
+	int16_t titleOffsetX;
+	int16_t titleOffsetY;
 
-		uint16_t buttonWidth;
-		uint16_t buttonHeight;
-		int16_t buttonOffsetX;
-		int16_t buttonOffsetY;
+	uint16_t buttonWidth;
+	uint16_t buttonHeight;
+	int16_t buttonOffsetX;
+	int16_t buttonOffsetY;
 
-		uint16_t startMovingFrameXpos;
-        uint16_t startMovingFrameYpos;
+	uint16_t startMovingFrameXpos;
+	uint16_t startMovingFrameYpos;
 
-		std::vector<FramesBase*> childFrames;
-		FramesBase *parentFrame;
+	std::vector<FramesBase*> childFrames;
+	FramesBase *parentFrame;
 
-    private:
-        bool closeButton;
-        bool moveableFrame;
-        bool movingFrame;
+private:
+	bool closeButton;
+	bool moveableFrame;
+	bool movingFrame;
 };
 
 #endif

@@ -29,78 +29,78 @@ class InventoryItem;
 
 class InventoryScreenSlot
 {
-	private:
-		ItemSlot::ItemSlot itemSlot;
-		size_t offsetX;
-		size_t offsetY;
-		size_t sizeX;
-		size_t sizeY;
-		CTexture textures;
+private:
+	ItemSlot::ItemSlot itemSlot;
+	size_t offsetX;
+	size_t offsetY;
+	size_t sizeX;
+	size_t sizeY;
+	CTexture textures;
 
-	public:
-		InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string plain_file );
-		size_t getOffsetX() const;
-		size_t getOffsetY() const;
-		size_t getSizeX() const;
-		size_t getSizeY() const;
-		CTexture *getTexture();
+public:
+	InventoryScreenSlot( ItemSlot::ItemSlot itemSlot, size_t offsetX, size_t offsetY, size_t sizeX, size_t sizeY, std::string plain_file );
+	size_t getOffsetX() const;
+	size_t getOffsetY() const;
+	size_t getSizeX() const;
+	size_t getSizeY() const;
+	CTexture *getTexture();
 
-		ItemSlot::ItemSlot getItemSlot() const;
+	ItemSlot::ItemSlot getItemSlot() const;
 };
 
 class InventoryScreen : public FramesBase
 {
-	private:
-		Player *player;
-		CTexture textures;
+private:
+	Player* player;
+	CTexture textures;
 
-		InventoryItem *floatingSelection;
+	InventoryItem* floatingSelection;
 
-		InventoryScreenSlot **mySlots;
+	InventoryScreenSlot** mySlots;
 
-		GLFT_Font *coinsFont;
+	GLFT_Font* coinsFont;
 
-		void drawBackpack();
-		void dropItemOnGround( InventoryItem *item );
+	void drawBackpack();
+	void dropItemOnGround( InventoryItem* item );
 
-		size_t backpackFieldWidth;
-		size_t backpackFieldHeight;
-		size_t backpackSeparatorWidth;
-		size_t backpackSeparatorHeight;
-		size_t backpackOffsetX;
-		size_t backpackOffsetY;
-		size_t numSlotsX;
-		size_t numSlotsY;
-		
-		void equipOnSlotOriginDependingAndPlaySound( ItemSlot::ItemSlot slotToUse, InventoryItem *wieldItem, bool fromShop , InventoryItem *newFloatingSelection );
+	size_t backpackFieldWidth;
+	size_t backpackFieldHeight;
+	size_t backpackSeparatorWidth;
+	size_t backpackSeparatorHeight;
+	size_t backpackOffsetX;
+	size_t backpackOffsetY;
+	size_t numSlotsX;
+	size_t numSlotsY;
 
-	public:
-		InventoryScreen( Player *player_ );
-		~InventoryScreen();
+	void equipOnSlotOriginDependingAndPlaySound( ItemSlot::ItemSlot slotToUse, InventoryItem* wieldItem, bool fromShop , InventoryItem* newFloatingSelection );
 
-		void clicked( int clickX, int clickY, uint8_t mouseState );
+public:
+	InventoryScreen( Player* player_ );
+	~InventoryScreen();
 
-		void loadTextures();
-		void setTextureDependentPositions();
+	void clicked( int clickX, int clickY, uint8_t mouseState );
 
-		void draw( int mouseX, int mouseY );
-		void drawCoins();
-		void drawSlot( ItemSlot::ItemSlot curSlot );
-		void drawFloatingSelection( int mouseX, int mouseY );
-		void drawItemPlacement( int mouseX, int mouseY );
-		void drawItemTooltip( int mouseX, int mouseY );
+	void loadTextures();
+	void setTextureDependentPositions();
 
-		bool isMouseOnThisFrame( int mouseX, int mouseY ) const;
-		bool isOnBackpackScreen( int mouseX, int mouseY ) const;
-		bool isOverSlot( ItemSlot::ItemSlot itemSlot, int mouseX, int mouseY ) const;
-		bool hasFloatingSelection() const;
+	void draw( int mouseX, int mouseY );
+	void drawCoins();
+	void drawSlot( ItemSlot::ItemSlot curSlot );
+	void drawFloatingSelection( int mouseX, int mouseY );
+	void drawItemPlacement( int mouseX, int mouseY );
+	void drawItemTooltip( int mouseX, int mouseY );
 
-        InventoryItem *getFloatingSelection() const;
+	bool isMouseOnThisFrame( int mouseX, int mouseY ) const;
+	bool isOnBackpackScreen( int mouseX, int mouseY ) const;
+	bool isOverSlot( ItemSlot::ItemSlot itemSlot, int mouseX, int mouseY ) const;
+	bool hasFloatingSelection() const;
 
-		ItemSlot::ItemSlot getMouseOverSlot( int mouseX, int mouseY ) const;
+	InventoryItem* getFloatingSelection() const;
 
-		void setFloatingSelection( InventoryItem *item );
-		void unsetFloatingSelection();
+	ItemSlot::ItemSlot getMouseOverSlot( int mouseX, int mouseY ) const;
+
+	void setFloatingSelection( InventoryItem* item );
+	void unsetFloatingSelection();
 };
 
 #endif

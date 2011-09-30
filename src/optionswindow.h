@@ -26,33 +26,33 @@ class GLFT_Font;
 
 class OptionsWindow : public FramesBase
 {
-    friend class ChooseClassScreen;
-	public:
-		OptionsWindow();
-		~OptionsWindow();
-		void draw( int mouseX, int mouseY );
-		void setTextureDependentPositions();
-		void clicked( int mouseX, int mouseY, uint8_t mouseState );
+	friend class ChooseClassScreen;
+public:
+	OptionsWindow();
+	~OptionsWindow();
+	void draw( int mouseX, int mouseY );
+	void setTextureDependentPositions();
+	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-	private:
-		CTexture *backgroundTexture;
-		GLFT_Font *font;
+private:
+	CTexture *backgroundTexture;
+	GLFT_Font *font;
 };
 
 class ChooseClassScreen : public FramesBase
 {
-    public:
-        ChooseClassScreen();
-        ~ChooseClassScreen();
-        bool isDone() const;
-        void setTextureDependentPositions();
-		void draw( int mouseX, int mouseY );
-		void clicked( int mouseX, int mouseY, uint8_t mouseState );
+public:
+	ChooseClassScreen();
+	~ChooseClassScreen();
+	bool isDone() const;
+	void setTextureDependentPositions();
+	void draw( int mouseX, int mouseY );
+	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-    private:
-        CTexture *backgroundTexture;
-        GLFT_Font *font;
-        bool done;
+private:
+	CTexture *backgroundTexture;
+	GLFT_Font *font;
+	bool done;
 };
 
 #endif // OPTIONSWINDOW_H

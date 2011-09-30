@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __C_DRAWING_HELPERS_H_
-#define __C_DRAWING_HELPERS_H_
+#ifndef C_DRAWING_HELPERS_H
+#define C_DRAWING_HELPERS_H
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
 #include "configuration.h"

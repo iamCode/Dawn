@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __ACTIONBAR_H__
-#define __ACTIONBAR_H__
+#ifndef ACTIONBAR_H
+#define ACTIONBAR_H
 
 #include "tooltip.h"
 #include "Spellbook.h"
@@ -26,8 +26,8 @@ class Player;
 
 struct sButton
 {
-	CSpellActionBase *action;
-	spellTooltip *tooltip;
+	CSpellActionBase* action;
+	spellTooltip* tooltip;
 	std::string number;
 	int posX;
 	int posY;
@@ -60,46 +60,46 @@ struct sButton
 
 class ActionBar
 {
-	public:
-		ActionBar( Player *player_ );
-		~ActionBar();
+public:
+	ActionBar( Player* player_ );
+	~ActionBar();
 
-		bool isPreparingAoESpell() const;
-		void makeReadyToCast( int x, int y );
-		void stopCastingAoE();
-		bool isMouseOver( int x, int y );
-		bool isButtonUsed( sButton *button ) const;
-		bool isSpellUseable( CSpellActionBase *action );
-		void draw();
-		void drawSpellTooltip( int x, int y );
-		void clicked( int clickX, int clickY );
-		void executeSpellQueue();
-		void handleKeys();
-		void dragSpell();
-		int8_t getMouseOverButtonId( int x, int y );
-		void bindAction ( sButton *button, CSpellActionBase* action );
-		void unbindAction ( sButton *button );
-		void setSpellQueue( sButton &button, bool actionReadyToCast = true );
-		void loadTextures();
-		void initFonts();
-		std::string getLuaSaveText();
-		void bindActionToButtonNr( int buttonNr, CSpellActionBase *action );
-		void clear();
+	bool isPreparingAoESpell() const;
+	void makeReadyToCast( int x, int y );
+	void stopCastingAoE();
+	bool isMouseOver( int x, int y );
+	bool isButtonUsed( sButton* button ) const;
+	bool isSpellUseable( CSpellActionBase* action );
+	void draw();
+	void drawSpellTooltip( int x, int y );
+	void clicked( int clickX, int clickY );
+	void executeSpellQueue();
+	void handleKeys();
+	void dragSpell();
+	int8_t getMouseOverButtonId( int x, int y );
+	void bindAction ( sButton* button, CSpellActionBase* action );
+	void unbindAction ( sButton* button );
+	void setSpellQueue( sButton& button, bool actionReadyToCast = true );
+	void loadTextures();
+	void initFonts();
+	std::string getLuaSaveText();
+	void bindActionToButtonNr( int buttonNr, CSpellActionBase* action );
+	void clear();
 
-	private:
-		Player *player;
-		int posX;
-		int posY;
-		int width;
-		int height;
-		std::vector <sButton> button;
-		CTexture textures;
-		GLFT_Font *shortcutFont;
-		GLFT_Font *cooldownFont;
-		sButton *spellQueue;
-		std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
-		bool preparingAoESpell;
-		int cursorRadius;
+private:
+	Player* player;
+	int posX;
+	int posY;
+	int width;
+	int height;
+	std::vector <sButton> button;
+	CTexture textures;
+	GLFT_Font* shortcutFont;
+	GLFT_Font* cooldownFont;
+	sButton* spellQueue;
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > cooldownSpells;
+	bool preparingAoESpell;
+	int cursorRadius;
 };
 
 #endif
