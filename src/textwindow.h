@@ -55,7 +55,7 @@ class TextWindow : public FramesBase
 		void close();
 
 		void clicked( int mouseX, int mouseY, uint8_t mouseState );
-		void draw();// int mouseX, int mouseY );
+		void draw( int mouseX, int mouseY );
 
 	private:
 		friend TextWindow* DawnInterface::createTextWindow();

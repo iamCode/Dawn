@@ -30,7 +30,7 @@ extern int64_t numTexturesDrawn;
 
 namespace DrawingHelpers
 {
-	inline void mapTextureToRect( struct sTexture&stexture, int left, int width, int bottom, int height )
+	inline void mapTextureToRect( struct sTexture& stexture, int left, int width, int bottom, int height )
 	{
 		++numTexturesDrawn;
 		GLuint texture = stexture.texture;
@@ -41,32 +41,37 @@ namespace DrawingHelpers
 		glGetIntegerv( GL_TEXTURE_BINDING_2D, &paramValue );
 		boundTexture = static_cast<GLuint>(paramValue);
 
-		if ( boundTexture != texture ) {
+		if( boundTexture != texture )
+		{
 			glBindTexture( GL_TEXTURE_2D, texture);
 		}
 
 		glBegin( GL_QUADS );
-		// Bottom-left vertex (corner)
-		glTexCoord2f( stexture.x1, stexture.y1 );
-		glVertex3f( left, bottom, 0.0f );
-		// Bottom-right vertex (corner)
-		glTexCoord2f( stexture.x2, stexture.y1 );
-		glVertex3f( left + width, bottom, 0.0f );
-		// Top-right vertex (corner)
-		glTexCoord2f( stexture.x2, stexture.y2 );
-		glVertex3f( left + width, bottom + height, 0.0f );
-		// Top-left vertex (corner)
-		glTexCoord2f( stexture.x1, stexture.y2 );
-		glVertex3f( left, bottom + height, 0.0f );
+			// Bottom-left vertex (corner)
+			glTexCoord2f( stexture.x1, stexture.y1 );
+			glVertex3f( left, bottom, 0.0f );
+
+			// Bottom-right vertex (corner)
+			glTexCoord2f( stexture.x2, stexture.y1 );
+			glVertex3f( left + width, bottom, 0.0f );
+
+			// Top-right vertex (corner)
+			glTexCoord2f( stexture.x2, stexture.y2 );
+			glVertex3f( left + width, bottom + height, 0.0f );
+
+			// Top-left vertex (corner)
+			glTexCoord2f( stexture.x1, stexture.y2 );
+			glVertex3f( left, bottom + height, 0.0f );
 		glEnd();
 	}
 
 	inline bool isRectOnScreen( int left, int width, int bottom, int height )
 	{
-		if (    left >= (world_x + Configuration::screenWidth)           // object right of screen
-				|| bottom >= (world_y + Configuration::screenHeight)         // object above screen
-		        || (left + width) <= world_x           // object left of screen
-		        || (bottom + height) <= world_y ) {    // object below screen
+		if( left >= (world_x + Configuration::screenWidth) ||   	// object right of screen
+		    bottom >= (world_y + Configuration::screenHeight) ||	// object above screen
+		    (left + width) <= world_x ||                        	// object left of screen
+		    (bottom + height) <= world_y )                      	// object below screen
+		{
 			return false;
 		}
 		return true;
@@ -78,5 +83,4 @@ namespace DrawingHelpers
 	}
 }
 
-#endif // __DRAWING_HELPERS_H
-
+#endif

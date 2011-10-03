@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __SPELLBOOK_H__
-#define __SPELLBOOK_H__
+#ifndef SPELLBOOK_H
+#define SPELLBOOK_H
 
 #include "CTexture.h"
 #include "CSpell.h"
@@ -29,74 +29,73 @@ class Player;
 
 struct sSpellSlot
 {
-    CSpellActionBase *action;
-    GLFT_Font *font;
-    Tooltip *tooltip;
-    int posX;
-    int posY;
-    int width;
-    int height;
+	CSpellActionBase* action;
+	GLFT_Font* font;
+	Tooltip* tooltip;
+	int posX;
+	int posY;
+	int width;
+	int height;
 
-    void initFont();
+	void initFont();
 
-    sSpellSlot(int posX_, int posY_, int width_, int height_)
-    {
-        posX = posX_;
-        posY = posY_;
-        width = width_;
-        height = height_;
-        action = NULL;
-        font = NULL;
-        tooltip = NULL;
-        initFont();
-    }
+	sSpellSlot(int posX_, int posY_, int width_, int height_)
+	{
+		posX = posX_;
+		posY = posY_;
+		width = width_;
+		height = height_;
+		action = NULL;
+		font = NULL;
+		tooltip = NULL;
+		initFont();
+	}
 };
 
 class Spellbook : public FramesBase
 {
-    public:
-        Spellbook( Player *player );
-        ~Spellbook();
-        void loadTextures();
-        void draw( int mouseX, int mouseY );
-        void drawSpellTooltip( int mouseX, int mouseY );
-        void drawFloatingSpell( int mouseY, int mouseX );
-        void clicked( int mouseX, int mouseY, uint8_t mouseState );
+public:
+	Spellbook( Player* player );
+	~Spellbook();
+	void loadTextures();
+	void draw( int mouseX, int mouseY );
+	void drawSpellTooltip( int mouseX, int mouseY );
+	void drawFloatingSpell( int mouseY, int mouseX );
+	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
-        bool hasFloatingSpell() const;
+	bool hasFloatingSpell() const;
 
-        int8_t getMouseOverSpellSlotId( int mouseX, int mouseY ) const;
-        sSpellSlot *getFloatingSpell() const;
-		void setFloatingSpell( CSpellActionBase *newFloatingSpell );
-        void unsetFloatingSpell();
-        void reloadSpellsFromPlayer();
-        void clear();
-        std::string getLuaSaveText() const;
+	int8_t getMouseOverSpellSlotId( int mouseX, int mouseY ) const;
+	sSpellSlot* getFloatingSpell() const;
+	void setFloatingSpell( CSpellActionBase* newFloatingSpell );
+	void unsetFloatingSpell();
+	void reloadSpellsFromPlayer();
+	void clear();
+	std::string getLuaSaveText() const;
 
-    private:
-		bool isMouseOverNextPageArea( int mouseX, int mouseY );
-		bool isMouseOverPreviousPageArea( int mouseX, int mouseY );
-		void nextPage();
-		void previousPage();
-		void refreshPage();
+private:
+	bool isMouseOverNextPageArea( int mouseX, int mouseY );
+	bool isMouseOverPreviousPageArea( int mouseX, int mouseY );
+	void nextPage();
+	void previousPage();
+	void refreshPage();
 
-		int nextPageButtonOffsetX;
-		int nextPageButtonOffsetY;
+	int nextPageButtonOffsetX;
+	int nextPageButtonOffsetY;
 
-		int previousPageButtonOffsetX;
-		int previousPageButtonOffsetY;
+	int previousPageButtonOffsetX;
+	int previousPageButtonOffsetY;
 
-		int pageButtonWidth;
-		int pageButtonHeight;
+	int pageButtonWidth;
+	int pageButtonHeight;
 
-
-        CTexture textures;
-        std::vector<sSpellSlot> spellSlot;
-		sSpellSlot floatingSpellSlot;
-        std::vector<CSpellActionBase*> inscribedSpells;
-        Player *player;
-        int curPage;
-        sSpellSlot *floatingSpell;
+	CTexture textures;
+	std::vector<sSpellSlot> spellSlot;
+	sSpellSlot floatingSpellSlot;
+	std::vector<CSpellActionBase*> inscribedSpells;
+	Player* player;
+	int curPage;
+	sSpellSlot* floatingSpell;
 };
 
 #endif
