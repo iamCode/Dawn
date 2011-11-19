@@ -55,6 +55,7 @@ public:
 	void initFonts();
 	bool enabled;
 	void DrawInterface();
+	void DrawCursor();
 	void drawTargetedNPCText();
 	void drawCombatText();
 	void drawCharacterStates();

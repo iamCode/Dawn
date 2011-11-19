@@ -33,7 +33,7 @@ bool GameLoopHandler::isDone()
 
 #include "threadObject/Thread.h"
 #include "GLee/GLee.h"
-#include "GL/gl.h"
+#include <GL/gl.h>
 #include "FramesBase.h"
 extern std::vector <FramesBase*> activeFrames;
 #include "configuration.h"
@@ -51,9 +51,13 @@ void MainMenuHandler::drawScene()
 	glClear( GL_COLOR_BUFFER_BIT );
 	glLoadIdentity(); // reset view to 0,0
 
-	for ( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame ) {
+	for( int curFrame = activeFrames.size()-1; curFrame >= 0; --curFrame )
+	{
 		activeFrames[curFrame]->draw( lastEvent->motion.x, Configuration::screenHeight - lastEvent->motion.y - 1 );
 	}
+
+
+
 	SDL_GL_SwapBuffers();
 }
 
@@ -114,6 +118,7 @@ LoadingScreenHandler::LoadingScreenHandler( LoadingScreen *loadingScreen, Loadin
 {
 	this->loadingScreen = loadingScreen;
 	this->loadingManager = loadingManager;
+
 }
 
 void LoadingScreenHandler::activate( SDL_Event *lastEvent )
@@ -135,6 +140,8 @@ void LoadingScreenHandler::activate( SDL_Event *lastEvent )
 
 	initPhase = true;
 	textureFrame = new TextureFrame();
+
+	SDL_ShowCursor(false);
 
 	loadingManager->startBackgroundThread();
 //	DawnState::setDawnState( DawnState::LoadingScreen );

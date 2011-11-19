@@ -248,69 +248,72 @@ void DrawScene()
 	// draw items on the ground
 	curZone->getGroundLoot()->draw();
 
-	////draw AoE spells
-	//std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
-	//for ( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr ) {
-	//	if ( ! activeAoESpells[ curActiveAoESpellNr ].first->isEffectComplete() ) {
-	//			activeAoESpells[ curActiveAoESpellNr ].first->drawEffect();
-	//	}
-	//}
+	// draw AoE spells
+	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells = Globals::getActiveAoESpells();
+	for( size_t curActiveAoESpellNr = 0; curActiveAoESpellNr < activeAoESpells.size(); ++curActiveAoESpellNr )
+	{
+		if( !activeAoESpells[curActiveAoESpellNr].first->isEffectComplete() )
+		{
+				activeAoESpells[curActiveAoESpellNr].first->drawEffect();
+		}
+	}
 
 	// draw the interactions on screen
 	std::vector<InteractionPoint*> zoneInteractionPoints = curZone->getInteractionPoints();
-	for ( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr ) {
-		InteractionPoint *curInteraction = zoneInteractionPoints[ curInteractionNr ];
+	for( size_t curInteractionNr=0; curInteractionNr<zoneInteractionPoints.size(); ++curInteractionNr )
+	{
+		InteractionPoint *curInteraction = zoneInteractionPoints[curInteractionNr];
 		curInteraction->draw();
 	}
 
 	// draw the NPC
 	std::vector<CNPC*> zoneNPCs = curZone->getNPCs();
-	for (unsigned int x=0; x<zoneNPCs.size(); x++)
+	for( unsigned int x=0; x<zoneNPCs.size(); x++ )
 	{
 		CNPC *curNPC = zoneNPCs[x];
 		curNPC->Draw();
 	}
 
-	Player *player = Globals::getPlayer();
+	Player* player = Globals::getPlayer();
 	player->Draw();
 
-	for (unsigned int x=0; x<zoneNPCs.size(); x++)
+	for( unsigned int x=0; x<zoneNPCs.size(); x++ )
 	{
 		CNPC *curNPC = zoneNPCs[x];
-		if ( player->getTarget() == curNPC )
+		if( player->getTarget() == curNPC )
 		{
 			GUI.drawTargetedNPCText();
 		}
 
 		// draw the spell effects for our NPCs
 		std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = curNPC->getActiveSpells();
-		for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
+		for( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
 		{
-			if ( ! activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() )
+			if( !activeSpellActions[curActiveSpellNr].first->isEffectComplete() )
 			{
-				activeSpellActions[ curActiveSpellNr ].first->drawEffect();
+				activeSpellActions[curActiveSpellNr].first->drawEffect();
 			}
 		}
 	}
 
 	// draw the spell effects for our player.
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > activeSpellActions = player->getActiveSpells();
-	for ( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
+	for( size_t curActiveSpellNr = 0; curActiveSpellNr < activeSpellActions.size(); ++curActiveSpellNr )
 	{
-		if ( !activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() )
+		if( !activeSpellActions[ curActiveSpellNr ].first->isEffectComplete() )
 		{
 			activeSpellActions[ curActiveSpellNr ].first->drawEffect();
 		}
 	}
 
 	// check our FPS and output it
-	thisframe=SDL_GetTicks();	// Count the FPS
+	thisframe = SDL_GetTicks(); // Count the FPS
 	ff++;
 	if( ( thisframe-lastframe ) > 1000 )
 	{
-		fps=ff;
-		ff=0;
-		lastframe=thisframe;
+		fps = ff;
+		ff = 0;
+		lastframe = thisframe;
 	}
 
 	if( Editor.isEnabled() )
@@ -364,6 +367,8 @@ void DrawScene()
 	message.DrawAll();
 	message.DeleteDecayed();
 
+	GUI.DrawCursor();
+
 	SDL_GL_SwapBuffers();
 }
 
@@ -389,7 +394,9 @@ int64_t numTexturesDrawn = 0;
 bool dawn_init( int argc, char* argv[] )
 {
 	if( !HandleCommandLineAurguments( argc, argv ) )
+	{
 		return false;
+	}
 
 	std::string sdlVideoCenteredParam( "SDL_VIDEO_CENTERED=1" );
 	putenv( const_cast<char*>(sdlVideoCenteredParam.c_str()) );
@@ -464,7 +471,9 @@ bool dawn_init( int argc, char* argv[] )
 	Resolution::setResolution( screen, configResolution );
 
 	if ( !screen )
+	{
 		dawn_debug_fatal( "Unable to set resolution" );
+	}
 
 	SoundEngine::initSound();
 	SoundEngine::playMusic( "data/music/loading.ogg", true );
@@ -513,6 +522,7 @@ void setQuitGame()
 void game_loop()
 {
 	SDL_Event lastEvent;
+
 	// activate first game loop handler
 	if( currentGameLoopHandler != NULL )
 	{

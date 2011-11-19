@@ -26,65 +26,69 @@
 #include "random.h"
 #include <vector>
 
-namespace DawnInterface {
-    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+int mx, my;
+
+namespace DawnInterface
+{
+	void addTextToLogWindow( GLfloat color[], const char* text, ... );
 }
 
 CInterface::CInterface()
 {
-    NPCTextFont = NULL;
+	NPCTextFont = NULL;
 }
 
 void CInterface::initFonts()
 {
-    NPCTextFont = FontCache::getFontFromCache("data/verdana.ttf",12);
-    levelFont = FontCache::getFontFromCache("data/verdana.ttf", 12);
+	NPCTextFont = FontCache::getFontFromCache( "data/verdana.ttf", 12 );
+	levelFont = FontCache::getFontFromCache( "data/verdana.ttf", 12 );
 }
 
 void CInterface::LoadTextures()
 {
-	interfacetextures.LoadIMG("data/lifebar.tga",0);
-    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_background.tga",1);
-    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_left.tga",2);
-    interfacetextures.LoadIMG("data/interface/tooltip/NPCTarget_right.tga",3);
-    interfacetextures.LoadIMG("data/white2x2pixel.tga",4);
-    interfacetextures.LoadIMG("data/interface/BuffWindow/frame.tga",5);
-	interfacetextures.LoadIMG("data/interface/BuffWindow/background.tga",6);
-	interfacetextures.LoadIMG("data/fear.tga",7);
-	interfacetextures.LoadIMG("data/stun.tga",8);
-	interfacetextures.LoadIMG("data/confused.tga",9);
-	interfacetextures.LoadIMG("data/mesmerized.tga",10);
-	interfacetextures.LoadIMG("data/interface/Portrait/base.tga",11);
-	interfacetextures.LoadIMG("data/interface/Portrait/bar.tga",12);
-	interfacetextures.LoadIMG("data/interface/Portrait/bar_small.tga",13);
-	interfacetextures.LoadIMG("data/interface/Portrait/Warrior.tga",14);
+	interfacetextures.LoadIMG( "data/lifebar.tga", 0);
+	interfacetextures.LoadIMG( "data/interface/tooltip/NPCTarget_background.tga", 1);
+	interfacetextures.LoadIMG( "data/interface/tooltip/NPCTarget_left.tga", 2);
+	interfacetextures.LoadIMG( "data/interface/tooltip/NPCTarget_right.tga", 3);
+	interfacetextures.LoadIMG( "data/white2x2pixel.tga", 4);
+	interfacetextures.LoadIMG( "data/interface/BuffWindow/frame.tga", 5);
+	interfacetextures.LoadIMG( "data/interface/BuffWindow/background.tga", 6);
+	interfacetextures.LoadIMG( "data/fear.tga", 7);
+	interfacetextures.LoadIMG( "data/stun.tga", 8);
+	interfacetextures.LoadIMG( "data/confused.tga", 9);
+	interfacetextures.LoadIMG( "data/mesmerized.tga", 10);
+	interfacetextures.LoadIMG( "data/interface/Portrait/base.tga", 11);
+	interfacetextures.LoadIMG( "data/interface/Portrait/bar.tga", 12);
+	interfacetextures.LoadIMG( "data/interface/Portrait/bar_small.tga", 13);
+	interfacetextures.LoadIMG( "data/interface/Portrait/Warrior.tga", 14);
+	interfacetextures.LoadIMG( "data/cursors/pointer.png", 15);
 
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/0small.tga",0);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/1small.tga",1);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/2small.tga",2);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/3small.tga",3);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/4small.tga",4);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/5small.tga",5);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/6small.tga",6);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/7small.tga",7);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/8small.tga",8);
-	damageDisplayTexturesSmall.LoadIMG("data/interface/combattext/9small.tga",9);
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/0small.tga", 0 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/1small.tga", 1 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/2small.tga", 2 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/3small.tga", 3 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/4small.tga", 4 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/5small.tga", 5 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/6small.tga", 6 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/7small.tga", 7 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/8small.tga", 8 );
+	damageDisplayTexturesSmall.LoadIMG( "data/interface/combattext/9small.tga", 9 );
 
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/0big.tga",0);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/1big.tga",1);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/2big.tga",2);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/3big.tga",3);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/4big.tga",4);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/5big.tga",5);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/6big.tga",6);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/7big.tga",7);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/8big.tga",8);
-	damageDisplayTexturesBig.LoadIMG("data/interface/combattext/9big.tga",9);
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/0big.tga", 0 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/1big.tga", 1 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/2big.tga", 2 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/3big.tga", 3 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/4big.tga", 4 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/5big.tga", 5 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/6big.tga", 6 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/7big.tga", 7 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/8big.tga", 8 );
+	damageDisplayTexturesBig.LoadIMG( "data/interface/combattext/9big.tga", 9 );
 }
 
 void CInterface::DrawInterface()
 {
-    /// start drawing our portrait, with lifebar, mana, fatigue, exp
+	/// start drawing our portrait, with lifebar, mana, fatigue, exp
 
 	// draw the portrait of the character (ie, a humanlike guy or girl)
 	DrawingHelpers::mapTextureToRect( player->getPortraitTexture()->getTexture(0),
@@ -97,71 +101,104 @@ void CInterface::DrawInterface()
 	                                  world_x, interfacetextures.getTexture(11).width,
 									  world_y+50+Configuration::screenHeight-interfacetextures.getTexture(11).height, interfacetextures.getTexture(11).height );
 
-    /** drawing the procentual display of characters life and mana.
-    starts of at an X-offset of 76, this is where the hollow parts of the life, mana, fatigue and experience bars starts.
-    The bar is 123 pixels wide, that means 100% life/mana/fatigue/experience = 123 pixels of bar. **/
-    float lifeBarPercentage = static_cast<float>(player->getCurrentHealth() ) / player->getModifiedMaxHealth();
-    float manaBarPercentage = static_cast<float>(player->getCurrentMana()) / player->getModifiedMaxMana();
-    float fatigueBarPercentage = static_cast<float>( 1 - ( static_cast<float>(player->getCurrentFatigue()) / player->getModifiedMaxFatigue() ) );
-    uint64_t neededXP = (player->getExpNeededForLevel(player->getLevel()+1)) - player->getExpNeededForLevel(player->getLevel());
-    uint64_t currentXP = player->getExperience() - player->getExpNeededForLevel(player->getLevel());
-    float experienceBarPercentage = static_cast<float>( currentXP ) / neededXP;
+	/** drawing the procentual display of characters life and mana.
+	starts of at an X-offset of 76, this is where the hollow parts of the life, mana, fatigue and experience bars starts.
+	The bar is 123 pixels wide, that means 100% life/mana/fatigue/experience = 123 pixels of bar. **/
+	float lifeBarPercentage = static_cast<float>(player->getCurrentHealth() ) / player->getModifiedMaxHealth();
+	float manaBarPercentage = static_cast<float>(player->getCurrentMana()) / player->getModifiedMaxMana();
+	float fatigueBarPercentage = static_cast<float>( 1 - ( static_cast<float>(player->getCurrentFatigue()) / player->getModifiedMaxFatigue() ) );
+	uint64_t neededXP = (player->getExpNeededForLevel(player->getLevel()+1)) - player->getExpNeededForLevel(player->getLevel());
+	uint64_t currentXP = player->getExperience() - player->getExpNeededForLevel(player->getLevel());
+	float experienceBarPercentage = static_cast<float>( currentXP ) / neededXP;
 
-    // draw the barwidth with no transparency.
-    /// health bar
-    glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
+	// draw the barwidth with no transparency.
+	/// health bar
+	glColor4f( 0.815f, 0.16f, 0.16f, 1.0f );
+	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
 	                                  world_x+76, lifeBarPercentage * 123,
-									  world_y+Configuration::screenHeight-35, interfacetextures.getTexture(12).height );
-    /// mana bar
-    if ( player->getArchType() == CharacterArchType::Caster ) {
-        glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
-        DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
-                                        world_x+76, manaBarPercentage * 123,
-										world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
-    }
+	                                  world_y+Configuration::screenHeight-35, interfacetextures.getTexture(12).height );
+	/// mana bar
+	if( player->getArchType() == CharacterArchType::Caster )
+	{
+		glColor4f( 0.16f, 0.576f, 0.815f, 1.0f );
+		DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
+		                                  world_x+76, manaBarPercentage * 123,
+		                                  world_y+Configuration::screenHeight-53,
+		                                  interfacetextures.getTexture(12).height );
+	}
 
-    /// fatigue bar
-    if ( player->getArchType() == CharacterArchType::Fighter ) {
-        if ( fatigueBarPercentage <= 0.33 ) {
-            glColor4f( 0.109f, 0.917f, 0.047f, 1.0f );
-        } else if ( fatigueBarPercentage >= 0.34 && fatigueBarPercentage <= 0.66 ) {
-            glColor4f( 0.917f, 0.847f, 0.047f, 1.0f );
-        } else {
-            glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
-        }
-        DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
-                                          world_x+76, fatigueBarPercentage * 123,
-										  world_y+Configuration::screenHeight-53, interfacetextures.getTexture(12).height );
-    }
+	/// fatigue bar
+	if( player->getArchType() == CharacterArchType::Fighter )
+	{
+		if( fatigueBarPercentage <= 0.33 )
+		{
+			glColor4f( 0.109f, 0.917f, 0.047f, 1.0f );
+		}
+		else if( fatigueBarPercentage >= 0.34 && fatigueBarPercentage <= 0.66 )
+		{
+			glColor4f( 0.917f, 0.847f, 0.047f, 1.0f );
+		}
+		else
+		{
+			glColor4f( 0.917f, 0.047f, 0.047f, 1.0f );
+		}
 
-    /// exp bar
-    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-    DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(13),
-                                    world_x+76, experienceBarPercentage * 123,
-									world_y+Configuration::screenHeight-67, interfacetextures.getTexture(13).height );
+		DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(12),
+		                                  world_x+76, fatigueBarPercentage * 123,
+		                                  world_y+Configuration::screenHeight-53,
+		                                  interfacetextures.getTexture(12).height );
+	}
 
-    /// draw our level beside the experience bar
-	levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2, world_y+Configuration::screenHeight-70, "%d",player->getLevel() );
+	/// exp bar
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	DrawingHelpers::mapTextureToRect( interfacetextures.getTexture(13),
+	                                  world_x+76, experienceBarPercentage * 123,
+	                                  world_y+Configuration::screenHeight-67,
+	                                  interfacetextures.getTexture(13).height );
 
-    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	/// draw our level beside the experience bar
+	levelFont->drawText( world_x+60-levelFont->calcStringWidth("%d", player->getLevel())/2,
+	                                                           world_y+Configuration::screenHeight-70,
+	                                                           "%d",player->getLevel() );
 
-    /// done with the portrait
+	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-	if (player->continuePreparing()) {
+	/// done with the portrait
+
+	if (player->continuePreparing())
+	{
 		// draw backdrop first.
-        glColor4f(0.5f,0.5f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+Configuration::screenWidth/2-50,100,world_y+100,20);
+		glColor4f(0.5f,0.5f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),
+		                                 world_x+Configuration::screenWidth/2-50,100,
+		                                 world_y+100,20);
+
 		// then the actual castbar
-        glColor4f(0.8f,0.8f,0.0f,1.0f);
-		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),world_x+Configuration::screenWidth/2-50,100*player->getPreparationPercentage(),world_y+100,20);
+		glColor4f(0.8f,0.8f,0.0f,1.0f);
+		DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(0),
+		                                 world_x+Configuration::screenWidth/2-50,
+		                                 100*player->getPreparationPercentage(),
+		                                 world_y+100,20);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
 
-    // drawing damage / healing text floating upwards fading away.
+	// drawing damage / healing text floating upwards fading away.
 	drawCombatText();
+
 	// draw symboms displaying different states of characters / NPCs (fear is one as an example).
 	drawCharacterStates();
+}
+
+void CInterface::DrawCursor()
+{
+	SDL_GetMouseState(&mx, &my);
+	my = Configuration::screenHeight - my - 1;
+
+	DrawingHelpers::mapTextureToRect(interfacetextures.getTexture(15),
+	                                 mx+world_x,
+	                                 19,
+	                                 my+world_y-19,
+	                                 19);
 }
 
 void CInterface::SetPlayer(CCharacter *player_)
