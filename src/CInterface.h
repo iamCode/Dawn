@@ -1,7 +1,7 @@
 /**
     Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #define C_INTERFACE_H
 
 #include "CTexture.h"
-#include "CCharacter.h"
+#include "character.h"
 #include "configuration.h"
 #include "GLFT_Font.h"
 

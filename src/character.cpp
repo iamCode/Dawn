@@ -1,7 +1,7 @@
 /**
     Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#include "CCharacter.h"
+#include "character.h"
 #include <cassert>
 #include "CDrawingHelpers.h"
 #include "CSpell.h"
@@ -27,7 +27,7 @@
 #include "questwindow.h"
 
 #include "CNPC.h"
-#include "Player.h"
+#include "player.h"
 #include "configuration.h"
 #include "globals.h"
 #include "random.h"
@@ -805,9 +805,10 @@ void CCharacter::raiseLevel()
 		setStrength( getStrength() * 1.1 );
 		setLevel( getLevel() + 1 );
 		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-		if ( isPlayer() == true ) {
-		    dynamic_cast<Player*>(this)->setTicketForItemTooltip();
-		    dynamic_cast<Player*>(this)->setTicketForSpellTooltip();
+		if ( isPlayer() == true )
+		{
+			dynamic_cast<Player*>(this)->setTicketForItemTooltip();
+			dynamic_cast<Player*>(this)->setTicketForSpellTooltip();
 		}
 		DawnInterface::addTextToLogWindow( yellow, "You are now a level %d %s.", getLevel(), getClassName().c_str() );
 	}
@@ -815,42 +816,44 @@ void CCharacter::raiseLevel()
 
 void CCharacter::setClass( CharacterClass::CharacterClass characterClass )
 {
-    this->characterClass = characterClass;
-    switch ( characterClass )
-    {
-        /// all caster classes here...
-        case CharacterClass::Liche:
-            characterArchType = CharacterArchType::Caster;
-        break;
+	this->characterClass = characterClass;
+	switch ( characterClass )
+	{
+		/// all caster classes here...
+		case CharacterClass::Liche:
+			characterArchType = CharacterArchType::Caster;
+		break;
 
-        /// and all other fighter classes here...
-        case CharacterClass::Ranger:
-        case CharacterClass::Warrior:
-            characterArchType = CharacterArchType::Fighter;
-        break;
-    }
+		/// and all other fighter classes here...
+		case CharacterClass::Ranger:
+		case CharacterClass::Warrior:
+			characterArchType = CharacterArchType::Fighter;
+		break;
+	}
 
-    /// loading our portrait for the class
-    if ( portrait != NULL ) {
-        delete portrait;
-    }
-    portrait = new CTexture;
-    portrait->LoadIMG( CharacterClass::getCharacterClassPortrait( getClass() ), 0 );
+	/// loading our portrait for the class
+	if ( portrait != NULL )
+	{
+		delete portrait;
+	}
+
+	portrait = new CTexture;
+	portrait->LoadIMG( CharacterClass::getCharacterClassPortrait( getClass() ), 0 );
 }
 
 CharacterClass::CharacterClass CCharacter::getClass() const
 {
-    return characterClass;
+	return characterClass;
 }
 
 CharacterArchType::CharacterArchType CCharacter::getArchType() const
 {
-    return characterArchType;
+	return characterArchType;
 }
 
 std::string CCharacter::getClassName() const
 {
-    return CharacterClass::getCharacterClassName( getClass() );
+	return CharacterClass::getCharacterClassName( getClass() );
 }
 
 void CCharacter::setWanderRadius( uint16_t newWanderRadius )
@@ -877,12 +880,12 @@ uint8_t CCharacter::getLevel() const
 
 void CCharacter::setLootTable( std::vector<sLootTable> newLootTable )
 {
-    lootTable = newLootTable;
+	lootTable = newLootTable;
 }
 
 std::vector<sLootTable> CCharacter::getLootTable() const
 {
-    return lootTable;
+	return lootTable;
 }
 
 void CCharacter::setTexture( ActivityType::ActivityType activity, CTexture *newTexture )

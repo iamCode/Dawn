@@ -1,6 +1,6 @@
 #include "a_star.h"
 
-#include "CDirection.h"
+#include "direction.h"
 
 #include <list>
 #include <limits>

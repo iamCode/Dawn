@@ -1,7 +1,7 @@
 /**
     Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
 #define C_CHARACTER_H
 
 #include "GLee/GLee.h" // OpenGL Easy Extention Library
-#include <SDL/SDL.h> // SDL
-#include <math.h>
+#include <SDL/SDL.h>
+#include <cmath>
 #include <string>
 #include <vector>
 
-#include "CDirection.h"
+#include "direction.h"
 #include "elements.h"
 #include "debug.h"
 #include "configuration.h"
@@ -40,7 +40,7 @@ namespace Attitude
 	};
 }
 
-extern int world_x,world_y;
+extern int world_x, world_y;
 
 class CSpellActionBase;
 class GeneralBuffSpell;
@@ -63,7 +63,8 @@ namespace CharacterClass
 
 	inline std::string getCharacterClassName( CharacterClass::CharacterClass characterClass )
 	{
-		switch ( characterClass ) {
+		switch ( characterClass )
+		{
 			case NOCLASS:
 				return "NOCLASS";
 			break;
@@ -249,12 +250,12 @@ public:
 
 	int CollisionCheck(Direction direction);
 
-	CTexture *getPortraitTexture() const;
+	CTexture* getPortraitTexture() const;
 
 	// casting spells and executing actions
-	void executeSpellWithoutCasting( CSpellActionBase *spell, CCharacter *target );
-	bool castSpell(CSpellActionBase *spell );
-	void giveToPreparation( CSpellActionBase *toPrepare );
+	void executeSpellWithoutCasting( CSpellActionBase* spell, CCharacter* target );
+	bool castSpell( CSpellActionBase* spell );
+	void giveToPreparation( CSpellActionBase* toPrepare );
 	bool continuePreparing();
 	void startSpellAction();
 	void CastingAborted();
@@ -268,11 +269,11 @@ public:
 
 	CCharacter* getTarget() const;
 	Attitude::Attitude getTargetAttitude();
-	void setTarget( CCharacter *target );
-	void setTarget( CCharacter *target, Attitude::Attitude attitude );
+	void setTarget( CCharacter* target );
+	void setTarget( CCharacter* target, Attitude::Attitude attitude );
 
 	//active buffs and debuffs
-	void addActiveSpell( CSpellActionBase *spell );
+	void addActiveSpell( CSpellActionBase* spell );
 	void cleanupActiveSpells();
 	void clearActiveSpells();
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveSpells() const;
@@ -280,14 +281,14 @@ public:
 	void removeActiveSpell( CSpellActionBase* activeSpell );
 
 	//active cooldowns on spells
-	void addCooldownSpell( CSpellActionBase *spell );
+	void addCooldownSpell( CSpellActionBase* spell );
 	void cleanupCooldownSpells();
 	void clearCooldownSpells();
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > getCooldownSpells() const;
 	uint32_t getTicksOnCooldownSpell( std::string spellName ) const;
 	bool isSpellOnCooldown( std::string spellName ) const;
 
-	void inscribeSpellInSpellbook( CSpellActionBase *spell );
+	void inscribeSpellInSpellbook( CSpellActionBase* spell );
 	std::vector<CSpellActionBase*> getSpellbook() const;
 	void setSpellbook( std::vector<CSpellActionBase*> spellbook );
 
@@ -305,15 +306,15 @@ public:
 
 	Direction WanderDirection, MovingDirection, fearDirection, dyingDirection;
 
-	Uint8 *keys;
+	Uint8* keys;
 
 	int GetDirectionTexture();
 	int current_texture, direction_texture;
 	int CheckForCollision(int x, int y);
 	uint32_t remainingMovePoints;
 
-	CCharacter *target;
-	bool hasTarget( CCharacter *target );
+	CCharacter* target;
+	bool hasTarget( CCharacter* target );
 
 	void baseOnType( std::string otherType );
 	std::string getClassID() const;
@@ -454,7 +455,7 @@ public:
 	CharacterArchType::CharacterArchType getArchType() const;
 	std::string getClassName() const;
 
-	void addItemToLootTable( Item *item, double dropChance );
+	void addItemToLootTable( Item* item, double dropChance );
 
 	void setExperience( uint64_t experience );
 	uint64_t getExperience() const;
@@ -472,7 +473,8 @@ public:
 	std::vector<sLootTable> getLootTable() const;
 	void setLootTable( std::vector<sLootTable> newLootTable );
 
-	bool isAlive() const {
+	bool isAlive() const
+	{
 		return alive;
 	}
 
@@ -502,12 +504,12 @@ public:
 	void setCoinDrop( uint32_t minCoinDrop, uint32_t maxCoinDrop, double dropChance );
 
 	void setTexture( ActivityType::ActivityType activity, CTexture *newTexture );
-	CTexture *getTexture( ActivityType::ActivityType activity ) const;
+	CTexture* getTexture( ActivityType::ActivityType activity ) const;
 	void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
 	void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
-	CTexture **texture;
+	CTexture** texture;
 
-	void setActiveGUI( CInterface *GUI_ );
+	void setActiveGUI( CInterface* GUI_ );
 	void addDamageDisplayToGUI( int amount, bool critical, uint8_t damageType );
 
 	void setBoundingBox( int bbx, int bby, int bbw, int bbh );
@@ -520,7 +522,6 @@ public:
 
 
 	bool alive;
-
 	bool hasDrawnDyingOnce;
 
 	// states of the NPC. the functions are from the CharacterStates namespace.
@@ -572,7 +573,7 @@ private:
 	// NPC attributes
 	std::string name;
 
-	CTexture *portrait;
+	CTexture* portrait;
 
 	uint32_t remainingRegenPoints;
 
@@ -617,7 +618,7 @@ private:
 
 	// casting spells / executing actions
 	bool isPreparing;
-	CSpellActionBase *curSpellAction;
+	CSpellActionBase* curSpellAction;
 	uint32_t preparationStartTime, preparationCurrentTime;
 	float preparationPercentage;
 	CInterface *activeGUI;
@@ -632,7 +633,7 @@ private:
 	int boundingBoxH;
 	bool useBoundingBox;
 
-	int *numMoveTexturesPerDirection;
+	int* numMoveTexturesPerDirection;
 	int activeDirection;
 	bool hasChoosenFearDirection;
 	bool hasChoosenDyingDirection;

@@ -1,7 +1,7 @@
 /**
     Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,14 +16,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef C_DIRECTION_H
-#define C_DIRECTION_H
+#ifndef DIRECTION_H
+#define DIRECTION_H
 
 /** directions:
   8-1-2
   7-0-3
   6-5-4 **/
-enum Direction {
+enum Direction
+{
 	STOP = 0,
 	N    = 1,
 	NE   = 2,
@@ -36,4 +37,3 @@ enum Direction {
 };
 
 #endif
-

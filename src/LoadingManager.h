@@ -1,7 +1,7 @@
 /**
     Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <http://sourceforge.net/projects/dawn-rpg/>.
+    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public:
 #include "CharacterInfoScreen.h"
 #include "InventoryScreen.h"
 #include "ActionBar.h"
-#include "Spellbook.h"
+#include "spellbook.h"
 #include "LogWindow.h"
 #include "BuffWindow.h"
 #include "questwindow.h"
@@ -244,12 +244,12 @@ public:
 		setProgress( 0.225 );
 		progressString = "Loading Spell Data";
 		LuaFunctions::executeLuaFile("data/spells.lua");
-        setProgress( 0.375 );
+		setProgress( 0.375 );
 		progressString = "Loading Item Data";
-        LuaFunctions::executeLuaFile("data/itemdatabase.lua");
-        setProgress( 0.525 );
+		LuaFunctions::executeLuaFile("data/itemdatabase.lua");
+		setProgress( 0.525 );
 		progressString = "Loading Mob Data";
-        LuaFunctions::executeLuaFile("data/mobdata.all");
+		LuaFunctions::executeLuaFile("data/mobdata.all");
 		dawn_debug_info("Loading completed");
 
 		setProgress( 0.7 );
@@ -258,19 +258,25 @@ public:
 
 		std::string characterDataString = "data/character/";
 
-		Player *player = Globals::getPlayer();
+		Player* player = Globals::getPlayer();
 
-		if ( player->getClass() == CharacterClass::Liche ) {
-		    characterDataString.append( "wizard/" );
-		} else if ( player->getClass() == CharacterClass::Warrior ) {
-		    characterDataString.append( "swordsman/" );
-		} else if ( player->getClass() == CharacterClass::Ranger ) {
-            characterDataString.append( "ranger/" );
+		if ( player->getClass() == CharacterClass::Liche )
+		{
+			characterDataString.append( "wizard/" );
+		}
+		else if( player->getClass() == CharacterClass::Warrior )
+		{
+			characterDataString.append( "swordsman/" );
+		}
+		else if( player->getClass() == CharacterClass::Ranger )
+		{
+			characterDataString.append( "ranger/" );
 		}
 
 		ActivityType::ActivityType activity = ActivityType::Walking;
 		player->setNumMoveTexturesPerDirection( activity, 8 );
-		for ( size_t curIndex=0; curIndex<8; ++curIndex ) {
+		for( size_t curIndex=0; curIndex<8; ++curIndex )
+		{
 			std::ostringstream ostr;
 			ostr << "000" << curIndex;
 			std::string numberString = ostr.str();
@@ -283,6 +289,7 @@ public:
 			player->setMoveTexture( activity, W, curIndex, std::string("").append( characterDataString ).append("walking w").append(numberString).append(".tga" ) );
 			player->setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("walking nw").append(numberString).append(".tga" ) );
 		}
+
 		activity = ActivityType::Attacking;
 		player->setNumMoveTexturesPerDirection( activity, 13 );
 		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
@@ -316,9 +323,10 @@ public:
 			player->setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
 		}
 
-        activity = ActivityType::Shooting;
+		activity = ActivityType::Shooting;
 		player->setNumMoveTexturesPerDirection( activity, 13 );
-		for ( size_t curIndex=0; curIndex<13; ++curIndex ) {
+		for( size_t curIndex=0; curIndex<13; ++curIndex )
+		{
 			std::ostringstream ostr;
 			ostr << "000" << curIndex;
 
@@ -333,17 +341,24 @@ public:
 			player->setMoveTexture( activity, NW, curIndex, std::string("").append( characterDataString ).append("attacking nw").append(numberString).append(".tga" ) );
 		}
 
-        activity = ActivityType::Dying;
-        size_t numOfMoves = 0;
-        if ( player->getClass() == CharacterClass::Warrior ) {
-            numOfMoves = 9;
-        } else if ( player->getClass() == CharacterClass::Ranger ) {
-            numOfMoves = 11;
-        } else if ( player->getClass() == CharacterClass::Liche ) {
-            numOfMoves = 13;
-        }
+		activity = ActivityType::Dying;
+		size_t numOfMoves = 0;
+		if( player->getClass() == CharacterClass::Warrior )
+		{
+			numOfMoves = 9;
+		}
+		else if( player->getClass() == CharacterClass::Ranger )
+		{
+			numOfMoves = 11;
+		}
+		else if ( player->getClass() == CharacterClass::Liche )
+		{
+			numOfMoves = 13;
+		}
+
 		player->setNumMoveTexturesPerDirection( activity, numOfMoves );
-		for ( size_t curIndex=0; curIndex<numOfMoves; ++curIndex ) {
+		for( size_t curIndex=0; curIndex<numOfMoves; ++curIndex )
+		{
 			std::ostringstream ostr;
 			ostr << "000" << curIndex;
 
@@ -378,7 +393,8 @@ public:
 
 		// setting initial actions in the action bar
 		const std::vector<CSpellActionBase*> inscribedSpells = player->getSpellbook();
-		for ( size_t curEntry=0; curEntry<=9 && curEntry < inscribedSpells.size(); ++curEntry ) {
+		for( size_t curEntry=0; curEntry<=9 && curEntry < inscribedSpells.size(); ++curEntry )
+		{
 			actionBar->bindActionToButtonNr( curEntry, inscribedSpells[ curEntry ] );
 		}
 
@@ -390,7 +406,7 @@ public:
 		setProgress( 0.95 );
 		progressString = "Loading Game Init Data";
 
-		CZone *newZone = new CZone();
+		CZone* newZone = new CZone();
 		newZone->LoadZone("data/zone1");
 
 		LuaFunctions::executeLuaFile("data/gameinit.lua");
@@ -402,8 +418,11 @@ public:
 
 	virtual BOOL OnTask()
 	{
-		if ( started )
+		if( started )
+		{
 			return true;
+		}
+
 		started = true;
 		init();
 		return true;
@@ -413,10 +432,12 @@ public:
 	{
 		threadedMode = true;
 		curTextureProcessor = this;
-		do {
+		do
+		{
 			this->Event();
 			Sleep( 10 );
-		} while ( ! started );
+		}
+		while( !started );
 	}
 
 	virtual void finish()
@@ -426,4 +447,4 @@ public:
 	}
 };
 
-#endif // LOADINGMANAGER_H
+#endif
