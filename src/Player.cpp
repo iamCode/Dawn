@@ -97,31 +97,31 @@ Direction Player::GetDirection()
 {
 	keys = SDL_GetKeyState(NULL);
 
-	if (keys[SDLK_w]) {
-		if (keys[SDLK_a]) {
+	if (keys[SDLK_UP]) {
+		if (keys[SDLK_LEFT]) {
 			return NW;
-		} else if (keys[SDLK_d]) {
+		} else if (keys[SDLK_RIGHT]) {
 			return NE;
 		} else {
 			return N;
 		}
 	}
 
-	if (keys[SDLK_s]) {
-		if (keys[SDLK_a]) {
+	if (keys[SDLK_DOWN]) {
+		if (keys[SDLK_LEFT]) {
 			return SW;
-		} else if (keys[SDLK_d]) {
+		} else if (keys[SDLK_RIGHT]) {
 			return SE;
 		} else {
 			return S;
 		}
 	}
 
-	if (keys[SDLK_a]) {
+	if (keys[SDLK_LEFT]) {
 		return W;
 	}
 
-	if (keys[SDLK_d]) {
+	if (keys[SDLK_RIGHT]) {
 		return E;
 	}
 
