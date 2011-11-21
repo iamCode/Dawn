@@ -55,7 +55,7 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(dawndatadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
 	BuffWindow.$(OBJEXT) callindirection.$(OBJEXT) \
-	cameraFocusHandler.$(OBJEXT) CCharacter.$(OBJEXT) \
+	cameraFocusHandler.$(OBJEXT) character.$(OBJEXT) \
 	CEditor.$(OBJEXT) CharacterInfoScreen.$(OBJEXT) \
 	CInterface.$(OBJEXT) CLuaFunctions.$(OBJEXT) \
 	CLuaInterfaceGenerated.$(OBJEXT) CMagic.$(OBJEXT) \
@@ -70,10 +70,10 @@ am_dawn_rpg_OBJECTS = a_star.$(OBJEXT) ActionBar.$(OBJEXT) \
 	interactionpoint.$(OBJEXT) interactionregion.$(OBJEXT) \
 	inventory.$(OBJEXT) InventoryScreen.$(OBJEXT) item.$(OBJEXT) \
 	loadingscreen.$(OBJEXT) LogWindow.$(OBJEXT) main.$(OBJEXT) \
-	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) Player.$(OBJEXT) \
+	musiccache.$(OBJEXT) optionswindow.$(OBJEXT) player.$(OBJEXT) \
 	Quest.$(OBJEXT) questwindow.$(OBJEXT) random.$(OBJEXT) \
 	resolution.$(OBJEXT) shop.$(OBJEXT) soundengine.$(OBJEXT) \
-	Spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) \
+	spellbook.$(OBJEXT) StatsSystem.$(OBJEXT) \
 	TestInterface.$(OBJEXT) textwindow.$(OBJEXT) tileset.$(OBJEXT) \
 	tooltip.$(OBJEXT) utils.$(OBJEXT) GLee.$(OBJEXT) \
 	pnglite.$(OBJEXT) EventClass.$(OBJEXT) MutexClass.$(OBJEXT) \
@@ -242,9 +242,9 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/callindirection.h \
 	src/cameraFocusHandler.cpp \
 	src/cameraFocusHandler.h \
-	src/CCharacter.cpp \
-	src/CCharacter.h \
-	src/CDirection.h \
+	src/character.cpp \
+	src/character.h \
+	src/direction.h \
 	src/CDrawingHelpers.h \
 	src/CEditor.cpp \
 	src/CEditor.h \
@@ -319,8 +319,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/musiccache.h \
 	src/optionswindow.cpp \
 	src/optionswindow.h \
-	src/Player.cpp \
-	src/Player.h \
+	src/player.cpp \
+	src/player.h \
 	src/Quest.cpp \
 	src/Quest.h \
 	src/questwindow.cpp \
@@ -333,8 +333,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/shop.h \
 	src/soundengine.cpp \
 	src/soundengine.h \
-	src/Spellbook.cpp \
-	src/Spellbook.h \
+	src/spellbook.cpp \
+	src/spellbook.h \
 	src/stats.h \
 	src/StatsSystem.cpp \
 	src/StatsSystem.h \
@@ -452,7 +452,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActionBar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuffWindow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CCharacter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CEditor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CInterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CLuaFunctions.Po@am__quote@
@@ -478,15 +477,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryScreen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MutexClass.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Quest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Spellbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StatsSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestInterface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a_star.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callindirection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cameraFocusHandler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/character.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/commonsounds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
@@ -501,12 +499,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/musiccache.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/optionswindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnglite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/questwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resolution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/soundengine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spellbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testsuite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/textwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tileset.Po@am__quote@
@@ -625,19 +625,19 @@ cameraFocusHandler.obj: src/cameraFocusHandler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o cameraFocusHandler.obj `if test -f 'src/cameraFocusHandler.cpp'; then $(CYGPATH_W) 'src/cameraFocusHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/cameraFocusHandler.cpp'; fi`
 
-CCharacter.o: src/CCharacter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CCharacter.o -MD -MP -MF $(DEPDIR)/CCharacter.Tpo -c -o CCharacter.o `test -f 'src/CCharacter.cpp' || echo '$(srcdir)/'`src/CCharacter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CCharacter.Tpo $(DEPDIR)/CCharacter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CCharacter.cpp' object='CCharacter.o' libtool=no @AMDEPBACKSLASH@
+character.o: src/character.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT character.o -MD -MP -MF $(DEPDIR)/character.Tpo -c -o character.o `test -f 'src/character.cpp' || echo '$(srcdir)/'`src/character.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/character.Tpo $(DEPDIR)/character.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/character.cpp' object='character.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CCharacter.o `test -f 'src/CCharacter.cpp' || echo '$(srcdir)/'`src/CCharacter.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o character.o `test -f 'src/character.cpp' || echo '$(srcdir)/'`src/character.cpp
 
-CCharacter.obj: src/CCharacter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CCharacter.obj -MD -MP -MF $(DEPDIR)/CCharacter.Tpo -c -o CCharacter.obj `if test -f 'src/CCharacter.cpp'; then $(CYGPATH_W) 'src/CCharacter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CCharacter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/CCharacter.Tpo $(DEPDIR)/CCharacter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/CCharacter.cpp' object='CCharacter.obj' libtool=no @AMDEPBACKSLASH@
+character.obj: src/character.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT character.obj -MD -MP -MF $(DEPDIR)/character.Tpo -c -o character.obj `if test -f 'src/character.cpp'; then $(CYGPATH_W) 'src/character.cpp'; else $(CYGPATH_W) '$(srcdir)/src/character.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/character.Tpo $(DEPDIR)/character.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/character.cpp' object='character.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CCharacter.obj `if test -f 'src/CCharacter.cpp'; then $(CYGPATH_W) 'src/CCharacter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/CCharacter.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o character.obj `if test -f 'src/character.cpp'; then $(CYGPATH_W) 'src/character.cpp'; else $(CYGPATH_W) '$(srcdir)/src/character.cpp'; fi`
 
 CEditor.o: src/CEditor.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CEditor.o -MD -MP -MF $(DEPDIR)/CEditor.Tpo -c -o CEditor.o `test -f 'src/CEditor.cpp' || echo '$(srcdir)/'`src/CEditor.cpp
@@ -1143,19 +1143,19 @@ optionswindow.obj: src/optionswindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o optionswindow.obj `if test -f 'src/optionswindow.cpp'; then $(CYGPATH_W) 'src/optionswindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/optionswindow.cpp'; fi`
 
-Player.o: src/Player.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Player.o -MD -MP -MF $(DEPDIR)/Player.Tpo -c -o Player.o `test -f 'src/Player.cpp' || echo '$(srcdir)/'`src/Player.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Player.Tpo $(DEPDIR)/Player.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Player.cpp' object='Player.o' libtool=no @AMDEPBACKSLASH@
+player.o: src/player.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT player.o -MD -MP -MF $(DEPDIR)/player.Tpo -c -o player.o `test -f 'src/player.cpp' || echo '$(srcdir)/'`src/player.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/player.Tpo $(DEPDIR)/player.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/player.cpp' object='player.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Player.o `test -f 'src/Player.cpp' || echo '$(srcdir)/'`src/Player.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o player.o `test -f 'src/player.cpp' || echo '$(srcdir)/'`src/player.cpp
 
-Player.obj: src/Player.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Player.obj -MD -MP -MF $(DEPDIR)/Player.Tpo -c -o Player.obj `if test -f 'src/Player.cpp'; then $(CYGPATH_W) 'src/Player.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Player.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Player.Tpo $(DEPDIR)/Player.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Player.cpp' object='Player.obj' libtool=no @AMDEPBACKSLASH@
+player.obj: src/player.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT player.obj -MD -MP -MF $(DEPDIR)/player.Tpo -c -o player.obj `if test -f 'src/player.cpp'; then $(CYGPATH_W) 'src/player.cpp'; else $(CYGPATH_W) '$(srcdir)/src/player.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/player.Tpo $(DEPDIR)/player.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/player.cpp' object='player.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Player.obj `if test -f 'src/Player.cpp'; then $(CYGPATH_W) 'src/Player.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Player.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o player.obj `if test -f 'src/player.cpp'; then $(CYGPATH_W) 'src/player.cpp'; else $(CYGPATH_W) '$(srcdir)/src/player.cpp'; fi`
 
 Quest.o: src/Quest.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Quest.o -MD -MP -MF $(DEPDIR)/Quest.Tpo -c -o Quest.o `test -f 'src/Quest.cpp' || echo '$(srcdir)/'`src/Quest.cpp
@@ -1241,19 +1241,19 @@ soundengine.obj: src/soundengine.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o soundengine.obj `if test -f 'src/soundengine.cpp'; then $(CYGPATH_W) 'src/soundengine.cpp'; else $(CYGPATH_W) '$(srcdir)/src/soundengine.cpp'; fi`
 
-Spellbook.o: src/Spellbook.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Spellbook.o -MD -MP -MF $(DEPDIR)/Spellbook.Tpo -c -o Spellbook.o `test -f 'src/Spellbook.cpp' || echo '$(srcdir)/'`src/Spellbook.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Spellbook.Tpo $(DEPDIR)/Spellbook.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Spellbook.cpp' object='Spellbook.o' libtool=no @AMDEPBACKSLASH@
+spellbook.o: src/spellbook.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spellbook.o -MD -MP -MF $(DEPDIR)/spellbook.Tpo -c -o spellbook.o `test -f 'src/spellbook.cpp' || echo '$(srcdir)/'`src/spellbook.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/spellbook.Tpo $(DEPDIR)/spellbook.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/spellbook.cpp' object='spellbook.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Spellbook.o `test -f 'src/Spellbook.cpp' || echo '$(srcdir)/'`src/Spellbook.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spellbook.o `test -f 'src/spellbook.cpp' || echo '$(srcdir)/'`src/spellbook.cpp
 
-Spellbook.obj: src/Spellbook.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Spellbook.obj -MD -MP -MF $(DEPDIR)/Spellbook.Tpo -c -o Spellbook.obj `if test -f 'src/Spellbook.cpp'; then $(CYGPATH_W) 'src/Spellbook.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Spellbook.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/Spellbook.Tpo $(DEPDIR)/Spellbook.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/Spellbook.cpp' object='Spellbook.obj' libtool=no @AMDEPBACKSLASH@
+spellbook.obj: src/spellbook.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spellbook.obj -MD -MP -MF $(DEPDIR)/spellbook.Tpo -c -o spellbook.obj `if test -f 'src/spellbook.cpp'; then $(CYGPATH_W) 'src/spellbook.cpp'; else $(CYGPATH_W) '$(srcdir)/src/spellbook.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/spellbook.Tpo $(DEPDIR)/spellbook.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/spellbook.cpp' object='spellbook.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Spellbook.obj `if test -f 'src/Spellbook.cpp'; then $(CYGPATH_W) 'src/Spellbook.cpp'; else $(CYGPATH_W) '$(srcdir)/src/Spellbook.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spellbook.obj `if test -f 'src/spellbook.cpp'; then $(CYGPATH_W) 'src/spellbook.cpp'; else $(CYGPATH_W) '$(srcdir)/src/spellbook.cpp'; fi`
 
 StatsSystem.o: src/StatsSystem.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StatsSystem.o -MD -MP -MF $(DEPDIR)/StatsSystem.Tpo -c -o StatsSystem.o `test -f 'src/StatsSystem.cpp' || echo '$(srcdir)/'`src/StatsSystem.cpp

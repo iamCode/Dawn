@@ -27,9 +27,9 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/callindirection.h \
 	src/cameraFocusHandler.cpp \
 	src/cameraFocusHandler.h \
-	src/CCharacter.cpp \
-	src/CCharacter.h \
-	src/CDirection.h \
+	src/character.cpp \
+	src/character.h \
+	src/direction.h \
 	src/CDrawingHelpers.h \
 	src/CEditor.cpp \
 	src/CEditor.h \
@@ -104,8 +104,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/musiccache.h \
 	src/optionswindow.cpp \
 	src/optionswindow.h \
-	src/Player.cpp \
-	src/Player.h \
+	src/player.cpp \
+	src/player.h \
 	src/Quest.cpp \
 	src/Quest.h \
 	src/questwindow.cpp \
@@ -118,8 +118,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/shop.h \
 	src/soundengine.cpp \
 	src/soundengine.h \
-	src/Spellbook.cpp \
-	src/Spellbook.h \
+	src/spellbook.cpp \
+	src/spellbook.h \
 	src/stats.h \
 	src/StatsSystem.cpp \
 	src/StatsSystem.h \
