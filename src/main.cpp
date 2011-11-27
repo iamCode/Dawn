@@ -27,26 +27,26 @@
 #include <csignal>
 #include <deque>
 
-#include "GLee/GLee.h" // OpenGL Easy Extention Library
+#include "GLee/GLee.h"
 
-#include <SDL/SDL.h> // SDL
-#include <SDL/SDL_opengl.h> // SDL OpenGL
-#include <SDL/SDL_image.h> // SDL Image library (image formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV)
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_image.h>
 #include <SDL/SDL_getenv.h>
 
-#include <GL/gl.h> // OpenGL
-#include <GL/glu.h> // OpenGL Utility Library. This will have to be changed in updated versions, as it changes for different OS's
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #include "GLFT_Font.h"
 #include "pnglite/pnglite.h"
 
-#include "CZone.h"
-#include "CInterface.h"
-#include "CEditor.h"
-#include "InventoryScreen.h"
+#include "zone.h"
+#include "interface.h"
+#include "editor.h"
+#include "inventoryscreen.h"
 #include "utils.h"
-#include "ActionBar.h"
-#include "BuffWindow.h"
+#include "actionbar.h"
+#include "buffwindow.h"
 #include "shop.h"
 #include "debug.h"
 #include "interactionpoint.h"
@@ -55,15 +55,15 @@
 #include "optionswindow.h"
 #include "loadingscreen.h"
 #include "globals.h"
-#include "LogWindow.h"
+#include "logwindow.h"
 #include "soundengine.h"
 #include "configuration.h"
-#include "Frames.h"
-#include "GameLoopHandler.h"
-#include "ConfiguredFrames.h"
+#include "frames.h"
+#include "gameloophandler.h"
+#include "configuredframes.h"
 #include "resolution.h"
-#include "TestInterface.h"
-#include "LoadingManager.h"
+#include "testinterface.h"
+#include "loadingmanager.h"
 
 #ifdef _WIN32
 #define SDLK_PRINT 316 // this is because Windows printscreen doesn't match the SDL predefined keycode.

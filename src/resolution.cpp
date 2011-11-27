@@ -23,9 +23,9 @@
 #include <cassert>
 
 #include "debug.h"
-#include "CLuaFunctions.h"
+#include "luafunctions.h"
 #include "configuration.h"
-#include "CDrawingHelpers.h"
+#include "drawinghelpers.h"
 
 static std::vector<Resolution> possibleResolutions;
 

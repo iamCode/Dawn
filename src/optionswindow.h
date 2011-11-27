@@ -19,7 +19,7 @@
 #ifndef OPTIONSWINDOW_H
 #define OPTIONSWINDOW_H
 
-#include "FramesBase.h"
+#include "framesbase.h"
 
 class CTexture;
 class GLFT_Font;

@@ -21,7 +21,7 @@
 #include <iostream>
 #include <memory>
 #include <cassert>
-#include "CTexture.h"
+#include "texture.h"
 
 void AdjacencyEquivalenceClass::addEquivalentTile( int tile, int offsetX, int offsetY )
 {

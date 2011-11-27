@@ -18,15 +18,15 @@
 
 #include "tooltip.h"
 #include "GLFT_Font.h"
-#include "CDrawingHelpers.h"
-#include "TimeConverterHelper.h"
+#include "drawinghelpers.h"
+#include "timeconverterhelper.h"
 #include "character.h"
 #include "player.h"
-#include "StatsSystem.h"
+#include "statssystem.h"
 #include "elements.h"
 #include "shop.h"
 #include "configuration.h"
-#include "Frames.h"
+#include "frames.h"
 #include <memory>
 
 extern void formatMultilineText( std::string text, std::vector< std::string > &textLines, int lineWidth, GLFT_Font *font );

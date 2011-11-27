@@ -1,0 +1,39 @@
+$#include "testinterface.h"
+
+namespace DawnState
+{
+	enum DawnState
+	{
+	NoState,
+        MainMenu,
+        ChooseClass,
+        LoadingScreen,
+        OptionsMenu,
+        InGame
+    };
+}
+
+namespace CharacterClass
+{
+    enum CharacterClass
+    {
+        NOCLASS,
+        ANYCLASS,
+        Liche,
+        Ranger,
+        Warrior
+    };
+}
+
+namespace TestInterface
+{
+	void quitDawn( int returnValue );
+	DawnState::DawnState getDawnState();
+	void chooseClass( CharacterClass::CharacterClass characterClass );
+	void clickOnNewGame();
+	void saveGame();
+	void loadGame();
+	void getQuest( Quest *quest );
+	void finishQuest( Quest *quest );
+}
+

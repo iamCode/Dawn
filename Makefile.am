@@ -19,86 +19,86 @@ dawndatadir = $(bindir)/data
 
 dawn_rpg_SOURCES = src/a_star.cpp \
 	src/a_star.h \
-	src/ActionBar.cpp \
-	src/ActionBar.h \
-	src/BuffWindow.cpp \
-	src/BuffWindow.h \
+	src/actionbar.cpp \
+	src/actionbar.h \
+	src/buffwindow.cpp \
+	src/buffwindow.h \
 	src/callindirection.cpp \
 	src/callindirection.h \
-	src/cameraFocusHandler.cpp \
-	src/cameraFocusHandler.h \
+	src/camerafocushandler.cpp \
+	src/camerafocushandler.h \
 	src/character.cpp \
 	src/character.h \
 	src/direction.h \
-	src/CDrawingHelpers.h \
-	src/CEditor.cpp \
-	src/CEditor.h \
-	src/CharacterInfoScreen.cpp \
-	src/CharacterInfoScreen.h \
-	src/CInterface.cpp \
-	src/CInterface.h \
-	src/CLuaFunctions.cpp \
-	src/CLuaFunctions.h \
-	src/CLuaInterfaceGenerated.cpp \
-	src/CLuaInterfaceGenerated.h \
-	src/CLuaInterface.h \
-	src/CMagic.h \
-	src/CMagic.cpp \
-	src/CMessage.cpp \
-	src/CMessage.h \
-	src/CNPC.cpp \
-	src/CNPC.h \
+	src/drawinghelpers.h \
+	src/editor.cpp \
+	src/editor.h \
+	src/characterinfoscreen.cpp \
+	src/characterinfoscreen.h \
+	src/interface.cpp \
+	src/interface.h \
+	src/luafunctions.cpp \
+	src/luafunctions.h \
+	src/luainterfacegenerated.cpp \
+	src/luainterfacegenerated.h \
+	src/luainterface.h \
+	src/magic.h \
+	src/magic.cpp \
+	src/message.cpp \
+	src/message.h \
+	src/npc.cpp \
+	src/npc.h \
 	src/commonsounds.cpp \
 	src/commonsounds.h \
-	src/ConfigurableFrame.h \
-	src/ConfigurableFrame.cpp \
-	src/ConfiguredFrames.h \
-	src/ConfiguredFrames.cpp \
+	src/configurableframe.h \
+	src/configurableframe.cpp \
+	src/configuredframes.h \
+	src/configuredframes.cpp \
 	src/configuration.cpp \
 	src/configuration.h \
-	src/ControlElement.h \
-	src/ControlElement.cpp \
-	src/CSpell.cpp \
-	src/CSpell.h \
-	src/CTexture.cpp \
-	src/CTexture.h \
-	src/CZone.cpp \
-	src/CZone.h \
-	src/DawnState.h \
-	src/DawnState.cpp \
+	src/controlelement.h \
+	src/controlelement.cpp \
+	src/spell.cpp \
+	src/spell.h \
+	src/texture.cpp \
+	src/texture.h \
+	src/zone.cpp \
+	src/zone.h \
+	src/dawnstate.h \
+	src/dawnstate.cpp \
 	src/debug.cpp \
 	src/debug.h \
 	src/elements.cpp \
 	src/elements.h \
-	src/Frames.h \
-	src/Frames.cpp \
-	src/FramesBase.cpp \
-	src/FramesBase.h \
+	src/frames.h \
+	src/frames.cpp \
+	src/framesbase.cpp \
+	src/framesbase.h \
 	src/fontcache.cpp \
 	src/fontcache.h \
-	src/GameLoopHandler.h \
-	src/GameLoopHandler.cpp \
+	src/gameloophandler.h \
+	src/gameloophandler.cpp \
 	src/GLFT_Font.cpp \
 	src/GLFT_Font.h \
 	src/globals.cpp \
 	src/globals.h \
-	src/GroundLoot.cpp \
-	src/GroundLoot.h \
+	src/groundloot.cpp \
+	src/groundloot.h \
 	src/interactionpoint.cpp \
 	src/interactionpoint.h \
 	src/interactionregion.cpp \
 	src/interactionregion.h \
 	src/inventory.cpp \
 	src/inventory.h \
-	src/InventoryScreen.cpp \
-	src/InventoryScreen.h \
+	src/inventoryscreen.cpp \
+	src/inventoryscreen.h \
 	src/item.cpp \
 	src/item.h \
-	src/LoadingManager.h \
+	src/loadingmanager.h \
 	src/loadingscreen.cpp \
 	src/loadingscreen.h \
-	src/LogWindow.cpp \
-	src/LogWindow.h \
+	src/logwindow.cpp \
+	src/logwindow.h \
 	src/main.cpp \
 	src/musiccache.cpp \
 	src/musiccache.h \
@@ -106,8 +106,8 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/optionswindow.h \
 	src/player.cpp \
 	src/player.h \
-	src/Quest.cpp \
-	src/Quest.h \
+	src/quest.cpp \
+	src/quest.h \
 	src/questwindow.cpp \
 	src/questwindow.h \
 	src/random.cpp \
@@ -121,16 +121,16 @@ dawn_rpg_SOURCES = src/a_star.cpp \
 	src/spellbook.cpp \
 	src/spellbook.h \
 	src/stats.h \
-	src/StatsSystem.cpp \
-	src/StatsSystem.h \
-	src/TestInterface.cpp \
-	src/TestInterface.h \
+	src/statssystem.cpp \
+	src/statssystem.h \
+	src/testinterface.cpp \
+	src/testinterface.h \
 	src/textureframe.h \
 	src/textwindow.cpp \
 	src/textwindow.h \
 	src/tileset.cpp \
 	src/tileset.h \
-	src/TimeConverterHelper.h \
+	src/timeconverterhelper.h \
 	src/tooltip.cpp \
 	src/tooltip.h \
 	src/utils.cpp \

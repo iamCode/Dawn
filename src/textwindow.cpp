@@ -19,13 +19,13 @@
 #include "textwindow.h"
 
 #include "SDL/SDL.h"
-#include "Frames.h" // for Frames
+#include "frames.h" // for Frames
 
 #include <cstring> // for strtok_r
 #include <memory>
 #include "GLFT_Font.h"
 #include "fontcache.h"
-#include "CLuaFunctions.h"
+#include "luafunctions.h"
 #include "configuration.h"
 
 GLFT_Font *textWindowFont = NULL;

@@ -18,15 +18,15 @@
 
 #include "character.h"
 #include <cassert>
-#include "CDrawingHelpers.h"
-#include "CSpell.h"
-#include "CInterface.h"
-#include "GroundLoot.h"
-#include "StatsSystem.h"
-#include "CZone.h"
+#include "drawinghelpers.h"
+#include "spell.h"
+#include "interface.h"
+#include "groundloot.h"
+#include "statssystem.h"
+#include "zone.h"
 #include "questwindow.h"
 
-#include "CNPC.h"
+#include "npc.h"
 #include "player.h"
 #include "configuration.h"
 #include "globals.h"

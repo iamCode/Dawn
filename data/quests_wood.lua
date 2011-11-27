@@ -1,5 +1,5 @@
 -- init quest namespace so different quests / zones don't conflict in names
-if ( quest_playHideAndSeek == nil )
+if( quest_playHideAndSeek == nil )
 then
 	quest_playHideAndSeek = {}
 end
@@ -46,10 +46,8 @@ function quest_playHideAndSeek.init()
 end
 
 function quest_playHideAndSeek.onActivateJohn()
-	if ( not quest_playHideAndSeek.fulfilled )
-	then
-		if ( quest_playHideAndSeek.added == nil )
-		then
+	if( not quest_playHideAndSeek.fulfilled ) then
+		if( quest_playHideAndSeek.added == nil ) then
 			quest_playHideAndSeek.added = true;
 			quest_playHideAndSeek.fulfilled = false;
 			quest_playHideAndSeek.rewardGot = false;
@@ -58,7 +56,7 @@ function quest_playHideAndSeek.onActivateJohn()
 			onDieEventHandler = DawnInterface.createEventHandler();
 			onDieEventHandler:setExecuteText( "quest_playHideAndSeek.onKilledQuestMonster()" );
 			quest_playHideAndSeek.monsterSpawnPoint:addOnDieEventHandler( onDieEventHandler );
-			quest_playHideAndSeek.quest = DawnInterface.addQuest("hide and seek", "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
+			quest_playHideAndSeek.quest = DawnInterface.addQuest("Hide and Seek", "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
 			quest_playHideAndSeek.quest:setExperienceReward( 150 );
 			quest_playHideAndSeek.quest:setCoinReward( 821 );
 			quest_playHideAndSeek.quest:setItemReward( itemDatabase["ringofdefense"] );
@@ -66,9 +64,8 @@ function quest_playHideAndSeek.onActivateJohn()
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:center();
 		textWindow:setText( "My little brother James is somewhere in this forest. I fear he got lost. Please find him and tell him to come to me." );
-		textWindow:setAutocloseTime( 3000 );
-	elseif ( quest_playHideAndSeek.fulfilled and not quest_playHideAndSeek.rewardGot )
-	then
+		textWindow:setAutocloseTime( 4000 );
+	elseif( quest_playHideAndSeek.fulfilled and not quest_playHideAndSeek.rewardGot ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "Thank you for looking after my brother. We will leave for home now. Take this ring for your effords." );
@@ -93,14 +90,12 @@ function quest_playHideAndSeek.onKilledQuestMonster()
 end
 
 function quest_playHideAndSeek.onActivateJames()
-	if ( quest_playHideAndSeek == nil or quest_playHideAndSeek.fulfilled )
-	then
+	if( quest_playHideAndSeek == nil or quest_playHideAndSeek.fulfilled ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setText( "This forest is so exciting." );
 		textWindow:setAutocloseTime( 2000 );
-	elseif ( not quest_playHideAndSeek.fulfilled )
-	then
+	elseif( not quest_playHideAndSeek.fulfilled ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:center();
 		textWindow:setText( "Thank you for helping me. I walked through this wonderful forest when suddenly I saw this huge wolf. Then I hid in the trees and hoped it would get away, but it didn't. I was so afraid. I'll better hurry to my brother John now." );
@@ -112,10 +107,7 @@ function quest_playHideAndSeek.onActivateJames()
 end
 
 -- init quest if this has not been done yet
-if ( quest_playHideAndSeek.inited == nil )
-then
+if( quest_playHideAndSeek.inited == nil ) then
 	quest_playHideAndSeek.inited = true;
 	quest_playHideAndSeek.init();
 end
-
-

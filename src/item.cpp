@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "item.h"
-#include "CSpell.h"
+#include "spell.h"
 #include <memory>
 #include <cassert>
 
@@ -118,17 +118,21 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	resistElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	spellEffectElementModifier = new int16_t[ static_cast<size_t>( ElementType::Count ) ];
 	statsModifier = new int16_t[ static_cast<size_t>( StatsType::Count ) ];
-	for ( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement ) {
+
+	for( size_t curElement=0; curElement<static_cast<size_t>( ElementType::Count ); ++curElement )
+	{
 		resistElementModifier[ curElement ] = 0;
 		spellEffectElementModifier[ curElement ] = 0;
 	}
-	for (size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
+
+	for( size_t curStat=0; curStat<static_cast<size_t>( StatsType::Count ); ++curStat )
 	{
-	    statsModifier[ curStat ] = 0;
+		statsModifier[ curStat ] = 0;
 	}
 
 	// note: This is for use in derived classes that set their own texture ID only
-	if ( loadSymbol ) {
+	if( loadSymbol )
+	{
 		symbolTexture.LoadIMG( symbolFile, 0 );
 	}
 
@@ -137,9 +141,9 @@ Item::Item( std::string name_, size_t sizeX_, size_t sizeY_, std::string symbolF
 	  || itemType == ItemType::POTION
 	  || itemType == ItemType::NEWSPELL
 	  || itemType == ItemType::SCROLL )
-    {
-        useableItem = true;
-    }
+	{
+		useableItem = true;
+	}
 }
 
 std::string Item::getName() const

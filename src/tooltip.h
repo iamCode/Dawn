@@ -16,11 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
-#ifndef __TOOLTIP_H_
-#define __TOOLTIP_H_
+#ifndef TOOLTIP_H
+#define TOOLTIP_H
 
-#include "CTexture.h"
-#include "CSpell.h"
+#include "texture.h"
+#include "spell.h"
 #include "GLFT_Font.h"
 #include "fontcache.h"
 

@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
 
 #include "spellbook.h"
-#include "CDrawingHelpers.h"
+#include "drawinghelpers.h"
 #include "character.h"
 #include "player.h"
 #include "globals.h"
@@ -25,7 +25,7 @@
 #include <cassert>
 #include <memory>
 #include "fontcache.h"
-#include "FramesBase.h"
+#include "framesbase.h"
 
 void sSpellSlot::initFont()
 {

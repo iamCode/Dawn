@@ -21,7 +21,7 @@
 
 #include <string>
 #include <vector>
-#include "FramesBase.h"
+#include "framesbase.h"
 #include "player.h"
 
 class CTexture;

@@ -1,0 +1,663 @@
+$#include "luainterface.h"
+
+namespace Configuration
+{
+    void setResolution( int screenWidth, int screenHeight );
+    void setBpp( int bpp );
+    void useFullscreen( bool fullscreenEnabled );
+    void useSound( bool soundEnabled );
+    void showDebugStdout( bool debug_stdout );
+    void showDebugFileout( bool debug_fileout );
+    void showInfoMessages( bool show_info_messages );
+    void showWarningMessages( bool show_warn_messages );
+};
+
+enum Direction
+{
+    STOP = 0,
+    N    = 1,
+    NE   = 2,
+    E    = 3,
+    SE   = 4,
+    S    = 5,
+    SW   = 6,
+    W    = 7,
+    NW   = 8
+};
+
+namespace ActivityType
+{
+	enum ActivityType
+	{
+		Walking,
+		Casting,
+		Attacking,
+		Shooting,
+		Dying,
+		Count
+	};
+}
+
+namespace Attitude
+{
+	enum Attitude
+	{
+		FRIENDLY,
+		NEUTRAL,
+		HOSTILE
+	};
+}
+
+namespace CharacterClass
+{
+	enum CharacterClass
+	{
+		NOCLASS,
+		ANYCLASS,
+		Liche,
+		Ranger,
+		Warrior
+	};
+}
+
+namespace CharacterStates
+{
+    enum CharacterStates
+    {
+        Channeling,
+        Charmed,
+        Confused,
+        Feared,
+        Invisible,
+	Mesmerized,
+        Movementspeed,
+	SeeInvisible,
+	SeeSneaking,
+        Sneaking,
+        Stunned,
+	NOEFFECT
+    };
+}
+
+class CCharacter {
+  void baseOnType( std::string otherType );
+
+  void setStrength( int newStrength );
+  int getStrength() const;
+  void modifyStrength( int strengthModifier );
+
+  void setDexterity( int newDexterity );
+  int getDexterity() const;
+  void modifyDexterity( int dexterityModifier );
+
+  void setVitality( int newVitality );
+  int getVitality() const;
+  void modifyVitality( int vitalityModifier );
+
+  void setIntellect( int newIntellect );
+  int getIntellect() const;
+  void modifyIntellect( int intellectModifier );
+
+  void setWisdom( int newWisdom );
+  int getWisdom() const;
+  void modifyWisdom( int wisdomModifier );
+
+  void setMaxHealth( int newMaxHealth );
+  int getMaxHealth() const;
+  void modifyMaxHealth( int maxHealthModifier );
+
+  void setMaxMana( int newMaxMana );
+  int getMaxMana() const;
+  void modifyMaxMana( int maxManaModifier );
+
+  void setMaxFatigue( int newMaxFatigue );
+  int getMaxFatigue() const;
+  void modifyMaxFatigue( int maxFatigueModifier );
+
+  void setExperienceValue( int experienceValue );
+
+  void setNumMoveTexturesPerDirection( ActivityType::ActivityType activity, int numTextures );
+  void setMoveTexture( ActivityType::ActivityType activity, int direction, int index, std::string filename, int textureOffsetX = 0, int textureOffsetY = 0 );
+
+  void setClass( CharacterClass::CharacterClass characterClass );
+
+  void setCoins( int amountOfCoins );
+  void setWanderRadius( int newWanderRadius );
+  int getWanderRadius() const;
+
+  void setName( std::string newName );
+  std::string getName() const;
+
+  void setLevel( int newLevel );
+  int getLevel() const;
+
+  void setExperience( int experience );
+
+  void setMinDamage( int newMinDamage );
+  int getMinDamage();
+
+  void setMaxDamage( int newMaxDamage );
+  int getMaxDamage();
+
+  void setArmor( int newArmor );
+  void setDamageModifierPoints( int newDamageModifierPoints );
+  void setHitModifierPoints( int newHitModifierPoints );
+  void setEvadeModifierPoints( int newEvadeModifierPoints );
+  void setParryModifierPoints( int newParryModifierPoitns );
+  void setBlockModifierPoints( int newBlockModifierPoints );
+	void setMeleeCriticalModifierPoints( int newMeleeCriticalModifierPoints );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int newResistElementModifierPoints );
+	void setResistAllModifierPoints( int newResistAllModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int newSpellEffectElementModifierPoints );
+	void setSpellEffectAllModifierPoints( int newSpellEffectAllModifierPoints );
+	void setSpellCriticalModifierPoints( int newSpellCriticalModifierPoints );
+	void setHealthRegen( int newHealthRegen );
+	void setManaRegen( int newManaRegen );
+	void setFatigueRegen( int newFatigueRegen );
+
+  void setBoundingBox( int bbx, int bby, int bbw, int bbh );
+  void setUseBoundingBox( bool use );
+
+  void addItemToLootTable( Item *item, double dropChance );
+  void setCoinDrop( int minCoinDrop, int maxCoinDrop, double dropChance );
+
+	void setPosition( int xpos, int ypos );
+	void inscribeSpellInSpellbook( CSpellActionBase *spell );
+};
+
+namespace StatsType
+{
+  enum StatsType
+  {
+      Dexterity,
+      Intellect,
+      Strength,
+      Vitality,
+      Wisdom,
+      Health,
+      Mana,
+  Fatigue,
+      Armor,
+      DamageModifier,
+      HitModifier,
+      EvadeModifier,
+  ParryModifier,
+      BlockModifier,
+      MeleeCritical,
+      SpellCritical,
+      ResistAll,
+      SpellEffectAll,
+      HealthRegen,
+      ManaRegen,
+  FatigueRegen,
+      Count
+  };
+}
+
+namespace ElementType
+{
+	enum ElementType
+	{
+		Fire,
+		Water,
+		Air,
+		Earth,
+		Light,
+		Dark,
+		Count
+	};
+}
+
+namespace EffectType
+{
+	enum EffectType {
+		SingleTargetSpell,
+		SelfAffectingSpell
+	};
+}
+
+namespace PositionType
+{
+	enum PositionType
+	{
+		BOTTOMLEFT,
+		BOTTOMCENTER,
+		LEFTCENTER,
+		CENTER
+	};
+}
+
+namespace ItemQuality
+{
+	enum ItemQuality
+	{
+		POOR,
+		NORMAL,
+		ENHANCED,
+		RARE,
+	LORE
+	};
+}
+
+namespace ItemSlot
+{
+  enum ItemSlot
+  {
+      HEAD,
+      AMULET,
+      MAIN_HAND,
+      OFF_HAND,
+      BELT,
+      LEGS,
+      SHOULDER,
+      CHEST,
+      GLOVES,
+      CLOAK,
+      BOOTS,
+      RING_ONE,
+      RING_TWO,
+      COUNT // this is always the last and gives the size of the enum
+  };
+}
+
+namespace EquipPosition
+{
+	enum EquipPosition
+	{
+		MAIN_HAND,
+		OFF_HAND,
+		CHEST,
+		LEGS,
+		BELT,
+		BOOTS,
+		RING,
+		GLOVES,
+		HEAD,
+		CLOAK,
+		AMULET,
+		SHOULDER,
+		NONE
+	};
+}
+
+namespace ItemType
+{
+	enum ItemType
+	{
+		QUESTITEM,
+		MISCELLANEOUS,
+		ARMOR,
+		WEAPON,
+		JEWELRY,
+		SCROLL,
+		POTION,
+		FOOD,
+		DRINK,
+		NEWSPELL,
+		COUNT
+	};
+}
+
+namespace ArmorType
+{
+	enum ArmorType
+	{
+		NO_ARMOR,
+		CLOTH,
+		LEATHER,
+		MAIL,
+		PLATE
+	};
+}
+
+namespace WeaponType
+{
+	enum WeaponType
+	{
+    NO_WEAPON       = 0x01,
+    ONEHAND_SWORD   = 0x02,
+    TWOHAND_SWORD   = 0x04,
+    DAGGER          = 0x08,
+    STAFF           = 0x10,
+    ONEHAND_CLUB    = 0x20,
+    TWOHAND_CLUB    = 0x40,
+    WAND            = 0x80,
+    SPELLBOOK       = 0x100, // offhand spellbooks for caster classes.
+    ONEHAND_MACE    = 0x200,
+    TWOHAND_MACE    = 0x400,
+    ONEHAND_AXE     = 0x800,
+    TWOHAND_AXE     = 0x1000,
+    BOW             = 0x2000,
+    SLINGSHOT       = 0x4000,
+    CROSSBOW        = 0x8000,
+    SHIELD          = 0x10000
+	};
+}
+
+namespace TriggerType
+{
+	enum TriggerType
+	{
+		TAKING_DAMAGE,
+		EXECUTING_ACTION
+	};
+}
+
+class Item
+{
+	void setDescription( std::string description );
+	void setStats( StatsType::StatsType statsType, int amount );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int resistModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
+	void setMinDamage( int minDamage );
+	void setMaxDamage( int maxDamage );
+	void setRequiredLevel( int requiredLevel );
+	void setMaxStackSize( int maxStackSize );
+	void setValue( int newValue );
+	void setSpell( CSpell *newSpell );
+	void addTriggerSpellOnSelf( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+	void addTriggerSpellOnTarget( CSpellActionBase *spellToTrigger, float chanceToTrigger, TriggerType::TriggerType triggerType );
+};
+
+namespace InteractionType
+{
+	enum InteractionType
+	{
+		Quest,
+		Shop,
+		Zone
+	};
+}
+
+class InteractionPoint
+{
+	void setPosition( int posX, int posY, int width, int height );
+	void setInteractionType( InteractionType::InteractionType interactionType );
+	void setBackgroundTexture( std::string texturename );
+	void setInteractionCode( std::string interactionCode );
+};
+
+class InteractionRegion
+{
+	void setPosition( int left, int bottom, int width, int height );
+	void setOnEnterText( std::string enterCode );
+	void setOnLeaveText( std::string leaveCode );
+};
+
+class CallIndirection
+{
+};
+
+class LuaCallIndirection : public CallIndirection
+{
+	void setExecuteText( std::string text );
+};
+
+class CCharacter
+{
+	CharacterClass::CharacterClass getClass();
+};
+
+class CNPC : public CCharacter
+{
+	void addOnDieEventHandler( CallIndirection *eventHandler );
+	void setAttitude( Attitude::Attitude attitude );
+};
+
+class Player : public CCharacter
+{
+	std::string getSaveText();
+};
+
+class TextWindow
+{
+	void setText( std::string text );
+	void setAutocloseTime( int autocloseTime );
+	void setPosition( PositionType::PositionType, int x, int y );
+	void center();
+	void setOnCloseText( std::string onCloseText );
+};
+
+class Shop
+{
+	void toggle();
+	void addItem( Item *item );
+};
+
+class CSpellActionBase
+{
+	void addAdditionalSpellOnTarget( CSpellActionBase *spell, double chanceToExecute );
+	void addAdditionalSpellOnCreator( CSpellActionBase *spell, double chanceToExecute );
+	void setRequiredClass( CharacterClass::CharacterClass requiredClass );
+	void setRequiredLevel( int requiredLevel );
+	void addRequiredWeapon( WeaponType::WeaponType weaponType );
+	void setSoundSpellCasting( std::string soundSpellCasting );
+	void setSoundSpellStart( std::string soundSpellStart );
+	void setSoundSpellHit( std::string soundSpellHit );
+	void setRank( int rank );
+	void setInstant( bool instant );
+	void setCharacterState( CharacterStates::CharacterStates characterState, float value = 1.0 );
+};
+
+class CAction : public CSpellActionBase
+{
+};
+
+class CSpell : public CSpellActionBase
+{
+};
+
+class ConfigurableSpell : public CSpell
+{
+	void setCastTime( int newCastTime );
+	void setCooldown( int newCooldown );
+	void setSpellCost( int spellCost );
+	void setName( std::string newName );
+	void setInfo( std::string newInfo );
+	void setRange( int minRange, int maxRange );
+	void setSpellSymbol( std::string symbolFile );
+};
+
+class ConfigurableAction : public CAction
+{
+
+	void setCastTime( int newCastTime );
+	void setCooldown( int newCooldown );
+	void setSpellCost( int spellCost );
+	void setName( std::string newName );
+	void setInfo( std::string newInfo );
+	void setRange( int minRange, int maxRange );
+	void setSpellSymbol( std::string symbolFile );
+};
+
+class GeneralDamageSpell : public ConfigurableSpell
+{
+	void setDirectDamage( int newMinDirectDamage, int newMaxDirectDamage, ElementType::ElementType newElementDirect );
+	void setContinuousDamage( double newMinContDamagePerSec, double newMaxContDamagePerSec, int newContDamageTime, ElementType::ElementType newContDamageElement );
+};
+
+class GeneralRayDamageSpell : public GeneralDamageSpell
+{
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
+
+class GeneralAreaDamageSpell : public GeneralDamageSpell
+{
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+	void setRadius( int newRadius );
+};
+
+class GeneralBoltDamageSpell : public GeneralDamageSpell
+{
+	void setMoveSpeed( int newMoveSpeed );
+	void setExpireTime( int newExpireTime );
+
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
+
+class GeneralHealingSpell : public ConfigurableSpell
+{
+	void setEffectType( EffectType::EffectType newEffectType );
+	void setDirectHealing( int healEffectMin, int healEffectMax, ElementType::ElementType healEffectElement );
+	void setContinuousHealing( double minContinuousHealingPerSecond, double maxContinuousHealingPerSecond, int continuousHealingTime, ElementType::ElementType elementContinuous );
+};
+
+class GeneralBuffSpell : public ConfigurableSpell
+{
+	void setEffectType( EffectType::EffectType newEffectType );
+	void setDuration( int newDuration );
+	void setStats( StatsType::StatsType statsType, int amount );
+	void setResistElementModifierPoints( ElementType::ElementType elementType, int resistModifierPoints );
+	void setSpellEffectElementModifierPoints( ElementType::ElementType elementType, int spellEffectElementModifierPoints );
+
+};
+
+class MeleeDamageAction : public ConfigurableAction
+{
+	void setDamageBonus( double damageBonus );
+};
+
+class RangedDamageAction : public ConfigurableAction
+{
+	void setDamageBonus( double damageBonus );
+	void setMoveSpeed( int newMoveSpeed );
+	void setExpireTime( int newExpireTime );
+	void setNumAnimations( int count );
+	void setAnimationTexture( int num, std::string filename );
+};
+
+class Quest
+{
+	void addRequiredItemForCompletion( Item* requiredItem, int quantity );
+	void setDescription( std::string );
+	void setExperienceReward( int experienceReward );
+	void setCoinReward( int coinReward );
+	void setItemReward( Item* itemReward );
+	bool finishQuest();
+};
+
+namespace DawnInterface
+{
+	CCharacter* createNewMobType( std::string typeID );
+	Item* createNewItem(std::string name,
+	                    int sizeX,
+	                    int sizeY,
+	                    std::string symbolFile,
+	                    ItemQuality::ItemQuality itemQuality,
+	                    EquipPosition::EquipPosition equipPosition,
+	                    ItemType::ItemType itemType,
+	                    ArmorType::ArmorType armorType,
+	                    WeaponType::WeaponType weaponType );
+	void giveItemToPlayer( Item* item );
+	void giveExpToPlayer( int experience );
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn );
+	void removeMobSpawnPoint( CNPC *mobSpawnPoint );
+	GeneralRayDamageSpell* createGeneralRayDamageSpell();
+	GeneralAreaDamageSpell* createGeneralAreaDamageSpell();
+	GeneralBoltDamageSpell* createGeneralBoltDamageSpell();
+	GeneralHealingSpell* createGeneralHealingSpell();
+	GeneralBuffSpell* createGeneralBuffSpell();
+	MeleeDamageAction* createMeleeDamageAction();
+	RangedDamageAction* createRangedDamageAction();
+	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
+	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other );
+	GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+	GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+	GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+	MeleeDamageAction* copySpell( MeleeDamageAction *other );
+	RangedDamageAction* copySpell( RangedDamageAction *other );
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+	InteractionPoint* addInteractionPoint();
+	InteractionPoint* addCharacterInteractionPoint( CCharacter *character );
+	InteractionRegion* addInteractionRegion();
+	TextWindow *createTextWindow(); 
+	void removeInteractionPoint( InteractionPoint *pointToRemove );
+	void removeInteractionRegion( InteractionRegion *regionToRemove );
+	LuaCallIndirection* createEventHandler();
+	Quest* addQuest( std::string questName, std::string questDescription );
+	Shop *addShop();
+	void enterZone( std::string zoneName, int enterX, int enterY );
+	bool isSavingAllowed();
+	void setSavingAllowed( bool savingAllowed );
+	void setBackgroundMusic( std::string filename );
+
+	Player *getPlayer();
+
+	// functions used for loading only
+	std::string getInventorySaveText();
+	std::string getSpellbookSaveText();
+	void restoreItemInBackpack( Item *item, int inventoryPosX, int inventoryPosY, int stackSize = 1 );
+	void restoreWieldItem( int slot, Item *item );
+	void restoreGroundLootItem( Item *item, int xPos, int yPos );
+	void restoreGroundGold( int amount, int xPos, int yPos );
+	void setCurrentZone( std::string zoneName );
+	std::string getAllZonesSaveText();
+	std::string getReenterCurrentZoneText();
+	std::string getItemReferenceRestore( CCharacter *character );
+	std::string getItemReferenceRestore( InteractionPoint *interactionPoint );
+	std::string getItemReferenceRestore( InteractionRegion *interactionRegion );
+	std::string getItemReferenceRestore( Shop *shop );
+	std::string getItemReferenceRestore( CallIndirection *eventHandler );
+	std::string getItemReferenceRestore( Quest *quest );
+	std::string getItemReferenceRestore( TextWindow *textWindow );
+	// Note: void* interface for ignoring must be the last since tolua resolves overloading from last to first function, 
+	//       taking any function where conversion is successful
+	std::string getReinitialisationString( std::string fullVarName, void *ignore );
+	std::string getReinitialisationString( std::string fullVarName, Quest *quest );
+	CCharacter* restoreCharacterReference( std::string zoneName, int posInArray );
+	InteractionPoint* restoreInteractionPointReference( std::string zoneName, int posInArray );
+	InteractionRegion* restoreInteractionRegionReference( std::string zoneName, int posInArray );
+	CallIndirection* restoreEventHandlerReference( std::string zoneName, int posInArray );
+	std::string getActionbarSaveText();
+	void restoreActionBar( int buttonNr, CSpellActionBase *action );
+}
+
+// EDITOR Stuff
+namespace TileClassificationType
+{
+	enum TileClassificationType
+	{
+		FLOOR,
+		ENVIRONMENT,
+		SHADOW
+	};
+}
+
+namespace AdjacencyType
+{
+	enum AdjacencyType
+	{
+		RIGHT,
+		LEFT,
+		TOP,
+		BOTTOM
+	};
+}
+
+class AdjacencyEquivalenceClass
+{
+	void addEquivalentTile( int tile, int offsetX, int offsetY );
+};
+
+class TileSet
+{
+	int addTile( std::string filename, TileClassificationType::TileClassificationType tileType );
+	int addTileWithCollisionBox( std::string filename, TileClassificationType::TileClassificationType tileType, int cbx, int cby, int cbw, int cbh );
+	void addAdjacency( int tile1, AdjacencyType::AdjacencyType adjacencyType, int tile2, int offsetX, int offsetY );
+	AdjacencyEquivalenceClass *createAdjacencyEquivalenceClass();
+	void addEquivalenceAdjacency( AdjacencyEquivalenceClass *class1, AdjacencyType::AdjacencyType adjacencyType, AdjacencyEquivalenceClass *class2, int offsetX, int offsetY );
+	void printTileSet() const;
+};
+
+namespace EditorInterface
+{
+	TileSet *getTileSet();
+	void addGroundTile( int posX, int posY, int tile );
+	void addEnvironment( int posX, int posY, int posZ, int tile );
+	void adjustLastRGBA( double red, double green, double blue, double alpha );
+	void adjustLastScale( double scaleX, double scaleY );
+	void addCollisionRect( int lrx, int lry, int width, int height );
+}

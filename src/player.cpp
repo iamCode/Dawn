@@ -18,9 +18,9 @@
 
 #include "player.h"
 #include "inventory.h"
-#include "GroundLoot.h"
-#include "StatsSystem.h"
-#include "CZone.h"
+#include "groundloot.h"
+#include "statssystem.h"
+#include "zone.h"
 #include "globals.h"
 #include "soundengine.h"
 

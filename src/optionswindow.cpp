@@ -18,20 +18,20 @@
 
 #include "optionswindow.h"
 
-#include "CTexture.h"
+#include "texture.h"
 #include "GLFT_Font.h"
-#include "CDrawingHelpers.h"
+#include "drawinghelpers.h"
 #include "fontcache.h"
-#include "CLuaFunctions.h"
+#include "luafunctions.h"
 #include "questwindow.h"
 #include "interactionpoint.h"
-#include "CZone.h"
+#include "zone.h"
 #include "player.h"
 #include "globals.h"
 #include "shop.h"
 #include "spellbook.h"
-#include "ActionBar.h"
-#include "FramesBase.h"
+#include "actionbar.h"
+#include "framesbase.h"
 #include "configuration.h"
 #include "utils.h"
 #include <memory>
@@ -164,9 +164,12 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		}
 	}
 
-	if ( selectedEntry == 0 ) {
+	if( selectedEntry == 0 )
+	{
 		setQuitGame();
-	} else if ( selectedEntry == 1 && utils::file_exists( "savegame.lua" ) == true ) {
+	}
+	else if( selectedEntry == 1 && utils::file_exists( "savegame.lua" ) == true )
+	{
 		// Load Game
 
 		// clear current game data
@@ -200,14 +203,19 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 		//newZone->LoadZone("data/zone1");
 		LuaFunctions::executeLuaFile( "data/quests_wood.lua" );
 		DawnInterface::clearLogWindow();
-	} else if ( selectedEntry == 2 ) {
-		if ( Globals::isSavingAllowed() ) {
+	}
+	else if( selectedEntry == 2 )
+	{
+		if( Globals::isSavingAllowed() )
+		{
 			// Save Game
 			LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 			GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
-            DawnInterface::addTextToLogWindow( yellow, "Game saved.");
+			DawnInterface::addTextToLogWindow( yellow, "Game saved.");
 		}
-	} else if ( selectedEntry == 3 ) {
+	}
+	else if( selectedEntry == 3 )
+	{
 		toggle(); // close the window
 	}
 }

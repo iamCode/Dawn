@@ -18,8 +18,8 @@
 
 #include "loadingscreen.h"
 
-#include "CTexture.h"
-#include "CDrawingHelpers.h"
+#include "texture.h"
+#include "drawinghelpers.h"
 #include "GLFT_Font.h"
 #include "fontcache.h"
 #include "configuration.h"

@@ -21,9 +21,9 @@
 #include "player.h"
 #include <cassert>
 #include <memory>
-#include "CDrawingHelpers.h"
-#include "FramesBase.h"
-#include "InventoryScreen.h"
+#include "drawinghelpers.h"
+#include "framesbase.h"
+#include "inventoryscreen.h"
 #include "configuration.h"
 #include "soundengine.h"
 

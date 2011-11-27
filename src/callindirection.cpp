@@ -18,9 +18,9 @@
 
 #include "callindirection.h"
 
-#include "CLuaFunctions.h"
+#include "luafunctions.h"
 #include "globals.h"
-#include "CZone.h"
+#include "zone.h"
 #include <sstream>
 
 LuaCallIndirection::LuaCallIndirection()

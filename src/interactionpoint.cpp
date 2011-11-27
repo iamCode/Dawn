@@ -18,13 +18,13 @@
 
 #include "interactionpoint.h"
 
-#include "CTexture.h"
-#include "CDrawingHelpers.h"
-#include "CLuaFunctions.h"
+#include "texture.h"
+#include "drawinghelpers.h"
+#include "luafunctions.h"
 #include "character.h"
-#include "CZone.h"
+#include "zone.h"
 #include "globals.h"
-#include "CLuaInterface.h"
+#include "luainterface.h"
 
 #include <cassert>
 
@@ -261,10 +261,14 @@ std::string CharacterInteractionPoint::getLuaSaveText() const
 	std::string objectName = "curInteractionPoint";
 	std::string characterReference = DawnInterface::getItemReferenceRestore( interactionCharacter );
 	oss << "local " << objectName << " = DawnInterface.addCharacterInteractionPoint( " << characterReference << " );" << std::endl;
-	if ( backgroundTexture != NULL ) {
+
+	if( backgroundTexture != NULL )
+	{
 		oss << objectName << ":setBackgroundTexture( \"" << backgroundTexture->getTexture(0).textureFile << "\" );" << std::endl;
 	}
-	if ( interactionTexture != NULL ) {
+
+	if( interactionTexture != NULL )
+	{
 		oss << objectName << ":setInteractionType( " << toStringForLua( interactionType ) << " );" << std::endl;
 	}
 	oss << objectName << ":setInteractionCode( [[" << interactionCode << "]] );" << std::endl;

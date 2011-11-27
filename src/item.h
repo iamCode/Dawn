@@ -20,7 +20,7 @@
 #define __ITEM_H__
 
 #include <string>
-#include "CTexture.h"
+#include "texture.h"
 #include "elements.h"
 #include "stats.h"
 #include "character.h"

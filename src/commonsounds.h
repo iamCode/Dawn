@@ -24,4 +24,4 @@ namespace CommonSounds
 	void playClickSound();
 }
 
-#endif // COMMONSOUNDS_H
+#endif

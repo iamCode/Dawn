@@ -21,7 +21,7 @@
 
 #include <stdint.h>
 #include <string>
-#include "CharacterInfoScreen.h"
+#include "characterinfoscreen.h"
 
 class InventoryItem;
 class Item;

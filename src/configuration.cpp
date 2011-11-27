@@ -18,52 +18,51 @@
 
 #include "configuration.h"
 
-#include "CLuaFunctions.h"
-
+#include "luafunctions.h"
 #include <fstream>
 
 namespace Configuration
 {
-    void setResolution( uint16_t screenWidth, uint16_t screenHeight )
-    {
-        Configuration::screenWidth = screenWidth;
-        Configuration::screenHeight = screenHeight;
-    }
+	void setResolution( uint16_t screenWidth, uint16_t screenHeight )
+	{
+		Configuration::screenWidth = screenWidth;
+		Configuration::screenHeight = screenHeight;
+	}
 
-    void setBpp( uint8_t bpp )
-    {
-        Configuration::bpp = bpp;
-    }
+	void setBpp( uint8_t bpp )
+	{
+		Configuration::bpp = bpp;
+	}
 
 	void useFullscreen( bool fullscreenenabled )
-    {
-        Configuration::fullscreenenabled = fullscreenenabled;
-    }
+	{
+		Configuration::fullscreenenabled = fullscreenenabled;
+	}
 
-    void useSound( bool soundEnabled )
-    {
-        Configuration::soundenabled = soundenabled;
-    }
+	void useSound( bool soundEnabled )
+	{
+		Configuration::soundenabled = soundenabled;
+	}
 
-    void showDebugStdout( bool debug_stdout )
-    {
-        Configuration::debug_stdout = debug_stdout;
-    }
+	void showDebugStdout( bool debug_stdout )
+	{
+		Configuration::debug_stdout = debug_stdout;
+	}
 
-    void showDebugFileout( bool debug_fileout )
-    {
-        Configuration::debug_fileout = debug_fileout;
-    }
+	void showDebugFileout( bool debug_fileout )
+	{
+		Configuration::debug_fileout = debug_fileout;
+	}
 
-    void showInfoMessages( bool show_info_messages )
-    {
-        Configuration::show_info_messages = show_info_messages;
-    }
+	void showInfoMessages( bool show_info_messages )
+	{
+		Configuration::show_info_messages = show_info_messages;
+	}
 
-    void showWarningMessages( bool show_warn_messages )
-    {
-        Configuration::show_warn_messages = show_warn_messages;
-    }
+	void showWarningMessages( bool show_warn_messages )
+	{
+		Configuration::show_warn_messages = show_warn_messages;
+	}
 	
 	void writeConfigurationToFile()
 	{
@@ -83,15 +82,14 @@ namespace Configuration
 		LuaFunctions::executeLuaFile("settings.lua");
 	}
 
-    uint16_t screenWidth = 1024;
-    uint16_t screenHeight = 768;
-    uint8_t bpp = 32;
-    std::string logfile = "dawn-log.log"; // The logfile
-    bool debug_stdout = false; // Write messages to stdout
-    bool debug_fileout = false; // Write messages to a file
-    bool show_info_messages = false; // Show or hide debug info
-    bool show_warn_messages = false; // show or hide warnings
-    bool fullscreenenabled = true;
-    bool soundenabled = true;
-
+	uint16_t screenWidth = 1024;
+	uint16_t screenHeight = 768;
+	uint8_t bpp = 32;
+	std::string logfile = "dawn-log.log"; // The logfile
+	bool debug_stdout = false; // Write messages to stdout
+	bool debug_fileout = false; // Write messages to a file
+	bool show_info_messages = false; // Show or hide debug info
+	bool show_warn_messages = false; // show or hide warnings
+	bool fullscreenenabled = true;
+	bool soundenabled = true;
 }

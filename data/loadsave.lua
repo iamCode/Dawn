@@ -1,47 +1,36 @@
 function saveGlobals( t )
-	for name, value in pairs(_G)
-	do
+	for name, value in pairs(_G) do
 		t[name] = 1
 	end
 end
 
 function printValue( surroundingName, varname, value )
 	local prefix=''
-	if ( surroundingName )
-	then
+	if( surroundingName ) then
 		prefix=surroundingName..'.'
 	end
 
-	if ( value == nil )
-	then
+	if( value == nil ) then
 		io.write( prefix..varname..'='..'nil'..'\n' )
-	elseif ( type(value) == "number" )
-	then
+	elseif( type(value) == "number" ) then
 		io.write( prefix..varname..'='..value..'\n' )
-	elseif ( type(value) == "boolean" )
-	then
-		if ( value == true )
-		then
+	elseif( type(value) == "boolean" ) then
+		if( value == true ) then
 			io.write( prefix..varname..'='..'true'..'\n' )
 		else
 			io.write( prefix..varname..'='..'false'..'\n' )
 		end
-	elseif ( type(value) == "string" )
-	then
+	elseif( type(value) == "string" ) then
 		io.write( prefix..varname..'='..'"'..value..'"'..'\n' )
-	elseif ( type(value) == "table" )
-	then
+	elseif( type(value) == "table" ) then
 		io.write( prefix..varname..'='..'{}'..'\n' )
 		-- all variables in tables/namespaces with name DontSave are not saved. This allows for some temporary data
-		if ( varname ~= "DontSave" )
-		then
-			for innervarname,innervalue in pairs(value) 
-			do 
+		if( varname ~= "DontSave" ) then
+			for innervarname,innervalue in pairs(value) do
 				printValue(prefix..varname, innervarname, innervalue )
 			end
 		end
-	elseif ( type(value) == "userdata" )
-	then
+	elseif( type(value) == "userdata" ) then
 		local restoreString = DawnInterface.getItemReferenceRestore( value );
 		io.write( prefix..varname.."="..restoreString..'\n' );
 		local furtherReinitializationString = DawnInterface.getReinitialisationString( prefix..varname, value );
@@ -56,13 +45,12 @@ function saveGame( fileprefix )
 	-- save all zones (needed for variable lookups on user types)
 	io.write( DawnInterface.getAllZonesSaveText() );
 
-	for varname,value in pairs(_G) 
-	do 
-		if ( not initialGlobals[varname] )
-		then
+	for varname,value in pairs(_G) do
+		if( not initialGlobals[varname] ) then
 			printValue(nil,varname,value)
 		end
 	end
+
 	io.write( DawnInterface.getInventorySaveText() );
 	local player = DawnInterface.getPlayer();
 	io.write( player:getSaveText() );
@@ -70,8 +58,7 @@ function saveGame( fileprefix )
 	io.write( DawnInterface.getActionbarSaveText() );
 	io.write( DawnInterface.getReenterCurrentZoneText() );
 	local saveAllowedBoolText = "false";
-	if ( DawnInterface.isSavingAllowed() )
-	then
+	if ( DawnInterface.isSavingAllowed() ) then
 		saveAllowedBoolText = "true";
 	end
 	io.write( "DawnInterface.setSavingAllowed( " .. saveAllowedBoolText .. " );\n" );
@@ -83,26 +70,20 @@ end
 
 function reinitGlobalsRecursive( surroundingName, varname, value )
 	local prefix=''
-	if ( surroundingName )
-	then
+	if( surroundingName ) then
 		prefix=surroundingName..'.'
 	end
 
-	if ( value == nil )
-	then
+	if( value == nil ) then
 		return true
-	elseif ( type(value) == "table" )
-	then
+	elseif( type(value) == "table" ) then
 		haveOnlyNil = true
-		for innervarname,innervalue in pairs(value)
-		do
-			if ( reinitGlobalsRecursive(prefix..varname, innervarname, innervalue) == false )
-			then
+		for innervarname,innervalue in pairs(value) do
+			if ( reinitGlobalsRecursive(prefix..varname, innervarname, innervalue) == false ) then
 				haveOnlyNil = false;
 			end
 		end
-		if ( haveOnlyNil )
-		then
+		if( haveOnlyNil ) then
 			value = nil;
 			return true;
 		end
@@ -114,16 +95,13 @@ end
 
 function loadGame( fileprefix )
 	print( "loading lua game data from " .. fileprefix..'.lua' )
-	for varname,value in pairs(_G) 
-	do 
-		if ( not initialGlobals[varname] )
-		then
+	for varname,value in pairs(_G) do
+		if( not initialGlobals[varname] ) then
 			_G[''..varname..'']=nil
 		end
 	end
-	dofile( fileprefix..'.lua' )	
+	dofile( fileprefix..'.lua' )
 end
 
 initialGlobals = {}
 saveGlobals( initialGlobals )
-

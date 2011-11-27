@@ -19,11 +19,11 @@
 #ifndef SPELLBOOK_H
 #define SPELLBOOK_H
 
-#include "CTexture.h"
-#include "CSpell.h"
+#include "texture.h"
+#include "spell.h"
 #include "GLFT_Font.h"
 #include "tooltip.h"
-#include "FramesBase.h"
+#include "framesbase.h"
 
 class Player;
 

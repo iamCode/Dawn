@@ -25,29 +25,28 @@
 namespace Configuration
 {
 	void setResolution( uint16_t screenWidth, uint16_t screenHeight );
-    void setBpp( uint8_t bpp );
-    void useFullscreen( bool fullscreenEnabled );
-    void useSound( bool soundEnabled );
-    void showDebugStdout( bool debug_stdout );
-    void showDebugFileout( bool debug_fileout );
-    void showInfoMessages( bool show_info_messages );
-    void showWarningMessages( bool show_warn_messages );
+	void setBpp( uint8_t bpp );
+	void useFullscreen( bool fullscreenEnabled );
+	void useSound( bool soundEnabled );
+	void showDebugStdout( bool debug_stdout );
+	void showDebugFileout( bool debug_fileout );
+	void showInfoMessages( bool show_info_messages );
+	void showWarningMessages( bool show_warn_messages );
 	void addPossibleResolution( int width, int height, int bpp, bool fullscreen );
 	
 	void writeConfigurationToFile();
 	void loadConfigurationFromFile();
 
 	extern uint16_t screenWidth;
-    extern uint16_t screenHeight;
-    extern uint8_t bpp;
-    extern std::string logfile; // The logfile
-    extern bool debug_stdout; // Write messages to stdout
-    extern bool debug_fileout; // Write messages to a file
-    extern bool show_info_messages; // Show or hide debug info
-    extern bool show_warn_messages; // show or hide warnings
-    extern bool fullscreenenabled;
-    extern bool soundenabled;
-
+	extern uint16_t screenHeight;
+	extern uint8_t bpp;
+	extern std::string logfile; // The logfile
+	extern bool debug_stdout; // Write messages to stdout
+	extern bool debug_fileout; // Write messages to a file
+	extern bool show_info_messages; // Show or hide debug info
+	extern bool show_warn_messages; // show or hide warnings
+	extern bool fullscreenenabled;
+	extern bool soundenabled;
 }
 
-#endif // CONFIGURATION_H
+#endif
