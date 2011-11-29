@@ -24,8 +24,8 @@
 #include <vector>
 #include <stdint.h>
 #include <string>
-class GLFT_Font;
 
+class GLFT_Font;
 
 class SimpleFunctionObject
 {
