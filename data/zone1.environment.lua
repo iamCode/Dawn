@@ -1198,10 +1198,12 @@ EditorInterface.addEnvironment( -154, -292, 0, MapData.DontSave.tree_tree1_tga )
 EditorInterface.addEnvironment( 609, -293, 0, MapData.DontSave.tree_tree1_tga );
 EditorInterface.addEnvironment( -370, -298, 0, MapData.DontSave.tree_tree1_tga );
 EditorInterface.addEnvironment( 1426, -300, 0, MapData.DontSave.tree_tree1_tga );
+EditorInterface.addEnvironment( -273, -303, 0, MapData.DontSave.tree_tree1_tga );
 EditorInterface.addEnvironment( 233, -304, 0, MapData.DontSave.tree_tree2_tga );
 EditorInterface.addEnvironment( 1632, -310, 0, MapData.DontSave.tree_tree1_tga );
 EditorInterface.addEnvironment( -2566, -310, 0, MapData.DontSave.tree_tree2_tga );
 EditorInterface.addEnvironment( -978, -311, 0, MapData.DontSave.tree_tree1_tga );
+EditorInterface.addEnvironment( -456, -312, 0, MapData.DontSave.tree_tree1_tga );
 EditorInterface.addEnvironment( -789, -312, 0, MapData.DontSave.tree_tree2_tga );
 EditorInterface.addEnvironment( -171, -315, 0, MapData.DontSave.tree_tree2_tga );
 EditorInterface.addEnvironment( -551, -319, 0, MapData.DontSave.tree_tree1_tga );
