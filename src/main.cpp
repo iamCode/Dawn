@@ -195,9 +195,9 @@ static bool HandleCommandLineAurguments(int argc, char** argv)
 
 namespace DawnInterface
 {
-	CNPC *addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn )
+	CNPC* addMobSpawnPoint( std::string mobID, int x_pos, int y_pos, int respawn_rate, int do_respawn )
 	{
-		CNPC *newMob = new CNPC(0, 0, 0, 0, 0);
+		CNPC* newMob = new CNPC( 0, 0, 0, 0, 0 );
 		newMob->baseOnType( mobID );
 		newMob->setSpawnInfo( x_pos, y_pos, respawn_rate, do_respawn );
 		newMob->setActiveGUI( &GUI );
@@ -205,7 +205,7 @@ namespace DawnInterface
 		return newMob;
 	}
 
-	void removeMobSpawnPoint( CNPC *mobSpawnPoint )
+	void removeMobSpawnPoint( CNPC* mobSpawnPoint )
 	{
 		Globals::getCurrentZone()->removeNPC( mobSpawnPoint );
 	}
@@ -215,7 +215,7 @@ namespace DawnInterface
 		if ( Globals::allZones[ zoneName ] == NULL ) {
 			Globals::allZones[ zoneName ] = new CZone();
 		}
-		CZone *newCurZone = Globals::allZones[ zoneName ];
+		CZone* newCurZone = Globals::allZones[ zoneName ];
 		Globals::setCurrentZone( newCurZone );
 	}
 }
@@ -241,7 +241,7 @@ void DrawScene()
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);			// Full Brightness, 50% Alpha ( NEW )
 
-	CZone *curZone = Globals::getCurrentZone();
+	CZone* curZone = Globals::getCurrentZone();
 
 	curZone->DrawZone();
 
@@ -254,7 +254,7 @@ void DrawScene()
 	{
 		if( !activeAoESpells[curActiveAoESpellNr].first->isEffectComplete() )
 		{
-				activeAoESpells[curActiveAoESpellNr].first->drawEffect();
+			activeAoESpells[curActiveAoESpellNr].first->drawEffect();
 		}
 	}
 
@@ -390,7 +390,6 @@ bool threadedMode = false;
 //extern int64_t numCharactersDrawn;
 int64_t numTexturesDrawn = 0;
 
-
 bool dawn_init( int argc, char* argv[] )
 {
 	if( !HandleCommandLineAurguments( argc, argv ) )
@@ -490,11 +489,11 @@ bool dawn_init( int argc, char* argv[] )
 
 	glOrtho( 0.0f, Configuration::screenWidth, 0.0f, Configuration::screenHeight, -1.0f, 1.0f );
 	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity();  // reset view to 0,0
+	glLoadIdentity(); // reset view to 0,0
 
 	glEnable( GL_BLEND ); // enable blending
-	glBlendFunc( GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA );
-	glDisable( GL_DEPTH_TEST );	// Turn Depth Testing Off
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glDisable( GL_DEPTH_TEST ); // Turn Depth Testing Off
 
 	currentGameLoopHandler = mainMenuHandler.get();
 
@@ -532,7 +531,9 @@ void game_loop()
 	while( currentGameLoopHandler != NULL )
 	{
 		currentGameLoopHandler->handleEvents();
-		currentGameLoopHandler->updateScene();
+
+		if( !Globals::isPaused() )
+			currentGameLoopHandler->updateScene();
 
 		// reset drawing context
 		currentGameLoopHandler->drawScene();

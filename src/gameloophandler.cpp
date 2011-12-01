@@ -334,6 +334,11 @@ void GameScreenHandler::handleEvents()
 				}
 			}
 
+if( !Globals::isPaused() )
+{
+	return;
+}
+
 			// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 			if( clickedInFrame == false )
 			{
@@ -556,7 +561,7 @@ void GameScreenHandler::updateScene()
 	Globals::getCurrentZone()->cleanupInteractionRegionList();
 
 	// something more like key handling (should it go to the handleEvents?)
-	if(keys[SDLK_k]) // kill all NPCs in the zone. testing purposes.
+	if( keys[SDLK_k] ) // kill all NPCs in the zone. testing purposes.
 	{
 		std::vector<CNPC*> zoneNPCs = Globals::getCurrentZone()->getNPCs();
 		for( unsigned int x=0; x<zoneNPCs.size(); x++ )

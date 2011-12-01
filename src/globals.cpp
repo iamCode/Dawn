@@ -23,16 +23,17 @@ Player thePlayer;
 
 namespace Globals
 {
-	CZone *currentZone;
+	CZone* currentZone;
 	bool savingAllowed = false;
 	bool showCursor = false;
+	bool paused = false;
 
-	CZone *getCurrentZone()
+	CZone* getCurrentZone()
 	{
 		return currentZone;
 	}
 
-	void setCurrentZone( CZone *newCurZone )
+	void setCurrentZone( CZone* newCurZone )
 	{
 		currentZone = newCurZone;
 	}
@@ -65,32 +66,48 @@ namespace Globals
 
 	void cleanupActiveAoESpells()
 	{
-			size_t curSpell = 0;
-			while ( curSpell < activeAoESpells.size() ) {
-					if ( activeAoESpells[curSpell].first->isEffectComplete() == true ) {
-							delete activeAoESpells[curSpell].first;
-							activeAoESpells.erase( activeAoESpells.begin() + curSpell );
-					} else {
-							curSpell ++;
-					}
+		size_t curSpell = 0;
+		while( curSpell < activeAoESpells.size() )
+		{
+			if( activeAoESpells[curSpell].first->isEffectComplete() == true )
+			{
+				delete activeAoESpells[curSpell].first;
+				activeAoESpells.erase( activeAoESpells.begin() + curSpell );
 			}
+			else
+			{
+				curSpell ++;
+			}
+		}
 	}
 
 	void clearActiveAoESpells()
 	{
-			activeAoESpells.clear();
+		activeAoESpells.clear();
 	}
 
 
 	void removeActiveAoESpell( CSpellActionBase* activeSpell )
 	{
-			for ( size_t curSpell = 0; curSpell < activeAoESpells.size(); curSpell++ ) {
-					if ( activeAoESpells[ curSpell ].first == activeSpell ) {
-							activeAoESpells[ curSpell ].first->markSpellActionAsFinished();
-					}
+		for( size_t curSpell = 0; curSpell < activeAoESpells.size(); curSpell++ )
+		{
+			if( activeAoESpells[ curSpell ].first == activeSpell )
+			{
+				activeAoESpells[ curSpell ].first->markSpellActionAsFinished();
 			}
+		}
 	}
-} // namespace Globals
+
+	bool isPaused()
+	{
+		return paused;
+	}
+
+	void setPaused( bool f )
+	{
+		paused = f;
+	}
+}
 
 namespace DawnInterface
 {

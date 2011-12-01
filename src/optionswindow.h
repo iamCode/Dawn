@@ -35,8 +35,8 @@ public:
 	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 private:
-	CTexture *backgroundTexture;
-	GLFT_Font *font;
+	CTexture* backgroundTexture;
+	GLFT_Font* font;
 };
 
 class ChooseClassScreen : public FramesBase
@@ -50,9 +50,9 @@ public:
 	void clicked( int mouseX, int mouseY, uint8_t mouseState );
 
 private:
-	CTexture *backgroundTexture;
-	GLFT_Font *font;
+	CTexture* backgroundTexture;
+	GLFT_Font* font;
 	bool done;
 };
 
-#endif // OPTIONSWINDOW_H
+#endif

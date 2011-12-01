@@ -34,16 +34,18 @@ namespace Globals
 {
 	extern std::map< std::string, CZone* > allZones;
 	extern std::vector<std::pair<CSpellActionBase*, uint32_t> > activeAoESpells;
-	CZone *getCurrentZone();
-	void setCurrentZone( CZone *newCurZone );
+	CZone* getCurrentZone();
+	void setCurrentZone( CZone* newCurZone );
 	bool isSavingAllowed();
 	void setSavingAllowed( bool savingAllowed );
-	Player *getPlayer();
+	Player* getPlayer();
 	void addActiveAoESpell( CSpellActionBase *spell );
 	std::vector<std::pair<CSpellActionBase*, uint32_t> > getActiveAoESpells();
 	void cleanupActiveAoESpells();
 	void clearActiveAoESpells();
 	void removeActiveAoESpell( CSpellActionBase* activeSpell );
+	bool isPaused();
+	void setPaused( bool f );
 }
 
 #endif // GLOBALS_H

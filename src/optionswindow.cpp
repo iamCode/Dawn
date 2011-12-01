@@ -40,8 +40,8 @@ extern std::auto_ptr<QuestWindow> questWindow;
 
 namespace DawnInterface
 {
-    void clearLogWindow();
-    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+	void clearLogWindow();
+	void addTextToLogWindow( GLfloat color[], const char* text, ... );
 }
 
 OptionsWindow::OptionsWindow() : FramesBase ( 0, 0, 279, 217, 20, 19 )
@@ -67,7 +67,8 @@ void OptionsWindow::setTextureDependentPositions()
 
 OptionsWindow::~OptionsWindow()
 {
-	if ( backgroundTexture != NULL ) {
+	if( backgroundTexture != NULL )
+	{
 		delete backgroundTexture;
 	}
 }
@@ -82,7 +83,7 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	                                  posX + world_x, frameWidth,
 	                                  posY + world_y, frameHeight );
 
-	// show option names (continue, quit, load, save, settings)
+	// show option names (continue, quit, load, save, pause)
 	int textX = world_x + posX + 64;
 	int textY = world_y + posY + frameHeight - 64 - font->getHeight();
 	std::string curText = "Quit Game";
@@ -139,6 +140,17 @@ void OptionsWindow::draw( int mouseX, int mouseY )
 	if ( selectedEntry == 3 ) {
 		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
+
+	textY -= font->getHeight() * 1.5;
+	if( selectedEntry == 4 )
+	{
+		glColor4f( 1.0f, 1.0f, 0.0f, 1.0f );
+	}
+	font->drawText( textX, textY, "Pause" );
+	if( selectedEntry == 4 )
+	{
+		glColor4f( 1.0f, 1.0f, 1.0f , 1.0f );
+	}
 }
 
 void setQuitGame();
@@ -150,7 +162,8 @@ extern std::auto_ptr<ActionBar> actionBar;
 void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 {
 	// check for quit and the other options
-	if ( ! isMouseOnFrame( mouseX, mouseY ) ) {
+	if( !isMouseOnFrame( mouseX, mouseY ) )
+	{
 		return;
 	}
 
@@ -208,7 +221,7 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	{
 		if( Globals::isSavingAllowed() )
 		{
-			// Save Game
+			// save Game
 			LuaFunctions::executeLuaScript( "saveGame( 'savegame' )" );
 			GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
 			DawnInterface::addTextToLogWindow( yellow, "Game saved.");
@@ -218,12 +231,26 @@ void OptionsWindow::clicked( int mouseX, int mouseY, uint8_t mouseState )
 	{
 		toggle(); // close the window
 	}
+	else if( selectedEntry == 4 )
+	{
+		GLfloat yellow[] = { 1.0f, 1.0f, 0.0f };
+		if( Globals::isPaused() )
+		{
+			Globals::setPaused( false );
+			DawnInterface::addTextToLogWindow( yellow, "Game unpaused." );
+		}
+		else
+		{
+			Globals::setPaused( true );
+			DawnInterface::addTextToLogWindow( yellow, "Game paused." );
+		}
+	}
 }
 
 ChooseClassScreen::ChooseClassScreen() : FramesBase( 0, 0, 279, 313, 20, 19 )
 {
 	visible = true;
-    done = false;
+	done = false;
 	font = NULL;
 	backgroundTexture = NULL;
 
