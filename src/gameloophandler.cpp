@@ -334,11 +334,6 @@ void GameScreenHandler::handleEvents()
 				}
 			}
 
-if( !Globals::isPaused() )
-{
-	return;
-}
-
 			// looks like we clicked without finding any frame to click on. this could mean that we want to interact with the background in some way. let's try that.
 			if( clickedInFrame == false )
 			{

@@ -532,8 +532,7 @@ void game_loop()
 	{
 		currentGameLoopHandler->handleEvents();
 
-		if( !Globals::isPaused() )
-			currentGameLoopHandler->updateScene();
+		currentGameLoopHandler->updateScene();
 
 		// reset drawing context
 		currentGameLoopHandler->drawScene();
