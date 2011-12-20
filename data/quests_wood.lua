@@ -45,20 +45,6 @@ function quest_playHideAndSeek.init()
 	john:setInteractionCode( "quest_playHideAndSeek.onActivateJohn()" );
 end
 
-function quest_chat.init()
-	hora = DawnInterface.addInteractionPoint();
-	hora:setPosition( 400, 270, 64, 64 );
-	hora:setBackgroundTexture( "data/character/John.tga" );
-	hora:setInteractionType( InteractionType.Quest );
-	hora:setInteractionCode( "quest_chat.snackavehoran()" );
-	
-	bogn = DawnInterface.addInteractionPoint();
-	bogn:setPosition( 600,270, 64, 64 );
-	bogn:setBackgroundTexture( "data/character/James.tga" );
-	bogn:setInteractionType( InteractionType.Quest );
-	bogn:setInteractionCode( "quest_chat.snackavebogn()" );
-end
-
 function quest_playHideAndSeek.onActivateJohn()
 	if( not quest_playHideAndSeek.fulfilled ) then
 		if( quest_playHideAndSeek.added == nil ) then
