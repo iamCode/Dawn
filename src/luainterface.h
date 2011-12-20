@@ -53,12 +53,12 @@ namespace DawnInterface
 	RangedDamageAction* createRangedDamageAction();
 	GeneralRayDamageSpell* copySpell( GeneralRayDamageSpell *other );
 	GeneralAreaDamageSpell* copySpell( GeneralAreaDamageSpell *other );
-    GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
-    GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
-    GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
-    MeleeDamageAction* copySpell( MeleeDamageAction *other );
-    RangedDamageAction* copySpell( RangedDamageAction *other );
-    void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
+	GeneralBoltDamageSpell* copySpell( GeneralBoltDamageSpell *other );
+	GeneralHealingSpell* copySpell( GeneralHealingSpell *other );
+	GeneralBuffSpell* copySpell( GeneralBuffSpell *other );
+	MeleeDamageAction* copySpell( MeleeDamageAction *other );
+	RangedDamageAction* copySpell( RangedDamageAction *other );
+	void inscribeSpellInPlayerSpellbook( CSpellActionBase *inscribedSpell );
 	Quest* addQuest( std::string questName, std::string questDescription );
 	void enterZone( std::string zoneName, int enterX, int enterY );
 	bool isSavingAllowed();

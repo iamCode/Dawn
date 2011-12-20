@@ -35,7 +35,7 @@ namespace DawnInterface
 
 	Quest* addQuest( std::string questName, std::string questDescription )
 	{
-		Quest *newQuest = new Quest( questName, questDescription, questWindow.get() );
+		Quest* newQuest = new Quest( questName, questDescription, questWindow.get() );
 		questWindow->addQuest( newQuest );
 		return newQuest;
 	}
@@ -144,12 +144,12 @@ void QuestWindow::tryToPurgeQuests()
 	}
 }
 
-void QuestWindow::addQuestToBeRemoved( Quest *quest )
+void QuestWindow::addQuestToBeRemoved( Quest* quest )
 {
 	questsToBeRemoved.push_back( quest );
 }
 
-void QuestWindow::removeQuest( Quest *quest )
+void QuestWindow::removeQuest( Quest* quest )
 {
 	for( size_t foundQuestNr=0; foundQuestNr<quests.size(); ++foundQuestNr )
 	{

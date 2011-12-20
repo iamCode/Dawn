@@ -22,14 +22,14 @@
 #include "shop.h"
 #include "luainterface.h"
 
-Quest::Quest( std::string name, std::string description, QuestWindow *questHandler )
-    :   name( name ),
-        questHandler( questHandler ),
-        description( description ),
-        experienceReward( 0 ),
-        itemReward( NULL ),
-        coinReward( 0 ),
-        questFinished( false )
+Quest::Quest( std::string name, std::string description, QuestWindow* questHandler )
+	: name( name ),
+	  questHandler( questHandler ),
+	  description( description ),
+	  experienceReward( 0 ),
+	  itemReward( NULL ),
+	  coinReward( 0 ),
+	  questFinished( false )
 {
 }
 
@@ -114,7 +114,7 @@ bool Quest::finishQuest()
 	}
 
 	// reward the player with experience, items and coins.
-	if ( getExperienceReward() > 0 )
+	if( getExperienceReward() > 0 )
 	{
 		ourPlayer->gainExperience( getExperienceReward() );
 	}

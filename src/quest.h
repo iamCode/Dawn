@@ -25,7 +25,11 @@
 #include "questwindow.h"
 
 class Quest;
-namespace DawnInterface { std::string getReinitialisationString( std::string fullVarName, Quest* quest ); }
+
+namespace DawnInterface
+{
+	std::string getReinitialisationString( std::string fullVarName, Quest* quest );
+}
 
 class Quest
 {
@@ -66,7 +70,8 @@ private:
 
 	std::string name;
 	std::string description;
-	friend std::string DawnInterface::getReinitialisationString( std::string fullVarName, Quest *quest );
+
+	friend std::string DawnInterface::getReinitialisationString( std::string fullVarName, Quest* quest );
 };
 
 #endif

@@ -26,8 +26,9 @@
 #include <cstring>
 #include <memory>
 
-namespace DawnInterface {
-    void addTextToLogWindow( GLfloat color[], const char *text, ... );
+namespace DawnInterface
+{
+	void addTextToLogWindow( GLfloat color[], const char* text, ... );
 }
 
 extern int world_x, world_y;
@@ -56,11 +57,11 @@ void utils::takeScreenshot()
 	std::string filename = ss.str();
 
 
-    std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );
-    unsigned char *outputImage = outputImageAuto.get();
-    unsigned char *tempImage = new unsigned char[w*4];
+	std::auto_ptr<unsigned char> outputImageAuto( new unsigned char[h*w*4] );
+	unsigned char *outputImage = outputImageAuto.get();
+	unsigned char *tempImage = new unsigned char[w*4];
 
-    glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
+	glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE, outputImage);
 
 	/* flip the pixel because opengl works from bottom left corner */
 	for(int y = 0; y < h/2; y++)
@@ -71,25 +72,25 @@ void utils::takeScreenshot()
 	}
 	delete[] tempImage;
 
-    // look for a free screenshot file to write to. screenshot0.PNG, screenshot1.PNG...screenshotX.PNG
-    while ( utils::file_exists( filename ) )
-    {
-        screenshotIndex++;
-        ss.str("");
-        ss << "screenshot" << screenshotIndex << ".png";
-        filename = ss.str();
-    }
+	// look for a free screenshot file to write to. screenshot0.PNG, screenshot1.PNG...screenshotX.PNG
+	while ( utils::file_exists( filename ) )
+	{
+		screenshotIndex++;
+		ss.str("");
+		ss << "screenshot" << screenshotIndex << ".png";
+		filename = ss.str();
+	}
 
-    if ( !filename.empty() )
-    {
-        png_init(0,0);
-        png_open_file_write(&pngOutput,filename.c_str());
+	if( !filename.empty() )
+	{
+		png_init(0,0);
+		png_open_file_write(&pngOutput,filename.c_str());
 
 		png_set_data(&pngOutput, Configuration::screenWidth, Configuration::screenHeight, 8, PNG_TRUECOLOR_ALPHA, static_cast<unsigned char*>(outputImage));
 
-        png_close_file(&pngOutput);
+		png_close_file(&pngOutput);
 
-        float white[] = { 1.0f, 1.0f, 1.0f };
-        DawnInterface::addTextToLogWindow( white, "Screenshot saved to %s.", filename.c_str() );
-    }
+		float white[] = { 1.0f, 1.0f, 1.0f };
+		DawnInterface::addTextToLogWindow( white, "Screenshot saved to %s.", filename.c_str() );
+	}
 }

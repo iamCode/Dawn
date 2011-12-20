@@ -1,6 +1,5 @@
 -- init quest namespace so different quests / zones don't conflict in names
-if ( quest_hexmaster == nil )
-then
+if( quest_hexmaster == nil ) then
 	quest_hexmaster = {}
 end
 
@@ -11,54 +10,49 @@ function quest_hexmaster.init()
 	quest_hexmaster.questStartRegion:setOnEnterText( "quest_hexmaster.onQuestGiverRegionInteraction()" );
 
 	quest_hexmaster.ornadSaidor = DawnInterface.addMobSpawnPoint( "Human", 900, 2350, 1, 0 );
-        quest_hexmaster.ornadSaidor:setAttitude( Attitude.FRIENDLY );
-        quest_hexmaster.ornadSaidor:setWanderRadius(50);
-        quest_hexmaster.ornadSaidor:setName( "Ornad Saidor" );
-        quest_hexmaster.ornadSaidorInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.ornadSaidor );
-        quest_hexmaster.ornadSaidorInteraction:setInteractionType( InteractionType.Quest );
-        quest_hexmaster.ornadSaidorInteraction:setInteractionCode( "quest_hexmaster.onOrnadSaidorInteraction()" );
+	quest_hexmaster.ornadSaidor:setAttitude( Attitude.FRIENDLY );
+	quest_hexmaster.ornadSaidor:setWanderRadius(50);
+	quest_hexmaster.ornadSaidor:setName( "Ornad Saidor" );
+	quest_hexmaster.ornadSaidorInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.ornadSaidor );
+	quest_hexmaster.ornadSaidorInteraction:setInteractionType( InteractionType.Quest );
+	quest_hexmaster.ornadSaidorInteraction:setInteractionCode( "quest_hexmaster.onOrnadSaidorInteraction()" );
 
 	quest_hexmaster.noviceLeader = DawnInterface.addMobSpawnPoint( "Wizard", 0, 2100, 1, 0 );
 	quest_hexmaster.noviceLeader:setAttitude( Attitude.FRIENDLY );
 	quest_hexmaster.noviceLeader:setName( "Novice Leader" );
-        quest_hexmaster.noviceLeaderInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.noviceLeader );
-        quest_hexmaster.noviceLeaderInteraction:setInteractionType( InteractionType.Quest );
-        quest_hexmaster.noviceLeaderInteraction:setInteractionCode( "quest_hexmaster.onNoviceLeaderInteraction()" );
+	quest_hexmaster.noviceLeaderInteraction = DawnInterface.addCharacterInteractionPoint( quest_hexmaster.noviceLeader );
+	quest_hexmaster.noviceLeaderInteraction:setInteractionType( InteractionType.Quest );
+	quest_hexmaster.noviceLeaderInteraction:setInteractionCode( "quest_hexmaster.onNoviceLeaderInteraction()" );
 end
 
 function quest_hexmaster.onQuestGiverRegionInteraction()
-	if ( not quest_hexmaster.questGiven )
-	then
+	if( not quest_hexmaster.questGiven ) then
 		quest_hexmaster.showStartText( 1 )
 	end
 end
 
 function quest_hexmaster.onOrnadSaidorInteraction()
-	if ( quest_hexmaster.doorTextRead and not quest_hexmaster.toldWholeStory )
-	then
+	if( quest_hexmaster.doorTextRead and not quest_hexmaster.toldWholeStory ) then
 		quest_hexmaster.showStartText( 3 )
-	elseif ( quest_hexmaster.metJorni )
-	then
+	elseif( quest_hexmaster.metJorni ) then
 		quest_hexmaster.showStartText( 7 )
 	else
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setText("What are you waiting for. There is work to do. Go on.")
+		textWindow:setText( "What are you waiting for. There is work to do. Go on." )
 	end
 end
 
 function quest_hexmaster.showStartText( part )
-	if ( part == 1 )
-	then
+	if( part == 1 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setText("Hello traveller. My name is Ornad Saidor. Hear my tale, please.")
+		textWindow:setText( "Hello traveller. My name is Ornad Saidor. Hear my tale, please." )
 		textWindow:setOnCloseText( "quest_hexmaster.showStartText( 2 )" );
 	end
-	if ( part == 2 )
-	then
+	if( part == 2 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
@@ -69,32 +63,28 @@ function quest_hexmaster.showStartText( part )
 		quest_hexmaster.quest = DawnInterface.addQuest(	"The Hexmaster", "Explore the catacombs underneath the town of Arinox and report back any trace of Jorni to Ornad Saidor." );
 		quest_hexmaster.questGiven = true;
 	end
-	if ( part == 3 )
-	then
+	if ( part == 3 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("You found a sign of Jorni? So you are willing to work for me?");
 		textWindow:setOnCloseText( "quest_hexmaster.showStartText( 4 )" );
 	end
-	if ( part == 4 )
-	then
+	if ( part == 4 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("I am. But I need help if I am to succeed.");
 		textWindow:setOnCloseText( "quest_hexmaster.showStartText( 5 )" );
 	end
-	if ( part == 5 )
-	then
+	if ( part == 5 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
 		textWindow:setText("I will tell you all I know about what has happened. About a year ago some townspeople started diappearing. One every few month so people were worried, a murderer was in town, but all investigations lead to dead ends. Then last week another one disappeared - the daughter of a wealthy trader in town. He hired me to find the murderer and bring him to justice. The night before yesterday her body ran around town - horribly twisted and without a head, but still walking. The townspeople were enraged and some openly talked of tearing down the mages guild when the guildmaster stopped them and said internal inspections had found the responsible. The novice Jorni who came to the guild a few weeks before the first murder. All evidence was against him since some personal items of the daughter were found in his rooms and he even came from a town in the far north that is very close to a former stronghold of the hexmasters of old before they where extinguished by the holy church in the cleaning crusade.")
 		textWindow:setOnCloseText( "quest_hexmaster.showStartText( 6 )" );
 	end
-	if ( part == 6 )
-	then
+	if ( part == 6 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
@@ -102,8 +92,7 @@ function quest_hexmaster.showStartText( part )
 		quest_hexmaster.toldWholeStory = true
 		quest_hexmaster.quest:setDescription( "Ornad Saidor thinks you need magical help from the mages guild to open the dungeon door and continue to search for Jorni");
 	end
-	if ( part == 7 )
-	then
+	if ( part == 7 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
@@ -112,20 +101,18 @@ function quest_hexmaster.showStartText( part )
 end
 
 function quest_hexmaster.onNoviceLeaderInteraction()
-	if ( quest_hexmaster.toldWholeStory and not quest_hexmaster.novicesOfferedHelp )
-	then
+	if ( quest_hexmaster.toldWholeStory and not quest_hexmaster.novicesOfferedHelp ) then
 		quest_hexmaster.showNoviceText( 1 )
 	else
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );
-		textWindow:setText("We are novices of the mages guild, always seeking for knowledge. Don't disturb our learning, please.")
+		textWindow:setText("We are novices of the Mages' Guild, always seeking for knowledge. Don't disturb our learning, please.")
 	end
 end
 
 function quest_hexmaster.showNoviceText( part )
-	if ( part == 1 )
-	then
+	if ( part == 1 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		-- TODO: center on player
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
@@ -133,8 +120,7 @@ function quest_hexmaster.showNoviceText( part )
 		textWindow:setText("I have been commisioned to find the novice Jorni who seems to have hidden in the catacombs behind a magically locked door. Will you help me break the lock so I can further investigate his actions?");
 		textWindow:setOnCloseText( "quest_hexmaster.showNoviceText( 2 )" );
 	end
-	if ( part == 2 )
-	then
+	if ( part == 2 ) then
 		local textWindow = DawnInterface.createTextWindow();
 		textWindow:setPosition( PositionType.CENTER, 512, 382 );
 		textWindow:setAutocloseTime( 0 );

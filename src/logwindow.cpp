@@ -78,19 +78,19 @@ namespace DawnInterface
 	void addTextToLogWindow( GLfloat color[], const char *text, ... )
 	{
 		char buffer[1024];
-        std::va_list args;
+		std::va_list args;
 
-        // writing our text and arguments to the buffer
-        va_start(args, text);
-        vsnprintf(buffer,1024,text,args);
-        va_end(args);
+		// writing our text and arguments to the buffer
+		va_start(args, text);
+		vsnprintf(buffer,1024,text,args);
+		va_end(args);
 
-        // push everything to our vector.
-        logWindow->addTextToLog( std::string(buffer), color );
+		// push everything to our vector.
+		logWindow->addTextToLog( std::string(buffer), color );
 	}
 
 	void clearLogWindow()
 	{
-	    logWindow->clear();
+		logWindow->clear();
 	}
 }
