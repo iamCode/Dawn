@@ -122,7 +122,7 @@ void ActionBar::draw()
 			bool useableSpell = isSpellUseable( button[ buttonId ].action );
 
 			// is the spell on cooldown?
-			for(size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++)
+			for( size_t curSpell = 0; curSpell < cooldownSpells.size(); curSpell++ )
 			{
 				if( cooldownSpells[curSpell].first->getName() == button[buttonId].action->getName() )
 				{
@@ -171,7 +171,7 @@ bool ActionBar::isSpellUseable( CSpellActionBase *action )
 	}
 
 	// do we have a target? if so, are we in range? (doesn't check for selfaffectign spells)
-	if ( player->getTarget() != NULL && action->getEffectType() != EffectType::SelfAffectingSpell )
+	if( player->getTarget() != NULL && action->getEffectType() != EffectType::SelfAffectingSpell )
 	{
 		if ( player->getTargetAttitude() == Attitude::FRIENDLY )
 			return false;
@@ -254,7 +254,7 @@ void ActionBar::clicked( int clickX, int clickY )
 		// check to see if we're holding a floating spell on the mouse. if we do, we want to place it in the actionbar slot...
 		if( spellbook->hasFloatingSpell() )
 		{
-			if ( isButtonUsed( &button[buttonId] ) )
+			if( isButtonUsed( &button[buttonId] ) )
 				unbindAction( &button[buttonId] );
 
 			bindAction( &button[buttonId], spellbook->getFloatingSpell()->action );
@@ -264,15 +264,16 @@ void ActionBar::clicked( int clickX, int clickY )
 
 void ActionBar::handleKeys()
 {
-	Uint8 *keys = SDL_GetKeyState(NULL);
+	Uint8* keys = SDL_GetKeyState(NULL);
 
-	for ( size_t buttonId = 0; buttonId < 10; buttonId++ ) {
+	for( size_t buttonId = 0; buttonId < 10; buttonId++ )
+	{
 		// TODO: use a conversion table here from quickslot nr to keycode
-		if ( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed )
+		if( keys[ button[buttonId].key ] && ! button[buttonId].wasPressed )
 		{
 			button[buttonId].wasPressed = true;
 
-			if ( button[buttonId].action != NULL && isSpellUseable( button[buttonId].action ) )
+			if( button[buttonId].action != NULL && isSpellUseable( button[buttonId].action ) )
 			{
 				CSpellActionBase *curAction = NULL;
 				EffectType::EffectType effectType = button[buttonId].action->getEffectType();
@@ -281,14 +282,14 @@ void ActionBar::handleKeys()
 				{
 					curAction = button[buttonId].action->cast( player, player->getTarget() );
 				}
-				else if ( effectType == EffectType::SelfAffectingSpell )
+				else if( effectType == EffectType::SelfAffectingSpell )
 				{
 					curAction = button[buttonId].action->cast( player, player );
 				}
-				else if ( effectType == EffectType::AreaTargetSpell )
+				else if( effectType == EffectType::AreaTargetSpell )
 				{
 					// is there a target?
-					if ( player->getTarget() != NULL )
+					if( player->getTarget() != NULL )
 					{
 						curAction = button[buttonId].action->cast( player, player->getTarget() );
 						preparingAoESpell = false;
@@ -301,14 +302,14 @@ void ActionBar::handleKeys()
 					}
 				}
 
-				if ( curAction != NULL )
+				if( curAction != NULL )
 				{
 					player->castSpell( dynamic_cast<CSpellActionBase*>( curAction ) );
 				}
 			}
 		}
 
-		if ( !keys[ button[buttonId].key ] )
+		if( !keys[ button[buttonId].key ] )
 		{
 			button[buttonId].wasPressed = false;
 		}
