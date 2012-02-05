@@ -656,7 +656,7 @@ void GameScreenHandler::updateScene()
 		Globals::getCurrentZone()->getGroundLoot()->disableTooltips();
 	}
 
-	if( !keys[SDLK_TAB] )
+	if( !keys[SDLK_TAB] && !Editor.isEnabled() )
 	{
 		KP_select_next = false;
 	}
@@ -670,7 +670,7 @@ void GameScreenHandler::updateScene()
 		KP_toggle_showOptionsWindow = false;
 	}*/
 
-	if( keys[SDLK_ESCAPE] )
+	if( keys[SDLK_ESCAPE] && !Editor.isEnabled() )
 	{
 		if( actionBar->isPreparingAoESpell() )
 		{
@@ -692,7 +692,7 @@ void GameScreenHandler::updateScene()
 		}
 	}
 
-	if( keys[SDLK_c] && !KP_toggle_showCharacterInfo )
+	if( keys[SDLK_c] && !KP_toggle_showCharacterInfo && !Editor.isEnabled() )
 	{
 		KP_toggle_showCharacterInfo = true;
 		characterInfoScreen->toggle();
@@ -703,18 +703,18 @@ void GameScreenHandler::updateScene()
 		KP_toggle_showCharacterInfo = false;
 	}
 
-	if( keys[SDLK_b] && !KP_toggle_showSpellbook )
+	if( keys[SDLK_b] && !KP_toggle_showSpellbook && !Editor.isEnabled() )
 	{
 		KP_toggle_showSpellbook = true;
 		spellbook->toggle();
 	}
 
-	if( !keys[SDLK_b] )
+	if( !keys[SDLK_b] && !Editor.isEnabled() )
 	{
 		KP_toggle_showSpellbook = false;
 	}
 
-	if( keys[SDLK_i] && !KP_toggle_showInventory )
+	if( keys[SDLK_i] && !KP_toggle_showInventory && !Editor.isEnabled() )
 	{
 		KP_toggle_showInventory = true;
 		inventoryScreen->toggle();
@@ -736,7 +736,7 @@ void GameScreenHandler::updateScene()
 		KP_toggle_showQuestWindow = false;
 	}
 
-	if( !optionsWindow->isVisible() )
+	if( !optionsWindow->isVisible() && !Editor.isEnabled() )
 	{
 		actionBar->handleKeys();
 	}
