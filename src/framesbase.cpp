@@ -1,20 +1,19 @@
-/**
-    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+/* Copyright (C) 2009,2010,2011,2012  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
+   This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include "framesbase.h"
 #include "configuration.h"
@@ -24,56 +23,59 @@
 extern std::vector <FramesBase*> activeFrames;
 
 FramesBase::FramesBase()
-    :   visible( false ),
-        moveableFrame( false),
-        closeButton( false ),
-        movingFrame( false ),
-        framesDawnState( DawnState::NoState )
+  : visible( false ),
+    moveableFrame( false),
+    closeButton( false ),
+    movingFrame( false ),
+    framesDawnState( DawnState::NoState ),
+    name ("")
 {
 }
 
 FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_ )
-    :   posX( posX_ ),
-        posY( posY_ ),
-        frameWidth( frameWidth_ ),
-		frameHeight( frameHeight_ ),
-		frameOffsetX( frameOffsetX_ ),
-		frameOffsetY( frameOffsetY_ ),
-        visible( false ),
-        moveableFrame( false),
-        closeButton( false ),
-        movingFrame( false ),
-        framesDawnState( DawnState::NoState )
+  : posX( posX_ ),
+    posY( posY_ ),
+    frameWidth( frameWidth_ ),
+    frameHeight( frameHeight_ ),
+    frameOffsetX( frameOffsetX_ ),
+    frameOffsetY( frameOffsetY_ ),
+    visible( false ),
+    moveableFrame( false),
+    closeButton( false ),
+    movingFrame( false ),
+    framesDawnState( DawnState::NoState )
 {
-	if ( posY + frameHeight + frameOffsetY > Configuration::screenHeight ) {
-        posY = Configuration::screenHeight - frameHeight - frameOffsetY;
-	}
+  if( posY + frameHeight + frameOffsetY > Configuration::screenHeight )
+  {
+    posY = Configuration::screenHeight - frameHeight - frameOffsetY;
+  }
 }
 
 FramesBase::~FramesBase()
 {
-	for ( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr ) {
-		delete childFrames[ curChildNr ];
-	}
-	childFrames.resize( 0 );
+  for( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr )
+  {
+    delete childFrames[ curChildNr ];
+  }
+  childFrames.resize( 0 );
 }
 
 void FramesBase::addMoveableFrame( uint16_t titleWidth, uint16_t titleHeight, int16_t titleOffsetX, int16_t titleOffsetY )
 {
-    moveableFrame = true;
-    this->titleWidth = titleWidth;
-    this->titleHeight = titleHeight;
-    this->titleOffsetX = titleOffsetX;
-    this->titleOffsetY = titleOffsetY;
+  moveableFrame = true;
+  this->titleWidth = titleWidth;
+  this->titleHeight = titleHeight;
+  this->titleOffsetX = titleOffsetX;
+  this->titleOffsetY = titleOffsetY;
 }
 
 void FramesBase::addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, int16_t buttonOffsetX, int16_t buttonOffsetY )
 {
-    closeButton = true;
-    this->buttonWidth = buttonWidth;
-    this->buttonHeight = buttonHeight;
-    this->buttonOffsetX = buttonOffsetX;
-    this->buttonOffsetY = buttonOffsetY;
+  closeButton = true;
+  this->buttonWidth = buttonWidth;
+  this->buttonHeight = buttonHeight;
+  this->buttonOffsetX = buttonOffsetX;
+  this->buttonOffsetY = buttonOffsetY;
 }
 
 void FramesBase::moveFrame( uint16_t mouseX, uint16_t mouseY )
@@ -96,14 +98,14 @@ void FramesBase::moveFrame( uint16_t mouseX, uint16_t mouseY )
 
 void FramesBase::stopMovingFrame( uint16_t mouseX, uint16_t mouseY )
 {
-    movingFrame = false;
-    startMovingFrameXpos = 0;
-    startMovingFrameYpos = 0;
+  movingFrame = false;
+  startMovingFrameXpos = 0;
+  startMovingFrameYpos = 0;
 }
 
 bool FramesBase::isMovingFrame() const
 {
-    return movingFrame;
+  return movingFrame;
 }
 
 void FramesBase::draw( int mouseX, int mouseY )
@@ -166,54 +168,58 @@ bool FramesBase::isMouseOnCloseButton( int mouseX, int mouseY ) const
 
 bool FramesBase::isMouseOnFrame( int mouseX, int mouseY ) const
 {
-	if ( !isVisible() )
-	{
-	    return false;
-	}
+  if ( !isVisible() )
+  {
+    return false;
+  }
 
-	if ( mouseX < posX + frameOffsetX
-		 || mouseY < posY + frameOffsetY
-		 || mouseX > posX + frameOffsetX + getWidth()
-		 || mouseY > posY + frameOffsetY + getHeight() ) {
-	    return false;
-	}
-	return true;
+  if( mouseX < posX + frameOffsetX
+       || mouseY < posY + frameOffsetY
+       || mouseX > posX + frameOffsetX + getWidth()
+       || mouseY > posY + frameOffsetY + getHeight() ) {
+    return false;
+  }
+
+  return true;
 }
 
 bool FramesBase::isVisible() const
 {
-    return visible;
+  return visible;
 }
 
 void FramesBase::setVisible( bool visible )
 {
-    // Activate the frames dawnstate, only if we have set the frame visible and it's state is
-    if ( visible == true && framesDawnState != DawnState::NoState ) {
-        DawnState::setDawnState( framesDawnState );
-    }
-    this->visible = visible;
+  // Activate the frames dawnstate, only if we have set the frame visible and it's state is
+  if ( visible == true && framesDawnState != DawnState::NoState )
+  {
+    DawnState::setDawnState( framesDawnState );
+  }
+  this->visible = visible;
 }
 
 void FramesBase::toggle()
 {
     // is the frame visible?
-    if ( isVisible() )
+  if( isVisible() )
+  {
+    // then loop through all frames and remove the frame and make it unvisible.
+    for( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
     {
-        // then loop through all frames and remove the frame and make it unvisible.
-        for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
-        {
-            if ( this == activeFrames[ curFrame ] )
-            {
-                setVisible( false );
-                activeFrames.erase( activeFrames.begin() + curFrame );
-                return;
-            }
-        }
-    } else {
-        // else add it to the frame vector and make it visible.
-        activeFrames.push_back( this );
-        setVisible( true );
+      if( this == activeFrames[ curFrame ] )
+      {
+	setVisible( false );
+	activeFrames.erase( activeFrames.begin() + curFrame );
+	return;
+      }
     }
+  }
+  else
+  {
+    // else add it to the frame vector and make it visible.
+    activeFrames.push_back( this );
+    setVisible( true );
+  }
 }
 
 void FramesBase::setOnTop()
@@ -232,49 +238,53 @@ void FramesBase::setOnTop()
 
 void FramesBase::setPosition( int parentOffsetX, int parentOffsetY )
 {
-	posX = parentOffsetX;
-	posY = parentOffsetY;
+  posX = parentOffsetX;
+  posY = parentOffsetY;
 }
 
 void FramesBase::addToParent( int posOffsetX, int posOffsetY, FramesBase *parent )
 {
-	this->parentFrame = parent;
-	setPosition( posOffsetX, posOffsetY );
+  this->parentFrame = parent;
+  setPosition( posOffsetX, posOffsetY );
 }
 
 void FramesBase::setFramesDawnState( DawnState::DawnState framesDawnState )
 {
-    this->framesDawnState = framesDawnState;
+  this->framesDawnState = framesDawnState;
 }
 
 void FramesBase::addChildFrame( int posOffsetX, int posOffsetY, std::auto_ptr<FramesBase> newChild )
 {
-	newChild->addToParent( posOffsetX, posOffsetY, this );
-	childFrames.push_back( newChild.release() );
+  newChild->addToParent( posOffsetX, posOffsetY, this );
+  childFrames.push_back( newChild.release() );
 }
 
 int FramesBase::getPosX() const
 {
-	return posX;
+  return posX;
 }
 
 int FramesBase::getPosY() const
 {
-	return posY;
+  return posY;
 }
 
 int FramesBase::getWidth() const
 {
-	return frameWidth;
+  return frameWidth;
 }
 
 int FramesBase::getHeight() const
 {
-	return frameHeight;
+  return frameHeight;
+}
+
+char* FramesBase::getName() const
+{
+  return name;
 }
 
 std::vector<FramesBase*> FramesBase::getChildFrames()
 {
-	return childFrames;
+  return childFrames;
 }
-

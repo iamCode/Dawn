@@ -1,5 +1,4 @@
-/**
-   Copyright (C) 2009,2010,2011,2012  Dawn - 2D roleplaying game
+/* Copyright (C) 2009,2010,2011,2012  Dawn - 2D roleplaying game
 
    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
@@ -14,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #ifndef FRAMES_H
 #define FRAMES_H

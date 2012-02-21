@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+    Copyright (C) 2009,2010,2011,2012  Dawn - 2D roleplaying game
 
     This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
