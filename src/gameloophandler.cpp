@@ -579,18 +579,9 @@ void GameScreenHandler::updateScene()
 
   if( keys[SDLK_p] )
   {
-    GLfloat color[] = { 255, 0, 255, 255 };
-//    DawnInterface::addTextToLogWindow( color, "Player X: %d", player->getXPos() );
-//    DawnInterface::addTextToLogWindow( color, "Player Y: %d", player->getYPos() );
-    if( activeFrames.size() > 1 )
-    {
-      for(int i=1;i<activeFrames.size();i++)
-      {
-	DawnInterface::addTextToLogWindow( color, "i:%d  size:%d", i, activeFrames.size());
-	activeFrames[i]->toggle();
-	DawnInterface::addTextToLogWindow( color, "CLOSED" );
-      }
-    }
+    GLfloat color[] = { 100, 100, 255, 255 };
+    DawnInterface::addTextToLogWindow( color, "Player X: %d", player->getXPos() );
+    DawnInterface::addTextToLogWindow( color, "Player Y: %d", player->getYPos() );
   }
 
   if(keys[SDLK_l] && !Editor.KP_toggle_editor)
@@ -691,22 +682,45 @@ void GameScreenHandler::updateScene()
 
   if( keys[SDLK_ESCAPE] && !Editor.isEnabled())
   {
-    // cancel casting of AoE
-    if( actionBar->isPreparingAoESpell() )
-    {
-      actionBar->stopCastingAoE();
-    }
-
     if( !KP_toggle_showOptionsWindow )
     {
-      // make sure the window is on the top of the stack
-      optionsWindow->setOnTop();
-      optionsWindow->toggle();
-      
-      // close all windows except the on on top
-      while(activeFrames.size() > 2)
+      int limit = 2;
+
+      // cancel casting of AoE
+      if( actionBar->isPreparingAoESpell() )
       {
-        activeFrames[1]->toggle();
+	actionBar->stopCastingAoE();
+      }
+
+      // are any frames visible when the options window is not?
+      if( !optionsWindow->isVisible() )
+      {
+	limit = 1;
+	// are any frames open?
+	if( activeFrames.size() > limit)
+	{
+	  // close all frames
+	  while(activeFrames.size() > limit)
+	  {
+	    activeFrames[1]->toggle();
+	  }
+	}
+	else
+	{
+	  optionsWindow->toggle();
+	}
+      }
+      else
+      {
+	// make sure the window is on the top of the stack
+	optionsWindow->toggle();
+	optionsWindow->setOnTop();
+      
+	// close all windows except the on on top
+	while(activeFrames.size() > limit)
+	{
+	  activeFrames[1]->toggle();
+	}
       }
       
       KP_toggle_showOptionsWindow = true;
@@ -765,7 +779,7 @@ void GameScreenHandler::updateScene()
     KP_toggle_showQuestWindow = false;
   }
 
-  if( !optionsWindow->isVisible() && !Editor.isEnabled() )
+  if( !Editor.isEnabled() )
   {
     actionBar->handleKeys();
   }
