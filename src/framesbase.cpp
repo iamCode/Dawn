@@ -200,7 +200,7 @@ void FramesBase::setVisible( bool visible )
 
 void FramesBase::toggle()
 {
-    // is the frame visible?
+  // is the frame visible?
   if( isVisible() )
   {
     // then loop through all frames and remove the frame and make it unvisible.
@@ -208,9 +208,9 @@ void FramesBase::toggle()
     {
       if( this == activeFrames[ curFrame ] )
       {
-	setVisible( false );
-	activeFrames.erase( activeFrames.begin() + curFrame );
-	return;
+        setVisible( false );
+        activeFrames.erase( activeFrames.begin() + curFrame );
+        return;
       }
     }
   }

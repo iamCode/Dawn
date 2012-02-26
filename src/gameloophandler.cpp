@@ -684,49 +684,41 @@ void GameScreenHandler::updateScene()
   {
     if( !KP_toggle_showOptionsWindow )
     {
-      int limit = 2;
-
       // cancel casting of AoE
       if( actionBar->isPreparingAoESpell() )
       {
-	actionBar->stopCastingAoE();
+        actionBar->stopCastingAoE();
       }
 
       // are any frames visible when the options window is not?
       if( !optionsWindow->isVisible() )
       {
-	limit = 1;
-	// are any frames open?
-	if( activeFrames.size() > limit)
-	{
-	  // close all frames
-	  while(activeFrames.size() > limit)
-	  {
-	    activeFrames[1]->toggle();
-	  }
-	}
-	else
-	{
-	  optionsWindow->toggle();
-	}
+        // are any frames open?
+        if( activeFrames.size() > 1)
+        {
+          // close all frames
+          while(activeFrames.size() > 1)
+          {
+            activeFrames[1]->toggle();
+          }
+        }
+        else
+        {
+          optionsWindow->toggle();
+        }
       }
       else
       {
-	// make sure the window is on the top of the stack
-	optionsWindow->toggle();
-	optionsWindow->setOnTop();
-      
-	// close all windows except the on on top
-	while(activeFrames.size() > limit)
-	{
-	  activeFrames[1]->toggle();
-	}
+        while(activeFrames.size() > 1)
+        {
+          activeFrames[1]->toggle();
+        }
       }
-      
+
       KP_toggle_showOptionsWindow = true;
     }
   }
-	
+
   if( !keys[SDLK_ESCAPE] )
   {
     if( KP_toggle_showOptionsWindow )
