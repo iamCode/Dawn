@@ -1,20 +1,19 @@
-/**
-    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+/* Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
+   This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include "spellbook.h"
 #include "drawinghelpers.h"
@@ -29,11 +28,11 @@
 
 void sSpellSlot::initFont()
 {
-	font = FontCache::getFontFromCache("data/verdana.ttf", 11);
+  font = FontCache::getFontFromCache("data/verdana.ttf", 11);
 }
 
 Spellbook::Spellbook( Player* player_ )
-	: FramesBase( 125, 50, 454, 672, 13, 15 ),
+	: FramesBase( 125, 50, 454, 672, 13, 15, "spellbook" ),
 	  floatingSpellSlot( 0,0,0,0 )
 {
 	addMoveableFrame( 454, 22, 13, 665 );

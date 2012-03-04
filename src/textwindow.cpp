@@ -101,7 +101,7 @@ void initTextWindowFont()
 }
 
 TextWindow::TextWindow()
-	:	FramesBase( 0, 0, 0, 0, 0, 0 ),
+	:	FramesBase( 0, 0, 0, 0, 0, 0, "text" ),
 		positionType( PositionType::CENTER ),
 		x( 0 ),
 		y( 0 ),

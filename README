@@ -4,24 +4,24 @@ To run Dawn: ./dawn-starter.sh
 (./dawn-starter.sh will run ./dawn-rpg but add usable output in case of errors so if you want to support Dawn, use it, please.)
 
 Parameters:
--f, --fullscreen    Run Dawn in fullscreen mode (default)
--w, --window        Run Dawn inside a window
+-f, --fullscreen    Run Dawn in fullscreen mode
+-w, --window        Run Dawn inside a window (default)
 --nosound           Run Dawn without sound
 -h, --help          Show this help screen
 
 ---------------------------------------
 
 Keybindings:
-[ ESC ]     -  Open the menu
-[ B ]       -  Open spellbook
-[ I ]       -  Open the Inventory
-[ C ]       -  Character info page
-[ L ]       -  Enter leveleditor
-[ Q ]       -  Open the quest log
-[ 1 - 9 ]   -  Hotkeys for skills/spells
-[ WSAD ]    -  Movement
+[ ESC ]      -  Open the menu/close windows
+[ B ]        -  Open spellbook
+[ I ]        -  Open the Inventory
+[ C ]        -  Character info page
+[ L ]        -  Enter leveleditor
+[ Q ]        -  Open the quest log
+[ 1 - 9 ]    -  Hotkeys for skills/spells
+[ WSAD ]     -  Movement
 
-Left mouse  - Select objects, items.
-Right mouse - Interact with objects.
+Left mouse   -  Select objects, items.
+Right mouse  -  Interact with objects.
 
 Visit https://github.com/frusen/Dawn/wiki for more information!

@@ -28,7 +28,7 @@ FramesBase::FramesBase()
     closeButton( false ),
     movingFrame( false ),
     framesDawnState( DawnState::NoState ),
-    name ("")
+    name( "" )
 {
 }
 
@@ -43,7 +43,28 @@ FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint
     moveableFrame( false),
     closeButton( false ),
     movingFrame( false ),
-    framesDawnState( DawnState::NoState )
+    framesDawnState( DawnState::NoState ),
+    name( "" )
+{
+  if( posY + frameHeight + frameOffsetY > Configuration::screenHeight )
+  {
+    posY = Configuration::screenHeight - frameHeight - frameOffsetY;
+  }
+}
+
+FramesBase::FramesBase( int16_t posX_, int16_t posY_, uint16_t frameWidth_, uint16_t frameHeight_, int16_t frameOffsetX_, int16_t frameOffsetY_, char* name_ )
+  : posX( posX_ ),
+    posY( posY_ ),
+    frameWidth( frameWidth_ ),
+    frameHeight( frameHeight_ ),
+    frameOffsetX( frameOffsetX_ ),
+    frameOffsetY( frameOffsetY_ ),
+    visible( false ),
+    moveableFrame( false),
+    closeButton( false ),
+    movingFrame( false ),
+    framesDawnState( DawnState::NoState ),
+    name( name_ )
 {
   if( posY + frameHeight + frameOffsetY > Configuration::screenHeight )
   {
@@ -57,6 +78,7 @@ FramesBase::~FramesBase()
   {
     delete childFrames[ curChildNr ];
   }
+
   childFrames.resize( 0 );
 }
 
@@ -80,20 +102,22 @@ void FramesBase::addCloseButton( uint16_t buttonWidth, uint16_t buttonHeight, in
 
 void FramesBase::moveFrame( uint16_t mouseX, uint16_t mouseY )
 {
-    // start moving the frame if we're not.
-    // if we are already moving the frame then update the coordinates.
-    if ( movingFrame == false )
-    {
-        movingFrame = true;
-        startMovingFrameXpos = mouseX;
-        startMovingFrameYpos = mouseY;
-    } else {
-        posX += mouseX - startMovingFrameXpos;
-        posY += mouseY - startMovingFrameYpos;
+  // start moving the frame if we're not.
+  // if we are already moving the frame then update the coordinates.
+  if ( movingFrame == false )
+  {
+    movingFrame = true;
+    startMovingFrameXpos = mouseX;
+    startMovingFrameYpos = mouseY;
+  }
+  else
+  {
+    posX += mouseX - startMovingFrameXpos;
+    posY += mouseY - startMovingFrameYpos;
 
-        startMovingFrameXpos = mouseX;
-        startMovingFrameYpos = mouseY;
-    }
+    startMovingFrameXpos = mouseX;
+    startMovingFrameYpos = mouseY;
+  }
 }
 
 void FramesBase::stopMovingFrame( uint16_t mouseX, uint16_t mouseY )
@@ -110,13 +134,15 @@ bool FramesBase::isMovingFrame() const
 
 void FramesBase::draw( int mouseX, int mouseY )
 {
-	if ( childFrames.size() > 0 )
+	if( childFrames.size() > 0 )
 	{
 		glTranslatef( posX, posY, 0.0f );
-		for ( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr )
+
+		for( size_t curChildNr=0; curChildNr<childFrames.size(); ++curChildNr )
 		{
 			childFrames[ curChildNr ]->draw( mouseX-posX, mouseY-posY );
 		}
+
 		glTranslatef( -posX, -posY, 0.0f );
 	}
 }
@@ -224,16 +250,16 @@ void FramesBase::toggle()
 
 void FramesBase::setOnTop()
 {
-    // loop through all frames and put that on top.
-    for ( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
+  // loop through all frames and put that on top.
+  for( size_t curFrame = 0; curFrame < activeFrames.size(); curFrame++ )
+  {
+    if( this == activeFrames[ curFrame ] )
     {
-        if ( this == activeFrames[ curFrame ] )
-        {
-            activeFrames.erase( activeFrames.begin() + curFrame );
-            activeFrames.push_back( this );
-            return;
-        }
+      activeFrames.erase( activeFrames.begin() + curFrame );
+      activeFrames.push_back( this );
+      return;
     }
+  }
 }
 
 void FramesBase::setPosition( int parentOffsetX, int parentOffsetY )

@@ -1,20 +1,19 @@
-/**
-    Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
+/* Copyright (C) 2009,2010,2011  Dawn - 2D roleplaying game
 
-    This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
+   This file is a part of the dawn-rpg project <https://github.com/frusen/Dawn>.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. **/
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include "character.h"
 #include <cassert>
@@ -47,77 +46,85 @@ namespace DawnInterface
 {
 	CCharacter* createNewMobType( std::string typeID )
 	{
-		CCharacter *newMobType = new CNPC(0, 0, 0, 0, 0);
+		CCharacter* newMobType = new CNPC(0, 0, 0, 0, 0);
 		allMobTypes[ typeID ] = newMobType;
 		return newMobType;
 	}
-	void addTextToLogWindow( GLfloat color[], const char *text, ... );
+	void addTextToLogWindow( GLfloat color[], const char* text, ... );
 }
 
-bool CCharacter::hasTarget( CCharacter *target )
+bool CCharacter::hasTarget( CCharacter* target )
 {
-	if ( this->target == target )
-		return true;
+  if( this->target == target )
+  {
+    return true;
+  }
 
-	return false;
+  return false;
 }
 
 void CCharacter::baseOnType( std::string otherName )
 {
-	CCharacter *other;
-	if ( allMobTypes.count( otherName ) != 1 ) {
-		std::cerr << "mob type \"" << otherName << "\" found " << allMobTypes.count( otherName ) << " times!!! aborting." << std::endl;
-		abort();
-	}
-	other = allMobTypes[ otherName ];
-	// classID is only set if this was created as a new mob type with createNewMobType
-	if ( this->classID == "" ) {
-		this->classID = otherName;
-	}
-	setStrength( other->getStrength() );
-	setDexterity( other->getDexterity() );
-	setVitality( other->getVitality() );
-	setIntellect( other->getIntellect() );
-	setWisdom( other->getWisdom() );
-	setMaxHealth( other->getMaxHealth() );
-	setMaxMana( other->getMaxMana() );
-	setMaxFatigue( other->getMaxFatigue() );
-	setMinDamage( other->getMinDamage() );
-	setMaxDamage( other->getMaxDamage() );
-	size_t numActivities=static_cast<size_t>(ActivityType::Count);
-	for ( size_t curActivity=0; curActivity<numActivities; ++curActivity ) {
-		ActivityType::ActivityType curActivityType = static_cast<ActivityType::ActivityType>( curActivity );
-		setNumMoveTexturesPerDirection( curActivityType, other->numMoveTexturesPerDirection[ curActivity ] );
-		setTexture( curActivityType, other->getTexture(curActivityType) );
-	}
-	setArmor( other->getArmor() );
-	setHealthRegen( other->getHealthRegen() );
-	setManaRegen( other->getManaRegen() );
-	setFatigueRegen( other->getFatigueRegen() );
-	setDamageModifierPoints( other->getDamageModifierPoints() );
-	setHitModifierPoints( other->getHitModifierPoints() );
-	setEvadeModifierPoints( other->getEvadeModifierPoints() );
-	setParryModifierPoints( other->getParryModifierPoints() );
-	setBlockModifierPoints( other->getBlockModifierPoints() );
-	setMeleeCriticalModifierPoints( other->getMeleeCriticalModifierPoints() );
-	setResistAllModifierPoints( other->getResistAllModifierPoints() );
-	setSpellEffectAllModifierPoints( other->getSpellEffectAllModifierPoints() );
-	for ( size_t curElement=0; curElement<static_cast<size_t>(ElementType::Count); ++curElement ) {
-		ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
-		setResistElementModifierPoints( curElementType, other->getResistElementModifierPoints( curElementType ) );
-		setSpellEffectElementModifierPoints( curElementType, other->getSpellEffectElementModifierPoints( curElementType ) );
-	}
-	setSpellCriticalModifierPoints( other->getSpellCriticalModifierPoints() );
-	setClass( other->getClass() );
-	setWanderRadius ( other->getWanderRadius() );
-	setName( other->getName() );
-	setLevel( other->getLevel() );
-	setLootTable( other->getLootTable() );
-	setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
-	setUseBoundingBox( other->getUseBoundingBox() );
-	setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
-	setSpellbook( other->getSpellbook() );
-	setExperienceValue( other->getExperienceValue() );
+  CCharacter* other;
+
+  if( allMobTypes.count( otherName ) != 1 )
+  {
+    std::cerr << "mob type \"" << otherName << "\" found " << allMobTypes.count( otherName ) << " times!!! aborting." << std::endl;
+    abort();
+  }
+
+  other = allMobTypes[ otherName ];
+
+  // classID is only set if this was created as a new mob type with createNewMobType
+  if( this->classID == "" )
+  {
+    this->classID = otherName;
+  }
+
+  setStrength( other->getStrength() );
+  setDexterity( other->getDexterity() );
+  setVitality( other->getVitality() );
+  setIntellect( other->getIntellect() );
+  setWisdom( other->getWisdom() );
+  setMaxHealth( other->getMaxHealth() );
+  setMaxMana( other->getMaxMana() );
+  setMaxFatigue( other->getMaxFatigue() );
+  setMinDamage( other->getMinDamage() );
+  setMaxDamage( other->getMaxDamage() );
+  size_t numActivities=static_cast<size_t>(ActivityType::Count);
+  for ( size_t curActivity=0; curActivity<numActivities; ++curActivity ) {
+    ActivityType::ActivityType curActivityType = static_cast<ActivityType::ActivityType>( curActivity );
+    setNumMoveTexturesPerDirection( curActivityType, other->numMoveTexturesPerDirection[ curActivity ] );
+    setTexture( curActivityType, other->getTexture(curActivityType) );
+  }
+  setArmor( other->getArmor() );
+  setHealthRegen( other->getHealthRegen() );
+  setManaRegen( other->getManaRegen() );
+  setFatigueRegen( other->getFatigueRegen() );
+  setDamageModifierPoints( other->getDamageModifierPoints() );
+  setHitModifierPoints( other->getHitModifierPoints() );
+  setEvadeModifierPoints( other->getEvadeModifierPoints() );
+  setParryModifierPoints( other->getParryModifierPoints() );
+  setBlockModifierPoints( other->getBlockModifierPoints() );
+  setMeleeCriticalModifierPoints( other->getMeleeCriticalModifierPoints() );
+  setResistAllModifierPoints( other->getResistAllModifierPoints() );
+  setSpellEffectAllModifierPoints( other->getSpellEffectAllModifierPoints() );
+  for ( size_t curElement=0; curElement<static_cast<size_t>(ElementType::Count); ++curElement ) {
+    ElementType::ElementType curElementType = static_cast<ElementType::ElementType>(curElement);
+    setResistElementModifierPoints( curElementType, other->getResistElementModifierPoints( curElementType ) );
+    setSpellEffectElementModifierPoints( curElementType, other->getSpellEffectElementModifierPoints( curElementType ) );
+  }
+  setSpellCriticalModifierPoints( other->getSpellCriticalModifierPoints() );
+  setClass( other->getClass() );
+  setWanderRadius ( other->getWanderRadius() );
+  setName( other->getName() );
+  setLevel( other->getLevel() );
+  setLootTable( other->getLootTable() );
+  setBoundingBox( other->getBoundingBoxX(), other->getBoundingBoxY(), other->getBoundingBoxW(), other->getBoundingBoxH() );
+  setUseBoundingBox( other->getUseBoundingBox() );
+  setCoinDrop( other->minCoinDrop, other->maxCoinDrop, other->coinDropChance );
+  setSpellbook( other->getSpellbook() );
+  setExperienceValue( other->getExperienceValue() );
 }
 
 std::string CCharacter::getClassID() const

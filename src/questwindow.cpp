@@ -41,7 +41,8 @@ namespace DawnInterface
 	}
 }
 
-QuestWindow::QuestWindow() : FramesBase( 20, 100, 375, 376, 20, 20 )
+QuestWindow::QuestWindow()
+  : FramesBase( 20, 100, 375, 376, 20, 20, "quests" )
 {
 	addMoveableFrame( 375, 22, 20, 374 );
 	addCloseButton( 22, 22, 373, 376 );

@@ -696,10 +696,21 @@ void GameScreenHandler::updateScene()
         // are any frames open?
         if( activeFrames.size() > 1)
         {
+          int check = 1;
+          
           // close all frames
-          while(activeFrames.size() > 1)
+          while(activeFrames.size() > check)
           {
-            activeFrames[1]->toggle();
+            // is the current frame a textbox?
+            if( strcmp(activeFrames[check]->getName(),"text") == 0 )
+            {
+              // don't close it
+              check++;
+            }
+            else
+            {
+              activeFrames[check]->toggle();
+            }
           }
         }
         else
@@ -709,8 +720,29 @@ void GameScreenHandler::updateScene()
       }
       else
       {
-        while(activeFrames.size() > 1)
+        // are more frames than the options window open?
+        if(activeFrames.size() > 1)
         {
+          int check = 1;
+          
+          // close all frames
+          while(activeFrames.size() > check)
+          {
+            // is the current frame a textbox?
+            if( strcmp(activeFrames[check]->getName(),"text") == 0 )
+            {
+              // don't close it
+              check++;
+            }
+            else
+            {
+              activeFrames[check]->toggle();
+            }
+          }
+        }
+        else
+        {
+          // close the options window
           activeFrames[1]->toggle();
         }
       }

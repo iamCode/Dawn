@@ -89,7 +89,8 @@ void addInventoryScreenSlot( InventoryScreenSlot** mySlots, ItemSlot::ItemSlot s
 	mySlots[ static_cast<size_t>(slotToUse) ] = new InventoryScreenSlot( slotToUse, offsetX, offsetY, sizeX, sizeY, plain_file );
 }
 
-InventoryScreen::InventoryScreen( Player* player_ ) : FramesBase( 0, 80, 469, 654, 15, 17 )
+InventoryScreen::InventoryScreen( Player* player_ )
+  : FramesBase( 0, 80, 469, 654, 15, 17, "inventory" )
 {
 	addMoveableFrame( 454, 21, 15, 650 );
 
