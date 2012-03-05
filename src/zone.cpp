@@ -738,7 +738,7 @@ namespace DawnInterface
 		}
 
 		std::ostringstream oss;
-		oss << "DawnInterface.addQuest( '" << quest->getName() << "', '" << quest->getDescription() << "' );";
+		oss << "DawnInterface.addQuest( \"" << quest->getName() << "\",\"" << quest->getDescription() << "\" );";
 		return oss.str();
 	}
 
