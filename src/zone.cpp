@@ -752,7 +752,7 @@ namespace DawnInterface
 		return "DawnInterface.createTextWindow(); -- text windows are not restored";
 	}
 
-	std::string getReinitialisationString( std::string fullVarName, Quest *quest )
+	std::string getReinitialisationString( std::string fullVarName, Quest* quest )
 	{
 		if( quest == NULL )
 		{

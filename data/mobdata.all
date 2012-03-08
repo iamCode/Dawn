@@ -327,7 +327,7 @@ spiderlingbase:setClass( CharacterClass.Ranger );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["sylphiricacid"] );
 spiderlingbase:inscribeSpellInSpellbook( spellDatabase["venomspit"] );
 spiderlingbase:addItemToLootTable( itemDatabase["spidersilk"], 0.30 );
-spiderlingbase:addItemToLootTable( itemDatabase["sylphirfang"], 0.25 );
+spiderlingbase:addItemToLootTable( itemDatabase["sylphirfang"], 0.40 );
 spiderlingbase:setExperienceValue( 30 );
 
 spiderbase = DawnInterface.createNewMobType("Spider")
